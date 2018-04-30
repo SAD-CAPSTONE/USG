@@ -1,0 +1,94 @@
+<%- include('../../../templates/sidebar.ejs') -%>
+
+<style>
+  #sidebar > .row > .col:first-of-type > a:nth-of-type(3) > h5{
+    border-left: 4px solid #12BBAD;
+  }
+</style>
+
+<!-- main content title -->
+<h4 class="lead pl-1 pb-2"><b>Payment</b></h4>
+<!-- main content -->
+<ul id="pills-tab" role="tablist" class="nav nav-pills mb-3">
+  <li class="nav-item"><a id="pills-record-tab" data-toggle="pill" href="#pills-record" role="tab" aria-controls="pills-record" aria-selected="true" class="nav-link active"><b>Payment Record</b></a></li>
+  <li class="nav-item"><a id="pills-method-tab" data-toggle="pill" href="#pills-method" role="tab" aria-controls="pills-method" aria-selected="false" class="nav-link"><b>Payment Method</b></a></li>
+</ul>
+<hr>
+<div id="pills-tabContent" class="tab-content">
+  <div id="pills-record" role="tabpanel" aria-labelledby="pills-record-tab" class="tab-pane fade show active">
+    <div class="tab">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Order</th>
+            <th scope="col">Date of Payment</th>
+            <th scope="col">Method</th>
+            <th scope="col">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row"><a href="/summary/previous">Order#0003092</a></th>
+            <td>Feb 11, 2018</td>
+            <td>Cash on Hand</td>
+            <td>P 180</td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="/summary/previous">Order#0003014</a></th>
+            <td>Feb 9, 2018</td>
+            <td>Bank Deposit</td>
+            <td>P 350</td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="/summary/previous">Order#0002437</a></th>
+            <td>Jan 30, 2018</td>
+            <td>Cash on Hand</td>
+            <td>P 200</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- pagination -->
+    <div class="row">
+      <div class="col"> </div>
+      <div class="col pt-3">
+        <ul class="pagination">
+          <li class="page-item"><a href="#" aria-label="Previous" class="page-link"><span aria-hidden="true">«</span><span class="sr-only">Previous</span></a></li>
+          <li class="page-item"><a href="#" class="page-link">1</a></li>
+          <li class="page-item"><a href="#" class="page-link">2</a></li>
+          <li class="page-item"><a href="#" class="page-link">3</a></li>
+          <li class="page-item"><a href="#" class="page-link">4</a></li>
+          <li class="page-item"><a href="#" class="page-link">5</a></li>
+          <li class="page-item"><a href="#" class="page-link">6</a></li>
+          <li class="page-item"><a href="#" aria-label="Next" class="page-link"><span aria-hidden="true">»</span><span class="sr-only">Next</span></a></li>
+        </ul>
+      </div>
+      <div class="col"> </div>
+    </div>
+  </div>
+  <div id="pills-method" role="tabpanel" aria-labelledby="pills-method-tab" class="tab-pane fade">
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <div class="container">
+          <div class="card-block pay p-4">
+            <h1><i class="fa fa-fw fa-money"></i><span style="font-size: 30px;"> Cash On Hand</span></h1>
+            <hr>
+            <p>Order and Pay with Cash on delivery  </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="container">
+          <div class="card-block pay p-4">
+            <h1><i class="fa fa-fw fa-credit-card"></i><span style="font-size: 30px;"> Bank Deposit</span></h1>
+            <hr>
+            <p>Order and Pay through Bank Deposit</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../../templates/sidebar-closer.ejs') -%>
+<%- include('../../../templates/scripts.ejs') -%>

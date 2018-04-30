@@ -1,0 +1,85 @@
+<%- include('../../../templates/navbar.ejs') -%>
+
+<div id="content" class="container">
+  <div class="row">
+    <div class="col">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-item">
+          <li class="breadcrumb-item"><a href="/store">Category Name</a></li>
+          <li aria-current="page" class="breadcrumb-item active">Product Name</li>
+        </ol>
+      </nav>
+      <div id="inner-content">
+        <div class="mb-4 pl-1">
+          <h4 class="lead mb-0"><b>Product Name</b></h4>
+          <hr/>
+        </div>
+        <div class="row mx-1">
+          <div class="col-sm-6 mb-3"><img src="/assets/images/static/img3.jpg" alt="USG" height="350px" width="100%"/></div>
+          <div class="col-sm-6 mb-3">
+            <div style="height: 200px; overflow-y: auto;" class="row item-desc">
+              <div class="col">
+                <h7>Product Description</h7>
+              </div>
+            </div>
+            <div style="height: 150px;" class="row pt-3">
+              <div class="col">
+                <h4 class="mb-1">&#x20B1; Product Price</h4><br/>                <small class="text-muted">Only (Product Stock) items left</small>                <br/>                <a href="#" class="btn btn-custom-primary btn-lg mt-1"><i class="fa fa-fw fa-cart-plus"></i>&nbsp;Add to Cart</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row px-4 mt-2">
+          <div class="col">
+            <h4>Reviews</h4>
+          </div>
+        </div>
+        <div class="row mx-1">
+          <div class="col-sm-6 mb-3">
+            <div class="card mb-2">
+              <div class="card-header"><b> John Doe </b></div>
+              <div class="card-body">
+                <h4>Good Buy</h4>
+                <h6 class="text-muted"><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star-o"></i></h6>
+                <p>It&apos;s a good product, might buy again soon.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 mb-3">
+            <div class="card mb-2">
+              <div class="card-header"><b> Jocelyn Flores </b></div>
+              <div class="card-body">
+                <h4>Excellent Product!</h4>
+                <h6 class="text-muted"><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i></h6>
+                <p>Definitely going to buy again!</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 mb-3">
+            <div class="card mb-2">
+              <div class="card-header"><b> Ralf Milan </b></div>
+              <div class="card-body">
+                <h4>Awesome Product</h4>
+                <h6 class="text-muted"><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star-o"></i></h6>
+                <p>My new place for buying this product.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 mb-3">
+            <div class="card mb-2">
+              <div class="card-header"><b> John Wick </b></div>
+              <div class="card-body">
+                <h4>Amazing!</h4>
+                <h6 class="text-muted"><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i></h6>
+                <p>This product proves to be very effective, i have witnessed the results.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../../templates/footer.ejs') -%>
+<%- include('../../../templates/scripts.ejs') -%>

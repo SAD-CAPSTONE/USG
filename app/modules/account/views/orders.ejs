@@ -1,0 +1,84 @@
+<%- include('../../../templates/sidebar.ejs') -%>
+
+<style>
+  #sidebar > .row > .col:first-of-type > a:nth-of-type(2) > h5{
+    border-left: 4px solid #12BBAD;
+  }
+</style>
+
+<!-- main content title -->
+<h4 class="lead pl-1 pb-2"><b>My Orders</b></h4>
+<!-- main content -->
+<div class="tab">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Order</th>
+        <th scope="col">Status</th>
+        <th scope="col">Date</th>
+        <th scope="col">Price</th>
+        <th scope="col" style="width: 70px;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row"><a href="/summary/order">Order#0003092</a></th>
+        <td>Ordered</td>
+        <td>Feb 14, 2018</td>
+        <td>P 230</td>
+        <td><a data-toggle="modal" data-target="#CancelOrder" class="button btn btn-sm btn-danger text-white"> Cancel </a></td>
+      </tr>
+      <tr>
+        <th scope="row"><a href="/summary/order">Order#0003014</a></th>
+        <td>Delivered</td>
+        <td>Feb 9, 2018</td>
+        <td>P 150</td>
+        <td><a data-toggle="modal" data-target="#CancelOrder" class="button btn btn-sm btn-danger text-white"> Cancel </a></td>
+      </tr>
+      <tr>
+        <th scope="row"><a href="/summary/order">Order#0002437</a></th>
+        <td>Delivered</td>
+        <td>Feb 4, 2018</td>
+        <td>P 420</td>
+        <td><a data-toggle="modal" data-target="#CancelOrder" class="button btn btn-sm btn-danger text-white"> Cancel </a></td>
+      </tr>
+      <div id="CancelOrder" tabindex="-1" role="dialog" aria-labelledby="CancelOrderTitle" aria-hidden="true" class="modal fade">
+        <div role="document" class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 id="CancelOrderTitle" class="modal-title"><b> Cancel Order</b></h5>
+              <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+              <p>Continue to Cancel Order?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-danger">Yes</button>
+              <button type="button" ,="" data-dismiss="modal" class="btn btn-secondary">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </tbody>
+  </table>
+</div>
+<!-- pagination -->
+<div class="row">
+  <div class="col"> </div>
+  <div class="col pt-3">
+    <ul class="pagination">
+      <li class="page-item"><a href="#" aria-label="Previous" class="page-link"><span aria-hidden="true">«</span><span class="sr-only">Previous</span></a></li>
+      <li class="page-item"><a href="#" class="page-link">1</a></li>
+      <li class="page-item"><a href="#" class="page-link">2</a></li>
+      <li class="page-item"><a href="#" class="page-link">3</a></li>
+      <li class="page-item"><a href="#" class="page-link">4</a></li>
+      <li class="page-item"><a href="#" class="page-link">5</a></li>
+      <li class="page-item"><a href="#" class="page-link">6</a></li>
+      <li class="page-item"><a href="#" aria-label="Next" class="page-link"><span aria-hidden="true">»</span><span class="sr-only">Next</span></a></li>
+    </ul>
+  </div>
+  <div class="col"> </div>
+</div>
+
+<%- include('../../../templates/sidebar-closer.ejs') -%>
+<%- include('../../../templates/scripts.ejs') -%>

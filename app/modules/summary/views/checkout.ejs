@@ -1,0 +1,91 @@
+<%- include('../../../templates/navbar.ejs') -%>
+
+<div id="content" class="container">
+  <div class="row">
+    <div class="col">
+      <div class="row">
+        <div id="inner-content" class="col-md-7">
+          <div style="text-align:center;">
+            <h4 class="lead pl-1 pb-2"><b>Order Summary</b></h4>
+          </div>
+          <div class="card mb-2">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-lg-4 col-6 mb-2"><img src="/assets/images/static/img1.jpg" class="img-fluid d-block tab-img" /></div>
+                <div class="col-lg-8 col-6 mb-2 order-summary-desc">
+                  <h4><b>Keto Loaf</b></h4> <br/> <small>Price: &#x20B1; 115</small> <br/> <small>Quantity: 1</small> <br/>
+                  <h4 class="mb-1 mt-2"><b>Total:</b> &#x20B1; 115</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-lg-4 col-6 mb-2"><img src="/assets/images/static/img2.jpg" class="img-fluid d-block tab-img" /></div>
+                <div class="col-lg-8 col-6 mb-2 order-summary-desc">
+                  <h4><b>Shahani&apos;s Gatas Kalabaw</b></h4> <br/> <small>Price: &#x20B1; 150</small> <br/> <small>Quantity: 2</small> <br/>
+                  <h4 class="mb-1 mt-2"><b>Total:</b> &#x20B1; 300</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-lg-4 col-6 mb-2"><img src="/assets/images/static/img3.jpg" class="img-fluid d-block tab-img" /></div>
+                <div class="col-lg-8 col-6 mb-7 order-summary-desc">
+                  <h4><b>Raw Cordyceps</b></h4> <br/> <small>
+                  Price: &#x20B1; 105
+                                    <br/>                  <small>Quantity: 4</small> <br/>
+                  <h4 class="mb-1 mt-2"><b>Total:</b> &#x20B1; 420</h4></small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="position:relative;" class="col-md-4 mx-4">
+            <div class="absolute-payment">
+              <div class="payment-content">
+                <div style="text-align:center; background: #12BBAD; border-radius: 5px;">
+                  <h4 class="lead pl-1 pb-2 text-white pt-1"><b>Payment Method</b></h4>
+                </div>
+                <div class="col-12">
+                  <a href="" class="hover-link">
+                    <h1><i class="fa fa-fw fa-money"></i><span style="font-size: 30px;">&nbsp;Cash On Hand</span></h1></a>
+                  <hr/>
+                </div>
+                <div class="col-12">
+                  <a href="" class="hover-link">
+                    <h1><i class="fa fa-fw fa-credit-card"></i><span style="font-size: 30px;">&nbsp;Bank Deposit</span></h1></a>
+                </div>
+              </div>
+              <div class="payment-content">
+                <div class="row">
+                  <div class="col-6">
+                    <p><b class="mr-2">Sub-total:</b></p>
+                    <p class="mb-0"><b class="mr-2">VAT:</b></p>
+                  </div>
+                  <div class="col-6">
+                    <p><span style="padding-left: 12px;" class="mx-4">&#x20B1;</span> 835.00</p>
+                    <p class="mb-0"><span style="padding-left: 12px;" class="mx-4">&#x20B1;</span> &nbsp&nbsp69.58</p>
+                  </div>
+                </div>
+                <hr/>
+                <div class="row">
+                  <div class="col">
+                    <p class="mb-0"><b>TOTAL:</b></p>
+                  </div>
+                  <div class="col">
+                    <p class="mb-0"><span style="padding-left: 12px;" class="mx-4">&#x20B1;</span> 904.58</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../../templates/scripts.ejs') -%>

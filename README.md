@@ -1,2 +1,1 @@
-USG
-Capstone Project
+# CUSTOMER
