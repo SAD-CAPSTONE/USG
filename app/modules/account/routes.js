@@ -3,16 +3,16 @@ var router = express.Router();
 var db = require('../../lib/database')();
 
 function dashRender(req,res){
-  res.render('account/views/dashboard',{thisusertab: req.user});
+  res.render('account/views/dashboard', {thisUser: req.user});
 }
 function ordersRender(req,res){
-  res.render('account/views/orders',{thisusertab: req.user});
+  res.render('account/views/orders', {thisUser: req.user});
 }
 function paymentRender(req,res){
-  res.render('account/views/payment',{thisusertab: req.user});
+  res.render('account/views/payment', {thisUser: req.user});
 }
 function cancelRender(req,res){
-  res.render('account/views/cancellations',{thisusertab: req.user});
+  res.render('account/views/cancellations', {thisUser: req.user});
 }
 
 router.get('/dashboard', dashRender);

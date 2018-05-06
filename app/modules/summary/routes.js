@@ -3,13 +3,13 @@ var router = express.Router();
 var db = require('../../lib/database')();
 
 function render(req,res){
-  res.render('summary/views/checkout');
+  res.render('summary/views/checkout', {thisUser: req.user});
 }
 function orderRender(req,res){
-  res.render('summary/views/order');
+  res.render('summary/views/order', {thisUser: req.user});
 }
 function prevRender(req,res){
-  res.render('summary/views/previous');
+  res.render('summary/views/previous', {thisUser: req.user});
 }
 
 router.get('/checkout', render);

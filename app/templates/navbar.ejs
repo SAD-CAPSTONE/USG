@@ -25,8 +25,15 @@
         <li class="nav-item drop-menu mr-2"><a href="/store" class="nav-link"><i class="fa d-inline fa-lg fa-leaf"></i>  Products</a></li>
         <li class="nav-item mr-1"><a data-toggle="modal" data-target="#CartModal" class="nav-link"><i class="fa d-inline fa-lg fa-shopping-cart"></i>  Cart</a></li>
         <li class="nav-item dropdown"><a id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-top: 12px;" class="nav-link dropdown-toggle"><i class="fa fa-fw fa-cog"></i></a>
-          <div aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu"><a href="/account/dashboard" class="dropdown-item"><i class="fa d-inline fa-lg fa-user"></i>  Account</a><a href="/home/faq" class="dropdown-item"><i class="fa d-inline fa-lg fa-question-circle"></i>  FAQs</a>
-            <hr id="hzline" /><a href="/login" class="dropdown-item"><i class="fa d-inline fa-lg fa-sign-out"></i>  Logout</a>
+          <div aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
+            <% if (thisUser){ %>
+              <a href="/account/dashboard" class="dropdown-item"><i class="fa d-inline fa-lg fa-user pr-2"></i>&nbsp<%= thisUser.strFname %></a>
+            <% }else{ %>
+              <a href="/account/dashboard" class="dropdown-item"><i class="fa d-inline fa-lg fa-user pr-2"></i>&nbspAccount</a>
+            <% } %>
+            <a href="/home/faq" class="dropdown-item"><i class="fa d-inline fa-lg fa-question-circle pr-2"></i>FAQs</a>
+            <hr id="hzline" />
+            <a href="/login" class="dropdown-item"><i class="fa d-inline fa-lg fa-sign-out pr-2"></i>Logout</a>
           </div>
         </li>
       </ul>

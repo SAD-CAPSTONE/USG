@@ -195,6 +195,11 @@ a:hover {
   .centered > .quantity > .row > .col> input {
     display: none !important;
   }
+  .navbar-expand-lg .navbar-nav .dropdown-menu {
+    position: absolute;
+    right: auto;
+    left: -6.7rem;
+  }
 }
 @media (min-width: 1200px) {
   .search > input{
@@ -324,6 +329,10 @@ body {
 .drop-menu-content a {
   color: white; }
 .dropdown-item:active{
+  background-color: #12BBAD;
+}
+nav .dropdown-item:hover{
+  color: white;
   background-color: #12BBAD;
 }
 
