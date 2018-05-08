@@ -83,7 +83,7 @@ router.get('/supplierProducts', (req,res)=>{
 
 router.get('/productInventory', (req,res)=>{
 
-  // ERROR IN THIS AREA (req.query)
+  // ERROR IN THIS AREA (req.query)..
   console.log(req.query.name);
 
 /*  db.query(`
