@@ -151,8 +151,8 @@ iframe {
 }
 
 .bg1 {background-color: #3b5998}
-.bg2 {background-color: #1da1f2}
-.bg3 {background-color: #ea4335}
+.bg2 {background-color: #ea4335}
+.bg3 {background-color: #1da1f2}
 
 
 
@@ -193,6 +193,7 @@ iframe {
 
 .login100-form {
   width: 100%;
+  position: relative;
 }
 
 .login100-form-title {
@@ -212,6 +213,15 @@ iframe {
   color: #12BBAD;
 }
 
+.err-message {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+.err-message > p {
+  font-size: 12px;
+}
+
 /*------------------------------------------------------------------
 [ Input ]*/
 
@@ -219,6 +229,10 @@ iframe {
   width: 100%;
   position: relative;
   border-bottom: 2px solid #d9d9d9;
+}
+
+.wrap-input100 + small {
+  font-size: 12px;
 }
 
 .label-input100 {
@@ -240,6 +254,10 @@ iframe {
   height: 55px;
   background: transparent;
   padding: 0 7px 0 43px;
+}
+
+.input-normalize {
+  padding: 0 7px 0 7px !important;
 }
 
 
@@ -272,7 +290,10 @@ iframe {
   bottom: 0;
   left: 0;
   padding-left: 13px;
-  padding-top: 3px;
+  padding-top: 35px;
+}
+.focus-input100-next::after {
+  padding-top: 3px !important;
 }
 
 .focus-input100::before {
