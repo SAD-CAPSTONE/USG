@@ -1,0 +1,19 @@
+INSERT INTO `db_usg`.`tblsubcategory` (`intSubCategoryNo`, `intCategoryNo`, `strSubCategory`, `intStatus`) VALUES ('1000', '1000', 'Dairy', '1');
+
+
+INSERT INTO `db_usg`.`tblcategory` (`intCategoryNo`, `intAdminID`, `strCategory`, `intStatus`) VALUES ('1000', '1000', 'Food', '1');
+
+
+INSERT INTO `db_usg`.`tblproductbrand` (`intBrandNo`, `strBrand`, `intStatus`) VALUES ('1000', 'The Healthy Grocery', '1');
+
+
+INSERT INTO `db_usg`.`tblsubcategory` (`intSubCategoryNo`, `intCategoryNo`, `strSubCategory`, `intStatus`) VALUES ('1001', '1000', 'Non-Dairy', '1');
+
+
+INSERT INTO `db_usg`.`tblproductbrand` (`intBrandNo`, `strBrand`, `intStatus`) VALUES ('1001', 'The Superfood Grocer', '1');
+
+
+INSERT INTO `db_usg`.`tbluom` (`intUomNo`, `intAdminID`, `strUnitName`, `intStatus`) VALUES ('1000', '0000', 'lb', '1');
+
+
+
