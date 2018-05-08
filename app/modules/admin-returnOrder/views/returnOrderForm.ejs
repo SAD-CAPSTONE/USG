@@ -1,0 +1,376 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+ <!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+
+        <small>Note: Please be careful when changing the status of product category, it might affect products in the inventory</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Transaction</a></li>
+        <li class="active">Return Order</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+		<div class="box box-success">
+			<div class="box-header with-border">
+				<h3 class="box-title">Return Order Form</h3>
+			</div>
+
+			<!-- purchase order body -->
+			<div class="box-body">
+
+				<small><b>Business Address:</b> 0002 G/F Elizabeth Hall BLDG. 371 Katipunan Ave., Loyola Heights </br>
+				Quezon City 1108</small> </br>
+				<small><b>Phone Number:</b> (02) 738-1202</small> </br>
+				<small><b>Mobile Number:</b> (0955) 904-4744</small> </br>
+				</br>
+
+				<div class="row">
+					<div class="col-md-2">
+						<div class="form-group">
+							<label for="purcNo">Return Order Number:</label>
+							<input type="text" value="p0012" disabled class="form-control">
+						</div>
+					</div>
+
+					<div class="col-md-2">
+					</div>
+
+					<div class="col-md-2">
+						<div class="form-group">
+							<label for="purcNo">Return Order Date:</label>
+							<input type="date" value="" class="form-control">
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-3">
+						<h4> &nbsp; Supplier </h4>
+					</div>
+
+				</div>
+				<div class="row">
+					<form class="form-horizontal">
+						<div class="form-group">
+
+							<label for="businessName" class="col-sm-2 control-label"> Business Name</label>
+
+							<div class="col-sm-4">
+								<input type="text" class="input-sm form-control" id="businessName" placeholder="">
+							</div>
+						</div>
+
+						<div class="form-group">
+
+							<label for="contract" class="col-sm-2 control-label"> Type of Supplier</label>
+
+							<div class="col-sm-4">
+								<input type="text" class="input-sm form-control" id="contract" placeholder="">
+							</div>
+						</div>
+
+						<div class="form-group">
+
+							<label for="address" class="col-sm-2 control-label"> dont know</label>
+
+							<div class="col-sm-4">
+								<input type="text" class="input-sm form-control" id="address" placeholder="">
+							</div>
+						</div>
+
+					</form>
+
+
+				</div>
+
+				<div class="row">
+					<div class="col-sm-3">
+						<h4> &nbsp;  </h4>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-8">
+					<div class="box">
+						<div class="box-header">
+						  <h3 class="box-title">Delivery List</h3>
+
+						  <div class="box-tools">
+							<ul class="pagination pagination-sm no-margin pull-right">
+							  <li><a href="#">&laquo;</a></li>
+							  <li><a href="#">1</a></li>
+							  <li><a href="#">2</a></li>
+							  <li><a href="#">3</a></li>
+							  <li><a href="#">&raquo;</a></li>
+							</ul>
+						  </div>
+						</div>
+
+						<!-- buttons -->
+						&nbsp; &nbsp;<button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#addProduct"><i class="fa fa-plus"></i> Add Product</button>
+
+						<!-- /.box-header -->
+						<div class="box-body table-responsive no-padding">
+						  <table class="table">
+							<tr>
+							  <th style="width: 10px">#</th>
+							  <th>Product Name</th>
+							  <th>Category</th>
+							  <th>Size</th>
+							  <th>Quantity</th>
+                <th>Status</th>
+                <th>Expiration Date</th>
+							  <th>SRP</th>
+                <th>Total Amount Based on Consignment Price</th>
+							</tr>
+							<tr>
+							  <td>1.</td>
+							  <td>Update software</td>
+							  <td>10</td>
+							  <td></td>
+							  <td></td>
+							  <td></td>
+							</tr>
+							<tr>
+							  <td>2.</td>
+							  <td>Clean database</td>
+							  <td>4</td>
+							  <td></td>
+							  <td></td>
+							  <td></td>
+							</tr>
+							<tr>
+							  <td>3.</td>
+							  <td>Cron job running</td>
+							  <td>17</td>
+							  <td></td>
+							  <td></td>
+							  <td></td>
+							</tr>
+							<tr>
+							  <td>4.</td>
+							  <td>Fix and squish bugs</td>
+							  <td>2</td>
+							  <td></td>
+							  <td></td>
+							  <td></td>
+							</tr>
+						  </table>
+						</div>
+						<!-- /.box-body -->
+
+					</div>
+					  <!-- /.box -->
+					</div>
+				</div>
+
+
+			</div>
+
+			<div class="box-footer">
+                <a href="returnOrderList.html"><button type="submit" class="btn btn-default">Back</button></a>
+                <a href="returnOrderList.html"><button type="submit" class="btn btn-info pull-right">Submit Order Form</button></a>
+            </div>
+              <!-- /.box-footer -->
+
+		</div>
+
+	</section>
+
+</div>
+
+  <!-- /.content-wrapper -->
+
+	<!-- Modals -->
+
+	<div class="modal fade" id="addProduct">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title">Product Information Form</h4>
+		  </div>
+		  <div class="modal-body">
+			<!-- Horizontal Form -->
+
+					<!-- form start -->
+						<form class="form-horizontal">
+						  <div class="box-body">
+							<div class="form-group">
+							  <label for="inputProductCode" class="col-sm-2 control-label">Product Code</label>
+
+							  <div class="col-sm-10">
+								<input type="text" class="form-control" id="inputProductCode" placeholder="">
+							  </div>
+							</div>
+
+							<div class="form-group">
+							  <label for="inputProductName" class="col-sm-2 control-label">Product Name</label>
+
+							  <div class="col-sm-10">
+								<input type="text" class="form-control" id="inputProductName" placeholder="">
+							  </div>
+
+							</div>
+
+							<div class="form-group">
+							  <label for="inputConsignorName" class="col-sm-2 control-label">Consignor Name</label>
+
+							  <div class="col-sm-10">
+								<input type="text" class="form-control" id="inputConsignorName" placeholder="">
+							  </div>
+
+							</div>
+
+						  </div>
+						  <!-- /.box-body -->
+
+						</form>
+
+			  </div>
+			  <div class="modal-footer">
+				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+			  </div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+  <!-- /.modal-dialog -->
+</div>
+
+  <!-- Main Footer -->
+  <footer class="main-footer">
+    <!-- To the right -->
+    <div class="pull-right hidden-xs">
+      Anything you want
+    </div>
+    <!-- Default to the left -->
+    <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Create the tabs -->
+    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+      <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+      <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <!-- Home tab content -->
+      <div class="tab-pane active" id="control-sidebar-home-tab">
+        <h3 class="control-sidebar-heading">Recent Activity</h3>
+        <ul class="control-sidebar-menu">
+          <li>
+            <a href="javascript:;">
+              <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+
+              <div class="menu-info">
+                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+
+                <p>Will be 23 on April 24th</p>
+              </div>
+            </a>
+          </li>
+        </ul>
+        <!-- /.control-sidebar-menu -->
+
+        <h3 class="control-sidebar-heading">Tasks Progress</h3>
+        <ul class="control-sidebar-menu">
+          <li>
+            <a href="javascript:;">
+              <h4 class="control-sidebar-subheading">
+                Custom Template Design
+                <span class="pull-right-container">
+                    <span class="label label-danger pull-right">70%</span>
+                  </span>
+              </h4>
+
+              <div class="progress progress-xxs">
+                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+              </div>
+            </a>
+          </li>
+        </ul>
+        <!-- /.control-sidebar-menu -->
+
+      </div>
+      <!-- /.tab-pane -->
+      <!-- Stats tab content -->
+      <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
+      <!-- /.tab-pane -->
+      <!-- Settings tab content -->
+      <div class="tab-pane" id="control-sidebar-settings-tab">
+        <form method="post">
+          <h3 class="control-sidebar-heading">General Settings</h3>
+
+          <div class="form-group">
+            <label class="control-sidebar-subheading">
+              Report panel usage
+              <input type="checkbox" class="pull-right" checked>
+            </label>
+
+            <p>
+              Some information about this general settings option
+            </p>
+          </div>
+          <!-- /.form-group -->
+        </form>
+      </div>
+      <!-- /.tab-pane -->
+    </div>
+  </aside>
+  <!-- /.control-sidebar -->
+  <!-- Add the sidebar's background. This div must be placed
+  immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<!-- jQuery 3 -->
+<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- DataTables (new added)	 -->
+<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!-- SlimScroll -->
+<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/assets/admin/dist/js/adminlte.min.js"></script>
+
+<!-- page script (new added) -->
+<script>
+  $(function () {
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>
