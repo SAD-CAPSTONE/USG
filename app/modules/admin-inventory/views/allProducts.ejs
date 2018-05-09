@@ -53,13 +53,13 @@
                     <td><%=i.intStatus%></td>
 
                     <!-- ERROR IN THIS AREA (req.query) -->
-                    <form method="GET" action="/inventory/productInventory?q=tobi">
-                    <td><button type="button" data-toggle="modal" data-target="#viewProduct" class="viewButton btn btn-sucess btn-xs" data-prodno="<%=i.intProductNo%>" data-prodcode="<%=i.strProductCode%>" data-prodname="<%=i.strProductName%>" data-proddesc="<%=i.strDescription%>" data-prodbrand="<%=i.intBrandNo%>" data-prodcateg="<%=i.intSubCategoryNo%>" data-prodpicture="<%=i.strProductPicture%>" >View Details</button>
 
-                    <button type="submit" class="btn btn-sucess btn-xs"  >Inventory</button>
+                    <td><button type="button" data-toggle="modal" data-target="#viewProduct" class="viewButton btn btn-sucess btn-xs" data-prodno="<%=i.intProductNo%>" data-prodcode="<%=i.strProductCode%>" data-prodname="<%=i.strProductName%>" data-proddesc="<%=i.strDescription%>" data-prodbrand="<%=i.intBrandNo%>" data-prodcateg="<%=i.intSubCategoryNo%>" data-prodpicture="<%=i.strProductPicture%>" >View Details</button>
+                    <% var url = i.intProductNo %>
+                    <a href="/inventory/productInventory?product=<%=url%>"><button type="button" class="btn btn-sucess btn-xs"  >Inventory</button></a>
 
                     </td>
-                  </form>
+
                   </tr>
                   <% }) %>
                 <% } %>

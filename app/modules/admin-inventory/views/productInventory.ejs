@@ -6,7 +6,7 @@
   <section class="content-header">
     <h1>
       Error
-      
+
     </h1>
     <ol class="breadcrumb">
       <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -55,6 +55,7 @@
                       <td><%=i.productSRP%></td>
                       <td><%=i.productPrice%></td>
                       <!-- <td><%= moment(i.expirationDate).format("MMM Do YYYY")%></td> -->
+
                       <td>
                         <% if (i.intStatus == 1){ %>
                           <span class="label label-success">Active</span>
@@ -66,7 +67,7 @@
                       <form>
                       <td>
 
-                      <button type="submit" class="btn btn-sucess btn-xs" formaction="/inventory/productInventory" formmethod="get" >View Transactions</button>
+                      <a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="btn btn-sucess btn-xs" >View Transactions</button></a>
 
                       </td>
                     </form>
@@ -103,8 +104,8 @@
                         <% } %>
                           <div class="row">
                             <div class="col-sm-4">
-                              <input type="text" class="form-control" value="<%=number%>"  id="add_inventoryno" name="add_inventoryno" >
-                              <input type="text" class="form-control" value="<%=re[0].intProductNo%>"  id="add_productno" name="add_productno" >
+                              <input type="hidden" class="form-control" value="<%=number%>"  id="add_inventoryno" name="add_inventoryno" >
+                              <input type="hidden" class="form-control" value="<%=product%>"  id="add_productno" name="add_productno" >
                             </div>
                           </div>
                       </div>
@@ -174,7 +175,7 @@
                           </div>
                           <div class="col-xs-4">
                             <label for="add_critical">Critical Limit</label>
-                            <input type="number" class="form-control" required id="add_lname" name="add_lname" >
+                            <input type="number" class="form-control" required id="add_critical" name="add_critical" >
                           </div>
                         </div>
                       </div>
