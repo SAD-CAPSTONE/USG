@@ -1,2 +1,2 @@
-# Not working modules
-- admin-reports
+# Notes
+- master branch is unstable.

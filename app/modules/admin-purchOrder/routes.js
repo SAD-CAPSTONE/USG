@@ -12,12 +12,17 @@ router.get('/form', (req,res)=>{
   //var test = "AD1";
   //var test2 = test.substr(2);
 
-  db.query(`Select * from tblPurchaseOrder`, (err,results,fields)=>{
-    if (err) console.log(err);
-    db.query(`Select * from tblSupplier join tblUser on tblSupplier.intUserID = tblUser.intUserID where intStatus = 1`, (erra,resultsa,fieldsa)=>{
-      if(err) console.log(err);
+  db.query(`Select * from tblPurchaseOrder`, (err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+    db.query(`Select * from tblSupplier join tblUser on tblSupplier.intUserID = tblUser.intUserID where intStatus = 1`, (err2,results2,fields2)=>{
+      if(err2) console.log(err2);
+      db.query(`Select * from tblproductlist where intStatus = 1`, (err3,results3,fields3)=>{
+        if (err3) console.log(err3);
 
-      res.render('admin-purchOrder/views/purchaseOrderForm',  {re: results, su: resultsa});
+        res.render('admin-purchOrder/views/purchaseOrderForm',  {re: results1, su: results2, products: results3});
+
+      });
+
     });
   });
 
