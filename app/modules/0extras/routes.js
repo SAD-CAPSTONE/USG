@@ -1,68 +1,86 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../../lib/database')();
+var priceFormat = require('./priceFormat');
 
 router.get('/', (req, res) => {
   res.render('0extras/views/sample');
 });
-router.get('/new', (req, res) => {
+router.get('/cart', (req, res) => {
   console.log(req.session);
-  res.render('0extras/views/newSample');
+  res.render('0extras/views/cartSample');
 });
-router.get('/response', (req, res) => {
+router.get('/res-cart', (req, res) => {
   res.send({
-    data: req.session.data
+    cart: req.session.cart
   });
 });
-router.get('/clear', (req, res) => {
-  req.session.data = null;
+router.get('/clear-cart', (req, res) => {
+  req.session.cart = null;
   res.send({
-    data: req.session.data
+    cart: req.session.cart
   });
 });
 
-router.post('/response', (req, res) => {
-  var addName = req.body.name;
-  var thisID = req.session.data ? req.session.data[req.session.data.length - 1].id + 1 : 1;
+router.post('/res-cart', (req, res) => {
+  var thisID = req.session.cart ? req.session.cart[req.session.cart.length - 1].id + 1 : 1;
+  var thisName = req.body.name;
+  var thisPrice = priceFormat(parseFloat(req.body.price).toFixed(2));
+  var thisStock= parseInt(req.body.stock);
+  var thisQuantity = parseInt(req.body.quantity);
+  var thisTotal = priceFormat((parseFloat(thisPrice)*thisQuantity).toFixed(2));
 
-  if (req.session.data) {
-    req.session.data.push({
+  if(thisQuantity > thisStock){
+    thisQuantity = thisStock;
+  }
+
+  if (req.session.cart) {
+    req.session.cart.push({
       id: thisID,
-      name: addName
+      name: thisName,
+      price: thisPrice,
+      stock: thisStock,
+      quantity: thisQuantity,
+      total: thisTotal
     });
-  } else {
-    req.session.data = [{
+  }
+  else {
+    req.session.cart = [{
       id: thisID,
-      name: addName
+      name: thisName,
+      price: thisPrice,
+      stock: thisStock,
+      quantity: thisQuantity,
+      total: thisTotal
     }];
   }
 
-  res.send('Successfully added data!');
+  res.send('Successfully added item!');
 });
-
-router.put('/response/:id', (req, res) => {
+router.put('/res-cart/:id', (req, res) => {
   var id = req.params.id;
-  var newName = req.body.newName;
+  var newQuantity = parseInt(req.body.newQuantity);
 
-  req.session.data.forEach((data, index) => {
+  req.session.cart.forEach((data, index) => {
     if (data.id === Number(id)) {
-      data.name = newName;
+      var newTotal = priceFormat((parseFloat(data.price)*newQuantity).toFixed(2));
+      data.quantity = newQuantity;
+      data.total = newTotal;
     }
   });
 
   res.send('Succesfully updated product!');
 });
-
-router.delete('/response/:id', (req, res) => {
+router.delete('/res-cart/:id', (req, res) => {
   var id = req.params.id;
 
-  req.session.data.forEach(function(product, index) {
-    if (product.id === Number(id)) {
-      req.session.data.splice(index, 1);
+  req.session.cart.forEach(function(data, index) {
+    if (data.id === Number(id)) {
+      req.session.cart.splice(index, 1);
     }
   });
 
-  res.send('Successfully deleted product!');
+  res.send('Successfully removed item!');
 });
 
 exports.extras = router;

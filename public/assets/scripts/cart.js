@@ -1,95 +1,141 @@
 $(() => {
 
   // GET
-  $('#getdata').on('click', () => {
-    $.get('/extras/response').then((res) => {
-      console.log(res.data[res.data.length - 1].name);
-      var list = $('#dataList');
+  $('#getCart').on('click', () => {
+    $.get('/extras/res-cart').then((res) => {
+      console.log(res.cart[res.cart.length - 1]);
+      var list = $('#cartList');
       list.html('');
-      res.data.forEach((data) => {
-        list.append('<span><h4 class="id" style="display: inline">' + data.id + '</h4>\
-        <input type="text" class="name" value="' + data.name + '"/>\
-        <button class="putdata"> Put Data </button>\
-        <button class="deldata"> Delete Data </button>\
-        </span><br>');
-      })
+      res.cart.forEach((data) => {
+        list.append('\
+        <div class="quantGroup mb-3">\
+          <input type="hidden" class="id" value="'+data.id+'">\
+          <input type="hidden" class="stock" value="'+data.stock+'">\
+          <p class="name mb-0">Name: '+data.name+'</p>\
+          <p class="price mb-0">Price: Php '+data.price+'</p>\
+          <p class="total mb-0">Total: Php '+data.total+'</p>\
+          <small><i>'+data.stock+' Item/s Left</i></small><br>\
+          <button type="button" class="minus" style="padding: 1px 9px;"> - </button>\
+          <input type="number" class="quantity" value="'+data.quantity+'" style="width: 100px;" readonly/>\
+          <button type="button" class="plus"> + </button>\
+          <button type="button" class="delitem btn-danger"> X </button>\
+        </div>');
+      });
     }).catch((error) => {
-      var list = $('#dataList');
+      var list = $('#cartList');
       list.html('');
       list.append('<i> Empty </i>');
-    })
+    });
   });
 
   // POST
-  $('#addData').on('click', (event) => {
+  $('#newItem').on('click', (event) => {
     event.preventDefault();
 
-    var addInput = $('#add-input');
+    var itemName = $('#itemName');
+    var itemPrice = $('#itemPrice');
+    var itemStock = $('#itemStock');
+    var itemQuantity = $('#itemQuantity');
 
-    $.post('/extras/response', {
-      name: addInput.val()
+    $.post('/extras/res-cart', {
+      name: itemName.val(),
+      price: itemPrice.val(),
+      stock: itemStock.val(),
+      quantity: itemQuantity.val()
     }).then((res) => {
-      addInput.val('');
-      $('#getdata').click();
+      itemName.val('');
+      itemPrice.val('');
+      itemStock.val('');
+      itemQuantity.val('');
+      $('#getCart').click();
     }).catch((error) => {
       console.log(error);
-    })
+    });
   });
 
-  // PUT
-  $('#dataList').on('click', '.putdata', function() {
-    var rowEl = $(this).closest('span');
-    var id = rowEl.find('.id').text();
-    var newName = rowEl.find('.name').val();
+  // PUT PLUS
+  $('#cartList').on('click', '.plus', function() {
+    var thisDiv = $(this).closest('.quantGroup');
+    var id = thisDiv.find('.id').val();
+    var stock = thisDiv.find('.stock').val();
+    var newQuantity = thisDiv.find('.quantity').val();
+    newQuantity = parseInt(newQuantity)+1;
+    if (newQuantity > stock){
+      newQuantity = stock;
+    }
 
     $.ajax({
-      url: '/extras/response/' + id,
+      url: '/extras/res-cart/' + id,
       method: 'PUT',
       contentType: 'application/json',
       data: JSON.stringify({
-        newName: newName
+        newQuantity: newQuantity
       }),
       success: (res) => {
         console.log(res);
-        $('#get-button').click();
+        $('#getCart').click();
+      }
+    });
+  });
+
+  // PUT MINUS
+  $('#cartList').on('click', '.minus', function() {
+    var thisDiv = $(this).closest('.quantGroup');
+    var id = thisDiv.find('.id').val();
+    var newQuantity = thisDiv.find('.quantity').val();
+    newQuantity = parseInt(newQuantity)-1;
+    if (newQuantity < 2){
+      newQuantity = 1;
+    }
+
+    $.ajax({
+      url: '/extras/res-cart/' + id,
+      method: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        newQuantity: newQuantity
+      }),
+      success: (res) => {
+        console.log(res);
+        $('#getCart').click();
       }
     });
   });
 
   // DELETE
-  $('#dataList').on('click', '.deldata', function() {
-    var rowEl = $(this).closest('span');
-    var id = rowEl.find('.id').text();
+  $('#cartList').on('click', '.delitem', function() {
+    var thisDiv = $(this).closest('.quantGroup');
+    var id = thisDiv.find('.id').val();
 
     $.ajax({
-      url: '/extras/response/' + id,
+      url: '/extras/res-cart/' + id,
       method: 'DELETE',
       contentType: 'application/json',
       success: (res) => {
         console.log(res);
-        $('#getdata').click();
+        $('#getCart').click();
       }
     });
   });
 
   // CLEAR
-  $('#cleardata').on('click', (event) => {
+  $('#clearCart').on('click', (event) => {
     event.preventDefault();
 
-    $.get('/extras/clear').then((res) => {
-      console.log(res.data[0].name);
+    $.get('/extras/clear-cart').then((res) => {
+      console.log(res.cart[0]);
     }).catch((error) => {
-      $('#getdata').click();
+      $('#getCart').click();
     });
   });
 
   // GET onload
-  $('#getdata').click();
+  $('#getCart').click();
 
   // Pressing Enter
   $(document).keypress((e) => {
     if (e.which == 13) {
-      $('#addData').click();
+      $('#newItem').click();
     }
   });
 
