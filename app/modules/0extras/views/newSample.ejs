@@ -1,0 +1,18 @@
+<%- include('../../../templates/master.ejs') -%>
+
+<div class="container container-errorpage">
+  <br>
+  <button id="getdata" hidden>Get Data</button>
+  <button id="cleardata"> Clear Data</button>
+  <input type="text" id="add-input"/>
+  <button id="addData"> Add Data </button>
+  <br><br>
+  <h3>Values:</h3>
+  <br>
+  <div id="dataList">
+  </div>
+</div>
+
+<%- include('../../../templates/scripts.ejs') -%>
+<%- include('../../../templates/scripts-customer.ejs') -%>
+<%- include('../../../templates/closer.ejs') -%>

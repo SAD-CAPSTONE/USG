@@ -1,10 +1,11 @@
 require('dotenv').config();
 var express = require('express');
-var winston = require('winston');
-var passportSetup = require('./config/passport-setup');
 var fs = require('fs');
 var https = require('https');
-var path = require('path')
+var path = require('path');
+var winston = require('winston');
+var passportSetup = require('./config/passport-setup');
+
 var app = express();
 require('./app')(app);
 

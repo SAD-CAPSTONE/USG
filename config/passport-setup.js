@@ -4,6 +4,9 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var keys = require('./keys');
 var db = require('../app/lib/database')();
+var bcrypt = require('bcrypt');
+var saltRounds = 10;
+var firstID = 1000; // First User ID in Database
 
 passport.serializeUser((user, done) => {
   done(null, user.intUserID);
@@ -19,10 +22,15 @@ passport.deserializeUser((id, done) => {
 passport.use(
   new LocalStrategy(
     function(username, password, done) {
-      db.query(`SELECT * FROM tbluser WHERE strUsername= ? AND strPassword= ?`,[username, password], (err, results, fields) => {
+      db.query(`SELECT * FROM tbluser WHERE strUsername= ?`,[username], (err, results, fields) => {
         if (err) console.log(err);
         if (results[0]){
-          return done(null, results[0]);
+          bcrypt.compare(password, results[0].strPassword, function(err, res) {
+            if (res)
+              return done(null, results[0]);
+            else
+              return done(null, false, { message: 'Incorrect username or password.' });
+          });
         }
         else
           return done(null, false, { message: 'Incorrect username or password.' });
@@ -39,9 +47,6 @@ passport.use(
     profileFields: ['email','id', 'first_name', 'gender', 'last_name']
   },
   function(accessToken, refreshToken, profile, done) {
-    console.log('????????????????????????????? PROFILE');
-    console.log(profile);
-
     db.beginTransaction(function(err) {
       if (err) console.log(err);
       db.query(`SELECT * FROM tbluser WHERE intFacebook= ?`, [profile.id], function(err, results, fields) {
@@ -49,7 +54,7 @@ passport.use(
         if (!results[0]) {
           db.query(`SELECT * FROM tbluser ORDER BY intUserID DESC LIMIT 1`, function(err, results, fields) {
             if (err) console.log(err);
-            var newID = parseInt(results[0].intUserID)+1;
+            var newID = results[0] ? parseInt(results[0].intUserID)+1 : firstID;
             db.query(`INSERT INTO tbluser (intUserID, intUserTypeNo, strFname, strLname, strEmail, intFacebook) VALUES (?,2,?,?,?,?)`,
             [newID, profile.name.givenName, profile.name.familyName, profile.emails[0].value, profile.id], (err, results, fields) => {
               if (err) console.log(err);
@@ -90,7 +95,7 @@ passport.use(
         if (!results[0]) {
           db.query(`SELECT * FROM tbluser ORDER BY intUserID DESC LIMIT 1`, function(err, results, fields) {
             if (err) console.log(err);
-            var newID = parseInt(results[0].intUserID)+1;
+            var newID = results[0] ? parseInt(results[0].intUserID)+1 : firstID;
             db.query(`INSERT INTO tbluser (intUserID, intUserTypeNo, strFname, strLname, strEmail, intGoogle) VALUES (?,2,?,?,?,?)`,
             [newID, profile.name.givenName, profile.name.familyName, profile.emails[0].value, profile.id], (err, results, fields) => {
               if (err) console.log(err);

@@ -19,6 +19,7 @@ module.exports = app => {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(cookieSession({
+      name: 'session',
       maxAge: 24 * 60 * 60 * 1000,
       keys: [keys.session.cookieKey]
     }));
