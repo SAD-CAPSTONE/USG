@@ -7,6 +7,7 @@ var async = require('async');
 var url = require('url');
 
 
+
 router.use(fileUpload());
 
 router.get('/allProducts', (req,res)=>{
@@ -48,7 +49,7 @@ router.post('/addProduct', (req,res)=>{
       var link = path.join(path.dirname(path.dirname(path.dirname(__dirname))), 'public/images/'+filename);
       sample.mv(link, function(err){
         if (err) console.log(err);
-        res.send('success');
+        res.redirect('/inventory/allProducts');
 
       });
 
@@ -102,7 +103,14 @@ router.get('/productInventory', (req,res)=>{
 
         db.query(`Select * from tblSupplier join tblUser on tblSupplier.intUserID = tblUser.intUserID where intStatus = 1`, (err4,results4,fields4)=>{
           if (err4) console.log(err4);
-          res.render('admin-inventory/views/productInventory', {re: results1, moment: moment, list: results2, uom: results3, su: results4, product: product});
+
+          db.query(`Select * from tblproductlist where intProductNo = ${product}`, (err5,results5,fields5)=>{
+            if (err5) console.log(err5);
+
+            res.render('admin-inventory/views/productInventory', {re: results1, moment: moment, list: results2, uom: results3, su: results4, product: product, title: results5});
+
+          })
+
 
         });
 
@@ -115,6 +123,35 @@ router.get('/productInventory', (req,res)=>{
 });
 
 router.post('/addSupplier', (req,res)=>{
+
+  var id = 0;
+  db.query(`Select * from tblUser Order by intUserID desc limit 1`, (err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+
+    if(results1.length == 0 || results1 == 'null' || results1 == 'undefined'){
+      id = 1000;
+    }else{
+      id = parseInt(results1[0].intUserID) + 1;
+    }
+
+    // replace with transactions
+    db.query(`Insert into tblUser (intUserID,intUserTypeNo,strFname,strMname,strLname) values ("${id}","2","${req.body.fname}","${req.body.mname}","${req.body.lname}")`, (err2,results2,fields2)=>{
+      if (err2) console.log(err2);
+
+      db.query(`Insert into tblSupplier (intUserID,strBusinessName,strBusinessAddress,strSupplierPhone,strSupplierMobile) values ("${id}","${req.body.bname}","${req.body.address}","${req.body.phone}","${req.body.mobile}")`,(err3,results3,fields3)=>{
+        if (err3) console.log(err3);
+
+
+
+      });
+    });
+
+  });
+
+
+});
+
+router.post('/addSupplier2', (req,res)=>{
 
   var id = 0;
   db.query(`Select * from tblUser Order by intUserID desc limit 1`, (err1,results1,fields1)=>{
@@ -184,19 +221,24 @@ router.get('/transactions', (req,res)=>{
   db.query(`Select * from tblinventorytransactions join tbluser on tblinventorytransactions.intuserID = tbluser.intUserID where intinventoryno = ${ino}`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
 
-    res.render('admin-inventory/views/inventoryTransaction', {re: results1, moment: moment});
+    db.query(`Select * from tblproductlist where intProductNo = ${product}`, (err2,results2,fields2)=>{
+      if (err2) console.log(err2);
+      res.render('admin-inventory/views/inventoryTransaction', {re: results1, moment: moment, title: results2});
+    });
+
   });
 });
+
 router.get('/sample', (req,res)=>{
 
   function query1(callback){
     setTimeout(function(){
-      console.log("Test1");
+      callback("Test1");
     }, 1000);
   }
   function query2(callback){
     setTimeout(function(){
-      console.log("Test2");
+      callback("Test2");
     }, 1000);
   }
 
@@ -212,13 +254,108 @@ router.get('/sample', (req,res)=>{
       });
     }
       }, function (err, dataObject) {
-          console.log('Inside parallel');
+          console.log(dataObject.data1);
          // render([dataObject.data1, dataObject.data2, dataObject.data3]);
          // var profile = req.session.user;
          //  res.render('businessman/views/transactionList', {profile: profile,event: dataObject.data1, item: dataObject.data2, service: dataObject.data3, user: `${req.session.user.strProviderFName}`+" "+ `${req.session.user.strProviderLName}`});
       });
 
 });
+
+router.get('/allStocks', (req,res)=>{
+
+  // Query inventory
+  db.query(`
+    Select tblproductstock.intInventoryno, tblproductlist.strProductCode, tblproductlist.strProductname, tblproductbrand.strBrand, tblProductinventory.productprice, count(*) as quantity, tblproductinventory.intstatus, tblproductinventory.intSize, tbluom.strUnitname from tblProductStock join
+    tblproductinventory on tblproductstock.intInventoryno = tblproductinventory.intinventoryno
+    join tblproductlist on tblproductinventory.intproductno = tblproductlist.intproductno
+    join tblproductbrand on tblproductlist.intbrandno = tblproductbrand.intbrandno
+    join tblsubcategory on tblproductlist.intsubcategoryno = tblsubcategory.intsubcategoryno
+    join tblcategory on tblsubcategory.intcategoryno = tblcategory.intcategoryno
+    join tbluom on tblproductinventory.intuomno = tbluom.intuomno
+     group by tblproductinventory.intinventoryno`, (err1,results1,fields1)=>{
+      if (err1) console.log(err1);
+
+      // Query suppliers
+      db.query(`Select * from tbluser join tblsupplier on tbluser.intuserid = tblsupplier.intuserid where intstatus = 1`, (err2,results2,fields2)=>{
+        if (err2) console.log(err2);
+
+        // Query products
+        db.query(`Select * from tblproductlist join tblProductBrand on tblProductList.intBrandNo = tblProductBrand.intBrandNo where tblProductList.intstatus = 1`, (err3,results3,fields3)=>{
+          if (err3) console.log(err3);
+
+          // Query uom
+          db.query(`Select * from tbluom where intstatus = 1`, (err4,results4,fields4)=>{
+            if (err4) console.log(err4);
+
+            // Query productstock counter
+            db.query(`Select * from tblproductstock order by intproductquantityno desc limit 1`, (err5,results5,fields5)=>{
+              if (err5) console.log(err5);
+
+              // query product inventory
+              db.query(`Select * from tblproductinventory order by intinventoryno desc limit 1`, (err6,results6,fields6)=>{
+                if (err6) console.log(err6);
+
+                // query inventory transaction counter
+                db.query(`Select * from tblinventorytransactions order by inttransactionid desc limit 1`, (err7,results7,fields7)=>{
+                  if (err7) console.log(err7);
+
+                  res.render('admin-inventory/views/stock', {re: results1, tbl_q: results5, tbl_i: results6, products: results3, uom: results4, suppliers: results2, transact: results7 });
+
+                });
+
+
+
+              });
+            });
+
+          });
+        });
+      });
+
+    });
+});
+
+router.post('/addStock', (req,res)=>{
+  // Change to transactions
+
+  db.query(`Insert into tblProductInventory(intInventoryNo, intProductNo, intUserID, productSRP, productPrice, intUomNo, intSize) values ("${req.body.add_ino}", "${req.body.add_pno}", "${req.body.add_sno}", ${req.body.add_srp}, ${req.body.add_price}, ${req.body.add_uom}, ${req.body.add_size})`, (err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+
+    db.query(`Insert into tblInventoryTransactions(intTransactionID, intInventoryNo, intUserID, intShelfNo, intBatchNo, intCriticalLimit, strTypeOfChanges) values ("${req.body.add_tno}", "${req.body.add_ino}", "1000", ${req.body.add_shelf}, ${req.body.add_batch}, ${req.body.add_critical}, "New Product Item")`, (err2,results2, fields2)=>{
+      if (err2) console.log(err2);
+
+      res.redirect('/inventory/allStocks');
+    });
+  })
+});
+
+
+router.get('/viewStock', (req,res)=>{
+  var product = req.query.product;
+  var ino = req.query.ino;
+
+  db.query(`Select * from tblProductStock where intInventoryNo = ${ino}`, (err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+    db.query(`Select * from tblProductList where intProductNo = ${product}`, (err2,results2,fields2)=>{
+      if (err2) console.log(err2);
+      db.query(`Select * from tblProductStock order by intProductQuantityNo desc limit 1`, (err3,results3,fields3)=>{
+        if (err3) console.log(err3);
+
+        res.render('admin-inventory/views/stockPerProduct', {re: results1, title: results2, moment: moment, list: results3});
+
+      });
+
+    });
+  });
+});
+
+router.post('/samp', (req,res)=>{
+  console.log("test");
+
+  res.send(req.body.name);
+});
+
 
 // <%- include('../../../templates/admin-navbar.ejs') -%>
 

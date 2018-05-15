@@ -5,9 +5,9 @@
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      Error
 
     </h1>
+    <strong><small>Product Code: <%=title[0].strProductCode%> &nbsp;&nbsp; Product Name: <%=title[0].strProductName%></small></strong>
     <ol class="breadcrumb">
       <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
       <li><a href="#">Maintenance</a></li>
@@ -67,7 +67,8 @@
                       <form>
                       <td>
 
-                      <a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="btn btn-sucess btn-xs" >View Transactions</button></a>
+                      <a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="btn btn-default btn-sm" >View Transactions</button></a>
+                      <a href="/inventory/viewStock?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="btn btn-default btn-sm" >View Stocks</button></a>
 
                       </td>
                     </form>
@@ -89,7 +90,7 @@
               <div class="row">
                 <div class="col-sm-8">
                   <!-- form start -->
-                  <form role="form" method="post" enctype="multipart/form-data" action="/inventory/addProductItem">
+                  <form role="form" method="post" enctype="multipart/form-data"     action="/inventory/addProductItem">
                     <div class="box-body">
 
                       <div class="form-group">
@@ -185,8 +186,9 @@
                                  <a href="/inventory/sample"><button type="reset" class="btn btn-default">Clear Fields</button></a>
                                  <a href=""><button type="submit" class="btn btn-info pull-right">Submit Order Form</button></a>
                       </div>
+                  </div>
                 </form>
-                </div>
+
               </div>
 
 
@@ -334,15 +336,18 @@
  </div>
 
 
-    <!-- Main Footer -->
-    <footer class="main-footer">
-      <!-- To the right -->
-      <div class="pull-right hidden-xs">
-        Anything you want
-      </div>
-      <!-- Default to the left -->
-      <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
-    </footer>
+
+
+ <!-- Main Footer -->
+ <footer class="main-footer">
+   <!-- To the right -->
+   <div class="pull-right hidden-xs">
+     Ultra Super Green
+   </div>
+   <!-- Default to the left -->
+   <strong>Copyright &copy; 2016 <a href="#">AdminLTE template</a>.</strong> All rights reserved.
+ </footer>
+
 
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">

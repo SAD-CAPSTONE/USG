@@ -8,7 +8,7 @@
     <section class="content-header">
       <h1>
 
-        <small>Note: Please monitor stocks regularly, check if there is damaged products.</small>
+        <small>Note: Please monitor stocks regularly, check if there are damaged products.</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -23,11 +23,15 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">List of All products</h3>
+              <h2 class="box-title">All Products</h2>
             </div>
 			<!-- buttons -->
+    </br>
 				&nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addProduct"><i class="fa fa-plus"></i> Add New Product</button>
-        &nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addImage"><i class="fa fa-plus"></i> Tester</button>
+
+        <!-- &nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" id="s"><i class="fa fa-plus"></i> Tester</button> -->
+
+
 
             <!-- /.box-header -->
             <div class="box-body table-responsive">
@@ -47,16 +51,23 @@
                 <% }else { %>
                   <% re.forEach(function(i){ %>
                     <tr>
-                    <td><%=i.intProductNo%></td>
+                    <td><%=i.strProductCode%></td>
                     <td><%=i.strProductName%></td>
                     <td><%=i.strDescription%></td>
-                    <td><%=i.intStatus%></td>
+                    <td>
+                    <% if (i.intStatus == 1){ %>
+                      <span class="label label-success">Active</span>
+                    <% }else{ %>
+                      <span class="label label-danger">Inactive</span>
+                    <% } %>
+
+                    </td>
 
                     <!-- ERROR IN THIS AREA (req.query) -->
 
-                    <td><button type="button" data-toggle="modal" data-target="#viewProduct" class="viewButton btn btn-sucess btn-xs" data-prodno="<%=i.intProductNo%>" data-prodcode="<%=i.strProductCode%>" data-prodname="<%=i.strProductName%>" data-proddesc="<%=i.strDescription%>" data-prodbrand="<%=i.intBrandNo%>" data-prodcateg="<%=i.intSubCategoryNo%>" data-prodpicture="<%=i.strProductPicture%>" >View Details</button>
+                    <td><button type="button" data-toggle="modal" data-target="#viewProduct" class="viewButton btn btn-default btn-sm" data-prodno="<%=i.intProductNo%>" data-prodcode="<%=i.strProductCode%>" data-prodname="<%=i.strProductName%>" data-proddesc="<%=i.strDescription%>" data-prodbrand="<%=i.intBrandNo%>" data-prodcateg="<%=i.intSubCategoryNo%>" data-prodpicture="<%=i.strProductPicture%>" >View Details</button>
                     <% var url = i.intProductNo %>
-                    <a href="/inventory/productInventory?product=<%=url%>"><button type="button" class="btn btn-sucess btn-xs"  >Inventory</button></a>
+                    <a href="/inventory/productInventory?product=<%=url%>"><button type="button" class="btn btn-default btn-sm"  >Inventory</button></a>
 
                     </td>
 
@@ -286,7 +297,7 @@
 			  </div>
 			  <div class="modal-footer">
 				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-				<button type="submit" class="btn btn-primary">Save changes</button>
+				<button type="submit"  class="btn btn-primary">Save changes</button>
 			  </div>
         </form>
 		</div>
@@ -400,6 +411,8 @@
 <!-- AdminLTE App -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
 
+<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+
 <!-- page script (new added) -->
 <script>
   $(function () {
@@ -454,6 +467,24 @@ $('#title').html("USG | All Products");
 $(".treeview a:contains('Maintenance')").parent().addClass("active");
 $(".treeview a:contains('Inventory')").parent().addClass("active");
 $(".navi a:contains('All Products')").parent().addClass("active");
+</script>
+
+<script>
+
+  $(document).ready(function(){
+    $('#s').click(function(){
+      $.post('/inventory/samp',{
+        name: "j"
+      },
+      function(data,status){
+        if (status == 'success'){
+          swal("Good job!","", "success");
+        }else{
+          swal("","", "error");
+        }
+      });
+    })
+  })
 </script>
 
 

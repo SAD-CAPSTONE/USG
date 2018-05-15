@@ -1,0 +1,651 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      Error
+
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="#">Maintenance</a></li>
+      <li class="active">Inventory</li>
+    </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#stock" data-toggle="tab"><i class="fa fa-bars"></i> All Stocks</a></li>
+            <li><a href="#addStock" data-toggle="tab"><i class="fa fa-plus"></i> Add to Stock</a></li>
+          </ul>
+          <div class="tab-content">
+            <!-- Inventory -->
+            <div class="tab-pane active" id="stock">
+
+              </br>
+              <!-- /.box-header -->
+              <div class="box-body table-responsive">
+                <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Product Code</th>
+                    <th>Product Name / Size</th>
+                    <th>Brand</th>
+                    <th>Product Price</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% if (re == 'null' || re == 'undefined' || re.length == 0) { %>
+
+                  <% }else { %>
+                    <% re.forEach(function(i){ %>
+                      <tr>
+                      <td><%=i.intInventoryno%></td>
+                      <td><%=i.strProductCode%></td>
+                      <td><%=i.strProductname%>&nbsp;/&nbsp;<%=i.intSize%>&nbsp;<%=i.strUnitname%></td>
+                      <td><%=i.strBrand%></td>
+                      <td><%=i.productprice%></td>
+                      <td><%=i.quantity%></td>
+                      <td><%=i.intstatus%></td>
+
+
+                      <td>
+
+                      </td>
+
+                    </tr>
+                    <% }) %>
+                  <% } %>
+
+                  </tbody>
+
+                </table>
+              </div>
+              <!-- /.box-body -->
+            </div>
+            <!-- /#fa-icons -->
+
+
+            <!-- New product Item-->
+            <div class="tab-pane" id="addStock">
+
+                <!-- form start -->
+                <form role="form" method="post" enctype="multipart/form-data"     action="/inventory/addStock">
+                      <% var quantity_id = "1000"; %>
+                      <% if (tbl_q == 'null' || tbl_q == 'undefined' || tbl_q.length == 0 ) { %>
+                      <% quantity_id = "1000"; %>
+                      <% }else{ %>
+                        <%  quantity_id = parseInt(tbl_q[0].intProductQuantityNo) + 1 %>
+                      <% } %>
+
+                      <% var ino = "1000" %>
+                      <% if (tbl_i == 'null' || tbl_i == 'undefined' || tbl_i.length == 0) { %>
+                      <% ino = "1000"; %>
+                      <%  }else{ %>
+                      <%  ino = parseInt(tbl_i[0].intInventoryNo) + 1; %>
+                      <%  } %>
+
+                      <% var transaction = "1000" %>
+                      <% if (transact == 'null' || transact == 'undefined' || transact.length == 0) { %>
+                      <% transaction = "1000"; %>
+                      <%  }else{ %>
+                      <%  transaction = parseInt(transact[0].intTransactionID) + 1; %>
+                      <%  } %>
+                      <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <input type="hidden" class="form-control" value="<%=quantity_id%>"  id="add_quantityno" name="add_quantityno" >
+                              <input type="hidden" class="form-control" value="<%=ino%>" id="add_ino" name="add_ino" >
+                              <input type="hidden" class="form-control" id="add_sno" name="add_sno" >
+                              <input type="hidden" class="form-control" id="add_pno" name="add_pno" >
+                              <input type="hidden" class="form-control" value="<%=transaction%>" id="add_tno" name="add_tno" >
+                            </div>
+                          </div>
+                      </div>
+                    <!-- Product -->
+                    <div class="box box-default">
+                      <div class="box-header with-border">
+                        <h3 class="box-title">Product Information</h3>
+
+                        <div class="box-tools pull-right">
+                          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                        </div>
+                      </div>
+                      <!-- /.box-header -->
+                      <div class="box-body">
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#selectProduct"><i class="fa fa-search"></i> Select Product </button>
+                            <p> &nbsp;&nbsp;&nbsp;New product? Click <a data-toggle="modal" data-target="#addProduct">here</a></p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <label for="add_pname">Product Name</label>
+                              <input type="text" disabled class="form-control" required id="add_pname" name="add_pname" >
+                            </div>
+                            <div class="col-sm-4">
+                              <label for="add_brand">Brand</label>
+                              <input type="text" disabled class="form-control" required id="add_brand" name="add_brand" >
+                            </div>
+                            <div class="col-sm-4">
+                              <label for="add_pcode">Product Code</label>
+                              <input type="text" disabled class="form-control" required id="add_pcode" name="add_pcode" >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /.box-body -->
+                    <!-- /.box -->
+                    </div>
+
+                    <!-- Supplier -->
+                    <div class="box box-default">
+                      <div class="box-header with-border">
+                        <h3 class="box-title">Supplier Information</h3>
+
+                        <div class="box-tools pull-right">
+                          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                        </div>
+                      </div>
+                      <!-- /.box-header -->
+                      <div class="box-body">
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier </button>
+                            <p> &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div class="form-group">
+                          <div class="col-sm-4">
+                            <label for="add_sname">Supplier Name</label>
+                            <input type="text" disabled class="form-control" required id="add_sname" name="add_sname" >
+                          </div>
+                          <div class="col-sm-4">
+                            <label for="add_bname">Business Name</label>
+                            <input type="text" disabled class="form-control" required id="add_bname" name="add_bname" >
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /.box-body -->
+                    <!-- /.box -->
+                    </div>
+
+                    <!-- Other Information -->
+                    <div class="box box-default">
+                      <div class="box-header with-border">
+                        <h3 class="box-title">Other information</h3>
+
+                        <div class="box-tools pull-right">
+                          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                        </div>
+                      </div>
+                      <!-- /.box-header -->
+                      <div class="box-body">
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <label for="add_srp">SRP</label>
+                              <input type="number"  class="form-control" required id="add_srp" name="add_srp" >
+                            </div>
+                            <div class="col-sm-4">
+                              <label for="add_price">Product Price</label>
+                              <input type="number"  class="form-control" required id="add_price" name="add_price" >
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <label for="add_size">Size</label>
+                              <input type="number"class="form-control" required id="add_size" name="add_size" >
+                            </div>
+                            <div class="col-sm-2">
+
+                              <label for="add_uom">   </label>
+                              <select class="form-control" required id="add_uom" name="add_uom"  >
+                                <% if (uom == 'null' || uom == 'undefined' || uom.length == 0){ %>
+                                  <option></option>
+                                <% }else{ %>
+                                  <% uom.forEach(function(s){ %>
+                                    <option value="<%=s.intUomNo%>"><%=s.strUnitName%></option>
+                                  <% }) %>
+
+                                <% } %>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <label for="add_shelf">Shelf No</label>
+                              <input type="number"class="form-control" id="add_shelf" name="add_shelf" >
+                            </div>
+                            <div class="col-sm-4">
+                              <label for="add_batch">Batch No</label>
+                              <input type="number"  class="form-control" required id="add_batch" name="add_batch" >
+                            </div>
+                            <div class="col-sm-4">
+                              <label for="add_critical">Critical Limit</label>
+                              <input type="number"  class="form-control" required id="add_critical" name="add_critical" >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /.box-body -->
+                    <!-- /.box -->
+                    </div>
+
+                    <div class="box-footer">
+                      <a href="purchaseOrderList.html"><button type="submit" class="btn btn-default">Back</button></a>
+                      <button type="submit" class="btn btn-info pull-right">Submit Order Form</button>
+                      <a href="/inventory/sample">this</a>
+                    </div>
+                    <!-- /.box-footer -->
+
+              </form>
+
+            </div>
+
+          </div>
+          <!-- /.tab-content -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
+<!-- Modals -->
+
+<div class="modal fade" id="addSupplier">
+  <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Supplier Information Form</h4>
+    </div>
+    <div class="modal-body">
+
+      <!-- form start -->
+      <form role="form" method="post" action="/inventory/addSupplier2">
+        <div class="box-body">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-xs-4">
+                <label for="fname">First Name</label>
+                <input type="text" class="form-control" required id="fname" name="fname" >
+              </div>
+              <div class="col-xs-4">
+                <label for="mname">Middle Name</label>
+                <input type="text" class="form-control"id="mname" name="mname" >
+              </div>
+              <div class="col-xs-4">
+                <label for="lname">Last Name</label>
+                <input type="text" class="form-control" required id="lname" name="lname" >
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="bname">Business Name</label>
+            <input type="text" class="form-control" id="bname" required name="bname" placeholder="">
+          </div>
+          <div class="form-group">
+            <label for="address">Business Address</label>
+            <input type="text" class="form-control" id="address" name="address" required placeholder="">
+          </div>
+          <div class="form-group">
+            <div class="row">
+              <div class="col-xs-5">
+                <label for="mobile">Mobile No.</label>
+                <input type="text" class="form-control" id="mobile" name="mobile" >
+              </div>
+              <div class="col-xs-5">
+                <label for="phone">Phone No.</label>
+                <input type="text" class="form-control" id="phone" name="phone" >
+              </div>
+            </div>
+          </div>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox">Add supplier to form
+            </label>
+          </div>
+        </div>
+        <!-- /.box-body -->
+
+
+      </div>
+      <div class="modal-footer">
+      <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+      <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+  </div>
+  <!-- /.modal-content -->
+</div>
+ <!-- /.modal-dialog -->
+</div>
+
+  <div class="modal fade" id="selectSupplier">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">Supplier List</h4>
+      </div>
+      <div class="modal-body">
+
+      <!-- /.box-header -->
+      <div class="box-body table-responsive">
+        <table id="example1" class="table table-bordered table-hover">
+          <thead>
+            <% if (suppliers == 'null' || suppliers == 'undefined' || suppliers.length == 0){ %>
+              <h4> No records of Suppliers </h4>
+            <% } else { %>
+          <tr>
+            <th>Supplier No</th>
+            <th>Supplier Name</th>
+            <th>Business Name</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+
+            <% suppliers.forEach(function(i){ %>
+          <tr>
+                <td><%=i.intUserID%></td>
+                <td><%=i.strFname%>&nbsp;<%=i.strLname%></td>
+                <td><%=i.strBusinessName%></td>
+                <td><button data-dismiss="modal" data-supplierid="<%=i.intUserID%>" data-business="<%=i.strBusinessName%>" data-supplier="<%=i.strFname%> <%=i.strLname%>"  class="suppliersetter btn btn-info btn-sm">Select</button></td>
+
+          </tr>
+          <% }) %>
+        <% } %>
+
+
+          </tbody>
+
+        </table>
+      </div>
+      <!-- /.box-body -->
+
+       </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+ </div>
+
+ <div class="modal fade" id="selectProduct">
+   <div class="modal-dialog">
+   <div class="modal-content">
+     <div class="modal-header">
+     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+       <span aria-hidden="true">&times;</span></button>
+     <h4 class="modal-title">Product List</h4>
+     </div>
+     <div class="modal-body">
+
+     <!-- /.box-header -->
+     <div class="box-body table-responsive">
+       <table id="example3" class="table table-bordered table-hover">
+         <thead>
+           <% if (products == 'null' || products == 'undefined' || products.length == 0){ %>
+
+           <% } else { %>
+         <tr>
+           <th>Product No</th>
+           <th>Product Name</th>
+           <th>Brand</th>
+           <th>Action</th>
+         </tr>
+         </thead>
+         <tbody>
+
+           <% products.forEach(function(i){ %>
+         <tr>
+               <td><%=i.intProductNo%></td>
+               <td><%=i.strProductName%></td>
+               <td><%=i.strBrand%></td>
+               <td><button data-dismiss="modal" data-productid="<%=i.intProductNo%>" data-productname="<%=i.strProductName%>" data-pcode="<%=i.strProductCode%>" data-brand="<%=i.strBrand%>" class="productsetter btn btn-info btn-sm">Select</button></td>
+
+         </tr>
+         <% }) %>
+       <% } %>
+
+
+         </tbody>
+
+       </table>
+     </div>
+     <!-- /.box-body -->
+
+      </div>
+       <div class="modal-footer">
+       <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+       <button type="button" class="btn btn-primary">Save changes</button>
+       </div>
+   </div>
+   <!-- /.modal-content -->
+ </div>
+ <!-- /.modal-dialog -->
+</div>
+
+
+
+    <!-- Main Footer -->
+    <footer class="main-footer">
+      <!-- To the right -->
+      <div class="pull-right hidden-xs">
+        Ultra Super Green
+      </div>
+      <!-- Default to the left -->
+      <strong>Copyright &copy; 2016 <a href="#">AdminLTE template</a>.</strong> All rights reserved.
+    </footer>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Create the tabs -->
+      <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+        <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+        <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+      </ul>
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <!-- Home tab content -->
+        <div class="tab-pane active" id="control-sidebar-home-tab">
+          <h3 class="control-sidebar-heading">Recent Activity</h3>
+          <ul class="control-sidebar-menu">
+            <li>
+              <a href="javascript:;">
+                <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+
+                <div class="menu-info">
+                  <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+
+                  <p>Will be 23 on April 24th</p>
+                </div>
+              </a>
+            </li>
+          </ul>
+          <!-- /.control-sidebar-menu -->
+
+          <h3 class="control-sidebar-heading">Tasks Progress</h3>
+          <ul class="control-sidebar-menu">
+            <li>
+              <a href="javascript:;">
+                <h4 class="control-sidebar-subheading">
+                  Custom Template Design
+                  <span class="pull-right-container">
+                      <span class="label label-danger pull-right">70%</span>
+                    </span>
+                </h4>
+
+                <div class="progress progress-xxs">
+                  <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+                </div>
+              </a>
+            </li>
+          </ul>
+          <!-- /.control-sidebar-menu -->
+
+        </div>
+        <!-- /.tab-pane -->
+        <!-- Stats tab content -->
+        <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
+        <!-- /.tab-pane -->
+        <!-- Settings tab content -->
+        <div class="tab-pane" id="control-sidebar-settings-tab">
+          <form method="post">
+            <h3 class="control-sidebar-heading">General Settings</h3>
+
+            <div class="form-group">
+              <label class="control-sidebar-subheading">
+                Report panel usage
+                <input type="checkbox" class="pull-right" checked>
+              </label>
+
+              <p>
+                Some information about this general settings option
+              </p>
+            </div>
+            <!-- /.form-group -->
+          </form>
+        </div>
+        <!-- /.tab-pane -->
+      </div>
+    </aside>
+    <!-- /.control-sidebar -->
+    <!-- Add the sidebar's background. This div must be placed
+    immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+  </div>
+  <!-- ./wrapper -->
+
+  <!-- REQUIRED JS SCRIPTS -->
+
+  <!-- jQuery 3 -->
+  <script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
+  <!-- Bootstrap 3.3.7 -->
+  <script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <!-- DataTables (new added)	 -->
+  <script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+  <script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+  <!-- SlimScroll -->
+  <script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+  <!-- FastClick -->
+  <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/assets/admin/dist/js/adminlte.min.js"></script>
+
+  <!-- page script (new added) -->
+  <script>
+    $(function () {
+      $('#example2').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+  	  'select'		: true,
+  	  'scroll'		: true
+      })
+    })
+  </script>
+
+  <script>
+    $(function () {
+      $('#example3').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+      'select'		: true,
+      'scroll'		: true
+      })
+    })
+  </script>
+
+  <script>
+    $(function () {
+      $('#example1').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+  	  'select'		: true,
+  	  'scroll'		: true
+      })
+    })
+  </script>
+
+  <script>
+    $('.productsetter').on('click', function(){
+      $('#add_pno').val($(this).data('productid'));
+      $('#add_pname').val($(this).data('productname'));
+      $('#add_brand').val($(this).data('brand'));
+      $('#add_pcode').val($(this).data('pcode'));
+    })
+  </script>
+
+  <script>
+    $('.suppliersetter').on('click', function(){
+      $('#add_sno').val($(this).data('supplierid'));
+      $('#add_sname').val($(this).data('supplier'));
+      $('#add_bname').val($(this).data('business'));
+
+    })
+  </script>
+
+
+    <script>
+      $('#title').html("USG | All Products");
+      $(".treeview a:contains('Maintenance')").parent().addClass("active");
+      $(".treeview a:contains('Inventory')").parent().addClass("active");
+      $(".navi a:contains('Stocks')").parent().addClass("active");
+    </script>
+
+</body>
+</html>

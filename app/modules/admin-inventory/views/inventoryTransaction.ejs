@@ -5,9 +5,9 @@
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      Error
 
     </h1>
+    <strong><small>Product Code: <%=title[0].strProductCode%> &nbsp; &nbsp; Product Name: <%=title[0].strProductName%></small></strong>
     <ol class="breadcrumb">
       <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
       <li><a href="#">Maintenance</a></li>
@@ -22,7 +22,7 @@
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs">
             <li class="active"><a href="#transactions" data-toggle="tab"><i class="fa fa-bars"></i> Transactions</a></li>
-            <li><a href="#quantity" data-toggle="tab"><i class=""></i>Quantity</a></li>
+            <!-- <li><a href="#quantity" data-toggle="tab"><i class=""></i>Quantity</a></li> -->
           </ul>
           <div class="tab-content">
             <!-- Inventory -->
@@ -39,7 +39,7 @@
                     <th>Shelf No</th>
                     <th>Critical Limit</th>
                     <th>Date Placed</th>
-                    <th>Quantity</th>
+
                     <th>Type of Changes</th>
                     <th>Actions</th>
                   </tr>
@@ -55,7 +55,7 @@
                       <td><%=i.intShelfNo%></td>
                       <td><%=i.intCriticalLimit%></td>
                       <td><%= moment(i.datePlaced).format("MMM Do YYYY")%></td>
-                      <td><%=i.intQuantity%></td>
+
                       <td><%=i.strTypeOfChanges%></td>
 
                       <!-- <td><%= moment(i.expirationDate).format("MMM Do YYYY")%></td> -->
@@ -78,13 +78,10 @@
 
 
             <!-- New product Item-->
-            <div class="tab-pane" id="newProduct">
+            <!-- <div class="tab-pane" id="newProduct">
               <div class="row">
-
               </div>
-
-
-            </div>
+            </div> -->
             <!-- /#ion-icons -->
 
           </div>
@@ -229,3 +226,6 @@
     $(".treeview a:contains('Inventory')").parent().addClass("active");
     $(".navi a:contains('All Products')").parent().addClass("active");
     </script>
+
+  </body>
+  </html>
