@@ -31,6 +31,11 @@ router.get('/form', (req,res)=>{
 
 });
 
+router.post('/samp',(req,res)=>{
+  var value = req.body.table;
+  console.log(value);
+});
+
 router.post('/addSupplier', (req,res)=>{
 
   var id = 0;

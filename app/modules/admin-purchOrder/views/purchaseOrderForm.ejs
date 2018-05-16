@@ -118,8 +118,8 @@
  						</div>
 
  						<!-- buttons -->
- 						&nbsp; &nbsp;<button type="button" class="btn btn-success btn-xs" id="addRow" data-target="#addProduct"><i class="fa fa-plus"></i> Add Product</button>
-
+ 						&nbsp; &nbsp;<button type="button" class="btn btn-success btn-xs" ><i class="fa fa-plus"></i> Tester</button>
+            &nbsp; &nbsp;<button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#selectProduct"><i class="fa fa-plus"></i> Add Product</button>
  						<!-- /.box-header -->
 
             <div class="box-body table-responsive">
@@ -127,11 +127,12 @@
  							<thead>
  							  <th style="width: 10px">#</th>
  							  <th>Product Name</th>
- 							  <th>Quantity</th>
+ 							  <th >Quantity</th>
  							  <th >Unit Price</th>
  							  <th >Actions</th>
  							  <th> Total </th>
  							</thead>
+
               <tbody>
 
             </tbody>
@@ -150,7 +151,7 @@
 
  			<div class="box-footer">
                  <a href="purchaseOrderList.html"><button type="submit" class="btn btn-default">Back</button></a>
-                 <a href="purchaseOrderList.html"><button type="submit" class="btn btn-info pull-right">Submit Order Form</button></a>
+                 <a href=""><button type="submit" id="sub" class="btn btn-info pull-right">Submit Order Form</button></a>
              </div>
                <!-- /.box-footer -->
 
@@ -186,7 +187,7 @@
            <th>Supplier No</th>
            <th>Supplier Name</th>
            <th>Business Name</th>
-           <th>Action</th>
+           <th></th>
          </tr>
          </thead>
          <tbody>
@@ -311,7 +312,7 @@
           <th>Product No</th>
           <th>Product Name</th>
           <th>Brand</th>
-          <th>Action</th>
+          <th></th>
         </tr>
         </thead>
         <tbody>
@@ -321,7 +322,7 @@
               <td><%=i.intProductNo%></td>
               <td><%=i.strProductName%></td>
               <td><%=i.strBrand%></td>
-              <td><button data-dismiss="modal" data-productid="<%=i.intProductNo%>" data-productname="<%=i.strProductName%>" data-pcode="<%=i.strProductCode%>" data-brand="<%=i.strBrand%>" class="productsetter btn btn-info btn-sm">Select</button></td>
+              <td><button data-dismiss="modal" data-productid="<%=i.intProductNo%>" data-productname="<%=i.strProductName%>" data-pcode="<%=i.strProductCode%>" data-brand="<%=i.strBrand%>" class="productsetter btn btn-info btn-sm" id="addRow" data-target="#addProduct">Select</button></td>
 
         </tr>
         <% }) %>
@@ -449,6 +450,8 @@
  <!-- AdminLTE App -->
  <script src="/assets/admin/dist/js/adminlte.min.js"></script>
 
+ <script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+
  <!-- page script (new added) -->
 
 
@@ -500,6 +503,8 @@
    })
  </script>
 
+
+
  <script>
  $('.setter').on('click', function(){
    $('#suppid').val($(this).data('supplierid'));
@@ -509,23 +514,43 @@
 
  $(document).ready(function() {
     var t = $('#example').DataTable();
-    var counter = 1;
+
+    var table = document.getElementById("example");
 
     $('#addRow').on( 'click', function () {
-        t.row.add( [
-            counter +'.1',
-            counter +'.2',
-            counter +'.3',
-            counter +'.4',
-            counter +'.5',
-            counter +'.6'
-        ] ).draw( false );
+      var filter = $(this).data('productid');
+      var tr = table.getElementsByTagName("tr");
+      for (i = 0; i < tr.length; i++) {
+        var td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            swal("Error!", "Same product already exists", "error");
+          } else {
+            t.row.add( [
+                $(this).data('productid'),
+                $(this).data('productname'),
+                '<input style="width: 80px" type="number" value="0" class="form-control">',
+                "",
+                "",
+                ""
+            ] ).draw( false );
 
-        counter++;
+          }
+        }
+      }
+
     } );
 
     // Automatically add a first row of data
     //$('#addRow').click();
+    var dataArray = [];
+    $('#sub').on('click', function(){
+      var table = document.getElementById('example');
+
+      dataArray[0][0] = "janelle";
+
+      alert(dataArray[0][0]);
+    });
 } );
  </script>
 
