@@ -80,6 +80,10 @@ router.delete('/res-cart/:id', (req, res) => {
     }
   });
 
+  if (!req.session.cart[0]){
+    req.session.cart = null;
+  }
+
   res.send('Successfully removed item!');
 });
 
