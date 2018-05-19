@@ -16,6 +16,10 @@ router.get('/cancelledOrders', (req,res)=>{
   res.render('admin-custOrder/views/cancelledOrders');
 });
 
+router.get('/invoice', (req,res)=>{
+  res.render('admin-custOrder/views/invoice');
+});
+
 // <%- include('../../../templates/admin-navbar.ejs') -%>
 
 exports.customerOrder = router;
