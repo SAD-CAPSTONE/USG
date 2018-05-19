@@ -43,3 +43,9 @@ INSERT INTO `db_usg`.`tblproductbrand` (`intBrandNo`, `strBrand`) VALUES ('1002'
 INSERT INTO `db_usg`.`tbluom` (`intUomNo`, `intUserID`, `strUnitName`) VALUES ('1000', '1000', 'lb');
 
 INSERT INTO `db_usg`.`tbluom` (`intUomNo`, `intUserID`, `strUnitName`) VALUES ('1001', '1000', 'ml');
+
+INSERT INTO `db_usg`.`tblbusinesstype` (`intBusinessTypeNo`, `intAdminID`, `strBusinessType`) VALUES ('1000', '1000', 'Single Proprietorship / Small Business');
+INSERT INTO `db_usg`.`tblbusinesstype` (`intBusinessTypeNo`, `intAdminID`, `strBusinessType`) VALUES ('1001', '1000', 'Business Partnership');
+INSERT INTO `db_usg`.`tblbusinesstype` (`intBusinessTypeNo`, `intAdminID`, `strBusinessType`) VALUES ('1002', '1000', 'Social Enterprise');
+INSERT INTO `db_usg`.`tblbusinesstype` (`intBusinessTypeNo`, `intAdminID`, `strBusinessType`) VALUES ('1003', '1000', 'Online Seller / Authorized Distributor or Dealer');
+INSERT INTO `db_usg`.`tblbusinesstype` (`intBusinessTypeNo`, `intAdminID`, `strBusinessType`) VALUES ('1004', '1000', 'MLM - Multi Level Marketing');
