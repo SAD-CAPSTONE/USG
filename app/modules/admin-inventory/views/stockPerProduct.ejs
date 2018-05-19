@@ -42,7 +42,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <% if (re == 'null' || re == 'undefined' || re.length == 0) { %>
+                <% if (re == null || re == undefined || re.length == 0) { %>
 
                 <% }else { %>
                   <% re.forEach(function(i){ %>
@@ -98,7 +98,7 @@
             <div class="form-group">
 
               <% var number = "1000"; %>
-              <% if (list == 'null' || list == 'undefined' || list.length == 0 ) { %>
+              <% if (list == null || list == undefined || list.length == 0 ) { %>
               <% number = "1000"; %>
               <% }else{ %>
                 <% var number = parseInt(list[0].intProductQuantityNo) + 1 %>

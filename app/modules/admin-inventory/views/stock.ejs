@@ -46,7 +46,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <% if (re == 'null' || re == 'undefined' || re.length == 0) { %>
+                  <% if (re == null || re == undefined || re.length == 0) { %>
 
                   <% }else { %>
                     <% re.forEach(function(i){ %>
@@ -83,21 +83,21 @@
                 <!-- form start -->
                 <form role="form" method="post" enctype="multipart/form-data"     action="/inventory/addStock">
                       <% var quantity_id = "1000"; %>
-                      <% if (tbl_q == 'null' || tbl_q == 'undefined' || tbl_q.length == 0 ) { %>
+                      <% if (tbl_q == null || tbl_q == undefined || tbl_q.length == 0 ) { %>
                       <% quantity_id = "1000"; %>
                       <% }else{ %>
                         <%  quantity_id = parseInt(tbl_q[0].intProductQuantityNo) + 1 %>
                       <% } %>
 
                       <% var ino = "1000" %>
-                      <% if (tbl_i == 'null' || tbl_i == 'undefined' || tbl_i.length == 0) { %>
+                      <% if (tbl_i == null || tbl_i == undefined || tbl_i.length == 0) { %>
                       <% ino = "1000"; %>
                       <%  }else{ %>
                       <%  ino = parseInt(tbl_i[0].intInventoryNo) + 1; %>
                       <%  } %>
 
                       <% var transaction = "1000" %>
-                      <% if (transact == 'null' || transact == 'undefined' || transact.length == 0) { %>
+                      <% if (transact == null || transact == undefined || transact.length == 0) { %>
                       <% transaction = "1000"; %>
                       <%  }else{ %>
                       <%  transaction = parseInt(transact[0].intTransactionID) + 1; %>
@@ -227,7 +227,7 @@
 
                               <label for="add_uom">   </label>
                               <select class="form-control" required id="add_uom" name="add_uom"  >
-                                <% if (uom == 'null' || uom == 'undefined' || uom.length == 0){ %>
+                                <% if (uom == null || uom == undefined || uom.length == 0){ %>
                                   <option></option>
                                 <% }else{ %>
                                   <% uom.forEach(function(s){ %>
@@ -372,7 +372,7 @@
       <div class="box-body table-responsive">
         <table id="example1" class="table table-bordered table-hover">
           <thead>
-            <% if (suppliers == 'null' || suppliers == 'undefined' || suppliers.length == 0){ %>
+            <% if (suppliers == null || suppliers == undefined || suppliers.length == 0){ %>
               <h4> No records of Suppliers </h4>
             <% } else { %>
           <tr>
@@ -427,7 +427,7 @@
      <div class="box-body table-responsive">
        <table id="example3" class="table table-bordered table-hover">
          <thead>
-           <% if (products == 'null' || products == 'undefined' || products.length == 0){ %>
+           <% if (products == null || products == undefined || products.length == 0){ %>
               <h4> No records of products </h4>
            <% } else { %>
          <tr>

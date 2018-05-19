@@ -46,7 +46,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <% if (re == 'null' || re == 'undefined' || re.length == 0) { %>
+                <% if (re == null || re == undefined || re.length == 0) { %>
 
                 <% }else { %>
                   <% re.forEach(function(i){ %>
@@ -112,7 +112,7 @@
             <div class="form-group">
 
               <% var number = "1000"; %>
-              <% if (list == 'null' || list == 'undefined' || list.length == 0 ) { %>
+              <% if (list == null || list == undefined || list.length == 0 ) { %>
               <% number = "1000"; %>
               <% }else{ %>
                 <% var number = parseInt(list[0].intProductNo) + 1 %>
@@ -133,7 +133,7 @@
             <div class="form-group">
               <label for="add_brand">Brand</label>
               <select class="form-control" required id="add_brand" name="add_brand"  >
-                <% if (brand == 'null' || brand == 'undefined' || brand.length == 0){ %>
+                <% if (brand == null || brand == undefined || brand.length == 0){ %>
                   <option></option>
                 <% }else{ %>
                   <% brand.forEach(function(s){ %>
@@ -150,7 +150,7 @@
             <div class="form-group">
               <label for="add_pcat">Category</label>
               <select class="form-control" id="add_pcat" required name="add_pcat" >
-                <% if (category == 'null' || category == 'undefined' || category.length == 0){ %>
+                <% if (category == null || category == undefined || category.length == 0){ %>
                   <option></option>
                 <% }else{ %>
                   <% category.forEach(function(s){ %>
@@ -218,7 +218,7 @@
             <div class="form-group">
               <label for="view_brand">Brand</label>
               <select class="form-control" required id="view_brand" name="view_brand"  >
-                <% if (brand == 'null' || brand == 'undefined' || brand.length == 0){ %>
+                <% if (brand == null || brand == undefined || brand.length == 0){ %>
                   <option></option>
                 <% }else{ %>
                   <% brand.forEach(function(s){ %>
@@ -235,7 +235,7 @@
             <div class="form-group">
               <label for="view_pcat">Category</label>
               <select class="form-control" id="view_pcat" required name="view_pcat" >
-                <% if (category == 'null' || category == 'undefined' || category.length == 0){ %>
+                <% if (category == null || category == undefined || category.length == 0){ %>
                   <option></option>
                 <% }else{ %>
                   <% category.forEach(function(s){ %>

@@ -44,7 +44,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <% if (re == 'null' || re == 'undefined' || re.length == 0) { %>
+                  <% if (re == null || re == undefined || re.length == 0) { %>
 
                   <% }else { %>
                     <% re.forEach(function(i){ %>
@@ -96,7 +96,7 @@
                       <div class="form-group">
 
                         <% var number = "1000"; %>
-                        <% if (list == 'null' || list == 'undefined' || list.length == 0 ) { %>
+                        <% if (list == null || list == undefined || list.length == 0 ) { %>
                         <% number = "1000"; %>
                         <% }else{ %>
                           <% var number = parseInt(list[0].intInventoryNo) + 1 %>
@@ -152,7 +152,7 @@
 
                             <label for="add_uom">   </label>
                             <select class="form-control" required id="add_uom" name="add_uom"  >
-                              <% if (uom == 'null' || uom == 'undefined' || uom.length == 0){ %>
+                              <% if (uom == null || uom == undefined || uom.length == 0){ %>
                                 <option></option>
                               <% }else{ %>
                                 <% uom.forEach(function(s){ %>
@@ -294,7 +294,7 @@
       <div class="box-body table-responsive">
         <table id="example1" class="table table-bordered table-hover">
           <thead>
-            <% if (su == 'null' || su == 'undefined' || su.length == 0){ %>
+            <% if (su == null || su == undefined || su.length == 0){ %>
               <h4> No records of Suppliers </h4>
             <% } else { %>
           <tr>
