@@ -49,3 +49,11 @@ INSERT INTO `db_usg`.`tblbusinesstype` (`intBusinessTypeNo`, `intAdminID`, `strB
 INSERT INTO `db_usg`.`tblbusinesstype` (`intBusinessTypeNo`, `intAdminID`, `strBusinessType`) VALUES ('1002', '1000', 'Social Enterprise');
 INSERT INTO `db_usg`.`tblbusinesstype` (`intBusinessTypeNo`, `intAdminID`, `strBusinessType`) VALUES ('1003', '1000', 'Online Seller / Authorized Distributor or Dealer');
 INSERT INTO `db_usg`.`tblbusinesstype` (`intBusinessTypeNo`, `intAdminID`, `strBusinessType`) VALUES ('1004', '1000', 'MLM - Multi Level Marketing');
+
+INSERT INTO `db_usg`.`tblproductcertifications` (`intCertificationNo`, `strCertification`, `intAdminID`) VALUES ('1000', 'Certified Organic / No harmful chemicals', '1000');
+INSERT INTO `db_usg`.`tblproductcertifications` (`intCertificationNo`, `strCertification`, `intAdminID`) VALUES ('1001', 'Gluten-Free', '1000');
+INSERT INTO `db_usg`.`tblproductcertifications` (`intCertificationNo`, `strCertification`, `intAdminID`) VALUES ('1002', 'Vegan', '1000');
+INSERT INTO `db_usg`.`tblproductcertifications` (`intCertificationNo`, `strCertification`, `intAdminID`, `intStatus`) VALUES ('1003', 'Vegetarian', '1000', '');
+INSERT INTO `db_usg`.`tblproductcertifications` (`intCertificationNo`, `strCertification`, `intAdminID`) VALUES ('1004', 'No certifications / homemade / all natural products', '1000');
+INSERT INTO `db_usg`.`tblproductcertifications` (`intCertificationNo`, `strCertification`, `intAdminID`) VALUES ('1005', 'Herbal Products', '1000');
+INSERT INTO `db_usg`.`tblproductcertifications` (`intCertificationNo`, `strCertification`, `intAdminID`) VALUES ('1006', 'Eco-friendly', '1000');
