@@ -1,190 +1,120 @@
 <%- include('master.ejs') -%>
 
-  <!-- <style>
-  .simplebar-content {
-    min-height: 5% !important;
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+<!-- CUSTOMER STYLES -->
+<link rel="stylesheet" href="/assets/custom/cart.css" type="text/css" />
+<link rel="stylesheet" href="/assets/custom/cart-cards.css" type="text/css" />
+<link rel="stylesheet" href="/assets/custom/quantity.css" type="text/css" />
+<link rel="stylesheet" href="/assets/custom/product-cards.css" type="text/css" />
+<link rel="stylesheet" href="/assets/custom/modal-product-to-cart.css" type="text/css" />
+
+<style>
+  .mCSB_inside>.mCSB_container {
+    margin-right: 10px !important;
   }
-</style> -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
-  <style>
-    .mCSB_inside>.mCSB_container{
-      margin-right:20px !important;
+  .mCS-my-theme.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
+    background-color: var(--cart-button-color);
+    ;
+  }
+  .mCS-my-theme.mCSB_scrollTools .mCSB_draggerRail {
+    background-color: white;
+    opacity: 0;
+  }
+  @media screen and (max-height: 241px) {
+    .list-unstyled.components.mCustomScrollbar._mCS_2.mCS-autoHide {
+      width: 383px !important;
     }
+  }
+</style>
 
-    .mCS-my-theme.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
-      background-color: rgba(18, 187, 173, .6);
-      ;
-    }
-
-    .mCS-my-theme.mCSB_scrollTools .mCSB_draggerRail {
-      background-color: white;
-    }
-  </style>
-
-  <nav id="cart-sidebar">
-    <div id="cart-container">
-      <div id="dismiss">
-        <i class="zmdi zmdi-arrow-right" style="font-size: 20px; font-weight: 500"></i>
-      </div>
-      <div class="cart-sidebar-header">
-        <h2>Cart</h2>
-      </div>
-
-      <ul class="list-unstyled components">
-        <div id="cart-pad">
-          <p>Sample Item 1</p>
-          <hr>
-          <p>Sample Item 2</p>
-          <hr>
-          <p>Sample Item 3</p>
-          <hr>
-          <p>Sample Item 4</p>
-          <hr>
-          <p>Sample Item 5</p>
-          <hr>
-          <p>Sample Item 6</p>
-          <hr>
-          <p>Sample Item 7</p>
-          <hr>
-          <p>Sample Item 8</p>
-          <hr>
-          <p>Sample Item 9</p>
-        </div>
-      </ul>
-
-      <ul class="list-unstyled checkout">
-        <li><a href="#" class="article">Proceed to Checkout</a></li>
-      </ul>
+<nav id="cart-sidebar">
+  <div id="cart-container">
+    <div id="dismiss">
+      <i class="zmdi zmdi-arrow-right" style="font-size: 20px; font-weight: 500"></i>
     </div>
-  </nav>
+    <div class="cart-sidebar-header">
+      <h2>Your Cart</h2>
+    </div>
 
-  <nav class="navbar navbar-expand-lg bg-custom-primary navbar-dark pt-0">
-    <div class="container"><a href="/home" class="navbar-brand"><img src="/assets/images/static/usg-white.png" alt="USG" height="35 " width="42"/><b> Ultra Super Green</b></a>
-      <button type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler navbar-toggler-right"><span class="navbar-toggler-icon"></span></button>
-      <div id="navbar2SupportedContent" class="collapse navbar-collapse text-center justify-content-end pt-1">
-        <ul class="navbar-nav">
-          <li class="nav-item mr-2 searchbar">
-            <form class="form-inline">
-              <div class="input-group search" style="padding-top: 3px;">
-                <input type="text" placeholder="Search" class="form-control form-control-sm search" />
-                <div class="input-group-append">
-                  <button type="button" style="height: 30.1; padding-top: 3px" class="btn btn-custom-info"><i class="fa fa-fw fa-search"></i></button>
+    <ul class="list-unstyled components">
+      <div id="cart-pad">
+        <% for(i=0; i<5 ;i++){ %>
+          <div class="cart-product-container">
+            <div class="product-card">
+              <div class="product-pic"><img src="/assets/images/static/img<%= i+2%>.jpg"></div>
+              <div class="product-desc">
+                <p class="product-title">SuperScoops Premium Vegan Ice Cream Choco Milk</p>
+                <small class="product-size text-muted">Size: 12 ml</small>
+                <small class="product-oldprice text-muted">
+                <span style="text-decoration: line-through;">₱&nbsp;285.99</span><span> (-10%)</span><br>
+              </small>
+                <div class="input-group quantity">
+                  <div class="input-group-prepend addon">
+                    <button class="btn btn-primary quantity-buttons" type="button">
+                    <small class="quantity-text quantity-text-minus">-</small>
+                  </button>
+                  </div>
+                  <input class="form-control quantity-input" type="text" readonly="" value="1">
+                  <div class="input-group-append addon">
+                    <button class="btn btn-primary quantity-buttons" type="button">
+                    <small class="quantity-text quantity-text-plus">+</small>
+                  </button>
+                  </div>
                 </div>
+                <p class="product-price">₱ 255.99</p>
               </div>
-            </form>
-          </li>
-          <li class="nav-item mr-2"><a href="/home" class="nav-link"><i class="fa d-inline fa-lg fa-home"></i>  Home</a></li>
-          <li class="nav-item drop-menu mr-2"><a href="/store" class="nav-link"><i class="fa d-inline fa-lg fa-leaf"></i>  Products</a></li>
-          <li class="nav-item mr-1"><a id="cartSidebarCollapse" class="nav-link"><i class="fa d-inline fa-lg fa-shopping-cart"></i>  Cart</a></li>
-          <li class="nav-item dropdown"><a id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-top: 12px;" class="nav-link dropdown-toggle"><i class="fa fa-fw fa-cog"></i></a>
-            <div aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
-              <% if (thisUser){ %>
-                <a href="/account/dashboard" class="dropdown-item"><i class="fa d-inline fa-lg fa-user pr-2"></i>&nbsp<%= thisUser.strFname %></a>
-                <% }else{ %>
-                  <a href="/account/dashboard" class="dropdown-item"><i class="fa d-inline fa-lg fa-user pr-2"></i>&nbspAccount</a>
-                  <% } %>
-                    <a href="/home/faq" class="dropdown-item"><i class="fa d-inline fa-lg fa-question-circle pr-2"></i>FAQs</a>
-                    <hr id="hzline" />
-                    <a href="/login" class="dropdown-item"><i class="fa d-inline fa-lg fa-sign-out pr-2"></i>Logout</a>
             </div>
-          </li>
-        </ul>
+            <div class="product-remove"><i class="fa fa-remove product-remove-icon"></i></div>
+          </div>
+          <%}%>
       </div>
-    </div>
-  </nav>
+    </ul>
 
-  <div class="overlay"></div>
-  <!-- <div id="CartModal" tabindex="-1" role="dialog" aria-labelledby="CartModalTitle" aria-hidden="true" class="modal fade">
-  <div role="document" class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 id="CartModalTitle" class="modal-title"><b>Cart</b></h5>
-        <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
-      </div>
-      <div class="modal-body">
-        <div data-simplebar="" class="tab tab-cart mb-2">
-          <table class="table table-striped table-cart">
-            <thead>
-              <tr>
-                <th scope="col">Order</th>
-                <th scope="col" style="width: 90px">Price</th>
-                <th scope="col" style="width: 120px">Quantity</th>
-                <th scope="col" style="width: 90px">Total</th>
-                <th scope="col" style="width: 90px;">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">Shahani's Gatas Kalabaw</th>
-                <td>₱ 230</td>
-                <td class="centered">
-                  <div class="input-group input-group-sm quantity"><span class="input-group-btn">
-                    <button type="button" data-type="minus" data-field="quant[1]" class="btn btn-custom-primary btn-number btn-sm minus"><span>-</span></button>
-                    </span>
-                    <input type="text" name="quant[1]" value="1" min="1" max="100" readonly="" class="form-control input-number" /><span class="input-group-btn">
-                    <button type="button" data-type="plus" data-field="quant[1]" class="btn btn-custom-primary btn-number btn-sm plus"><span>+</span></button>
-                    </span>
-                    <div class="row">
-                      <div class="col">
-                        <input type="text" name="quant[1]" value="1" min="1" max="100" style="width:50px" readonly="" class="form-control input-number" />
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td>₱ 230</td>
-                <td><a class="button btn btn-sm btn-danger text-white"> Remove </a></td>
-              </tr>
-              <tr>
-                <th scope="row">Keto Loaf & Rolls</th>
-                <td>₱ 75</td>
-                <td class="centered">
-                  <div class="input-group input-group-sm quantity"><span class="input-group-btn">
-                    <button type="button" data-type="minus" data-field="quant[2]" class="btn btn-custom-primary btn-number btn-sm minus"><span>-</span></button>
-                    </span>
-                    <input type="text" name="quant[2]" value="2" min="1" max="100" readonly="" class="form-control input-number" /><span class="input-group-btn">
-                    <button type="button" data-type="plus" data-field="quant[2]" class="btn btn-custom-primary btn-number btn-sm plus"><span>+</span></button>
-                    </span>
-                    <div class="row">
-                      <div class="col">
-                        <input type="text" name="quant[2]" value="2" min="1" max="100" style="width:50px" readonly="" class="form-control input-number" />
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td>₱ 150</td>
-                <td><a class="button btn btn-sm btn-danger text-white"> Remove </a></td>
-              </tr>
-              <tr>
-                <th scope="row">Raw Cordyceps</th>
-                <td>₱ 105</td>
-                <td class="centered">
-                  <div class="input-group input-group-sm quantity"><span class="input-group-btn">
-                    <button type="button" data-type="minus" data-field="quant[3]" class="btn btn-custom-primary btn-number btn-sm minus"><span>-</span></button>
-                    </span>
-                    <input type="text" name="quant[3]" value="4" min="1" max="100" readonly="" class="form-control input-number" /><span class="input-group-btn">
-                    <button type="button" data-type="plus" data-field="quant[3]" class="btn btn-custom-primary btn-number btn-sm plus"><span>+</span></button>
-                    </span>
-                    <div class="row">
-                      <div class="col">
-                        <input type="text" name="quant[3]" value="4" min="1" max="100" style="width:50px" readonly="" class="form-control input-number" />
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td>₱ 420</td>
-                <td><a class="button btn btn-sm btn-danger text-white"> Remove </a></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="row">
-          <div style="text-align: right" class="col px-4"><b>Sub-Total: </b>Php 800</div>
-        </div>
-      </div>
-      <div class="modal-footer"><a href="/summary/checkout">
-        <button class="btn btn-custom-primary">Proceed to Checkout</button></a>
-        <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
-      </div>
+    <ul class="list-unstyled checkout">
+      <p>Subtotal</p>
+      <p>₱ 2,500.99</p>
+      <li><a href="/summary/checkout" class="article">Check Out</a></li>
+    </ul>
+  </div>
+</nav>
+
+<nav class="navbar navbar-expand-lg bg-custom-primary navbar-dark pt-0">
+  <div class="container"><a href="/home" class="navbar-brand"><img src="/assets/images/static/usg-white.png" alt="USG" height="35 " width="42"/><b> Ultra Super Green</b></a>
+    <button type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler navbar-toggler-right"><span class="navbar-toggler-icon"></span></button>
+    <div id="navbar2SupportedContent" class="collapse navbar-collapse text-center justify-content-end pt-1">
+      <ul class="navbar-nav">
+        <li class="nav-item mr-2 searchbar">
+          <form class="form-inline">
+            <div class="input-group search" style="padding-top: 3px;">
+              <input type="text" placeholder="Search" class="form-control form-control-sm search" />
+              <div class="input-group-append">
+                <button type="button" class="btn btn-custom-info"><i class="fa fa-fw fa-search"></i></button>
+              </div>
+            </div>
+          </form>
+        </li>
+        <li class="nav-item mr-2">
+          <a href="/home" class="nav-link"><i class="fa d-inline fa-lg fa-home"></i>  Home</a></li>
+        <li class="nav-item drop-menu mr-2">
+          <a href="/store" class="nav-link"><i class="fa d-inline fa-lg fa-leaf"></i>  Products</a></li>
+        <li class="nav-item mr-1">
+          <a id="cartSidebarCollapse" class="nav-link"><i class="fa d-inline fa-lg fa-shopping-cart"></i>  Cart</a></li>
+        <li class="nav-item dropdown">
+          <a id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-top: 12px;" class="nav-link dropdown-toggle"><i class="fa fa-fw fa-cog"></i></a>
+          <div id="nav-setting-dropdown" aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
+            <% if (thisUser){ %>
+              <a href="/account/dashboard" class="dropdown-item"><i class="fa d-inline fa-lg fa-user pr-2"></i>&nbsp<%= thisUser.strFname %></a>
+              <% }else{ %>
+                <a href="/account/dashboard" class="dropdown-item"><i class="fa d-inline fa-lg fa-user pr-2"></i>&nbspAccount</a>
+                <% } %>
+                  <a href="/home/faq" class="dropdown-item"><i class="fa d-inline fa-lg fa-question-circle pr-2"></i>FAQs</a>
+                  <hr id="hzline" />
+                  <a href="/login" class="dropdown-item"><i class="fa d-inline fa-lg fa-sign-out pr-2"></i>Logout</a>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
-</div> -->
+</nav>
+
+<div class="overlay"></div>

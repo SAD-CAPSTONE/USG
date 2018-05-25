@@ -1,0 +1,132 @@
+/* PRODUCT CARD */
+.custom-card {
+  width:200px;
+  height:285px;
+  border-radius:0px !important;
+  border:1px solid #E4E4E4;
+  position:relative;
+  display: inline-block;
+  white-space: normal;
+  box-shadow: none;
+
+  transition: all 0.25s ease;
+  /* border: none;
+  box-shadow:
+    0 2px 2px 0 rgba(0,0,0,0.14),
+    0 3px 1px -2px rgba(0,0,0,0.12),
+    0 1px 5px 0 rgba(0,0,0,0.2); */
+}
+.custom-card:hover {
+  box-shadow:
+    0 2px 2px 0 rgba(0,0,0,0.14),
+    0 3px 1px -2px rgba(0,0,0,0.12),
+    0 1px 5px 0 rgba(0,0,0,0.2);
+}
+.custom-card:last-child {
+  margin-right: 0px;
+}
+
+.custom-card .card-img {
+  height:63%;
+  background:rgb(85,85,179);
+  overflow:hidden;
+  border-radius: 0px;
+}
+.custom-card img {
+  height:100%;
+  width:100%;
+  border-radius: 0px;
+  transition:all 0.25s ease;
+}
+.custom-card img:hover, .custom-card:hover img {
+  transform:scale(1.1);
+}
+
+.custom-card .card-desc {
+  height:37%;
+  background:white;
+  padding: 9px 10px;
+}
+.custom-card .card-title {
+  line-height:1.1;
+  font-size:.9em;
+  font-weight: 400;
+  margin:0px;
+  height:31px;
+  overflow: hidden;
+}
+.custom-card .card-price {
+  color:#12BBAD;
+  font-size:1.1em;
+  margin:0px;
+  padding-top: 2px;
+}
+.custom-card .order-modal-link + .card-desc > .card-price {
+  color:#00AF66;
+}
+
+.custom-card .cart-button-div {
+  height:0px;
+  background:#12BBAD;
+  position:absolute;
+  bottom:0px;
+  width:100%;
+  transition:all 0.25s ease;
+  padding:3px 53px;
+  opacity:0;
+  cursor:pointer;
+}
+.custom-card .cart-button-div:hover {
+  background:#00AF66;
+}
+.custom-card:hover .cart-button-div {
+  height:32px;
+  /*visibility:visible;*/
+  opacity:1;
+}
+.custom-card .cart-button-text {
+  color:white;
+  margin:0px;
+  opacity:0;
+  display: none;
+  transition:all .25s ease;
+}
+.custom-card:hover .cart-button-text {
+  opacity:1;
+  display: block;
+}
+
+.custom-card .fa.fa-star {
+  color:#FACA51;
+}
+.custom-card .fa.fa-star-half-o {
+  color:#FACA51;
+}
+
+.custom-card .card-reviews {
+  position:absolute;
+  right:10px;
+  bottom:7px;
+  transition:all 0.25s ease;
+  font-size: .7em
+}
+.custom-card .card-rating {
+  position:absolute;
+  right:auto;
+  left:10px;
+  bottom:7px;
+  transition:all 0.25s ease;
+}
+.custom-card .card-oldprice {
+  font-size:0.7em;
+  position:absolute;
+  right:auto;
+  left:10px;
+  bottom:23px;
+  transition:all 0.25s ease;
+  display:block;
+}
+.custom-card:hover small {
+  opacity:0;
+  display:none;
+}

@@ -1,12 +1,11 @@
 <%- include('../../../templates/navbar.ejs') -%>
 
-<link rel="stylesheet" href="/assets/custom/News-Cards.css">
 <style>
   .simplebar-content {
-    min-height: 5% !important;
+    min-height: 340px !important;
     width: 100% !important;
   }
-  .simplebar-scroll-content{
+  .simplebar-scroll-content {
     overflow-y: hidden !important;
   }
 </style>
@@ -16,7 +15,6 @@
     <br>
     <div class="row">
       <div class="col-12">
-
         <div id="carouselArchitecture" data-ride="carousel" class="carousel slide">
           <ol class="carousel-indicators">
             <li data-target="#carouselArchitecture" data-slide-to="0" class="active"><i></i></li>
@@ -25,125 +23,104 @@
           </ol>
           <div id="banner-carousel" role="listbox" class="carousel-inner">
             <div class="carousel-item active"><img src="/assets/images/static/organic1.jpg" data-holder-rendered="true" class="d-block img-fluid banner-img" /></div>
-            <div class="carousel-item">
-              <div data-simplebar="" class="scrolling-wrapper">
-                <div class="banner-card">
-                  <figure class="snip1527">
-                    <div class="image"><img src="assets/images/static/img3.jpg" alt="pr-sample23" /></div>
-                    <figcaption>
-                      <div class="date"><span class="day">16</span><span class="month">May</span></div>
-                      <h4>All New Raw Cordyceps</h4>
-                      <p>
-                        Cordyceps is a genus of ascomycete fungi (sac fungi) that includes about 400 species.
-                      </p>
-                    </figcaption>
-                    <a href="#"></a>
-                  </figure>
-                </div>
-                <div class="banner-card">
-                  <figure class="snip1527">
-                    <div class="image"><img src="assets/images/static/img5.jpg" alt="pr-sample23" /></div>
-                    <figcaption>
-                      <div class="date"><span class="day">10</span><span class="month">May</span></div>
-                      <h4>The Rich Taste of Honey</h4>
-                      <p>
-                        Honey is a sweet, viscous food substance produced by bees and some related insects.
-                      </p>
-                    </figcaption>
-                    <a href="#"></a>
-                  </figure>
-                </div>
-                <div class="banner-card">
-                  <figure class="snip1527">
-                    <div class="image"><img src="assets/images/static/img2.jpg" alt="pr-sample23" /></div>
-                    <figcaption>
-                      <div class="date"><span class="day">24</span><span class="month">Apr</span></div>
-                      <h4>Good Ol' Fresh Cow Milk</h4>
-                      <p>
-                        Milk is a white liquid produced by the mammary glands of mammals.
-                      </p>
-                    </figcaption>
-                    <a href="#"></a>
-                  </figure>
-                </div>
-                <div class="banner-card">
-                  <figure class="snip1527">
-                    <div class="image"><img src="assets/images/static/img6.jpg" alt="pr-sample23" /></div>
-                    <figcaption>
-                      <div class="date"><span class="day">11</span><span class="month">Apr</span></div>
-                      <h4>Super Summer Scoop!</h4>
-                      <p>
-                        Ice cream with natural or artificial chocolate flavoring suited for your summer needs.
-                      </p>
-                    </figcaption>
-                    <a href="#"></a>
-                  </figure>
-                </div>
-              </div>
-            </div>
+            <div class="carousel-item"><img src="/assets/images/static/organic2.jpg" data-holder-rendered="true" class="d-block img-fluid banner-img" /></div>
             <div class="carousel-item"><img src="/assets/images/static/organic3.jpg" data-holder-rendered="true" class="d-block img-fluid banner-img" /></div>
           </div>
-
-          <!-- <a class="carousel-control-prev banner-prev" href="#carouselArchitecture" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-          </a>
-          <a class="carousel-control-next banner-next" href="#carouselArchitecture" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-          </a> -->
-
         </div>
-
       </div>
     </div>
   </div>
 </div>
-<div class="mt-4">
+<div class="mt-4 mb-2">
   <div class="container">
     <div>
       <h3 class="lead fl-l light-bold"><b>Most Popular Products</b></h3>
       <h3 class="lead fl-r"><a href="/store">Go To Store ></a></h3>
     </div><br/><br/>
-    <div class="row">
-      <% for(i=1; i<5; i++){ %>
-        <div class="col-sm-6 col-lg-3 mb-4">
-          <div class="card"><a href="/item"><img src="/assets/images/static/img<%= i%>.jpg" alt="Card image cap" class="card-img-top product-img"/></a>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item bold product-card-name">Product Name
-                <p><small>Product Stock Left</small></p>
-              </li>
-            </ul>
-            <div class="card-body bottom-card-button">
-              <h4 class="card-price">₱ Product Price</h4><a href="#" class="btn btn-custom-primary btn-block"><i class="fa fa-fw fa-cart-plus"></i> Add to Cart</a>
-            </div>
+  </div>
+  <div class="container product-featured" data-simplebar="">
+    <% for(i=0; i<5 ;i++){ %>
+      <div class="custom-card my-1" style="margin-right: 22px !important; margin-left: 1px">
+        <div class="card-img"><img src="/assets/images/static/img<%= i+1%>.jpg"></div>
+        <a class="order-modal-link" href="#" data-toggle="modal" data-target="#modal-product-to-cart">
+          <div class="cart-button-div">
+            <p class="cart-button-text">Add to Cart</p>
           </div>
+        </a>
+        <div class="card-desc">
+          <p class="card-title">Dugos Wild Forest Honey</p>
+          <p class="card-price">₱&nbsp;230.99</p>
+          <small class="card-oldprice text-muted">
+            <span style="text-decoration: line-through;">₱&nbsp;255.99</span> (-10%)<br>
+          </small>
+          <small class="card-rating">
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star-half-o"></i>&nbsp;
+        </small>
+          <small class="card-reviews">45 reviews</small>
         </div>
-      <% } %>
-    </div>
-  </div><br/>
+      </div>
+      <%}%>
+  </div>
 </div>
-<div class="mb-5">
+<div class="mb-4">
   <div class="container">
     <div>
       <h3 class="lead fl-l light-bold"><b>New Products</b></h3>
       <h3 class="lead fl-r"><a href="/store">Go To Store ></a></h3>
     </div><br/><br/>
-    <div class="row">
-      <% for(i=1; i<5; i++){ %>
-        <div class="col-sm-6 col-lg-3 mb-4">
-          <div class="card"><a href="/item"><img src="/assets/images/static/img<%= i+4%>.jpg" alt="Card image cap" class="card-img-top product-img"/></a>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item bold product-card-name">Product Name
-                <p><small>Product Stock Left</small></p>
-              </li>
-            </ul>
-            <div class="card-body bottom-card-button">
-              <h4 class="card-price">₱ Product Price</h4><a href="#" class="btn btn-custom-primary btn-block"><i class="fa fa-fw fa-cart-plus"></i> Add to Cart</a>
-            </div>
+  </div>
+  <div class="container product-featured" data-simplebar="">
+    <% for(i=0; i<5 ;i++){ %>
+      <div class="custom-card my-1" style="margin-right: 22px !important; margin-left: 1px">
+        <div class="card-img"><img src="/assets/images/static/img<%= i+5%>.jpg"></div>
+        <a class="order-modal-link" href="#" data-toggle="modal" data-target="#modal-product-to-cart">
+          <div class="cart-button-div">
+            <p class="cart-button-text">Add to Cart</p>
           </div>
+        </a>
+        <div class="card-desc">
+          <p class="card-title">Dugos Wild Forest Honey</p>
+          <p class="card-price">₱&nbsp;2,300.99</p>
+          <small class="card-oldprice text-muted">
+            <span style="text-decoration: line-through;">₱&nbsp;2,550.99</span> (-10%)<br>
+          </small>
+          <small class="card-rating">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star-half-o"></i>&nbsp;
+          </small>
+          <small class="card-reviews">45 reviews</small>
         </div>
-      <% } %>
+      </div>
+      <%}%>
+  </div>
+</div>
+
+<div class="modal fade" role="dialog" tabindex="-1" id="modal-product-to-cart" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+      <div class="modal-body">
+        <div class="product-img"><img src="/assets/images/static/img6.jpg"></div>
+        <div class="right-pane">
+          <p class="title">SuperScoops Premium Vegan Ice Cream Choco</p>
+          <div class="order-details">
+            <p class="select-label">Select Size:</p><select class="form-control-sm select-size"><option value="" selected="">5ml</option><option value="">10ml</option><option value="">15ml</option></select>
+            <div class="input-group quantity">
+              <div class="input-group-prepend addon"><button class="btn btn-primary quantity-buttons" type="button"><small class="quantity-text quantity-text-minus">-</small></button></div><input class="form-control quantity-input" type="text" readonly="" value="1">
+              <div class="input-group-append addon"><button class="btn btn-primary quantity-buttons" type="button"><small class="quantity-text quantity-text-plus">+</small></button></div>
+            </div>
+            <p class="quantity-label">Quantity:</p>
+            <p class="price">P 230.99</p><button class="btn btn-primary btn-sm add-button" type="button">Add to Cart</button></div>
+        </div>
+      </div>
+      <div class="modal-footer"></div>
     </div>
   </div>
 </div>
