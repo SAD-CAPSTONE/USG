@@ -61,7 +61,7 @@
   margin:0px;
   padding-top: 2px;
 }
-.custom-card .order-modal-link + .card-desc > .card-price {
+.custom-card .order-modal-link:hover + .card-desc > .card-price {
   color:#00AF66;
 }
 

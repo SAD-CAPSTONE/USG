@@ -1,5 +1,5 @@
-var mysql = require('mysql');
-var pool;
+const mysql = require('mysql');
+let pool;
 
 module.exports = () => {
 

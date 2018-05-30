@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var db = require('../../lib/database')();
-var bcrypt = require('bcrypt');
-var saltRounds = 10;
-var newUserID = require('../0extras/newUserID');
+const express = require('express');
+const router = express.Router();
+const db = require('../../lib/database')();
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+const newUserID = require('../0extras/newUserID');
 
 function checkUser(req,res,next){
   /*Match form's email and username to DB, Match(body);
@@ -13,7 +13,7 @@ function checkUser(req,res,next){
     if (!results[0])
       req.checkUser = 0;
     else{
-      var email, username;
+      let email, username;
       req.checkUser = 1;
 
       for(count=0;count<results.length;count++){
@@ -48,10 +48,10 @@ router.post('/', newUserID, checkUser, (req, res) => {
 
   if(req.body.password == req.body.confirm && req.checkUser == 0){
     bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
-      var stringquery = req.body.middlename ?
+      let stringquery = req.body.middlename ?
       `INSERT INTO tbluser (intUserID, intUserTypeNo, strFname, strMname, strLname, strEmail, strUsername, strPassword) VALUES (?,2,?,?,?,?,?,?)`:
       `INSERT INTO tbluser (intUserID, intUserTypeNo, strFname, strLname, strEmail, strUsername, strPassword) VALUES (?,2,?,?,?,?,?)`;
-      var bodyarray = [req.newUserID, req.body.firstname];
+      let bodyarray = [req.newUserID, req.body.firstname];
       req.body.middlename ? bodyarray.push(req.body.middlename) : bodyarray;
       bodyarray.push(req.body.lastname, req.body.email, req.body.username, hash);
 

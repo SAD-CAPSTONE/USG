@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var db = require('../../lib/database')();
-var passport = require('passport');
+const express = require('express');
+const router = express.Router();
+const db = require('../../lib/database')();
+const passport = require('passport');
 
 function render(req,res){
   req.logout();

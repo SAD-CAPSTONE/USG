@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-var db = require('../../lib/database')();
+const express = require('express');
+const router = express.Router();
+const db = require('../../lib/database')();
 
 function dashRender(req,res){
   res.render('account/views/dashboard', {thisUser: req.user});

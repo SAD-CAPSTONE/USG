@@ -4,7 +4,7 @@ $(() => {
   $('#getCart').on('click', () => {
     $.get('/extras/res-cart').then((res) => {
       console.log(res.cart[res.cart.length - 1]);
-      var list = $('#cartList');
+      let list = $('#cartList');
       list.html('');
       res.cart.forEach((data) => {
         list.append('\
@@ -22,7 +22,7 @@ $(() => {
         </div>');
       });
     }).catch((error) => {
-      var list = $('#cartList');
+      let list = $('#cartList');
       list.html('');
       list.append('<i> Empty </i>');
     });
@@ -32,10 +32,10 @@ $(() => {
   $('#newItem').on('click', (event) => {
     event.preventDefault();
 
-    var itemName = $('#itemName');
-    var itemPrice = $('#itemPrice');
-    var itemStock = $('#itemStock');
-    var itemQuantity = $('#itemQuantity');
+    let itemName = $('#itemName');
+    let itemPrice = $('#itemPrice');
+    let itemStock = $('#itemStock');
+    let itemQuantity = $('#itemQuantity');
 
     $.post('/extras/res-cart', {
       name: itemName.val(),
@@ -55,10 +55,10 @@ $(() => {
 
   // PUT PLUS
   $('#cartList').on('click', '.plus', function() {
-    var thisDiv = $(this).closest('.quantGroup');
-    var id = thisDiv.find('.id').val();
-    var stock = thisDiv.find('.stock').val();
-    var newQuantity = thisDiv.find('.quantity').val();
+    let thisDiv = $(this).closest('.quantGroup');
+    let id = thisDiv.find('.id').val();
+    let stock = thisDiv.find('.stock').val();
+    let newQuantity = thisDiv.find('.quantity').val();
     newQuantity = parseInt(newQuantity)+1;
     if (newQuantity > stock){
       newQuantity = stock;
@@ -80,9 +80,9 @@ $(() => {
 
   // PUT MINUS
   $('#cartList').on('click', '.minus', function() {
-    var thisDiv = $(this).closest('.quantGroup');
-    var id = thisDiv.find('.id').val();
-    var newQuantity = thisDiv.find('.quantity').val();
+    let thisDiv = $(this).closest('.quantGroup');
+    let id = thisDiv.find('.id').val();
+    let newQuantity = thisDiv.find('.quantity').val();
     newQuantity = parseInt(newQuantity)-1;
     if (newQuantity < 2){
       newQuantity = 1;
@@ -104,8 +104,8 @@ $(() => {
 
   // DELETE
   $('#cartList').on('click', '.delitem', function() {
-    var thisDiv = $(this).closest('.quantGroup');
-    var id = thisDiv.find('.id').val();
+    let thisDiv = $(this).closest('.quantGroup');
+    let id = thisDiv.find('.id').val();
 
     $.ajax({
       url: '/extras/res-cart/' + id,

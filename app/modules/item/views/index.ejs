@@ -1,87 +1,238 @@
 <%- include('../../../templates/navbar.ejs') -%>
 
-<div id="content" class="container">
+<style>
+  #main-desc .simplebar-content {
+    height: auto !important;
+    overflow-x: hidden !important;
+  }
+  #main-desc .simplebar-scroll-content {
+    height: 100% !important;
+  }
+  .product-featured .simplebar-content {
+    height: auto !important;
+    overflow-y: hidden !important;
+  }
+  .product-featured .simplebar-scroll-content {
+    overflow-y: hidden !important;
+  }
+</style>
+
+<div id="item-container" class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb p-0 mb-2">
+      <li class="breadcrumb-item"><a href="#">Supplements</a></li>
+      <li class="breadcrumb-item"><a href="#">Subcategory</a></li>
+      <li class="breadcrumb-item active" aria-current="page">The Healthy Grocery Raw Cordyceps</li>
+    </ol>
+  </nav>
   <div class="row">
-    <div class="col">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb breadcrumb-item">
-          <li class="breadcrumb-item"><a href="/store">Category Name</a></li>
-          <li aria-current="page" class="breadcrumb-item active">Product Name</li>
-        </ol>
-      </nav>
-      <div id="inner-content">
-        <div class="mb-4 pl-1">
-          <h4 class="lead mb-0"><b>Product Name</b></h4>
-          <hr/>
-        </div>
-        <div class="row mx-1">
-          <div class="col-sm-6 mb-3"><img src="/assets/images/static/img3.jpg" alt="USG" height="350px" width="100%"/></div>
-          <div class="col-sm-6 mb-3">
-            <div style="height: 200px; overflow-y: auto;" class="row item-desc">
-              <div class="col">
-                <h7>Product Description</h7>
-              </div>
-            </div>
-            <div style="height: 150px;" class="row pt-3">
-              <div class="col">
-                <h4 class="mb-1">&#x20B1; Product Price</h4><br/>                <small class="text-muted">Only (Product Stock) items left</small>                <br/>                <a href="#" class="btn btn-custom-primary btn-lg mt-1"><i class="fa fa-fw fa-cart-plus"></i>&nbsp;Add to Cart</a>
-              </div>
-            </div>
+    <div id="item-main-pane" class="">
+      <div>
+        <img src="/assets/images/static/img3.jpg" alt="image">
+        <!-- rating,title,desc -->
+        <div id="main-desc">
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star-half-o"></i>&nbsp
+          <small class="text-muted">1,173 ratings</small>
+          <p class="mb-2">The Healthy Grocery Raw Cordyceps</p>
+          <div data-simplebar="">
+            <small class="block indent">
+              Cordyceps is a genus of ascomycete fungi (sac fungi) that includes about 400 species.
+              Most Cordyceps species are endoparasitoids, parasitic mainly on insects and other
+              arthropods (they are thus entomopathogenic fungi); a few are parasitic on other fungi.
+              The generic name Cordyceps is derived from the Greek word κορδύλη kordýlē, meaning
+              "club", and the Latin stem -ceps, meaning "head".
+            </small><br>
+            <small class="block indent">
+              The genus has a worldwide distribution and most of the approximately 400 species[1]
+              have been described from Asia (notably Nepal, China, Japan, Bhutan, Korea, Vietnam,
+              and Thailand). Cordyceps species are particularly abundant and diverse in humid
+              temperate and tropical forests.
+            </small>
           </div>
         </div>
-        <div class="row px-4 mt-2">
-          <div class="col">
-            <h4>Reviews</h4>
+        <a href="#"><i class="fa fa-share-alt"></i></a>
+
+        <div id="item-options">
+          <!-- size,price -->
+          <div>
+            <div class="fl-l">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                <label class="form-check-label" for="exampleRadios1">
+                  5 ml
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+                <label class="form-check-label" for="exampleRadios2">
+                  10ml
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+                <label class="form-check-label" for="exampleRadios2">
+                  15ml
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
+                <label class="form-check-label" for="exampleRadios1">
+                  20 ml
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
+                <label class="form-check-label" for="exampleRadios1">
+                  25 ml
+                </label>
+              </div>
+            </div>
+            <div id="item-price" class="fl-r pos-relative">
+              <p class="m-0">P 2,350.95</p>
+              <small class="text-muted">P 2,350.95</small>
+            </div>
+          </div>
+          <!-- quantity,add-to-cart -->
+          <div>
+            <div class="input-group quantity mb-2">
+              <div class="input-group-prepend addon"><button class="btn btn-primary quantity-buttons" type="button"><small class="quantity-text quantity-text-minus">-</small></button></div><input class="form-control quantity-input" type="text" readonly="" value="1">
+              <div class="input-group-append addon"><button class="btn btn-primary quantity-buttons" type="button"><small class="quantity-text quantity-text-plus">+</small></button></div>
+            </div>
+            <button class="btn btn-custom-primary radius-0">Add to Cart</button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div>
+        <p><b>Related Products</b></p>
+        <div class="container product-featured" data-simplebar="">
+          <% for(i=0; i<5 ;i++){ %>
+            <div class="custom-card my-1" style="margin-right: 22px !important; margin-left: 1px">
+              <div class="card-img"><img src="/assets/images/static/img<%= i+1%>.jpg"></div>
+              <a class="order-modal-link" href="#" data-toggle="modal" data-target="#modal-product-to-cart">
+                <div class="cart-button-div">
+                  <p class="cart-button-text">Add to Cart</p>
+                </div>
+              </a>
+              <div class="card-desc">
+                <p class="card-title">Dugos Wild Forest Honey</p>
+                <p class="card-price">₱&nbsp;230.99</p>
+                <small class="card-oldprice text-muted">
+                  <span style="text-decoration: line-through;">₱&nbsp;255.99</span> (-10%)<br>
+                </small>
+                <small class="card-rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-half-o"></i>&nbsp;
+              </small>
+                <small class="card-reviews">45 reviews</small>
+              </div>
+            </div>
+          <%}%>
+        </div>
+      </div>
+    </div>
+
+    <div id="item-review-pane" class="">
+      <div>
+        <p><b>Ratings & Review</b></p>
+        <div id="rating">
+          <div class="fl-l">
+            <h2 class="m-0 pt-1">4.5</h2>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star-half-o"></i>
+            <small class="text-muted block">1,173 ratings</small>
+          </div>
+          <div class="fl-r">
+            <%for(i=5; i>0; i--){%>
+              <div class="stars">
+                <ul class="list-unstyled inline m-0">
+              <%for(j=0; j<5; j++){
+                if (i > j){ %>
+                  <li class="inline"><i class="fa fa-star"></i></li>
+              <% }else{ %>
+                  <li class="inline"><i class="fa fa-star-o"></i></li>
+              <% }
+              } %>
+                <li class="inline">
+                  <% switch(i){
+                    case 5:%> <small class="ml-1 inline">1,120</small>
+                      <% break;
+                    case 4:%> <small class="ml-1 inline">40</small>
+                      <% break;
+                    case 3:%> <small class="ml-1 inline">10</small>
+                      <% break;
+                    case 2:%> <small class="ml-1 inline">2</small>
+                      <% break;
+                    case 1:%> <small class="ml-1 inline">1</small>
+                      <% break;
+                  }
+                  %>
+                </li>
+                </ul>
+                </div>
+              <% } %>
+
+
           </div>
         </div>
-        <div class="row mx-1">
-          <div class="col-sm-6 mb-3">
-            <div class="card mb-2">
-              <div class="card-header"><b> John Doe </b></div>
-              <div class="card-body">
-                <h4>Good Buy</h4>
-                <h6 class="text-muted"><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star-o"></i></h6>
-                <p>It&apos;s a good product, might buy again soon.</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 mb-3">
-            <div class="card mb-2">
-              <div class="card-header"><b> Jocelyn Flores </b></div>
-              <div class="card-body">
-                <h4>Excellent Product!</h4>
-                <h6 class="text-muted"><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i></h6>
-                <p>Definitely going to buy again!</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 mb-3">
-            <div class="card mb-2">
-              <div class="card-header"><b> Ralf Milan </b></div>
-              <div class="card-body">
-                <h4>Awesome Product</h4>
-                <h6 class="text-muted"><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star-o"></i></h6>
-                <p>My new place for buying this product.</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 mb-3">
-            <div class="card mb-2">
-              <div class="card-header"><b> John Wick </b></div>
-              <div class="card-body">
-                <h4>Amazing!</h4>
-                <h6 class="text-muted"><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star"></i></h6>
-                <p>This product proves to be very effective, i have witnessed the results.</p>
-              </div>
-            </div>
-          </div>
+        <br>
+        <hr>
+        <small class="text-muted block mb-2">45 reviews</small>
+        <div class="review-block mb-4">
+          <small class="review-name block">John S. Doe <i class="fa fa-check-circle"></i></small>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star-half-o"></i>
+          <small class="text-muted">10/24/17</small>
+          <small class="review-desc block">
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in
+          </small>
         </div>
+        <div class="review-block mb-4">
+          <small class="review-name block">Jocelyn Flores <i class="fa fa-check-circle"></i></small>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star-half-o"></i>
+          <small class="text-muted">10/24/17</small>
+          <small class="review-desc block">
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in
+          </small>
+        </div>
+        <div class="review-block mb-4">
+          <small class="review-name block">John Wick <i class="fa fa-check-circle"></i></small>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star-half-o"></i>
+          <small class="text-muted">10/24/17</small>
+          <small class="review-desc block">
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in
+          </small>
+        </div>
+
       </div>
     </div>
   </div>
 </div>
 
-<%- include('../../../templates/footer.ejs') -%>
+<!-- <%- include('../../../templates/footer.ejs') -%> -->
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <%- include('../../../templates/closer.ejs') -%>

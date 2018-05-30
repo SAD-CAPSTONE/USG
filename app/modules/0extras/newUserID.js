@@ -1,6 +1,6 @@
 // generate new user ID based on previous user ID
-var db = require('../../lib/database')();
-var firstID = 1000; // First User ID in Database
+const db = require('../../lib/database')();
+const firstID = 1000; // First User ID in Database
 
 module.exports= (req,res,next) => {
   db.query(`SELECT * FROM tbluser ORDER BY intUserID DESC LIMIT 1`, (err, results, fields) => {

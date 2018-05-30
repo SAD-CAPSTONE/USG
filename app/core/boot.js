@@ -1,12 +1,12 @@
-var morgan = require('morgan');
-var path = require('path');
-var bodyParser = require('body-parser');
-var serveStatic = require('serve-static');
-var cookieSession = require('cookie-session');
-var keys = require('../../config/keys');
-var passport = require('passport');
-var flash = require('express-flash');
-var fileUpload = require('express-fileupload');
+const morgan = require('morgan');
+const path = require('path');
+const bodyParser = require('body-parser');
+const serveStatic = require('serve-static');
+const cookieSession = require('cookie-session');
+const keys = require('../../config/keys');
+const passport = require('passport');
+const flash = require('express-flash');
+const fileUpload = require('express-fileupload');
 
 module.exports = app => {
 

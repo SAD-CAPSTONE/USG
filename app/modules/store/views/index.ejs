@@ -1,62 +1,145 @@
-<%- include('../../../templates/sidebar-product.ejs') -%>
+<%- include('../../../templates/navbar.ejs') -%>
 
-<!-- main content title -->
-<div class="row px-3">
-  <div class="col">
-    <h4 style="padding-top: 7px;" class="lead pl-1 pb-2"><b>All Products</b></h4>
-  </div>
-  <div style="text-align: right" class="col-4 mb-3">
-    <select id="sort" name="sort" class="form-control">
-    <option value="">Sort by Popularity</option>
-    <option value="">Sort by Price</option>
-    <option value="">Sort by Newest</option>
-  </select>
-  </div>
-</div>
-<!-- main content -->
-<div>
-  <div class="container">
-    <div class="row">
-      <% for(i=1; i<7; i++){ %>
-        <div class="col-sm-6 col-lg-4 mb-4">
-          <div class="card"><a href="/item"><img src="/assets/images/static/img<%= i%>.jpg" alt="Card image cap" class="card-img-top product-img"/></a>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item bold product-card-name">Product Name
-                <p><small>Product Stock Left</small></p>
+<div id="store-container" class="container">
+  <div class="row">
+    <div id="store-sidebar" class="p-0">
+      <div>
+        <p class="m-0"><b>Food & Beverages</b></p>
+        <hr>
+        <div>
+          <input type="checkbox"/><small class="ml-3 mb-0">Fruits & Vegetables</small>
+        </div>
+        <div>
+          <input type="checkbox"/><small class="ml-3 mb-0">Grains</small>
+        </div>
+        <div>
+          <input type="checkbox"/><small class="ml-3 mb-0">Legumes</small>
+        </div>
+        <div>
+          <input type="checkbox"/><small class="ml-3 mb-0">Nuts and Seeds</small>
+        </div>
+        <div>
+          <input type="checkbox"/><small class="ml-3 mb-0">Dairy Products and Eggs</small>
+        </div>
+        <div>
+          <input type="checkbox"/><small class="ml-3 mb-0">Livestock Feed</small>
+        </div>
+        <div>
+          <input type="checkbox"/><small class="ml-3 mb-0">Meats and Poultry</small>
+        </div>
+      </div>
+      <div>
+        <p class="m-0"><b>Other Categories</b></p>
+        <hr>
+        <small class="block">All Products</small>
+        <small class="block">Supplemments</small>
+        <small class="block">Hygiene</small>
+        <small class="block">Cosmetics</small>
+        <small class="block">Stationary</small>
+      </div>
+      <div>
+        <p class="m-0"><b>Price Range</b></p>
+        <hr>
+        <input type="number" class="inline-block" placeholder="min"/> -
+        <input type="number" class="inline-block" placeholder="max"/>
+        <div class="align-right">
+          <button class="btn btn-custom-primary btn-sm mt-3">Apply</button>
+        </div>
+      </div>
+      <div>
+        <p class="m-0"><b>Rating</b></p>
+
+          <%for(i=5; i>0; i--){%>
+            <div class="stars">
+              <ul class="list-unstyled inline m-0 cursor-pointer">
+            <%for(j=0; j<5; j++){
+              if (i > j){ %>
+                <li class="inline"><i class="fa fa-star"></i></li>
+            <% }else{ %>
+                <li class="inline"><i class="fa fa-star-o"></i></li>
+            <% }
+            }
+            if (i !== 5){ %>
+              <li class="inline">
+                <small class="ml-1 inline">And Up</small>
               </li>
-            </ul>
-            <div class="card-body bottom-card-button">
-              <h4 class="card-price">&#x20B1; Product Price</h4>
-              <a href="#" class="btn btn-custom-primary btn-block">
-                <i class="fa fa-fw fa-cart-plus"></i>&nbsp;Add to Cart
-              </a>
+              </ul>
+              </div>
+            <% }else{ %>
+              </ul>
+              </div>
+            <% }
+          } %>
+
+      </div>
+
+    </div>
+    <div id="store-main" class="col pos-relative p-0">
+      <div>
+          <p class="m-0">8 items found</p>
+          <div class="sort">
+            <p class="m-0 inline">Sort By: </p>
+            <select class="inline" name="">
+              <option value="" selected>Popularity</option>
+              <option value="">Lowest to Highest Price</option>
+              <option value="">Highest to Lowest Price</option>
+            </select>
+          </div>
+          <hr>
+          <small>Filtered By: </small>
+          <small class="filter-tag">Price: 200 - 300<i class="fa fa-times ml-1"></i></small>
+          <small class="filter-tag">Rating: 2 & Up<i class="fa fa-times ml-1"></i></small>
+      </div>
+      <div>
+        <% for(i=0; i<8 ;i++){ %>
+          <div class="custom-card">
+            <div class="card-img"><img src="/assets/images/static/img<%= i+1%>.jpg"></div>
+            <a class="order-modal-link" href="#" data-toggle="modal" data-target="#modal-product-to-cart">
+              <div class="cart-button-div">
+                <p class="cart-button-text">Add to Cart</p>
+              </div>
+            </a>
+            <div class="card-desc">
+              <p class="card-title">Dugos Wild Forest Honey</p>
+              <p class="card-price">₱&nbsp;230.99</p>
+              <small class="card-oldprice text-muted">
+                <span style="text-decoration: line-through;">₱&nbsp;255.99</span> (-10%)<br>
+              </small>
+              <small class="card-rating">
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star-half-o"></i>&nbsp;
+            </small>
+              <small class="card-reviews">45 reviews</small>
             </div>
           </div>
+          <%}%>
+        <!-- pagination -->
+        <div class="row">
+          <div class="col"> </div>
+          <div class="col pt-3">
+            <ul class="pagination">
+              <li class="page-item"><a href="#" aria-label="Previous" class="page-link"><span aria-hidden="true">«</span><span class="sr-only">Previous</span></a></li>
+              <li class="page-item"><a href="#" class="page-link">1</a></li>
+              <li class="page-item"><a href="#" class="page-link">2</a></li>
+              <li class="page-item"><a href="#" class="page-link">3</a></li>
+              <li class="page-item"><a href="#" class="page-link">4</a></li>
+              <li class="page-item"><a href="#" class="page-link">5</a></li>
+              <li class="page-item"><a href="#" class="page-link">6</a></li>
+              <li class="page-item"><a href="#" aria-label="Next" class="page-link"><span aria-hidden="true">»</span><span class="sr-only">Next</span></a></li>
+            </ul>
+          </div>
+          <div class="col"> </div>
         </div>
-      <% } %>
+
+      </div>
     </div>
   </div>
-  <br>
-</div>
-<!-- pagination -->
-<div class="row">
-  <div class="col"> </div>
-  <div class="col pt-3">
-    <ul class="pagination">
-      <li class="page-item"><a href="#" aria-label="Previous" class="page-link"><span aria-hidden="true">&laquo;</span> <span class="sr-only">Previous</span></a></li>
-      <li class="page-item"><a href="#" class="page-link">1</a></li>
-      <li class="page-item"><a href="#" class="page-link">2</a></li>
-      <li class="page-item"><a href="#" class="page-link">3</a></li>
-      <li class="page-item"><a href="#" class="page-link">4</a></li>
-      <li class="page-item"><a href="#" class="page-link">5</a></li>
-      <li class="page-item"><a href="#" class="page-link">6</a></li>
-      <li class="page-item"><a href="#" aria-label="Next" class="page-link"><span aria-hidden="true">&raquo;</span> <span class="sr-only">Next</span></a></li>
-    </ul>
-  </div>
-  <div class="col"> </div>
 </div>
 
-<%- include('../../../templates/sidebar-closer.ejs') -%>
+<%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <%- include('../../../templates/closer.ejs') -%>
