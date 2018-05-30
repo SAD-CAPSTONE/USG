@@ -8,7 +8,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="icon" type="image/png" href="/assets/usg-green.png"/>
-  <title id="title">UltraSuperGreen</title>
+  <title id="title">Ultra &nbsp;Super &nbsp;Green</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -25,6 +25,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         page. However, you can choose any other skin. Make sure you
         apply the skin class to the body tag so the changes take effect. -->
   <link rel="stylesheet" href="/assets/admin/dist/css/skins/skin-green.min.css">
+  <link rel="stylesheet" href="/assets/admin/dist/css/skins/skin-green-light.min.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -60,7 +61,7 @@ desired effect
 |               | sidebar-mini                            |
 |---------------------------------------------------------|
 -->
-<body class="hold-transition skin-green fixed sidebar-mini">
+<body id="bod" class="hold-transition skin-green fixed sidebar-mini">
 <div class="wrapper">
 
   <!-- Main Header -->
@@ -157,6 +158,15 @@ desired effect
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
       </div>
+    </br>
+    <center>
+      <div class="btn-group">
+
+        <button type="button" id="dark_theme" class="btn bg-navy btn-xs">Theme Dark</button>
+
+        <button type="button" id="light_theme" class="btn btn-default btn-xs">Theme Light</button>
+      </div>
+    </center>
 
       <!-- search form (Optional) -->
       <form action="#" method="get" class="sidebar-form">
@@ -172,9 +182,14 @@ desired effect
 
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">Quick Tools</li>
+        <li class="navi"><a href="/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard	</span></a></li>
+        <li class="navi"><a href="/inventory/allStocks"><i class="fa fa-bar-chart"></i> <span>Stocks</span></a></li>
+        <li class="navi"><a href="/receiveDelivery/Form"><i class="fa fa-hand-lizard-o"></i> <span>Receive Delivery</span></a></li>
+
+
         <li class="header">Main Tools</li>
         <!-- Optionally, you can add icons to the links -->
-        <li class="navi"><a href="/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard	</span></a></li>
 
         <li class="treeview">
           <a href="#"><i class="fa fa-desktop"></i> <span>Maintenance</span>
