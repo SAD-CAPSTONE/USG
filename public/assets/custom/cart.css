@@ -9,16 +9,6 @@
   --cart-font-color: black;
 }
 
-/* @media screen and (max-height: 241px) {
-  #cart-sidebar ul.checkout {
-    position: relative !important;
-  }
-  #cart-sidebar ul.components {
-    position: static !important;
-    top: 0;
-    bottom: 0;
-  }
-} */
 @media (max-width: 500px) {
   :root {
     --cart-width: 280px;
@@ -28,13 +18,11 @@
 
 /* Cart General */
 #cart-sidebar p {
-  font-family: 'Poppins', sans-serif;
   font-size: 1.1em;
   font-weight: 300;
   line-height: 1.7em;
 }
-#cart-sidebar a, a:hover, a:focus {
-  color: inherit;
+#cart-sidebar a, #cart-sidebar a:hover, #cart-sidebar a:focus {
   text-decoration: none;
   transition: all 0.3s;
 }

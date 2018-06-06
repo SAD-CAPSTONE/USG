@@ -8,11 +8,11 @@
   #main-desc .simplebar-scroll-content {
     height: 100% !important;
   }
-  .product-featured .simplebar-content {
+  .x-scrolling-div .simplebar-content {
     height: auto !important;
     overflow-y: hidden !important;
   }
-  .product-featured .simplebar-scroll-content {
+  .x-scrolling-div .simplebar-scroll-content {
     overflow-y: hidden !important;
   }
 </style>
@@ -37,8 +37,9 @@
           <i class="fa fa-star"></i>
           <i class="fa fa-star-half-o"></i>&nbsp
           <small class="text-muted">1,173 ratings</small>
+          <a href="#"><i class="fa fa-share-alt"></i></a>
           <p class="mb-2">The Healthy Grocery Raw Cordyceps</p>
-          <div data-simplebar="">
+          <div id="main-desc-text" data-simplebar="">
             <small class="block indent">
               Cordyceps is a genus of ascomycete fungi (sac fungi) that includes about 400 species.
               Most Cordyceps species are endoparasitoids, parasitic mainly on insects and other
@@ -53,8 +54,9 @@
               temperate and tropical forests.
             </small>
           </div>
+          <button type="button" class="btn btn-custom-primary btn-block mt-3" data-toggle="modal" data-target="#modal-product-to-cart">Add to Cart</button>
         </div>
-        <a href="#"><i class="fa fa-share-alt"></i></a>
+
 
         <div id="item-options">
           <!-- size,price -->
@@ -92,8 +94,8 @@
               </div>
             </div>
             <div id="item-price" class="fl-r pos-relative">
-              <p class="m-0">P 2,350.95</p>
-              <small class="text-muted">P 2,350.95</small>
+              <p class="m-0 price-symbol">2,350.95</p>
+              <small class="text-muted"><s class="price-symbol">2,350.95</s></small>
             </div>
           </div>
           <!-- quantity,add-to-cart -->
@@ -111,10 +113,10 @@
 
       <div>
         <p><b>Related Products</b></p>
-        <div class="container product-featured" data-simplebar="">
+        <div class="container x-scrolling-div" data-simplebar="">
           <% for(i=0; i<5 ;i++){ %>
             <div class="custom-card my-1" style="margin-right: 22px !important; margin-left: 1px">
-              <div class="card-img"><img src="/assets/images/static/img<%= i+1%>.jpg"></div>
+              <div class="card-img"><a href="/item"><img src="/assets/images/static/img<%= i+1%>.jpg"></a></div>
               <a class="order-modal-link" href="#" data-toggle="modal" data-target="#modal-product-to-cart">
                 <div class="cart-button-div">
                   <p class="cart-button-text">Add to Cart</p>
@@ -122,9 +124,9 @@
               </a>
               <div class="card-desc">
                 <p class="card-title">Dugos Wild Forest Honey</p>
-                <p class="card-price">₱&nbsp;230.99</p>
+                <p class="card-price price-symbol">230.99</p>
                 <small class="card-oldprice text-muted">
-                  <span style="text-decoration: line-through;">₱&nbsp;255.99</span> (-10%)<br>
+                  <span><s class="price-symbol">255.99</s></span> (-10%)<br>
                 </small>
                 <small class="card-rating">
                 <i class="fa fa-star"></i>
@@ -232,7 +234,8 @@
   </div>
 </div>
 
-<!-- <%- include('../../../templates/footer.ejs') -%> -->
+<%- include('../../../templates/modal-product-to-cart.ejs') -%>
+<%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <%- include('../../../templates/closer.ejs') -%>

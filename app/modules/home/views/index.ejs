@@ -1,11 +1,11 @@
 <%- include('../../../templates/navbar.ejs') -%>
 
 <style>
-  .simplebar-content {
+  .x-scrolling-div .simplebar-content {
     min-height: 340px !important;
     width: 100% !important;
   }
-  .simplebar-scroll-content {
+  .x-scrolling-div .simplebar-scroll-content {
     overflow-y: hidden !important;
   }
 </style>
@@ -38,10 +38,10 @@
       <h3 class="lead fl-r"><a href="/store">Go To Store ></a></h3>
     </div><br/><br/>
   </div>
-  <div class="container product-featured" data-simplebar="">
+  <div class="container x-scrolling-div" data-simplebar="">
     <% for(i=0; i<5 ;i++){ %>
       <div class="custom-card my-1" style="margin-right: 22px !important; margin-left: 1px">
-        <div class="card-img"><img src="/assets/images/static/img<%= i+1%>.jpg"></div>
+        <div class="card-img"><a href="/item"><img src="/assets/images/static/img<%= i+1%>.jpg"></a></div>
         <a class="order-modal-link" href="#" data-toggle="modal" data-target="#modal-product-to-cart">
           <div class="cart-button-div">
             <p class="cart-button-text">Add to Cart</p>
@@ -49,9 +49,9 @@
         </a>
         <div class="card-desc">
           <p class="card-title">Dugos Wild Forest Honey</p>
-          <p class="card-price">₱&nbsp;230.99</p>
+          <p class="card-price price-symbol">230.99</p>
           <small class="card-oldprice text-muted">
-            <span style="text-decoration: line-through;">₱&nbsp;255.99</span> (-10%)<br>
+            <span><s class="price-symbol">255.99</s></span> (-10%)<br>
           </small>
           <small class="card-rating">
           <i class="fa fa-star"></i>
@@ -73,10 +73,10 @@
       <h3 class="lead fl-r"><a href="/store">Go To Store ></a></h3>
     </div><br/><br/>
   </div>
-  <div class="container product-featured" data-simplebar="">
+  <div class="container x-scrolling-div" data-simplebar="">
     <% for(i=0; i<5 ;i++){ %>
       <div class="custom-card my-1" style="margin-right: 22px !important; margin-left: 1px">
-        <div class="card-img"><img src="/assets/images/static/img<%= i+5%>.jpg"></div>
+        <div class="card-img"><a href="/item"><img src="/assets/images/static/img<%= i+5%>.jpg"></a></div>
         <a class="order-modal-link" href="#" data-toggle="modal" data-target="#modal-product-to-cart">
           <div class="cart-button-div">
             <p class="cart-button-text">Add to Cart</p>
@@ -102,29 +102,7 @@
   </div>
 </div>
 
-<div class="modal fade" role="dialog" tabindex="-1" id="modal-product-to-cart" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
-      <div class="modal-body">
-        <div class="product-img"><img src="/assets/images/static/img6.jpg"></div>
-        <div class="right-pane">
-          <p class="title">SuperScoops Premium Vegan Ice Cream Choco</p>
-          <div class="order-details">
-            <p class="select-label">Select Size:</p><select class="form-control-sm select-size"><option value="" selected="">5ml</option><option value="">10ml</option><option value="">15ml</option></select>
-            <div class="input-group quantity">
-              <div class="input-group-prepend addon"><button class="btn btn-primary quantity-buttons" type="button"><small class="quantity-text quantity-text-minus">-</small></button></div><input class="form-control quantity-input" type="text" readonly="" value="1">
-              <div class="input-group-append addon"><button class="btn btn-primary quantity-buttons" type="button"><small class="quantity-text quantity-text-plus">+</small></button></div>
-            </div>
-            <p class="quantity-label">Quantity:</p>
-            <p class="price">₱ 230.99</p><button class="btn btn-primary btn-sm add-button" type="button">Add to Cart</button></div>
-        </div>
-      </div>
-      <div class="modal-footer"></div>
-    </div>
-  </div>
-</div>
-
+<%- include('../../../templates/modal-product-to-cart.ejs') -%>
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
