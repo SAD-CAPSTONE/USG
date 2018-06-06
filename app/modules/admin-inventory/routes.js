@@ -266,14 +266,11 @@ router.get('/allStocks', (req,res)=>{
 
   // Query inventory
   db.query(`
-    Select tblproductstock.intInventoryno, tblproductlist.strProductCode, tblproductlist.strProductname, tblproductbrand.strBrand, tblProductinventory.productprice, count(*) as quantity, tblproductinventory.intstatus, tblproductinventory.intSize, tbluom.strUnitname from tblProductStock join
-    tblproductinventory on tblproductstock.intInventoryno = tblproductinventory.intinventoryno
-    join tblproductlist on tblproductinventory.intproductno = tblproductlist.intproductno
-    join tblproductbrand on tblproductlist.intbrandno = tblproductbrand.intbrandno
-    join tblsubcategory on tblproductlist.intsubcategoryno = tblsubcategory.intsubcategoryno
-    join tblcategory on tblsubcategory.intcategoryno = tblcategory.intcategoryno
-    join tbluom on tblproductinventory.intuomno = tbluom.intuomno
-     group by tblproductinventory.intinventoryno`, (err1,results1,fields1)=>{
+    Select count(*) as Quantity, tblproductList.*, tblProductBrand.* from tblProductList
+    join tblProductBrand on tblProductList.intBrandno = tblProductBrand.intBrandNo
+    join tblProductInventory on tblProductList.intProductNo = tblProductInventory.intProductNo
+    join tblProductStock on tblProductInventory.intInventoryNo = tblProductStock.intInventoryNo
+    group by tblProductList.intProductNo`, (err1,results1,fields1)=>{
       if (err1) console.log(err1);
 
       // Query suppliers
@@ -288,15 +285,15 @@ router.get('/allStocks', (req,res)=>{
           db.query(`Select * from tbluom where intstatus = 1`, (err4,results4,fields4)=>{
             if (err4) console.log(err4);
 
-            // Query productstock counter
+            // Query productstock last record
             db.query(`Select * from tblproductstock order by intproductquantityno desc limit 1`, (err5,results5,fields5)=>{
               if (err5) console.log(err5);
 
-              // query product inventory
+              // query product inventory last record
               db.query(`Select * from tblproductinventory order by intinventoryno desc limit 1`, (err6,results6,fields6)=>{
                 if (err6) console.log(err6);
 
-                // query inventory transaction counter
+                // query inventory transaction last record
                 db.query(`Select * from tblinventorytransactions order by inttransactionid desc limit 1`, (err7,results7,fields7)=>{
                   if (err7) console.log(err7);
 
@@ -342,7 +339,7 @@ router.get('/viewStock', (req,res)=>{
       db.query(`Select * from tblProductStock order by intProductQuantityNo desc limit 1`, (err3,results3,fields3)=>{
         if (err3) console.log(err3);
 
-        res.render('admin-inventory/views/stockPerProduct', {re: results1, title: results2, moment: moment, list: results3});
+        res.render('admin-inventory/views/stockPerProduct', {re: results1, title: results2, moment: moment, list: results3, inventory: ino});
 
       });
 
@@ -354,6 +351,39 @@ router.post('/samp', (req,res)=>{
   console.log("test");
 
   res.send(req.body.name);
+});
+
+router.post('/newStock', (req,res)=>{
+  db.query(`Insert into tblProductStock (intProductQuantityNo, intInventoryNo, strBarcode, expirationDate) values ("${req.body.prodno}","${req.body.ino}","${req.body.barcode}", "${req.body.expiration}")`, (err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+
+    // ? pano nga ulit subquery?
+    db.query(`Select * from tblproductInventory where intInventoryno = "${req.body.ino}"`, (err2,results2,fields2)=>{
+      if (err2) console.log(err2);
+
+      var newQuantity = results2[0].intQuantity + 1;
+
+      db.query(`Update tblproductinventory set intQuantity = ${newQuantity} where intInventoryno = "${req.body.ino}"`,(err3,results3,fields3)=>{
+        res.send("yes");
+
+      });
+    });
+
+  });
+});
+
+router.post('/searchExpired',(req,res)=>{
+  var dates = (req.body.val).split("-");
+
+  db.query(`Select * from tblproductStock
+join tblproductinventory on tblproductstock.intinventoryno = tblproductstock.intinventoryno
+join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
+where tblproductstock.expirationDate between '${dates[0]}' and '${dates[1]}'`,(err1,results1,fiels1)=>{
+  if (err1) console.log(err);
+  //console.log(results1);
+  res.send(results1);
+
+});
 });
 
 

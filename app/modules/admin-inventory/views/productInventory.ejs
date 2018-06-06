@@ -5,9 +5,9 @@
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-
+       <%=title[0].strProductName%>
     </h1>
-    <strong><small>Product Code: <%=title[0].strProductCode%> &nbsp;&nbsp; Product Name: <%=title[0].strProductName%></small></strong>
+    <small>Product Code: <%=title[0].strProductCode%> &nbsp;&nbsp; </small>
     <ol class="breadcrumb">
       <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
       <li><a href="#">Maintenance</a></li>
@@ -28,6 +28,14 @@
             <!-- Inventory -->
             <div class="tab-pane active" id="inventory">
 
+            <p class="text-light-blue">Note:
+              <span class="label label-danger">Critical Limit</span> means that the stock quantity is below critical limit, you need to restock.
+            </br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <span class="label label-warning">Critical Limit</span> means that the stock has reached its critical limit
+          </br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check the inventory transaction to see changes happened per inventory
+          </p>
+
               </br>
               <!-- /.box-header -->
               <div class="box-body table-responsive">
@@ -39,6 +47,7 @@
                     <th>Size</th>
                     <th>SRP</th>
                     <th>Product Price</th>
+                    <th>Quantity</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
@@ -55,13 +64,21 @@
                       <td><%=i.productSRP%></td>
                       <td><%=i.productPrice%></td>
                       <!-- <td><%= moment(i.expirationDate).format("MMM Do YYYY")%></td> -->
-
+                      <td><%=i.intQuantity%></td>
                       <td>
                         <% if (i.intStatus == 1){ %>
                           <span class="label label-success">Active</span>
                         <% }else{ %>
                           <span class="label label-danger">Inactive</span>
                         <% } %>
+
+                        <% if (i.intQuantity < i.intCriticalLimit){ %>
+                          <span class="label label-danger">Critical Limit</span>
+                        <% } %>
+                        <% if (i.intQuantity == i.intCriticalLimit){ %>
+                          <span class="label label-warning">Critical Limit</span>
+                        <% } %>
+
 
                       </td>
                       <form>

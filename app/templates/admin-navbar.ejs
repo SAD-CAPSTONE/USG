@@ -39,6 +39,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
    <link href="/assets/bootstrap-sweetalert-master/dist/sweetalert.css" rel="stylesheet">
+   <!-- Pace style -->
+   <link rel="stylesheet" href="/assets/admin/plugins/pace/pace.min.css">
+   <!-- daterange picker -->
+   <link rel="stylesheet" href="/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+
 
 </head>
 <!--
@@ -162,9 +167,9 @@ desired effect
     <center>
       <div class="btn-group">
 
-        <button type="button" id="dark_theme" class="btn bg-navy btn-xs">Theme Dark</button>
+        <button type="button" id="dark_theme" class="btn btn-primary btn-xs">Dark</button>
 
-        <button type="button" id="light_theme" class="btn btn-default btn-xs">Theme Light</button>
+        <button type="button" id="light_theme" class="btn btn-default btn-xs">Light</button>
       </div>
     </center>
 
@@ -184,6 +189,11 @@ desired effect
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">Quick Tools</li>
         <li class="navi"><a href="/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard	</span></a></li>
+        <li class="navi">
+            <a href=""><i class="fa fa-cart-arrow-down"></i> <span>Orders</span><span class="pull-right-container">
+            <small class="label pull-right bg-green">new</small>
+          </span></a>
+        </li>
         <li class="navi"><a href="/inventory/allStocks"><i class="fa fa-bar-chart"></i> <span>Stocks</span></a></li>
         <li class="navi"><a href="/receiveDelivery/Form"><i class="fa fa-hand-lizard-o"></i> <span>Receive Delivery</span></a></li>
 
@@ -217,11 +227,13 @@ desired effect
             <li class="navi"><a href="/maintenance/voucher"><i class="fa fa-genderless"></i>Voucher</a></li>
             <li class="navi"><a href="/maintenance/supplier"><i class="fa fa-genderless"></i>Suppliers</a></li>
             <li class="navi"><a href="/maintenance/productCategory"><i class="fa fa-genderless"></i>Product Category</a></li>
+            <li class="navi"><a href="/maintenance/batch"><i class="fa fa-genderless"></i>Product Batch</a></li>
             <li class="navi"><a href="/maintenance/businessType"><i class="fa fa-genderless"></i>Business Types</a></li>
+            <li class="navi"><a href="/maintenance/measurements"><i class="fa fa-genderless"></i>Measurements</a></li>
             <li class="navi"><a href="/maintenance/FAQ"><i class="fa fa-genderless"></i>Frequently Asked Questions</a></li>
             <li class="navi"><a href="/maintenance/promotion"><i class="fa fa-genderless"></i>Promotions</a></li>
             <li class="navi"><a href="/maintenance/package"><i class="fa fa-genderless"></i>Package Discounts</a></li>
-            <li class="navi"><a href="/maintenance/returnOrderReason"><i class="fa fa-genderless"></i>Return Order Reasons</a></li>
+
 
 
           </ul>

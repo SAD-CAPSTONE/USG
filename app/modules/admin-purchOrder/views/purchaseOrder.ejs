@@ -8,7 +8,7 @@
      <section class="content-header">
        <h1>
 
-         <small>Note: Please monitor stocks regularly, check if there is damaged products.</small>
+         <small> </small>
        </h1>
        <ol class="breadcrumb">
          <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -23,7 +23,9 @@
          <div class="col-xs-12">
            <div class="box">
              <div class="box-header">
-               <h3 class="box-title">Purchase Order List</h3>
+               <h4 align="center">Purchase Order List</h4>
+             </br>
+               <h5>Note: You may change the status of the orders once you received the deliveries.</h5>
              </div>
              <!-- buttons -->
        				&nbsp; &nbsp;<a href="/purchaseOrder/form"><button type="button"  class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Add New Order</button></a>
@@ -40,41 +42,26 @@
                  </tr>
                  </thead>
                  <tbody>
-                 <tr>
-                   <td>007612</td>
-                   <td>Biohogs</td>
-                   <td>03/21/2018</td>
-                   <td><span class="label label-success">Received</span></td>
-                   <td><a href="invoice.html"><button class="btn btn-default btn-sm">View Invoice</button></a></td>
-                 </tr>
-                 <tr>
-                   <td>007613</td>
-                   <td>Coco Wonder</td>
-                   <td>03/22/2018</td>
-                   <td><span class="label label-warning">On Process</span></td>
-                   <td><a href="invoice.html"><button class="btn btn-default btn-sm">View Invoice</button></a></td>
-                 </tr>
-                 <tr>
-                   <td>007614</td>
-                   <td>Veganola</td>
-                   <td>03/23/2018</td>
-                   <td><span class="label label-danger">Cancelled</span></td>
-                   <td><a href="invoice.html"><button class="btn btn-default btn-sm">View Invoice</button></a></td>
-                 </tr>
- 				        <tr>
-                   <td>007615</td>
-                   <td>Happy Island</td>
-                   <td>03/23/2018</td>
-                   <td><span class="label label-success">Received</span></td>
-                   <td><a href="invoice.html"><button class="btn btn-default btn-sm">View Invoice</button></a></td>
-                 </tr>
- 				        <tr>
-                   <td>007616</td>
-                   <td>Nature to Nurture</td>
-                   <td>03/23/2018</td>
-                   <td><span class="label label-danger">Cancelled</span></td>
-                   <td><a href="invoice.html"><button class="btn btn-default btn-sm">View Invoice</button></a></td>
-                 </tr>
+                  <% if (re == undefined || re == null || re.length == 0){ %>
+
+                  <% }else{ %>
+
+                  <%  re.forEach(function(i){ %>
+                      <tr>
+                        <td><%=i.intPurchaseOrderNo%></td>
+                        <td><%=i.strBusinessName%></td>
+                        <td><%= moment(i.dateOrdered).format("MMMM Do YYYY") %></td>
+                        <td>
+                          <% if (i.Stat == 1){ %>
+                            <span class="label label-success">Received</span>
+                          <% }else{ %>
+                            <span class="label label-warning">On process</span>
+                          <% } %>
+                        </td>
+                        <td><a href="invoice.html"><button disabled class="btn btn-default btn-sm">View Invoice</button></a></td>
+                      </tr>
+                  <%  }) %>
+                  <% } %>
 
                  </tbody>
 

@@ -92,7 +92,7 @@
 		  <div class="modal-body">
 
         <!-- form start -->
-        <form role="form" method="post" enctype="multipart/form-data" action="/inventory/addProduct">
+        <form role="form" method="post" enctype="multipart/form-data" action="">
           <div class="box-body">
 
             <div class="form-group">
@@ -105,7 +105,7 @@
                 <!-- <input type="text" class="form-control" value="<%=number%>" disabled id="add_prodno" name="add_prodno" > -->
 
               <% } %>
-
+                <input type="text" class="form-control" value="<%=inventory%>"  id="ino" name="ino" >
                 <input type="text" class="form-control" value="<%=number%>"  id="add_prodno" name="add_prodno" >
             </div>
             <div class="form-group">
@@ -125,7 +125,7 @@
 
 			  <div class="modal-footer">
 				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-				<button type="submit" class="btn btn-primary">Save changes</button>
+				<button type="button" id="newStock" class="btn btn-primary">Save changes</button>
 			  </div>
 
       </form>
@@ -241,6 +241,10 @@
   <!-- AdminLTE App -->
   <script src="/assets/admin/dist/js/adminlte.min.js"></script>
 
+  <script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+
+  <script src="/assets/admin/bower_components/PACE/pace.min.js"></script>
+
   <!-- page script (new added) -->
   <script>
     $(function () {
@@ -291,10 +295,10 @@
 
 
   <script>
-  $('#title').html("USG | All Products");
-  $(".treeview a:contains('Maintenance')").parent().addClass("active");
-  $(".treeview a:contains('Inventory')").parent().addClass("active");
-  $(".navi a:contains('All Products')").parent().addClass("active");
+    $('#title').html("USG | All Products");
+    $(".treeview a:contains('Maintenance')").parent().addClass("active");
+    $(".treeview a:contains('Inventory')").parent().addClass("active");
+    $(".navi a:contains('All Products')").parent().addClass("active");
   </script>
 
   <script>
@@ -314,11 +318,43 @@
   </script>
 
   <script>
-  $('.setter').on('click', function(){
-    $('#add_sno').val($(this).data('supplierid'));
-    $('#add_sname').val($(this).data('supplier'));
-    $('#add_bname').val($(this).data('business'));
+    $('.setter').on('click', function(){
+      $('#add_sno').val($(this).data('supplierid'));
+      $('#add_sname').val($(this).data('supplier'));
+      $('#add_bname').val($(this).data('business'));
+    })
+  </script>
+
+  <script>
+
+  $(document).ajaxStart(function () {
+    Pace.restart()
+
   })
+  $(document).ready(function(){
+    $('#newStock').on('click',function(){
+      $.ajax({
+        url: '/inventory/newStock',
+        method: 'POST',
+        datatype: "json",
+        data: {prodno: $('#add_prodno').val(),
+              ino: $('#ino').val(),
+              barcode: $('#add_bcode').val(),
+              expiration: $('#add_expiration').val()
+            },
+        success: function(response,status,http){
+          if (response){
+            if (response == "yes"){
+              window.location.reload();
+              
+            }else{
+              swal("Error!", "", "error");
+            }
+          }
+        }
+      })
+    });
+  });
   </script>
 
 

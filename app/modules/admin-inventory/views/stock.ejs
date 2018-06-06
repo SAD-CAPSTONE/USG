@@ -6,7 +6,7 @@
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      Error
+      <small>Note: Please Monitor stocks regularly</small>
 
     </h1>
     <ol class="breadcrumb">
@@ -22,12 +22,14 @@
       <div class="col-xs-12">
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs">
-            <li class="active"><a href="#stock" data-toggle="tab"><i class="fa fa-bars"></i> All Stocks</a></li>
+            <li ><a href="#stock" data-toggle="tab"><i class="fa fa-bars"></i> All Stocks</a></li>
             <li><a href="#addStock" data-toggle="tab"><i class="fa fa-plus"></i> Add to Stock</a></li>
+            <li class="active"><a href="#expired" data-toggle="tab"><i class="fa fa-calendar-times-o"></i> Expired Products</a></li>
           </ul>
           <div class="tab-content">
+
             <!-- Inventory -->
-            <div class="tab-pane active" id="stock">
+            <div class="tab-pane " id="stock">
 
               </br>
               <!-- /.box-header -->
@@ -35,11 +37,10 @@
                 <table id="example2" class="table table-bordered table-hover">
                   <thead>
                   <tr>
-                    <th>No</th>
+
                     <th>Product Code</th>
-                    <th>Product Name / Size</th>
+                    <th>Product Name</th>
                     <th>Brand</th>
-                    <th>Product Price</th>
                     <th>Quantity</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -51,17 +52,15 @@
                   <% }else { %>
                     <% re.forEach(function(i){ %>
                       <tr>
-                      <td><%=i.intInventoryno%></td>
+
                       <td><%=i.strProductCode%></td>
-                      <td><%=i.strProductname%>&nbsp;/&nbsp;<%=i.intSize%>&nbsp;<%=i.strUnitname%></td>
+                      <td><%=i.strProductName%></td>
                       <td><%=i.strBrand%></td>
-                      <td><%=i.productprice%></td>
-                      <td><%=i.quantity%></td>
-                      <td><%=i.intstatus%></td>
-
-
+                      <td><%=i.Quantity%></td>
+                      <td><span class="label label-warning">Critical Level</span></td>
                       <td>
-
+                      <% var url = i.intProductNo %>
+                        <a href="/inventory/productInventory?product=<%=url%>"><button type="button" class="btn btn-info">Check Inventory</button> </a>
                       </td>
 
                     </tr>
@@ -261,6 +260,41 @@
                     <!-- /.box -->
                     </div>
 
+                    <!-- Stock Quantity -->
+                    <div class="box box-default">
+                      <div class="box-header with-border">
+                        <h3 class="box-title">Other information</h3>
+
+                        <div class="box-tools pull-right">
+                          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                        </div>
+                      </div>
+                      <!-- /.box-header -->
+                      <div class="box-body">
+                        <div class="box-body table-responsive">
+                          <table id="quantity_table" class="table table-bordered table-hover">
+                          <thead>
+                            <th style="width: 10px">#</th>
+                            <th>Product Name</th>
+                            <th >Quantity</th>
+                            <th >Unit Price</th>
+                            <th >Actions</th>
+                            <th> Total </th>
+                          </thead>
+
+                          <tbody>
+
+                        </tbody>
+
+                          </table>
+                        </div>
+                      </div>
+                      <!-- /.box-body -->
+                    <!-- /.box -->
+                    </div>
+
+
                     <div class="box-footer">
                       <a href="purchaseOrderList.html"><button type="submit" class="btn btn-default">Back</button></a>
                       <button type="submit" class="btn btn-info pull-right">Submit Order Form</button>
@@ -271,6 +305,66 @@
               </form>
 
             </div>
+
+            <!-- Inventory -->
+            <div class="tab-pane active" id="expired">
+            </br>
+              <!-- Date range -->
+              <div class="row">
+                <div class="form-group col-sm-4">
+                  <label>Select date range:</label>
+
+                  <div class="input-group">
+                    <div class="input-group-addon">
+                      <i class="fa fa-calendar"></i>
+                    </div>
+                    <input type="text" class="form-control" id="reservation">
+
+                  </div>
+                  <!-- /.input group -->
+                </div>
+                <!-- /.form group -->
+                <div class="col-xs-2">
+                  </br>
+
+                  <button id="search-expired" class="btn btn-default"><i class="fa fa-search"></i> Search</button>
+
+                </div>
+                <div class="col-xs-2">
+                  </br>
+
+                  <button id="pull-out" class="btn btn-danger"><i class="fa fa-close"></i> Pull-out all from inventory</button>
+                </div>
+              </div>
+
+              </br>
+              <!-- /.box-header -->
+              <div class="box-body table-responsive">
+                <table id="expired-table" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+
+                    <th>No</th>
+                    <th>Barcode</th>
+                    <th>Product Name</th>
+                    <th>Brand</th>
+                    <th>Expiration Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+
+
+
+
+                  </tbody>
+
+                </table>
+              </div>
+              <!-- /.box-body -->
+            </div>
+
 
           </div>
           <!-- /.tab-content -->
@@ -575,7 +669,58 @@
   <!-- AdminLTE App -->
   <script src="/assets/admin/dist/js/adminlte.min.js"></script>
 
+  <script src="/assets/admin/bower_components/moment/min/moment.min.js"></script>
+  <script src="/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+
   <!-- page script (new added) -->
+
+  <script>
+  $(document).ready(function(){
+
+    $('#pull-out').hide();
+
+    //Date range picker
+    $('#reservation').daterangepicker();
+    $('#search-expired').on('click',function(){
+      $.ajax({
+        url: '/inventory/searchExpired',
+        method: 'post',
+        datatype: "json",
+        data: {val: $('#reservation').val()},
+        success: function(response,status,http){
+          if (response){
+            var t = $('#expired-table').DataTable();
+            var table = document.getElementById("expired-table");
+            var row = table.getElementsByTagName("tr");
+            var rows = t.rows( '.selected' );
+
+            var tr = table.getElementsByTagName("tr");
+            var validity = 1;
+            
+            $('#pull-out').show();
+
+            if (validity){
+              response.forEach(function(i){
+                t.row.add( [
+                    i.intProductQuantityNo,
+                    i.strBarcode,
+                    i.strProductName,
+                    "brand",
+                    i.expirationDate,
+                    "status here",
+                    ""
+                ] ).draw( false );
+              });
+
+            } // validity
+
+          }
+        }
+      })
+    });
+  })
+
+  </script>
   <script>
     $(function () {
       $('#example2').DataTable({
@@ -617,6 +762,36 @@
         'autoWidth'   : true,
   	  'select'		: true,
   	  'scroll'		: true
+      })
+    })
+  </script>
+
+  <script>
+    $(function () {
+      $('#quantity_table').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+      'select'		: true,
+      'scroll'		: true
+      })
+    })
+  </script>
+
+  <script>
+    $(function () {
+      $('#expired-table').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+      'select'		: true,
+      'scroll'		: true
       })
     })
   </script>

@@ -8,7 +8,7 @@
     <section class="content-header">
       <h1>
 
-        <small>Note: Please be careful when changing the status of product category, it might affect products in the inventory</small>
+        <small></small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -19,7 +19,10 @@
 
     <!-- Main content -->
     <section class="content">
-		<div class="box box-success">
+
+    <form method="POST" action="/receiveDelivery/newDeliveryRecord">
+
+    <div class="box box-success">
 			<div class="box-header with-border">
 				<h3 class="box-title">Receive Delivery Form</h3>
 			</div>
@@ -37,12 +40,14 @@
 					<div class="col-md-2">
 						<div class="form-group">
 							<label for="purcNo">Receive Order Number:</label>
-              <% if (re.length == 0 || re == 'NULL' || re == 'undefined'){ %>
-                <input type="text" value="0000" disabled class="form-control">
+              <% var number = "1000"; %>
+              <% if (re.length == 0 || re == null || re == undefined){ %>
+
               <% }else{ %>
-                <% var number = re.intReceiveOrderNo + 1 %>
-                <input type="text" value="<%= number %>" disabled class="form-control">
+                <%  number = parseInt(re[0].intReceiveOrderNo) + 1 %>
+
               <% } %>
+              <input type="text" value="<%= number %>" name="rno" class="form-control">
 						</div>
 					</div>
 
@@ -50,20 +55,39 @@
 					</div>
 
 					<div class="col-md-2">
+            </br>
 						<div class="form-group">
 							<label for="purcNo">Receive Order Date:</label>
-							<input type="date" value="" class="form-control">
+
+							<input type="date" disabled value="<%= moment().format("YYYY-MM-DD") %>" class="form-control">
 						</div>
 					</div>
 				</div>
 
-				<div class="row">
+      </br>
+
+        <div class="row">
+          <div id="formgroup" class="col-sm-4">
+            <label for="POno">Enter purchase order number:</label>
+            <input type="number"  required class="form-control" name="POno" required id="POno" >
+            <span id="errorhelpBlock" class="help-block">No purchase order record found!</span>
+            <span id="starthelpBlock" class="help-block">Press enter to check number</span>
+            <span id="successhelpBlock" class="help-block">Purchase Order number found!</span>
+          </div>
+          <div class="col-sm-4">
+          </br>
+        </br>
+            <a data-target="#orderList" data-toggle="modal">Select purchase number here</a>
+          </div>
+        </div>
+
+				<!-- <div class="row">
 					<div class="col-sm-3">
 						<h4> &nbsp; Supplier </h4>
 					</div>
 
-				</div>
-				<div class="row">
+				</div> -->
+				<!-- <div class="row">
 					<form class="form-horizontal">
 						<div class="form-group">
 
@@ -95,7 +119,7 @@
 					</form>
 
 
-				</div>
+				</div> -->
 
 				<div class="row">
 					<div class="col-sm-3">
@@ -104,72 +128,34 @@
 				</div>
 
 				<div class="row">
-					<div class="col-sm-8">
+					<div class="col-sm-12">
 					<div class="box">
 						<div class="box-header">
 						  <h3 class="box-title">Delivery List</h3>
-
-						  <div class="box-tools">
-							<ul class="pagination pagination-sm no-margin pull-right">
-							  <li><a href="#">&laquo;</a></li>
-							  <li><a href="#">1</a></li>
-							  <li><a href="#">2</a></li>
-							  <li><a href="#">3</a></li>
-							  <li><a href="#">&raquo;</a></li>
-							</ul>
-						  </div>
 						</div>
 
 						<!-- buttons -->
-						&nbsp; &nbsp;<button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#addProduct"><i class="fa fa-plus"></i> Add Product</button>
+						&nbsp; &nbsp;<button type="button" id="addButton" disabled class="addRow btn btn-success btn-xs" ><i class="fa fa-plus"></i> Add Product</button>
 
 						<!-- /.box-header -->
-						<div class="box-body table-responsive no-padding">
-						  <table class="table">
+						<div class="box-body table-responsive">
+						  <table id="example" class="table table-bordered table-hover">
+              <thead>
 							<tr>
 							  <th style="width: 10px">#</th>
 							  <th>Product Name</th>
-							  <th>Category</th>
+							  <th>Variant (if any)</th>
 							  <th>Size</th>
 							  <th>Quantity</th>
-                <th>Status</th>
                 <th>Expiration Date</th>
+                <th>Status</th>
 							  <th>SRP</th>
-                <th>Total Amount Based on Consignment Price</th>
+                <th>Total Amount</th>
 							</tr>
-							<tr>
-							  <td>1.</td>
-							  <td>Update software</td>
-							  <td>10</td>
-							  <td></td>
-							  <td></td>
-							  <td></td>
-							</tr>
-							<tr>
-							  <td>2.</td>
-							  <td>Clean database</td>
-							  <td>4</td>
-							  <td></td>
-							  <td></td>
-							  <td></td>
-							</tr>
-							<tr>
-							  <td>3.</td>
-							  <td>Cron job running</td>
-							  <td>17</td>
-							  <td></td>
-							  <td></td>
-							  <td></td>
-							</tr>
-							<tr>
-							  <td>4.</td>
-							  <td>Fix and squish bugs</td>
-							  <td>2</td>
-							  <td></td>
-							  <td></td>
-							  <td></td>
-							</tr>
-						  </table>
+            </thead>
+						<tbody>
+
+						</table>
 						</div>
 						<!-- /.box-body -->
 
@@ -178,16 +164,26 @@
 					</div>
 				</div>
 
+      </br>
+    </br>
+        <div class="row">
+          <div class="col-sm-10">
+            <label for="note">Additional Notes:</label>
+            <textarea class="form-control" id="note" name="note"></textarea>
+          </div>
+        </div>
 
 			</div>
 
 			<div class="box-footer">
-                <a href="receiveDeliveryList.html"><button type="submit" class="btn btn-default">Back</button></a>
-                <a href="receiveDeliveryList.html"><button type="submit" class="btn btn-info pull-right">Submit Order Form</button></a>
-            </div>
+          <a href="receiveDeliveryList.html"><button type="button" class="btn btn-default">Back</button></a>
+          <a href=""><button id="sub" disabled type="button" class="btn btn-info pull-right">Submit Form</button></a>
+      </div>
               <!-- /.box-footer -->
 
 		</div>
+
+  </form>
 
 	</section>
 
@@ -197,61 +193,59 @@
 
 	<!-- Modals -->
 
-	<div class="modal fade" id="addProduct">
-	  <div class="modal-dialog">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title">Product Information Form</h4>
-		  </div>
-		  <div class="modal-body">
-			<!-- Horizontal Form -->
+  <div class="modal fade" id="orderList">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">Purchase Order List</h4>
+      </div>
+      <div class="modal-body">
 
-					<!-- form start -->
-						<form class="form-horizontal">
-						  <div class="box-body">
-							<div class="form-group">
-							  <label for="inputProductCode" class="col-sm-2 control-label">Product Code</label>
+      <!-- /.box-header -->
+      <div class="box-body table-responsive">
+        <table id="example1" class="table table-bordered table-hover">
+          <thead>
 
-							  <div class="col-sm-10">
-								<input type="text" class="form-control" id="inputProductCode" placeholder="">
-							  </div>
-							</div>
+          <tr>
+            <th>Order No</th>
+            <th>Business Name</th>
+            <th>Date Ordered</th>
+            <th></th>
+          </tr>
+          </thead>
 
-							<div class="form-group">
-							  <label for="inputProductName" class="col-sm-2 control-label">Product Name</label>
+          <tbody>
+            <% if (pu == null || pu == undefined || pu.length == 0){ %>
 
-							  <div class="col-sm-10">
-								<input type="text" class="form-control" id="inputProductName" placeholder="">
-							  </div>
+            <% } else { %>
+            <% pu.forEach(function(i){ %>
+          <tr>
+                <td><%=i.intPurchaseOrderNo%></td>
+                <td><%=i.strBusinessName%></td>
+                <td><%=moment(i.dateOrdered).format("MMM Do YYYY")%></td>
+                <!-- /* <td><button data-dismiss="modal" data-supplierid="<%=i.intUserID%>" data-business="<%=i.strBusinessName%>" data-baddress="<%=i.strBusinessAddress%>"  class="setter btn btn-info btn-sm">Select</button></td> */ -->
 
-							</div>
+          </tr>
+          <% }) %>
+        <% } %>
 
-							<div class="form-group">
-							  <label for="inputConsignorName" class="col-sm-2 control-label">Consignor Name</label>
 
-							  <div class="col-sm-10">
-								<input type="text" class="form-control" id="inputConsignorName" placeholder="">
-							  </div>
+          </tbody>
 
-							</div>
+        </table>
+      </div>
+      <!-- /.box-body -->
 
-						  </div>
-						  <!-- /.box-body -->
+       </div>
 
-						</form>
-
-			  </div>
-			  <div class="modal-footer">
-				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Save changes</button>
-			  </div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
   <!-- /.modal-dialog -->
-</div>
+  </div>
+
 
   <!-- Main Footer -->
   <footer class="main-footer">
@@ -361,7 +355,7 @@
 <!-- page script (new added) -->
 <script>
   $(function () {
-    $('#example2').DataTable({
+    $('#example1').DataTable({
       'paging'      : true,
       'lengthChange': true,
       'searching'   : true,
@@ -372,6 +366,97 @@
 	  'scroll'		: true
     })
   })
+</script>
+
+<script>
+  $(function () {
+    $('#example').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+    'select'		: true,
+    'scroll'		: true,
+    'searching' : true
+    })
+  })
+</script>
+
+<script>
+$(document).ready(function(){
+
+  $('#errorhelpBlock').hide();
+  $('#successhelpBlock').hide();
+
+  $('#POno').on('change', function(){
+    var text = $('#POno').val();
+    $.ajax({
+      url: '/receiveDelivery/findNo',
+      method: 'POST',
+      datatype: "json",
+      data: {o: text},
+      success: function(response,status,http){
+        if (response == "yes"){
+          $('#formgroup').attr('class', 'form-group has-success col-sm-4');
+          $('#successhelpBlock').show();
+          $('#starthelpBlock').hide();
+          $('#errorhelpBlock').hide();
+          $('#addButton').attr('disabled', false);
+          $('#sub').attr('disabled', false);
+
+        }else{
+          $('#formgroup').attr('class', 'form-group has-error col-sm-4');
+          $('#errorhelpBlock').show();
+          $('#successhelpBlock').hide();
+          $('#starthelpBlock').hide();
+          $('#addButton').attr('disabled', true);
+          $('#sub').attr('disabled', true);
+
+        }
+      }
+    })
+
+  });
+
+
+  var count = 1;
+    $('.addRow').on( 'click', function () {
+      var t = $('#example').DataTable();
+      var table = document.getElementById("example");
+      var row = table.getElementsByTagName("tr");
+      var rows = t.rows( '.selected' );
+      var tr = table.getElementsByTagName("tr");
+      var validity = 1;
+
+
+      if (validity){
+        t.row.add( [
+            count,
+            '<input style="width: 200px" required type="text" required name="product[]" value="" class="form-control">',
+            '<input style="width: 80px" required type="text" name="variant[]" value="" class="form-control">',
+            '<input style="width: 80px" type="text" name="size[]" value="" class="form-control">',
+            '<input style="width: 80px" type="number" required name="quantity[]" value="" class=" form-control">',
+            '<input style="width: 180px" type="date" required name="expiration[]"  class=" form-control">',
+            '<select class="form-control" name="status[]"><option value="Good">Good</option><option option="Bad">Bad</option></select>',
+            '<input style="width: 80px" type="text" name="srp[]" value="" class=" form-control">',
+            '<input style="width: 80px" type="text" name="total[]" value="" class=" form-control">'
+        ] ).draw( false );
+
+        count++;
+      }
+    } );
+
+
+    $('#sub').on('click', function(){
+      $(this).attr('type', 'submit');
+      $(this).submit();
+    });
+
+
+
+})
 </script>
 
 
