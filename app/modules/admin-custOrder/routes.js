@@ -149,7 +149,7 @@ router.get('/invoice', (req,res)=>{
             where tblOrder.intOrderno = ${orderno}`, (err3,results3,fields3)=>{
               if (err3) console.log(err3);
 
-              res.render('admin-custOrder/views/invoice', {orderlist: results1, customer: results2, total: total: results3[0].totalAll, moment: moment});
+              res.render('admin-custOrder/views/invoice', {orderlist: results1, customer: results2, total: results3[0].totalAll, moment: moment});
             });
         });
     });
