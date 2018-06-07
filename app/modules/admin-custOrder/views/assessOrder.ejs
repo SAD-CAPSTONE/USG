@@ -144,11 +144,11 @@
                             <th></th>
                           </tr>
                           <tr>
-                            <td>Discount: 5%</td>
+                            <td>Discount: 0%</td>
 
                           </tr>
                           <tr>
-                            <td>Total: PHP 30.00</td>
+                            <td>Total: PHP <%= total %></td>
                           </tr>
 
                         </table>
@@ -179,15 +179,16 @@
                   <!-- /.box-header -->
                   <div class="box-body">
                     <label for="method">Method:</label>
-                    <select class="form-control">
-                      <option></option>
+                    <select class="form-control"  id="shippingmethod">
+                      <option value="None">None</option>
+                      <option value="Courier">Courier</option>
+                      <option value="Local Pickup">Local Pickup</option>
+                      <option value="Free Shipping">Free shipping</option>
                     </select>
                     </br>
-                    <label for="carrier">Carrier:</label>
-                    <input class="form-control">
-                    </br>
-                    <label for="tracking">Tracking number:</label>
-                    <input class="form-control">
+                    <label for="carrier">Courier:</label>
+                    <input class="form-control" required placeholder="insert validations here"  id="courier">
+
                   </div>
                   <!-- /.box-body -->
                 </div>
@@ -210,19 +211,39 @@
                   <!-- /.box-header -->
                   <div class="box-body">
                     <label for="stats">Order Status:</label>
-                    <select class="form-control">
-                      <option>Pending</option>
-                      <option>Completed</option>
-                      <option>Rejected</option>
+                    <select class="form-control" id="orderstatus">
+                      <option value="0">Pending</option>
+                      <option value="1">Processing</option>
+                      <option value="2">Shipped</option>
+                      <option value="3">Delivered</option>
+                      <option value="4">Will not Deliver</option>
+                      <option value="5">Returned</option>
                     </select>
+
+
                   </br>
-                    <label for="notify">Notify Customer?</label>
-                    <checkbox> </checkbox>
+                  <label for="stats">Payment Status:</label>
+                  <select class="form-control" id="paymentstatus">
+                    <option value="0">Awaiting Payment</option>
+                    <option value="1">Paid</option>
+                    <option value="2">Partially Paid</option>
+                    <option value="3">Cancelled</option>
+                    <option value="4">Refunded</option>
+                  </select>
+                </br>
+                    <label for="notify">
+
+                      <input type="checkbox" id="notify" class="flat-red">
+                      &nbsp;Notify Customer
+
+                    </label>
+
                   </br>
+                </br>
                     <label for="comment">Message to Customer</label>
-                    <textarea class="form-control"></textarea>
+                    <textarea id="message" class="form-control"></textarea>
                   </br>
-                  <button class="btn btn-primary pull-right">Submit</button>
+                  <button id="submit" class="btn btn-primary pull-right">Submit</button>
                   </div>
                   <!-- /.box-body -->
                 </div>
@@ -347,6 +368,10 @@
 <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<!-- iCheck 1.0.1 -->
+<script src="/assets/admin/plugins/iCheck/icheck.min.js"></script>
+<!-- sweetalert  -->
+<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
 
 <!-- page script (new added) -->
 <script>
@@ -365,10 +390,66 @@
 </script>
 
 <script>
-$('#title').html("USG | All Orders");
-$(".treeview a:contains('Transactions')").parent().addClass("active");
-$(".treeview a:contains('Customer Orders')").parent().addClass("active");
-$(".navi a:contains('All Orders')").parent().addClass("active");
+  $('#title').html("USG | All Orders");
+  $(".treeview a:contains('Transactions')").parent().addClass("active");
+  $(".treeview a:contains('Customer Orders')").parent().addClass("active");
+  $(".navi a:contains('All Orders')").parent().addClass("active");
+</script>
+
+<script>
+  //Flat red color scheme for iCheck
+  $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+    checkboxClass: 'icheckbox_flat-green',
+    radioClass   : 'iradio_flat-green'
+  })
+</script>
+
+<script>
+$(document).ready(function(){
+  $('#orderstatus').val("<%= customer[0].Stat %>");
+  $('#paymentstatus').val("<%= customer[0].intPaymentStatus %>");
+  $('#shippingmethod').val("<%=customer[0].strShippingMethod %>");
+  $('#courier').val("<%=customer[0].strCourier%>");
+
+$('#submit').on('click',function(){
+
+  var notifyCustomer = "";
+
+  if (document.getElementById('notify').checked == true){
+    notifyCustomer = 1;
+  }else{
+    notifyCustomer = 0;
+  }
+
+  $.ajax({
+    url: '/customerOrder/assessOrder',
+    method: 'POST',
+    datatype: "json",
+    data: {orderNo: '<%= customer[0].intOrderNo %>',
+          shippingMethod: $('#shippingmethod').val(),
+          courier: $('#courier').val(),
+          orderStatus: $('#orderstatus').val(),
+          paymentStatus: $('#paymentstatus').val(),
+          notify: notifyCustomer,
+          message: $('#message').val()
+
+          },
+    success: function(response,status,http){
+      if (response){
+        if (response == "yes"){
+          swal("Success!","","success");
+          window.location.reload();
+        }else{
+          swal("Error!","","error");
+        }
+      }
+    }
+  });
+
+});
+
+});
+
 </script>
 
 
