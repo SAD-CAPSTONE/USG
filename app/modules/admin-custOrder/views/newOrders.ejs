@@ -1,6 +1,5 @@
 <%- include('../../../templates/admin-navbar.ejs') -%>
 
-
  <!-- Content Wrapper. Contains page content -->
 
 <div class="content-wrapper">
@@ -8,12 +7,12 @@
     <section class="content-header">
       <h1>
 
-        <small>Note: All cancelled orders of customers.</small>
+        <small>Note: Change order status by clicking assess button.</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Orders</a></li>
-        <li class="active">Cancelled Orders</li>
+        <li class="active">New Orders</li>
       </ol>
     </section>
 
@@ -23,67 +22,68 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Cancelled Customer Orders</h3>
+              <h3 class="box-title">Customer Orders</h3>
             </div>
 			<!-- buttons -->
 
-      <!-- /.box-header -->
-      <div class="box-body table-responsive">
-        <table id="example2" class="table table-bordered table-hover">
-          <thead>
-          <tr>
-            <th>Order No</th>
-            <th>Customer Name</th>
-            <th>Order Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-          <% if (re == null || re == undefined || re.length == 0){ %>
+            <!-- /.box-header -->
+            <div class="box-body table-responsive">
+              <table id="example2" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>Order No</th>
+                  <th>Customer Name</th>
+                  <th>Order Date</th>
+				          <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% if (re == null || re == undefined || re.length == 0){ %>
 
-          <% }else{ %>
-          <%  re.forEach(function(i){ %>
-            <tr>
-              <td><%= i.intOrderNo %></td>
-              <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
-              <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
-              <td>
-                <% if (i.Stat == 0){ %>
-                  <span class="label label-warning">Pending</span>
-                <% }else if(i.Stat == 1){ %>
-                  <span class="label label-info">Processing</span>
-                <% }else if(i.Stat == 2){ %>
-                  <span class="label label-default">Shipped</span>
-                <% }else if (i.Stat == 3){ %>
-                  <span class="label label-default">Delivered</span>
-                <% }else if(i.Stat == 4){ %>
-                  <span class="label label-default">Will not deliver</span>
-                <% }else if(i.Stat == 5){ %>
-                  <span class="label label-default">Returned</span>
                 <% }else{ %>
-                  <span class="label label-danger">Cancelled</span>
+                <%  re.forEach(function(i){ %>
+                  <tr>
+                    <td><%= i.intOrderNo %></td>
+                    <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
+                    <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
+                    <td>
+                      <% if (i.Stat == 0){ %>
+                        <span class="label label-warning">Pending</span>
+                      <% }else if(i.Stat == 1){ %>
+                        <span class="label label-info">Processing</span>
+                      <% }else if(i.Stat == 2){ %>
+                        <span class="label label-default">Shipped</span>
+                      <% }else if (i.Stat == 3){ %>
+                        <span class="label label-default">Delivered</span>
+                      <% }else if(i.Stat == 4){ %>
+                        <span class="label label-default">Will not deliver</span>
+                      <% }else if(i.Stat == 5){ %>
+                        <span class="label label-default">Returned</span>
+                      <% }else{ %>
+                        <span class="label label-danger">Cancelled</span>
+
+                      <% } %>
+                    </td>
+                    <td>
+                      <% orderno = i.intOrderNo %>
+                      <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="btn btn-default btn-sm">View Invoice</button></a>
+
+                        <a href="/customerOrder/assessOrder?order=<%=orderno%>"><button class="btn btn-primary btn-sm">Assess</button></a>
+
+                      <a href="/customerOrder/orderHistory?order=<%=orderno%>"><button class="btn btn-info btn-sm">View History</button></a>
+
+                    </td>
+                  </tr>
+                <% }) %>
                 <% } %>
-              </td>
-              <td>
-                <% orderno = i.intOrderNo %>
-                <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="btn btn-default btn-sm">View Invoice</button></a>
-
-                  <a href="/customerOrder/assessOrder?order=<%=orderno%>"><button class="btn btn-primary btn-sm">Assess</button></a>
-
-                <a href="/customerOrder/orderHistory?order=<%=orderno%>"><button class="btn btn-info btn-sm">View History</button></a>
-
-              </td>
-            </tr>
-          <% }) %>
-          <% } %>
 
 
-          </tbody>
+                </tbody>
 
-        </table>
-      </div>
-      <!-- /.box-body -->
+              </table>
+            </div>
+            <!-- /.box-body -->
           </div>
           <!-- /.box -->
 
@@ -259,8 +259,12 @@
 <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<!-- sweetalert  -->
+<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
 <!-- Notification  -->
 <script src="/assets/admin/notification.js"></script>
+
+
 
 <!-- page script (new added) -->
 <script>
@@ -278,12 +282,9 @@
   })
 </script>
 
-
 <script>
-$('#title').html("USG | Cancelled Orders");
-$(".treeview a:contains('Transactions')").parent().addClass("active");
-$(".treeview a:contains('Customer Orders')").parent().addClass("active");
-$(".navi a:contains('Cancelled Orders')").parent().addClass("active");
+$('#title').html("USG | All Orders");
+$(".navi a:contains('Orders')").parent().addClass("active");
 </script>
 
 

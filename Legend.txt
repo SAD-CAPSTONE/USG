@@ -12,6 +12,7 @@ Order Legend
 3 - Delivered
 4 - Will not Deliver
 5 - Returned
+6 - Cancelled
 
 Payment Legend
 0 - Awaiting Payment
