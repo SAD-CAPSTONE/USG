@@ -21,6 +21,13 @@
       }
     });
 
-    
+    $('#dark_theme').on('click',function(){
+      $('#bod').attr('class', 'hold-transition skin-green fixed sidebar-mini');
+    });
+    $('#light_theme').on('click',function(){
+      $('#bod').attr('class', 'hold-transition skin-green-light fixed sidebar-mini');
+    });
+
+
 
   })
