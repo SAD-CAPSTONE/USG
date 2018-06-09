@@ -5,9 +5,9 @@
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      Error
-      
+       <%=title[0].strProductName%>
     </h1>
+    <small>Product Code: <%=title[0].strProductCode%> &nbsp;&nbsp; </small>
     <ol class="breadcrumb">
       <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
       <li><a href="#">Maintenance</a></li>
@@ -28,6 +28,14 @@
             <!-- Inventory -->
             <div class="tab-pane active" id="inventory">
 
+            <p class="text-light-blue">Note:
+              <span class="label label-danger">Critical Limit</span> means that the stock quantity is below critical limit, you need to restock.
+            </br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <span class="label label-warning">Critical Limit</span> means that the stock has reached its critical limit
+          </br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check the inventory transaction to see changes happened per inventory
+          </p>
+
               </br>
               <!-- /.box-header -->
               <div class="box-body table-responsive">
@@ -39,12 +47,13 @@
                     <th>Size</th>
                     <th>SRP</th>
                     <th>Product Price</th>
+                    <th>Quantity</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <% if (re == 'null' || re == 'undefined' || re.length == 0) { %>
+                  <% if (re == null || re == undefined || re.length == 0) { %>
 
                   <% }else { %>
                     <% re.forEach(function(i){ %>
@@ -55,6 +64,7 @@
                       <td><%=i.productSRP%></td>
                       <td><%=i.productPrice%></td>
                       <!-- <td><%= moment(i.expirationDate).format("MMM Do YYYY")%></td> -->
+                      <td><%=i.intQuantity%></td>
                       <td>
                         <% if (i.intStatus == 1){ %>
                           <span class="label label-success">Active</span>
@@ -62,11 +72,20 @@
                           <span class="label label-danger">Inactive</span>
                         <% } %>
 
+                        <% if (i.intQuantity < i.intCriticalLimit){ %>
+                          <span class="label label-danger">Critical Limit</span>
+                        <% } %>
+                        <% if (i.intQuantity == i.intCriticalLimit){ %>
+                          <span class="label label-warning">Critical Limit</span>
+                        <% } %>
+
+
                       </td>
                       <form>
                       <td>
 
-                      <button type="submit" class="btn btn-sucess btn-xs" formaction="/inventory/productInventory" formmethod="get" >View Transactions</button>
+                      <a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="btn btn-default btn-sm" >View Transactions</button></a>
+                      <a href="/inventory/viewStock?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="btn btn-default btn-sm" >View Stocks</button></a>
 
                       </td>
                     </form>
@@ -88,13 +107,13 @@
               <div class="row">
                 <div class="col-sm-8">
                   <!-- form start -->
-                  <form role="form" method="post" enctype="multipart/form-data" action="/inventory/addProductItem">
+                  <form role="form" method="post" enctype="multipart/form-data"     action="/inventory/addProductItem">
                     <div class="box-body">
 
                       <div class="form-group">
 
                         <% var number = "1000"; %>
-                        <% if (list == 'null' || list == 'undefined' || list.length == 0 ) { %>
+                        <% if (list == null || list == undefined || list.length == 0 ) { %>
                         <% number = "1000"; %>
                         <% }else{ %>
                           <% var number = parseInt(list[0].intInventoryNo) + 1 %>
@@ -103,8 +122,8 @@
                         <% } %>
                           <div class="row">
                             <div class="col-sm-4">
-                              <input type="text" class="form-control" value="<%=number%>"  id="add_inventoryno" name="add_inventoryno" >
-                              <input type="text" class="form-control" value="<%=re[0].intProductNo%>"  id="add_productno" name="add_productno" >
+                              <input type="hidden" class="form-control" value="<%=number%>"  id="add_inventoryno" name="add_inventoryno" >
+                              <input type="hidden" class="form-control" value="<%=product%>"  id="add_productno" name="add_productno" >
                             </div>
                           </div>
                       </div>
@@ -150,7 +169,7 @@
 
                             <label for="add_uom">   </label>
                             <select class="form-control" required id="add_uom" name="add_uom"  >
-                              <% if (uom == 'null' || uom == 'undefined' || uom.length == 0){ %>
+                              <% if (uom == null || uom == undefined || uom.length == 0){ %>
                                 <option></option>
                               <% }else{ %>
                                 <% uom.forEach(function(s){ %>
@@ -174,7 +193,7 @@
                           </div>
                           <div class="col-xs-4">
                             <label for="add_critical">Critical Limit</label>
-                            <input type="number" class="form-control" required id="add_lname" name="add_lname" >
+                            <input type="number" class="form-control" required id="add_critical" name="add_critical" >
                           </div>
                         </div>
                       </div>
@@ -184,8 +203,9 @@
                                  <a href="/inventory/sample"><button type="reset" class="btn btn-default">Clear Fields</button></a>
                                  <a href=""><button type="submit" class="btn btn-info pull-right">Submit Order Form</button></a>
                       </div>
+                  </div>
                 </form>
-                </div>
+
               </div>
 
 
@@ -291,7 +311,7 @@
       <div class="box-body table-responsive">
         <table id="example1" class="table table-bordered table-hover">
           <thead>
-            <% if (su == 'null' || su == 'undefined' || su.length == 0){ %>
+            <% if (su == null || su == undefined || su.length == 0){ %>
               <h4> No records of Suppliers </h4>
             <% } else { %>
           <tr>
@@ -333,15 +353,18 @@
  </div>
 
 
-    <!-- Main Footer -->
-    <footer class="main-footer">
-      <!-- To the right -->
-      <div class="pull-right hidden-xs">
-        Anything you want
-      </div>
-      <!-- Default to the left -->
-      <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
-    </footer>
+
+
+ <!-- Main Footer -->
+ <footer class="main-footer">
+   <!-- To the right -->
+   <div class="pull-right hidden-xs">
+     Ultra Super Green
+   </div>
+   <!-- Default to the left -->
+   <strong>Copyright &copy; 2016 <a href="#">AdminLTE template</a>.</strong> All rights reserved.
+ </footer>
+
 
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">

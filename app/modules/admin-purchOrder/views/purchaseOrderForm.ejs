@@ -1,528 +1,657 @@
- <%- include('../../../templates/admin-navbar.ejs') -%>
+<%- include('../../../templates/admin-navbar.ejs') -%>
 
 
-  <!-- Content Wrapper. Contains page content -->
+ <!-- Content Wrapper. Contains page content -->
 
- <div class="content-wrapper">
-     <!-- Content Header (Page header) -->
-     <section class="content-header">
-       <h1>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
 
-         <small>Note: Please be careful when changing the status of product category, it might affect products in the inventory</small>
-       </h1>
-       <ol class="breadcrumb">
-         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-         <li><a href="#">Transaction</a></li>
-         <li class="active">Purchase Order</li>
-       </ol>
-     </section>
+        <small>Note: Input products if there is no contract available</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Transaction</a></li>
+        <li class="active">Purchase Order</li>
+      </ol>
+    </section>
 
-     <!-- Main content -->
-     <section class="content">
- 		<div class="box box-success">
- 			<div class="box-header with-border">
- 				<h3 class="box-title">Purchase Order Form</h3>
- 			</div>
-
- 			<!-- purchase order body -->
- 			<div class="box-body">
-
- 				<small><b>Business Address:</b> 0002 G/F Elizabeth Hall BLDG. 371 Katipunan Ave., Loyola Heights </br>
- 				Quezon City 1108</small> </br>
- 				<small><b>Phone Number:</b> (02) 738-1202</small> </br>
- 				<small><b>Mobile Number:</b> (0955) 904-4744</small> </br>
- 				</br>
-
- 				<div class="row">
- 					<div class="col-md-2">
- 						<div class="form-group">
- 							<label for="purcNo">P.O Number:</label>
-              <% if(re.length == 0 || re == 'NULL' || re == 'undefined'){ %>
-                <input type="text" value="0000" disabled class="form-control">
-              <% }else{ %>
-              <%  var number = re.intPurchaseOrderNo + 1 %>
-                <input type="text" value="<%= number %>" disabled class="form-control">
-              <% } %>
- 						</div>
- 					</div>
-
- 					<div class="col-md-2">
- 					</div>
-
- 					<div class="col-md-2">
- 						<div class="form-group">
- 							<label for="purcNo">P.O Date:</label>
- 							<input type="date" id="today" value="" class="form-control">
-
- 						</div>
- 					</div>
- 				</div>
-
- 				<div class="row">
- 					<div class="col-sm-3">
- 						<h4> &nbsp; Vendor </h4>
- 					</div>
-
- 				</div>
- 				<div class="row">
-          &nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
-        <p>  &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
-        </div>
-      </br>
-        <div>
- 					<form class="form-horizontal">
- 						<div class="form-group">
-              <input type="hidden" class="input-sm form-control" id="suppid" placeholder="">
- 							<label for="businessName" class="col-sm-2 control-label"> Company Name</label>
-
- 							<div class="col-sm-4">
- 								<input type="text" class="input-sm form-control" id="businessName" placeholder="">
- 							</div>
- 						</div>
-
- 						<div class="form-group">
-
- 							<label for="contract" class="col-sm-2 control-label"> Contract or Department</label>
-
- 							<div class="col-sm-4">
- 								<input type="text" class="input-sm form-control" id="contract" placeholder="">
- 							</div>
- 						</div>
-
- 						<div class="form-group">
-
- 							<label for="address" class="col-sm-2 control-label"> Street Address</label>
-
- 							<div class="col-sm-4">
- 								<input type="text" class="input-sm form-control" id="address" placeholder="">
- 							</div>
- 						</div>
-
- 					</form>
-
- 				</div>
-
- 				<div class="row">
- 					<div class="col-sm-3">
- 						<h4> &nbsp;  </h4>
- 					</div>
- 				</div>
-
- 				<div class="row">
- 					<div class="col-sm-8">
- 					<div class="box">
- 						<div class="box-header">
- 						  <h3 class="box-title">Order List</h3>
-
-
- 						</div>
-
- 						<!-- buttons -->
- 						&nbsp; &nbsp;<button type="button" class="btn btn-success btn-xs" id="addRow" data-target="#addProduct"><i class="fa fa-plus"></i> Add Product</button>
-
- 						<!-- /.box-header -->
-
-            <div class="box-body table-responsive">
-              <table id="example" class="table table-bordered table-hover">
- 							<thead>
- 							  <th style="width: 10px">#</th>
- 							  <th>Product Name</th>
- 							  <th>Quantity</th>
- 							  <th >Unit Price</th>
- 							  <th >Actions</th>
- 							  <th> Total </th>
- 							</thead>
-              <tbody>
-
-            </tbody>
-
- 						  </table>
- 						</div>
- 						<!-- /.box-body -->
-
- 					</div>
- 					  <!-- /.box -->
- 					</div>
- 				</div>
-
-
- 			</div>
-
- 			<div class="box-footer">
-                 <a href="purchaseOrderList.html"><button type="submit" class="btn btn-default">Back</button></a>
-                 <a href="purchaseOrderList.html"><button type="submit" class="btn btn-info pull-right">Submit Order Form</button></a>
-             </div>
-               <!-- /.box-footer -->
-
- 		</div>
-
- 	</section>
-
- </div>
-
-   <!-- /.content-wrapper -->
-
- 	<!-- Modals -->
-
- 	<div class="modal fade" id="addProduct">
- 	  <div class="modal-dialog">
- 		<div class="modal-content">
- 		  <div class="modal-header">
- 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
- 			  <span aria-hidden="true">&times;</span></button>
- 			<h4 class="modal-title">Product Information Form</h4>
- 		  </div>
- 		  <div class="modal-body">
- 			<!-- Horizontal Form -->
-
- 					<!-- form start -->
- 						<form class="form-horizontal">
- 						  <div class="box-body">
- 							<div class="form-group">
- 							  <label for="inputProductCode" class="col-sm-2 control-label">Product Code</label>
-
- 							  <div class="col-sm-10">
- 								<input type="text" class="form-control" id="inputProductCode" placeholder="">
- 							  </div>
- 							</div>
-
- 							<div class="form-group">
- 							  <label for="inputProductName" class="col-sm-2 control-label">Product Name</label>
-
- 							  <div class="col-sm-10">
- 								<input type="text" class="form-control" id="inputProductName" placeholder="">
- 							  </div>
-
- 							</div>
-
- 							<div class="form-group">
- 							  <label for="inputConsignorName" class="col-sm-2 control-label">Consignor Name</label>
-
- 							  <div class="col-sm-10">
- 								<input type="text" class="form-control" id="inputConsignorName" placeholder="">
- 							  </div>
-
- 							</div>
-
- 						  </div>
- 						  <!-- /.box-body -->
-
- 						</form>
-
- 			  </div>
- 			  <div class="modal-footer">
- 				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
- 				<button type="button" class="btn btn-primary">Save changes</button>
- 			  </div>
- 		</div>
- 		<!-- /.modal-content -->
- 	</div>
-   <!-- /.modal-dialog -->
- </div>
-
- <div class="modal fade" id="selectSupplier">
-   <div class="modal-dialog">
-   <div class="modal-content">
-     <div class="modal-header">
-     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-       <span aria-hidden="true">&times;</span></button>
-     <h4 class="modal-title">Supplier List</h4>
+    <!-- Main content -->
+    <section class="content">
+   <div class="box box-success">
+     <div class="box-header with-border">
+       <h3 class="box-title">Purchase Order Form</h3>
      </div>
-     <div class="modal-body">
 
-     <!-- /.box-header -->
-     <div class="box-body table-responsive">
-       <table id="example1" class="table table-bordered table-hover">
-         <thead>
-           <% if (su == 'null' || su == 'undefined' || su.length == 0){ %>
-             <h4> No records of Suppliers </h4>
-           <% } else { %>
-         <tr>
-           <th>Supplier No</th>
-           <th>Supplier Name</th>
-           <th>Business Name</th>
-           <th>Action</th>
-         </tr>
-         </thead>
-         <tbody>
+     <!-- purchase order body -->
+     <div class="box-body">
 
-           <% su.forEach(function(i){ %>
-         <tr>
-               <td><%=i.intUserID%></td>
-               <td><%=i.strFname%>&nbsp;<%=i.strLname%></td>
-               <td><%=i.strBusinessName%></td>
-               <td><button data-dismiss="modal" data-supplierid="<%=i.intUserID%>" data-business="<%=i.strBusinessName%>" data-baddress="<%=i.strBusinessAddress%>"  class="setter btn btn-info btn-sm">Select</button></td>
+       <small><b>Business Address:</b> 0002 G/F Elizabeth Hall BLDG. 371 Katipunan Ave., Loyola Heights </br>
+       Quezon City 1108</small> </br>
+       <small><b>Phone Number:</b> (02) 738-1202</small> </br>
+       <small><b>Mobile Number:</b> (0955) 904-4744</small> </br>
+       </br>
 
-         </tr>
-         <% }) %>
-       <% } %>
+       <form class="form-horizontal" method="post" action="/purchaseOrder/samp">
+       <div class="row">
+         <div class="col-md-2">
+           <div class="form-group">
+             <label for="purcNo">P.O Number:</label>
+             <% var POo = "1000"; %>
+             <% if( POno == null || POno == undefined || POno.length == 0){ %>
 
+             <% }else{ %>
+             <%  POo = parseInt(POno[0].intPurchaseOrderNo) + 1 %>
+             <% } %>
+               &nbsp;<input type="text" value="<%=POo%>" name="POnum" id="purcNo" class="form-control">
 
-         </tbody>
+           </div>
+         </div>
 
-       </table>
-     </div>
-     <!-- /.box-body -->
+         <div class="col-md-2">
+         </div>
 
-      </div>
-       <div class="modal-footer">
-       <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-       <button type="button" class="btn btn-primary">Save changes</button>
+         <div class="col-md-2">
+           <div class="form-group">
+             <label for="purcNo">P.O Date:</label>
+             <input type="date" disabled id="today" value="<%= moment().format("YYYY-MM-DD")%>" name="date" class="form-control">
+
+           </div>
+         </div>
        </div>
+
+       <div class="row">
+         <div class="col-sm-3">
+           <h4> &nbsp; Vendor </h4>
+         </div>
+
+       </div>
+       <div class="row">
+         &nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
+       <p>  &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
+       </div>
+     </br>
+       <div>
+
+           <div class="form-group">
+             <input type="hidden" class="input-sm form-control" name="supplier" id="suppid" placeholder="">
+             <label for="businessName" class="col-sm-2 control-label"> Company Name</label>
+
+             <div class="col-sm-4">
+               <input type="text" disabled class="input-sm form-control" id="businessName" placeholder="">
+             </div>
+           </div>
+
+           <div class="form-group">
+
+
+             <label for="contract" class="col-sm-2 control-label"> Contract or Department</label>
+
+             <div class="col-sm-4">
+
+               <input type="text" disabled class="input-sm form-control" id="contract" placeholder="">
+             </div>
+           </div>
+
+           <div class="form-group">
+
+             <label for="address" class="col-sm-2 control-label"> Street Address</label>
+
+             <div class="col-sm-4">
+               <input type="text" disabled class="input-sm form-control" id="address" placeholder="">
+             </div>
+           </div>
+
+
+
+       </div>
+
+       <div class="row">
+         <div class="col-sm-3">
+           <h4> &nbsp;  </h4>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-sm-8">
+         <div class="box">
+           <div class="box-header">
+             <h3 class="box-title">Order List</h3>
+
+
+           </div>
+
+           <!-- buttons -->
+
+
+           &nbsp; &nbsp;<button type="button" id="addButton" disabled class="addRow btn btn-success btn-xs" ><i class="fa fa-plus"></i> Add Product</button>
+           &nbsp; &nbsp; <a href="" data-toggle="modal" id="searchProduct"  data-target="#selectProduct" hidden>Click here to view products of supplier</a>
+           <!-- /.box-header -->
+
+           <div class="box-body table-responsive">
+             <table id="example" class="table table-bordered table-hover">
+             <thead>
+               <th style="width: 10px">#</th>
+               <th>Product Name</th>
+               <th >Quantity</th>
+               <th >Unit Price</th>
+               <th >Actions</th>
+               <th> Total </th>
+             </thead>
+
+             <tbody>
+
+           </tbody>
+
+             </table>
+           </div>
+           <!-- /.box-body -->
+
+         </div>
+           <!-- /.box -->
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-sm-8">
+           <label for="note">Special Note:</label>
+           <textarea class="form-control" name="specialnote" id="note"></textarea>
+        </div>
+      </div>
+
+
+     </div>
+
+     <div class="box-footer">
+                <a href="purchaseOrderList.html"><button type="button" class="btn btn-default">Back</button></a>
+                <a href=""><button type="submit" id="sub" class="btn btn-info pull-right">Submit Order Form</button></a>
+            </div>
+              <!-- /.box-footer -->
+
    </div>
-   <!-- /.modal-content -->
- </div>
- <!-- /.modal-dialog -->
+ </form>
+
+ </section>
+
 </div>
 
-<div class="modal fade" id="addSupplier">
+  <!-- /.content-wrapper -->
+
+ <!-- Modals -->
+
+
+<div class="modal fade" id="selectSupplier">
   <div class="modal-dialog">
   <div class="modal-content">
     <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
       <span aria-hidden="true">&times;</span></button>
-    <h4 class="modal-title">Supplier Information Form</h4>
+    <h4 class="modal-title">Supplier List</h4>
     </div>
     <div class="modal-body">
 
-      <!-- form start -->
-      <form role="form" method="post" action="/purchaseOrder/addSupplier">
-        <div class="box-body">
-          <div class="form-group">
-            <div class="row">
-              <div class="col-xs-4">
-                <label for="fname">First Name</label>
-                <input type="text" class="form-control" required id="fname" name="fname" >
-              </div>
-              <div class="col-xs-4">
-                <label for="mname">Middle Name</label>
-                <input type="text" class="form-control"id="mname" name="mname" >
-              </div>
-              <div class="col-xs-4">
-                <label for="lname">Last Name</label>
-                <input type="text" class="form-control" required id="lname" name="lname" >
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="bname">Business Name</label>
-            <input type="text" class="form-control" id="bname" required name="bname" placeholder="">
-          </div>
-          <div class="form-group">
-            <label for="address">Business Address</label>
-            <input type="text" class="form-control" id="address" name="address" required placeholder="">
-          </div>
-          <div class="form-group">
-            <div class="row">
-              <div class="col-xs-5">
-                <label for="mobile">Mobile No.</label>
-                <input type="text" class="form-control" id="mobile" name="mobile" >
-              </div>
-              <div class="col-xs-5">
-                <label for="phone">Phone No.</label>
-                <input type="text" class="form-control" id="phone" name="phone" >
-              </div>
-            </div>
-          </div>
-          <div class="checkbox">
-            <label>
-              <input type="checkbox">Add supplier to form
-            </label>
-          </div>
-        </div>
-        <!-- /.box-body -->
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+      <table id="example1" class="table table-bordered table-hover">
+        <thead>
+          <% if (su == null || su == undefined || su.length == 0){ %>
+            <h4> No records of Suppliers </h4>
+          <% } else { %>
+        <tr>
+          <th>Supplier No</th>
+          <th>Supplier Name</th>
+          <th>Business Name</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+
+          <% su.forEach(function(i){ %>
+        <tr>
+              <td><%=i.intUserID%></td>
+              <td><%=i.strFname%>&nbsp;<%=i.strLname%></td>
+              <td><%=i.strBusinessName%></td>
+              <td><button data-dismiss="modal" data-supplierid="<%=i.intUserID%>" data-business="<%=i.strBusinessName%>" data-baddress="<%=i.strBusinessAddress%>" data-contractno="<%=i.intContractNo%>" class="setter btn btn-info btn-sm">Select</button></td>
+
+        </tr>
+        <% }) %>
+      <% } %>
 
 
-      </div>
+        </tbody>
+
+      </table>
+    </div>
+    <!-- /.box-body -->
+
+     </div>
       <div class="modal-footer">
       <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-      <button type="submit" class="btn btn-primary">Save</button>
-        </form>
+      <button type="button" class="btn btn-primary">Save changes</button>
       </div>
   </div>
   <!-- /.modal-content -->
 </div>
- <!-- /.modal-dialog -->
+<!-- /.modal-dialog -->
 </div>
 
-   <!-- Main Footer -->
-   <footer class="main-footer">
-     <!-- To the right -->
-     <div class="pull-right hidden-xs">
-       Anything you want
-     </div>
-     <!-- Default to the left -->
-     <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
-   </footer>
+<div class="modal fade" id="addSupplier">
+ <div class="modal-dialog">
+ <div class="modal-content">
+   <div class="modal-header">
+   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+     <span aria-hidden="true">&times;</span></button>
+   <h4 class="modal-title">Supplier Information Form</h4>
+   </div>
+   <div class="modal-body">
 
-   <!-- Control Sidebar -->
-   <aside class="control-sidebar control-sidebar-dark">
-     <!-- Create the tabs -->
-     <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-       <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-       <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-     </ul>
-     <!-- Tab panes -->
-     <div class="tab-content">
-       <!-- Home tab content -->
-       <div class="tab-pane active" id="control-sidebar-home-tab">
-         <h3 class="control-sidebar-heading">Recent Activity</h3>
-         <ul class="control-sidebar-menu">
-           <li>
-             <a href="javascript:;">
-               <i class="menu-icon fa fa-birthday-cake bg-red"></i>
-
-               <div class="menu-info">
-                 <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
-
-                 <p>Will be 23 on April 24th</p>
-               </div>
-             </a>
-           </li>
-         </ul>
-         <!-- /.control-sidebar-menu -->
-
-         <h3 class="control-sidebar-heading">Tasks Progress</h3>
-         <ul class="control-sidebar-menu">
-           <li>
-             <a href="javascript:;">
-               <h4 class="control-sidebar-subheading">
-                 Custom Template Design
-                 <span class="pull-right-container">
-                     <span class="label label-danger pull-right">70%</span>
-                   </span>
-               </h4>
-
-               <div class="progress progress-xxs">
-                 <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-               </div>
-             </a>
-           </li>
-         </ul>
-         <!-- /.control-sidebar-menu -->
-
-       </div>
-       <!-- /.tab-pane -->
-       <!-- Stats tab content -->
-       <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-       <!-- /.tab-pane -->
-       <!-- Settings tab content -->
-       <div class="tab-pane" id="control-sidebar-settings-tab">
-         <form method="post">
-           <h3 class="control-sidebar-heading">General Settings</h3>
-
-           <div class="form-group">
-             <label class="control-sidebar-subheading">
-               Report panel usage
-               <input type="checkbox" class="pull-right" checked>
-             </label>
-
-             <p>
-               Some information about this general settings option
-             </p>
+     <!-- form start -->
+     <form role="form" method="post" action="/purchaseOrder/addSupplier">
+       <div class="box-body">
+         <div class="form-group">
+           <div class="row">
+             <div class="col-xs-4">
+               <label for="fname">First Name</label>
+               <input type="text" class="form-control" required id="fname" name="fname" >
+             </div>
+             <div class="col-xs-4">
+               <label for="mname">Middle Name</label>
+               <input type="text" class="form-control"id="mname" name="mname" >
+             </div>
+             <div class="col-xs-4">
+               <label for="lname">Last Name</label>
+               <input type="text" class="form-control" required id="lname" name="lname" >
+             </div>
            </div>
-           <!-- /.form-group -->
-         </form>
+         </div>
+         <div class="form-group">
+           <label for="bname">Business Name</label>
+           <input type="text" class="form-control" id="bname" required name="bname" placeholder="">
+         </div>
+         <div class="form-group">
+           <label for="address">Business Address</label>
+           <input type="text" class="form-control" id="address" name="address" required placeholder="">
+         </div>
+         <div class="form-group">
+           <div class="row">
+             <div class="col-xs-5">
+               <label for="mobile">Mobile No.</label>
+               <input type="text" class="form-control" id="mobile" name="mobile" >
+             </div>
+             <div class="col-xs-5">
+               <label for="phone">Phone No.</label>
+               <input type="text" class="form-control" id="phone" name="phone" >
+             </div>
+           </div>
+         </div>
+         <div class="checkbox">
+           <label>
+             <input type="checkbox">Add supplier to form
+           </label>
+         </div>
        </div>
-       <!-- /.tab-pane -->
+       <!-- /.box-body -->
+
+
      </div>
-   </aside>
-   <!-- /.control-sidebar -->
-   <!-- Add the sidebar's background. This div must be placed
-   immediately after the control sidebar -->
-   <div class="control-sidebar-bg"></div>
+     <div class="modal-footer">
+     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+     <button type="submit" class="btn btn-primary">Save</button>
+       </form>
+     </div>
  </div>
- <!-- ./wrapper -->
+ <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
 
- <!-- REQUIRED JS SCRIPTS -->
-
- <!-- jQuery 3 -->
- <script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
- <!-- Bootstrap 3.3.7 -->
- <script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
- <!-- DataTables (new added)	 -->
- <script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
- <script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
- <!-- SlimScroll -->
- <script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
- <!-- FastClick -->
- <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
- <!-- AdminLTE App -->
- <script src="/assets/admin/dist/js/adminlte.min.js"></script>
-
- <!-- page script (new added) -->
+<div class="modal fade" id="selectProduct">
+ <div class="modal-dialog">
+ <div class="modal-content">
+   <div class="modal-header">
+   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+     <span aria-hidden="true">&times;</span></button>
+   <h4 class="modal-title">Product List</h4>
+   </div>
+   <div class="modal-body">
 
 
- <script>
-   $(function () {
-     $('#example1').DataTable({
-       'paging'      : true,
-       'lengthChange': true,
-       'searching'   : true,
-       'ordering'    : true,
-       'info'        : true,
-       'autoWidth'   : true,
-     'select'		: true,
-     'scroll'		: true,
-     'searching' : true
-     })
-   })
- </script>
 
- <script>
-   $(function () {
-     $('#example').DataTable({
-       'paging'      : true,
-       'lengthChange': true,
-       'searching'   : true,
-       'ordering'    : true,
-       'info'        : true,
-       'autoWidth'   : true,
-     'select'		: true,
-     'scroll'		: true,
-     'searching' : true
-     })
-   })
- </script>
+   <!-- /.box-header -->
+   <div class="box-body table-responsive">
+     <table id="productTable" class="table table-bordered table-hover">
+       <thead>
 
- <script>
- $('.setter').on('click', function(){
-   $('#suppid').val($(this).data('supplierid'));
-   $('#businessName').val($(this).data('business'));
-   $('#address').val($(this).data('baddress'));
- })
+       <tr>
+         <th>Product No</th>
+         <th>Product Name</th>
 
- $(document).ready(function() {
-    var t = $('#example').DataTable();
-    var counter = 1;
+         <th></th>
+       </tr>
+       </thead>
+       <tbody>
 
-    $('#addRow').on( 'click', function () {
+         <tr>
+               <td></td>
+               <td></td>
+
+               <td><button data-dismiss="modal"  class="addRow btn btn-info btn-sm"  data-target="#addProduct">Select</button></td>
+
+         </tr>
+
+
+       </tbody>
+
+     </table>
+   </div>
+   <!-- /.box-body -->
+
+    </div>
+
+ </div>
+ <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+
+
+
+<!-- Main Footer -->
+<footer class="main-footer">
+ <!-- To the right -->
+ <div class="pull-right hidden-xs">
+   Ultra Super Green
+ </div>
+ <!-- Default to the left -->
+ <strong>Copyright &copy; 2016 <a href="#">AdminLTE template</a>.</strong> All rights reserved.
+</footer>
+
+  <!-- Control Sidebar -->
+<aside class="control-sidebar control-sidebar-dark">
+    <!-- Create the tabs -->
+    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+      <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+      <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <!-- Home tab content -->
+      <div class="tab-pane active" id="control-sidebar-home-tab">
+        <h3 class="control-sidebar-heading">Recent Activity</h3>
+        <ul class="control-sidebar-menu">
+          <li>
+            <a href="javascript:;">
+              <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+
+              <div class="menu-info">
+                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+
+                <p>Will be 23 on April 24th</p>
+              </div>
+            </a>
+          </li>
+        </ul>
+        <!-- /.control-sidebar-menu -->
+
+        <h3 class="control-sidebar-heading">Tasks Progress</h3>
+        <ul class="control-sidebar-menu">
+          <li>
+            <a href="javascript:;">
+              <h4 class="control-sidebar-subheading">
+                Custom Template Design
+                <span class="pull-right-container">
+                    <span class="label label-danger pull-right">70%</span>
+                  </span>
+              </h4>
+
+              <div class="progress progress-xxs">
+                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+              </div>
+            </a>
+          </li>
+        </ul>
+        <!-- /.control-sidebar-menu -->
+
+      </div>
+      <!-- /.tab-pane -->
+      <!-- Stats tab content -->
+      <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
+      <!-- /.tab-pane -->
+      <!-- Settings tab content -->
+      <div class="tab-pane" id="control-sidebar-settings-tab">
+        <form method="post">
+          <h3 class="control-sidebar-heading">General Settings</h3>
+
+          <div class="form-group">
+            <label class="control-sidebar-subheading">
+              Report panel usage
+              <input type="checkbox" class="pull-right" checked>
+            </label>
+
+            <p>
+              Some information about this general settings option
+            </p>
+          </div>
+          <!-- /.form-group -->
+        </form>
+      </div>
+      <!-- /.tab-pane -->
+    </div>
+  </aside>
+  <!-- /.control-sidebar -->
+  <!-- Add the sidebar's background. This div must be placed
+  immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<!-- jQuery 3 -->
+<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- DataTables (new added)	 -->
+<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!-- SlimScroll -->
+<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/assets/admin/dist/js/adminlte.min.js"></script>
+
+<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+
+<!-- page script (new added) -->
+
+
+<script>
+  $(function () {
+    $('#example1').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+    'select'		: true,
+    'scroll'		: true,
+    'searching' : true
+    })
+  })
+</script>
+
+
+<script>
+  $(function () {
+    $('#example').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+    'select'		: true,
+    'scroll'		: true,
+    'searching' : true
+    })
+  })
+</script>
+
+<script>
+  $(function () {
+    $('#productTable').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+    'select'		: true,
+    'scroll'		: true,
+    'searching' : true
+    })
+  })
+</script>
+
+
+<script>
+
+$('.setter').on('click', function(){
+  $('#suppid').val($(this).data('supplierid'));
+  $('#businessName').val($(this).data('business'));
+  $('#address').val($(this).data('baddress'));
+  if ($(this).data('contractno') == null || $(this).data('contractno') == ""){
+    $('#contract').val("No contract available / Outright supplier");
+    $('#searchProduct').attr('hidden', true);
+
+  }else{
+    $('#contract').val($(this).data('contractno'));
+    $('#searchProduct').attr('hidden', false);
+  }
+
+  var text = $(this).data('supplierid');
+
+  var productRes = "";
+  var prodTable = $('#productTable').DataTable();
+
+  $.ajax({
+    url: '/purchaseOrder/findProducts',
+    method: 'POST',
+    datatype: "json",
+    data: {o: text},
+    success: function(response, status, http) {
+            if (response) {
+              if (response == "some"){
+
+              }else{
+                productRes = response.split(",");
+
+                for(var x = 0; x<productRes.length; x++){
+                  prodTable.row.add( [
+                      x+1,
+                      productRes[x],
+                      ""
+                  ] ).draw( false );
+                } // for loop end
+
+              }
+
+
+            } // end of response
+        }
+  });
+
+  $('#addButton').attr('disabled', false);
+})
+
+
+$(document).ready(function() {
+
+  var count = 1;
+    $('.addRow').on( 'click', function () {
+      var t = $('#example').DataTable();
+      var table = document.getElementById("example");
+      var row = table.getElementsByTagName("tr");
+
+      var rows = t.rows( '.selected' );
+      var filter = $(this).data('productid');
+
+      var tr = table.getElementsByTagName("tr");
+      var validity = 1;
+
+
+      // for (i = 0; i < tr.length; i++) {
+      //   var td = tr[i].getElementsByTagName("td")[0];
+      //
+      //
+      //   if (td) {
+      //     if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+      //       validity = 0;
+      //       swal("Error!", "Same product already exists", "error");
+      //       break;
+      //     } else {
+      //       validity = 1;
+      //
+      //     }
+      //   }
+      // }
+
+      if (validity){
         t.row.add( [
-            counter +'.1',
-            counter +'.2',
-            counter +'.3',
-            counter +'.4',
-            counter +'.5',
-            counter +'.6'
+            count,
+            '<input style="width: 200px" required type="text" name="product[]" value="" class="form-control">',
+            '<input style="width: 80px" required type="number" name="quantity[]" value="0" class="form-control">',
+            '<input style="width: 80px" type="number" name="price[]" value="2" class="form-control">',
+            '<input style="width: 80px" type="number" name="total[]" value="2" class="total form-control">',
+            ""
         ] ).draw( false );
+        //validity = 0;
+        count++;
+      }
 
-        counter++;
+
+
     } );
 
     // Automatically add a first row of data
     //$('#addRow').click();
+
+   $('#sub').on('click', function(){
+     $(this).submit();
+   });
+  //    var $dataElements = $('#example').find('td'),
+  //   data = [];
+  //
+  //
+  // $.each($dataElements, function(i, elem){
+  //   data.push($(elem).val());
+  //
+  // });
+  //
+  // $.ajax({url:'/purchaseOrder/samp', method: 'POST', data: {data:JSON.stringify(data)} });
+  //  });
+
 } );
- </script>
+</script>
 
- <script>
- $('#title').html("USG | Purchase Order");
- $(".treeview a:contains('Transactions')").parent().addClass("active");
- $(".navi a:contains('Orders to Suppliers')").parent().addClass("active");
- </script>
+<script>
+
+</script>
 
 
- <!-- Optionally, you can add Slimscroll and FastClick plugins.
-      Both of these plugins are recommended to enhance the
-      user experience. -->
- </body>
- </html>
+
+<script>
+$('#title').html("USG | Purchase Order");
+$(".treeview a:contains('Transactions')").parent().addClass("active");
+$(".navi a:contains('Orders to Suppliers')").parent().addClass("active");
+</script>
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>

@@ -7,7 +7,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title id="title">UltraSuperGreen</title>
+  <link rel="icon" type="image/png" href="/assets/usg-green.png"/>
+  <title id="title">Ultra &nbsp;Super &nbsp;Green</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -24,6 +25,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         page. However, you can choose any other skin. Make sure you
         apply the skin class to the body tag so the changes take effect. -->
   <link rel="stylesheet" href="/assets/admin/dist/css/skins/skin-green.min.css">
+  <link rel="stylesheet" href="/assets/admin/dist/css/skins/skin-green-light.min.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -35,6 +37,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Google Font -->
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+   <link href="/assets/bootstrap-sweetalert-master/dist/sweetalert.css" rel="stylesheet">
+   <!-- Pace style -->
+   <link rel="stylesheet" href="/assets/admin/plugins/pace/pace.min.css">
+   <!-- daterange picker -->
+   <link rel="stylesheet" href="/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+   <!-- iCheck for checkboxes and radio inputs -->
+   <link rel="stylesheet" href="/assets/admin/plugins/iCheck/all.css">
+
 
 
 </head>
@@ -58,7 +69,7 @@ desired effect
 |               | sidebar-mini                            |
 |---------------------------------------------------------|
 -->
-<body class="hold-transition skin-green fixed sidebar-mini">
+<body id="bod" class="hold-transition skin-green fixed sidebar-mini">
 <div class="wrapper">
 
   <!-- Main Header -->
@@ -155,6 +166,15 @@ desired effect
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
       </div>
+    </br>
+    <center>
+      <div class="btn-group">
+
+        <button type="button" id="dark_theme" class="btn btn-primary btn-xs">Dark</button>
+
+        <button type="button" id="light_theme" class="btn btn-default btn-xs">Light</button>
+      </div>
+    </center>
 
       <!-- search form (Optional) -->
       <form action="#" method="get" class="sidebar-form">
@@ -170,9 +190,19 @@ desired effect
 
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">Quick Tools</li>
+        <li class="navi"><a href="/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard	</span></a></li>
+        <li class="navi">
+            <a href="/customerOrder/checkNewOrders"><i class="fa fa-cart-arrow-down"></i> <span>Orders</span><span class="pull-right-container">
+            <small id="notiforder" class="label pull-right bg-green">new</small>
+          </span></a>
+        </li>
+        <li class="navi"><a href="/inventory/allStocks"><i class="fa fa-bar-chart"></i> <span>Stocks</span></a></li>
+        <li class="navi"><a href="/receiveDelivery/Form"><i class="fa fa-hand-lizard-o"></i> <span>Receive Delivery</span></a></li>
+
+
         <li class="header">Main Tools</li>
         <!-- Optionally, you can add icons to the links -->
-        <li class="navi"><a href="/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard	</span></a></li>
 
         <li class="treeview">
           <a href="#"><i class="fa fa-desktop"></i> <span>Maintenance</span>
@@ -191,6 +221,7 @@ desired effect
               </a>
               <ul class="treeview-menu">
                 <li class="navi"><a href="/inventory/allProducts"><i class="fa fa-circle-o"></i>All Products</a></li>
+                <li class="navi"><a href="/inventory/allStocks"><i class="fa fa-circle-o"></i>Stocks</a></li>
                 <li class="navi"><a href="/inventory/supplierProducts"><i class="fa fa-circle-o"></i>Products per Supplier</a></li>
 
               </ul>
@@ -199,11 +230,13 @@ desired effect
             <li class="navi"><a href="/maintenance/voucher"><i class="fa fa-genderless"></i>Voucher</a></li>
             <li class="navi"><a href="/maintenance/supplier"><i class="fa fa-genderless"></i>Suppliers</a></li>
             <li class="navi"><a href="/maintenance/productCategory"><i class="fa fa-genderless"></i>Product Category</a></li>
+            <li class="navi"><a href="/maintenance/batch"><i class="fa fa-genderless"></i>Product Batch</a></li>
             <li class="navi"><a href="/maintenance/businessType"><i class="fa fa-genderless"></i>Business Types</a></li>
+            <li class="navi"><a href="/maintenance/measurements"><i class="fa fa-genderless"></i>Measurements</a></li>
             <li class="navi"><a href="/maintenance/FAQ"><i class="fa fa-genderless"></i>Frequently Asked Questions</a></li>
             <li class="navi"><a href="/maintenance/promotion"><i class="fa fa-genderless"></i>Promotions</a></li>
             <li class="navi"><a href="/maintenance/package"><i class="fa fa-genderless"></i>Package Discounts</a></li>
-            <li class="navi"><a href="/maintenance/returnOrderReason"><i class="fa fa-genderless"></i>Return Order Reasons</a></li>
+
 
 
           </ul>

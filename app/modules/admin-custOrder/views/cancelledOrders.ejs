@@ -8,7 +8,7 @@
     <section class="content-header">
       <h1>
 
-        <small>Note: Please monitor stocks regularly, check if there is damaged products.</small>
+        <small>Note: All cancelled orders of customers.</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -27,41 +27,63 @@
             </div>
 			<!-- buttons -->
 
-            <!-- /.box-header -->
-            <div class="box-body table-responsive">
-              <table id="example2" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                  <th>Invoice No</th>
-                  <th>Customer Name</th>
-                  <th>Order Date</th>
-				          <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
+      <!-- /.box-header -->
+      <div class="box-body table-responsive">
+        <table id="example2" class="table table-bordered table-hover">
+          <thead>
+          <tr>
+            <th>Order No</th>
+            <th>Customer Name</th>
+            <th>Order Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% if (re == null || re == undefined || re.length == 0){ %>
 
-                <tr>
-                  <td>007614</td>
-                  <td>Junelle Supelana</td>
-                  <td>03/23/2018</td>
-                  <td><span class="label label-danger">Cancelled</span></td>
-                  <td><a href="invoice.html"><button class="btn btn-default btn-sm">View Invoice</button></a></td>
-                </tr>
+          <% }else{ %>
+          <%  re.forEach(function(i){ %>
+            <tr>
+              <td><%= i.intOrderNo %></td>
+              <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
+              <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
+              <td>
+                <% if (i.Stat == 0){ %>
+                  <span class="label label-warning">Pending</span>
+                <% }else if(i.Stat == 1){ %>
+                  <span class="label label-info">Processing</span>
+                <% }else if(i.Stat == 2){ %>
+                  <span class="label label-default">Shipped</span>
+                <% }else if (i.Stat == 3){ %>
+                  <span class="label label-default">Delivered</span>
+                <% }else if(i.Stat == 4){ %>
+                  <span class="label label-default">Will not deliver</span>
+                <% }else if(i.Stat == 5){ %>
+                  <span class="label label-default">Returned</span>
+                <% }else{ %>
+                  <span class="label label-danger">Cancelled</span>
+                <% } %>
+              </td>
+              <td>
+                <% orderno = i.intOrderNo %>
+                <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="btn btn-default btn-sm">View Invoice</button></a>
 
-				        <tr>
-                  <td>007616</td>
-                  <td>Jhonna Grimaldo</td>
-                  <td>03/23/2018</td>
-                  <td><span class="label label-danger">Cancelled</span></td>
-                  <td><a href="invoice.html"><button class="btn btn-default btn-sm">View Invoice</button></a></td>
-                </tr>
+                  <a href="/customerOrder/assessOrder?order=<%=orderno%>"><button class="btn btn-primary btn-sm">Assess</button></a>
 
-                </tbody>
+                <a href="/customerOrder/orderHistory?order=<%=orderno%>"><button class="btn btn-info btn-sm">View History</button></a>
 
-              </table>
-            </div>
-            <!-- /.box-body -->
+              </td>
+            </tr>
+          <% }) %>
+          <% } %>
+
+
+          </tbody>
+
+        </table>
+      </div>
+      <!-- /.box-body -->
           </div>
           <!-- /.box -->
 
@@ -237,6 +259,8 @@
 <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<!-- Notification  -->
+<script src="/assets/admin/notification.js"></script>
 
 <!-- page script (new added) -->
 <script>

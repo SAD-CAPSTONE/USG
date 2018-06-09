@@ -25,7 +25,7 @@
               <h3 class="box-title">Supplier Record</h3>
             </div>
             <!-- buttons -->
-      				&nbsp; &nbsp;<a href="supplierForm.html"><button type="button" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Add New Supplier</button></a>
+      				&nbsp; &nbsp;<a href="/maintenance/supplierForm"><button type="button" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Add New Supplier</button></a>
             <!-- /.box-header -->
             <div class="box-body table-responsive">
               <table id="example2" class="table table-bordered table-hover">
@@ -40,22 +40,37 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                  <td>007612</td>
-                  <td>Wendy Coching</td>
-                  <td>Picole</td>
-                  <td>Consignor</td>
-                  <td><span class="label label-success">Active</span></td>
-                  <td><a href=""><button class="btn btn-default btn-sm">View Details</button></a></td>
-                </tr>
-                <tr>
-                  <td>007613</td>
-                  <td>Jenemy Dela Cruz</td>
-                  <td>Messy Bessy</td>
-                  <td>Outright</td>
-                  <td><span class="label label-danger">Inactive</span></td>
-                  <td><a href=""><button class="btn btn-default btn-sm">View Details</button></a></td>
-                </tr>
+                <% if (re == null || re == undefined){ %>
+
+                <% }else if (re.length == 0){ %>
+
+                <% }else{ %>
+                <%  re.forEach(function(i){ %>
+                  <tr>
+                    <td><%= i.intUserID %></td>
+                    <td><%= i.strFname%> <%=i.strMname %> <%=i.strLname %></td>
+                    <td><%= i.strBusinessName %></td>
+                    <td>
+                      <% if (i.intSupplierType == 1){ %>
+                        Consignor
+                      <% }else{ %>
+                        Outright
+                      <% } %>
+                    </td>
+                    <td>
+                      <% if (i.Stats == 1){ %>
+                        <span class="label label-success">Active</span>
+                      <% }else{ %>
+                        <span class="label label-danger">Inactive</span></td>
+
+                      <% } %>
+                      </td>
+
+
+                    <td><a href=""><button disabled class="btn btn-default btn-sm">View Details</button></a></td>
+                  </tr>
+                <%  }) %>
+                <% } %>
 
                 </tbody>
 

@@ -25,54 +25,45 @@
 					  <h3 class="box-title">Product Category</h3>
 					</div>
 					<!-- /.box-header -->
-          &nbsp;&nbsp;<button data-toggle="modal" data-target="#category" class="btn btn-primary btn-xs">Add Category</button>
+          &nbsp;&nbsp;<button data-toggle="modal" data-target="#categorymodal" class="btn btn-primary btn-xs">Add Category</button>
 					<div class="box-body table-responsive">
-					  <table class="table table-bordered">
-						<tr>
-						  <th style="width: 10px">No</th>
-						  <th>Category</th>
-						  <th>Status</th>
-						  <th style="width: 40px">Actions</th>
-						</tr>
-						<tr>
-						  <td>1.</td>
-						  <td>Food</td>
-              <td><span class="label label-success">Active</span></td>
-              <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-						</tr>
-						<tr>
-						  <td>2.</td>
-						  <td>Stationary</td>
-              <td><span class="label label-success">Active</span></td>
-              <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-						</tr>
-						<tr>
-						  <td>3.</td>
-						  <td>Cosmetics</td>
-              <td><span class="label label-success">Active</span></td>
-              <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-						</tr>
-						<tr>
-						  <td>4.</td>
-						  <td>Skin Care</td>
-              <td><span class="label label-success">Active</span></td>
-              <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-						</tr>
+					  <table id="category" class="table table-bordered table-hover">
+            <thead>
+  						<tr>
+  						  <th style="width: 10px">No</th>
+  						  <th>Category</th>
+  						  <th>Status</th>
+  						  <th style="width: 40px">Actions</th>
+  						</tr>
+          </thead>
+          <tbody>
+            <% if (category == null || category == undefined || category.length == 0){ %>
+
+            <% }else{ %>
+            <%  category.forEach(function(i){ %>
+                <tr>
+                  <td><%=i.intCategoryNo%></td>
+                  <td><%=i.strCategory%></td>
+                  <td>
+                    <% if (i.intStatus == 1) { %>
+                      <span class="label label-success">Active</span>
+                    <% }else{ %>
+                      <span class="label label-danger">Inactive</span>
+                    <% } %>
+                  </td>
+                  <td><button class="btn btn-default btn-sm">Edit</button></td>
+                </tr>
+              <% }) %>
+            <% } %>
+          </tbody>
+
+
 					  </table>
 					</div>
 					<!-- /.box-body -->
-					<div class="box-footer clearfix">
-					  <ul class="pagination pagination-sm no-margin pull-right">
-						<li><a href="#">&laquo;</a></li>
-						<li><a href="#">1</a></li>
-						<li><a href="#">2</a></li>
-						<li><a href="#">3</a></li>
-						<li><a href="#">&raquo;</a></li>
-					  </ul>
-					</div>
+
 				</div>
 				<!-- /.box -->
-
 			</div>
 
 			<div class="col-md-6">
@@ -81,167 +72,41 @@
 					  <h3 class="box-title">Product Sub-Category</h3>
 					</div>
 					<!-- /.box-header -->
-          &nbsp;&nbsp;<button data-toggle="modal" data-target="#addType" class="btn btn-primary btn-xs">Add Sub-Category</button>
+          &nbsp;&nbsp;<button data-toggle="modal" data-target="#subcategorymodal" class="btn btn-primary btn-xs">Add Sub-Category</button>
 					<div class="box-body table-responsive">
-					  <table class="table table-bordered">
+					  <table id="subCategory" class="table table-bordered table-hover">
+              <thead>
               <tr>
   						  <th style="width: 10px">No</th>
-  						  <th>Category</th>
+  						  <th>Category - SubCategory</th>
   						  <th>Status</th>
   						  <th style="width: 40px">Actions</th>
   						</tr>
-  						<tr>
-  						  <td>1.</td>
-  						  <td>Food - Dairy</td>
-                <td><span class="label label-success">Active</span></td>
-                <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-  						</tr>
-  						<tr>
-  						  <td>2.</td>
-  						  <td>Food - Supplement</td>
-                <td><span class="label label-success">Active</span></td>
-                <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-  						</tr>
-  						<tr>
-  						  <td>3.</td>
-  						  <td>Food - Animal Food</td>
-                <td><span class="label label-success">Active</span></td>
-                <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-  						</tr>
-  						<tr>
-  						  <td>4.</td>
-  						  <td>Skin Care - Hand Sanitizer</td>
-                <td><span class="label label-success">Active</span></td>
-                <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-  						</tr>
+            </thead>
+            <tbody>
+              <% if (sub == null || sub == undefined || sub.length == 0){ %>
+
+              <% }else{ %>
+              <%  sub.forEach(function(i){ %>
+                  <tr>
+                    <td><%=i.intSubCategoryNo%></td>
+                    <td><%=i.strCategory%> - <%=i.strSubCategory%></td>
+                    <td>
+                      <% if (i.S == 1) { %>
+                        <span class="label label-success">Active</span>
+                      <% }else{ %>
+                        <span class="label label-danger">Inactive</span>
+                      <% } %>
+                    </td>
+                    <td><button class="btn btn-default btn-sm">Edit</button></td>
+                  </tr>
+              <%  }) %>
+            <%  } %>
+  					</tbody>
+
 					  </table>
 					</div>
 					<!-- /.box-body -->
-					<div class="box-footer clearfix">
-					  <ul class="pagination pagination-sm no-margin pull-right">
-						<li><a href="#">&laquo;</a></li>
-						<li><a href="#">1</a></li>
-						<li><a href="#">2</a></li>
-						<li><a href="#">3</a></li>
-						<li><a href="#">&raquo;</a></li>
-					  </ul>
-					</div>
-				</div>
-				<!-- /.box -->
-
-			</div>
-
-		</div> <!-- row end -->
-
-		<div class="row">
-			<div class="col-md-6">
-				<div class="box box-info">
-					<div class="box-header with-border">
-					  <h3 class="box-title">Product Batch</h3>
-					</div>
-					<!-- /.box-header -->
-          &nbsp;&nbsp;<button class="btn btn-primary btn-xs">Add Batch</button>
-					<div class="box-body table-responsive">
-					  <table class="table table-bordered">
-						<tr>
-						  <th style="width: 20px">Batch No</th>
-						  <th>Expiration Date</th>
-						  <th>Status</th>
-						  <th style="width: 40px">Actions</th>
-						</tr>
-						<tr>
-						  <td>1.</td>
-						  <td>10/16/2018</td>
-              <td><span class="label label-success">Active</span></td>
-              <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-						</tr>
-						<tr>
-						  <td>2.</td>
-						  <td>12/15/2019</td>
-              <td><span class="label label-success">Active</span></td>
-              <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-						</tr>
-						<tr>
-						  <td>3.</td>
-						  <td>09/16/2019</td>
-              <td><span class="label label-success">Active</span></td>
-              <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-						</tr>
-						<tr>
-						  <td>4.</td>
-						  <td>10/09/2019</td>
-              <td><span class="label label-success">Active</span></td>
-              <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-						</tr>
-					  </table>
-					</div>
-					<!-- /.box-body -->
-					<div class="box-footer clearfix">
-					  <ul class="pagination pagination-sm no-margin pull-right">
-						<li><a href="#">&laquo;</a></li>
-						<li><a href="#">1</a></li>
-						<li><a href="#">2</a></li>
-						<li><a href="#">3</a></li>
-						<li><a href="#">&raquo;</a></li>
-					  </ul>
-					</div>
-				</div>
-				<!-- /.box -->
-
-
-			</div>
-
-			<div class="col-md-6">
-				<div class="box box-info">
-					<div class="box-header with-border">
-					  <h3 class="box-title">Unit of Measure</h3>
-					</div>
-					<!-- /.box-header -->
-          &nbsp;&nbsp;<button class="btn btn-primary btn-xs">Add Unit of Measure</button>
-					<div class="box-body table-responsive">
-					  <table class="table table-bordered">
-						<tr>
-						  <th style="width: 10px">No</th>
-						  <th>Unit of Measure</th>
-						  <th>Status</th>
-						  <th style="width: 40px">Actions</th>
-						</tr>
-						<tr>
-						  <td>1.</td>
-						  <td>Grams</td>
-              <td><span class="label label-success">Active</span></td>
-              <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-						</tr>
-						<tr>
-						  <td>2.</td>
-						  <td>Milligrams</td>
-              <td><span class="label label-success">Active</span></td>
-              <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-						</tr>
-						<tr>
-						  <td>3.</td>
-						  <td>Kilograms</td>
-              <td><span class="label label-success">Active</span></td>
-              <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-						</tr>
-						<tr>
-						  <td>4.</td>
-						  <td>Pounds</td>
-              <td><span class="label label-success">Active</span></td>
-              <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-						</tr>
-					  </table>
-					</div>
-					<!-- /.box-body -->
-					<div class="box-footer clearfix">
-					  <ul class="pagination pagination-sm no-margin pull-right">
-						<li><a href="#">&laquo;</a></li>
-						<li><a href="#">1</a></li>
-						<li><a href="#">2</a></li>
-						<li><a href="#">3</a></li>
-						<li><a href="#">&raquo;</a></li>
-					  </ul>
-					</div>
 				</div>
 				<!-- /.box -->
 
@@ -257,7 +122,7 @@
 
   <!-- Modals -->
 
-	<div class="modal fade" id="category">
+	<div class="modal fade" id="categorymodal">
 	  <div class="modal-dialog">
 		<div class="modal-content">
 		  <div class="modal-header">
@@ -269,26 +134,67 @@
 			<!-- Horizontal Form -->
 
 					<!-- form start -->
-          <form role="form">
+          <form role="form" method="post" action="/maintenance/addCategory">
               <div class="box-body">
                 <div class="form-group">
-                  <label for="bType">Product Category:</label>
-                  <input type="text" class="form-control" id="bType" placeholder="">
+                  <label for="category">Product Category:</label>
+                  <input type="text" required class="form-control" name="category" id="category" placeholder="ex. Food">
                 </div>
 
-                <!-- <div class="checkbox">
-                  <label>
-                    <input type="checkbox"> Check me out
-                  </label>
-                </div> -->
               </div>
-            </form>
+
 
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-			<button type="button" class="btn btn-primary">Save</button>
+			<button type="submit" class="btn btn-primary">Save</button>
 		  </div>
+      </form>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+  <!-- /.modal-dialog -->
+</div>
+
+
+	<div class="modal fade" id="subcategorymodal">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title"></h4>
+		  </div>
+		  <div class="modal-body">
+			<!-- Horizontal Form -->
+
+					<!-- form start -->
+          <form role="form" method="post" action="/maintenance/addSubCategory">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="categories">Choose Category here:</label>
+                  <select class="form-control" name="categ">
+                    <% if (category == undefined || category == null || category.length == 0){ %>
+
+                    <%}else{ %>
+                    <%  category.forEach(function(i){ %>
+                        <option value="<%=i.intCategoryNo%>"><%=i.strCategory%></option>
+                    <%  }) %>
+                    <% } %>
+                  </select>
+                  <label for="subcategory">Sub Category:</label>
+                  <input type="text" required class="form-control" name="subcategory" id="subcategory" placeholder="">
+                </div>
+
+              </div>
+
+
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+			<button type="submit" class="btn btn-primary">Save</button>
+		  </div>
+      </form>
 		</div>
 		<!-- /.modal-content -->
 	</div>
@@ -401,9 +307,25 @@
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
 
 <!-- page script (new added) -->
+
 <script>
   $(function () {
-    $('#example2').DataTable({
+    $('#category').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $(function () {
+    $('#subCategory').DataTable({
       'paging'      : true,
       'lengthChange': true,
       'searching'   : true,

@@ -5,8 +5,8 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
+        <small> </small>
 
-        <small>Note: Please monitor stocks regularly, check if there is damaged products.</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -21,7 +21,11 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Consignor Applications</h3>
+              <h4 align="center">Consignor Applications</h4>
+            </br>
+              <h5>Note: Consignors have agreed to the terms and conditions upon application.</h5>
+
+              <h5>Note: Pending status are not evaluated yet.</h5>
             </div>
 
             <!-- /.box-header -->
@@ -29,6 +33,7 @@
               <table id="example2" class="table table-bordered table-hover">
                 <thead>
                 <tr>
+                  <th>No</th>
                   <th>Business Name</th>
                   <th>Consignor Name</th>
                   <th>Application Date</th>
@@ -37,13 +42,34 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                  <td>Nurturme</td>
-                  <td>Wendy Coching</td>
-                  <td>03/21/2018</td>
-                  <td><span class="label label-warning">Pending</span></td>
-                  <td><a href="application.html"><button class="btn btn-default btn-sm">View Details</button></a></td>
-                </tr>
+                <% if (list == undefined || list == null || list.length < 0 ){ %>
+
+                <% }else{ %>
+                <%  list.forEach(function(i){ %>
+                  <tr>
+                    <td><%=i.intContractNo%></td>
+                    <td><%=i.strBusinessName%></td>
+                    <td><%=i.strFname%>&nbsp;<%=i.strMname%>&nbsp;<%=i.strLname%></td>
+                    <td><%= moment(i.applicationDate).format("MMMM Do YYYY")%></td>
+                    <td>
+                      <% if (i.stats == 0){ %>
+                        <span class="label label-warning">Pending</span>
+                      <% }else if(i.stats == 1){ %>
+                        <span class="label label-success">Accepted</span>
+                      <% }else if(i.stats == 2){ %>
+                        <span class="label label-danger">Rejected</span>
+                      <% }else{ %>
+                        <span class="label label-info">For Product Sampling</span>
+                      <% } %>
+                    </td>
+                    <td>
+                      <a href="/consApplication/details?contract=<%=i.intContractNo%>"><button class="btn btn-default btn-sm">View Details</button></a>
+                    </td>
+                  </tr>
+                <%  }) %>
+                <% } %>
+
+
 
 
                 </tbody>
@@ -247,7 +273,7 @@
 <script>
 $('#title').html("USG | Consignor Application");
 $(".treeview a:contains('Transactions')").parent().addClass("active");
-$(".navi a:contains('Consignor')").parent().addClass("active");
+$(".navi a:contains('Consignor Application')").parent().addClass("active");
 </script>
 
 

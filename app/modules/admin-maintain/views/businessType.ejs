@@ -34,46 +34,36 @@
                   <th>No</th>
                   <th>Business Type</th>
                   <th>Date Created</th>
-				  <th>Status</th>
+				          <th>Status</th>
                   <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Single Proprietorship</td>
-                  <td>03/21/2018</td>
-                  <td><span class="label label-success">Active</span></td>
-                  <td><a href=""><button class="btn btn-default btn-sm">View Details</button></a></td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Business Partnership</td>
-                  <td>03/22/2018</td>
-                  <td><span class="label label-success">Active</span></td>
-                  <td><a href=""><button class="btn btn-default btn-sm">View Details</button></a></td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>Social Enterprise</td>
-                  <td>03/23/2018</td>
-                  <td><span class="label label-danger">Inactive</span></td>
-                  <td><a href=""><button class="btn btn-default btn-sm">View Details</button></a></td>
-                </tr>
-				<tr>
-                  <td>4</td>
-                  <td>Online Seller</td>
-                  <td>03/23/2018</td>
-                  <td><span class="label label-success">Active</span></td>
-                  <td><a href=""><button class="btn btn-default btn-sm">View Details</button></a></td>
-                </tr>
-				<tr>
-                  <td>5</td>
-                  <td>Multi Level Marketing</td>
-                  <td>03/23/2018</td>
-                  <td><span class="label label-danger">Inactive</span></td>
-                  <td><a href=""><button class="btn btn-default btn-sm">View Details</button></a></td>
-                </tr>
+                  <% if (re == null || re == undefined){ %>
+
+                  <% }else if (re.length == 0){ %>
+
+                  <% }else{ %>
+                  <%  re.forEach(function(i){ %>
+                      <tr>
+                        <td><%=i.intBusinessTypeNo %></td>
+                        <td><%=i.strBusinessType%></td>
+                        <td><%= moment(i.dateCreated).format("MM/DD/YYYY")%></td>
+                        <td>
+                          <% if (i.intStatus == 1){ %>
+                            <span class="label label-success">Active</span></td>
+
+                          <% }else{ %>
+                            <span class="label label-success">Inactive</span></td>
+
+                          <% } %>
+                        <td><a href=""><button disabled class="btn btn-default btn-sm">Inactivate</button></a></td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+
+
+
 
                 </tbody>
 
@@ -110,22 +100,26 @@
           <form role="form">
               <div class="box-body">
                 <div class="form-group">
+                  <% num = "1000" %>
+                  <% if (lasttype == null || lasttype == undefined){ %>
+
+                  <% }else if (lasttype.length == 0){ %>
+
+                  <% }else{ %>
+                    <% num = parseInt(lasttype[0].intBusinessTypeNo) + 1; %>
+                  <% } %>
+                  <input type="hidden" id="bno" value="<%=num%>">
                   <label for="bType">Business Type:</label>
                   <input type="text" class="form-control" id="bType" placeholder="">
                 </div>
 
-                <!-- <div class="checkbox">
-                  <label>
-                    <input type="checkbox"> Check me out
-                  </label>
-                </div> -->
               </div>
             </form>
 
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-			<button type="button" class="btn btn-primary">Save</button>
+			<button type="button" id="save" class="btn btn-primary">Save</button>
 		  </div>
 		</div>
 		<!-- /.modal-content -->
@@ -237,6 +231,10 @@
 <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<!-- sweetalert  -->
+<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+<!-- Notification  -->
+<script src="/assets/admin/notification.js"></script>
 
 <!-- page script (new added) -->
 <script>
@@ -251,6 +249,30 @@
 	  'select'		: true,
 	  'scroll'		: true
     })
+  })
+</script>
+
+<script>
+  $(document).ready(function(){
+    $('#save').on('click',function(){
+      $.ajax({
+        url: '/maintenance/addBusinessType',
+        method: 'POST',
+        datatype: "json",
+        data: {
+          bno: $('#bno').val(),
+          btype: $('#bType').val(),
+        },
+        success: function(response,status,http){
+          if (response){
+            if (response == "yes"){
+              swal("Success","Business type added!", "success");
+              window.location.reload();
+            }
+          }
+        }
+      })
+    });
   })
 </script>
 
