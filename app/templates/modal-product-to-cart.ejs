@@ -1,19 +1,22 @@
-<div class="modal fade" role="dialog" tabindex="-1" id="modal-product-to-cart" aria-hidden="true">
+<div id="modal-product-to-cart" class="modal fade" role="dialog" tabindex="-1"  aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
       <div class="modal-body">
-        <div class="product-img"><img src="/assets/images/static/img6.jpg"></div>
+        <div class="product-img"><img src=""></div>
         <div class="right-pane">
-          <p class="title">SuperScoops Premium Vegan Ice Cream Choco</p>
+          <p class="title"></p>
           <div class="order-details">
-            <p class="select-label">Select Size:</p><select class="form-control-sm select-size"><option value="" selected="">5ml</option><option value="">10ml</option><option value="">15ml</option></select>
+            <p class="select-label">Select Size:</p>
+            <input type="number" id="product-id" hidden/>
+            <select class="form-control-sm select-size"></select>
             <div class="input-group quantity">
               <div class="input-group-prepend addon"><button class="btn btn-primary quantity-buttons" type="button"><small class="quantity-text quantity-text-minus">-</small></button></div><input class="form-control quantity-input" type="text" readonly="" value="1">
               <div class="input-group-append addon"><button class="btn btn-primary quantity-buttons" type="button"><small class="quantity-text quantity-text-plus">+</small></button></div>
             </div>
             <p class="quantity-label">Quantity:</p>
-            <p class="price price-symbol">230.99</p><button class="btn btn-primary btn-sm add-button" type="button">Add to Cart</button></div>
+            <p class="price price-symbol"></p><button class="btn btn-primary btn-sm add-button" type="button">Add to Cart</button>
+          </div>
         </div>
       </div>
       <div class="modal-footer"></div>

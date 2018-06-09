@@ -1,5 +1,6 @@
 <%- include('../../../templates/navbar.ejs') -%>
 
+
 <style>
   .x-scrolling-div .simplebar-content {
     min-height: 340px !important;
@@ -39,31 +40,42 @@
     </div><br/><br/>
   </div>
   <div class="container x-scrolling-div" data-simplebar="">
-    <% for(i=0; i<5 ;i++){ %>
+    <% popular.forEach((prod)=>{ %>
       <div class="custom-card my-1" style="margin-right: 22px !important; margin-left: 1px">
-        <div class="card-img"><a href="/item"><img src="/assets/images/static/img<%= i+1%>.jpg"></a></div>
-        <a class="order-modal-link" href="#" data-toggle="modal" data-target="#modal-product-to-cart">
-          <div class="cart-button-div">
-            <p class="cart-button-text">Add to Cart</p>
-          </div>
-        </a>
+        <div class="card-img"><a href="/item"><img src="/assets/images/static/<%= prod.strProductPicture%>"></a></div>
+        <div class="cart-button-div">
+          <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
+          data-target="#modal-product-to-cart" data-name='<%= prod.strBrand%> <%= prod.strProductName%>'
+          data-img="/assets/images/static/<%= prod.strProductPicture%>" data-price="<%= prod.productPrice%>"
+          data-sel="<%= prod.sizes%>" data-pid="<%= prod.intProductNo%>">
+          Add to Cart</button>
+        </div>
+
         <div class="card-desc">
-          <p class="card-title">Dugos Wild Forest Honey</p>
-          <p class="card-price price-symbol">230.99</p>
+          <p class="card-title"><%= prod.strBrand%> <%= prod.strProductName%></p>
+          <p class="card-price price-symbol"><%= prod.productPrice%></p>
           <small class="card-oldprice text-muted">
-            <span><s class="price-symbol">255.99</s></span> (-10%)<br>
+            <span><s class="price-symbol">0</s></span> (-0%)<br>
           </small>
           <small class="card-rating">
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star-half-o"></i>&nbsp;
-        </small>
-          <small class="card-reviews">45 reviews</small>
+            <%
+            rating = prod.aveRating;
+            for(i=0; i<5; i++){
+              if (rating < 1 && rating >= 0.5) {
+              %> <i class="fa fa-star-half-o"></i> <%
+              } else if (rating < 0.5) {
+              %> <i class="fa fa-star-o"></i> <%
+              } else {
+              %> <i class="fa fa-star"></i> <%
+              }
+              --rating;
+            }%>
+            <span class="fs-08em fw-400">(<%= prod.cntRating%>)</span>
+          </small>
+          <small class="card-reviews"><%= prod.cntReview%> reviews</small>
         </div>
       </div>
-      <%}%>
+      <%})%>
   </div>
 </div>
 <div class="mb-4">
@@ -77,11 +89,11 @@
     <% for(i=0; i<5 ;i++){ %>
       <div class="custom-card my-1" style="margin-right: 22px !important; margin-left: 1px">
         <div class="card-img"><a href="/item"><img src="/assets/images/static/img<%= i+5%>.jpg"></a></div>
-        <a class="order-modal-link" href="#" data-toggle="modal" data-target="#modal-product-to-cart">
-          <div class="cart-button-div">
-            <p class="cart-button-text">Add to Cart</p>
-          </div>
-        </a>
+        <div class="cart-button-div">
+          <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
+          data-target="#modal-product-to-cart">
+          Add to Cart</button>
+        </div>
         <div class="card-desc">
           <p class="card-title">Dugos Wild Forest Honey</p>
           <p class="card-price">₱&nbsp;2,300.99</p>
@@ -105,5 +117,40 @@
 <%- include('../../../templates/modal-product-to-cart.ejs') -%>
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
+<script type="text/javascript">
+  $('#modal-product-to-cart').on('show.bs.modal', function (event) {
+    let button = $(event.relatedTarget);
+    let img = button.data('img');
+    let name = button.data('name');
+    let price = button.data('price');
+    let pid = button.data('pid');
+    let sel = button.data('sel').split(",");
+
+    let modal = $(this);
+    $(".modal-body .product-img img").attr("src", img);
+    modal.find('.modal-body .title').text(name);
+    modal.find('.modal-body .price').text(price);
+    modal.find('.modal-body #product-id').val(pid);
+
+    $('.select-size').html('');
+    for(i=0; i<sel.length; i++){
+      $('.select-size').append(`<option value="${sel[i]}" class='sel'>${sel[i]}</option>`);
+    }
+  })
+
+  $('.select-size').on('change', function() {
+    let size = this.value;
+    let pid = $('#product-id').val();
+
+    $.get(`/home/modal-cart/${pid}/${size}`)
+    .then((res) => {
+      $('.price').html(`${res.newPrice}`);
+      console.log(res.newPrice);
+    }).catch((error) => {
+      console.log(error);
+    });
+
+  });
+</script>
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <%- include('../../../templates/closer.ejs') -%>

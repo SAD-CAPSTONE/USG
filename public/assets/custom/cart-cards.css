@@ -103,7 +103,8 @@
 
   .cart-product-container .product-pic {
     width: 100px;
-    height: 110;
+    height: 120;
+    padding: 7px 0px 10px 10px;
   }
   .cart-product-container .product-pic > img{
     height: 98;
@@ -129,7 +130,7 @@
   }
   .cart-product-container .quantity {
     position: absolute;
-    left: -93;
+    left: -90;
     bottom: 7;
     width: 90px;
   }

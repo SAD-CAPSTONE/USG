@@ -102,11 +102,11 @@
         <% for(i=0; i<8 ;i++){ %>
           <div class="custom-card">
             <div class="card-img"><a href="/item"><img src="/assets/images/static/img<%= i+1%>.jpg"></a></div>
-            <a class="order-modal-link" href="#" data-toggle="modal" data-target="#modal-product-to-cart">
-              <div class="cart-button-div">
-                <p class="cart-button-text">Add to Cart</p>
-              </div>
-            </a>
+            <div class="cart-button-div">
+              <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
+              data-target="#modal-product-to-cart">
+              Add to Cart</button>
+            </div>
             <div class="card-desc">
               <p class="card-title">Dugos Wild Forest Honey</p>
               <p class="card-price price-symbol">230.99</p>

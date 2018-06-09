@@ -65,7 +65,7 @@
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
                 <label class="form-check-label" for="exampleRadios1">
-                  5 ml
+                  &nbsp5ml
                 </label>
               </div>
               <div class="form-check">
@@ -75,21 +75,21 @@
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-                <label class="form-check-label" for="exampleRadios2">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option2">
+                <label class="form-check-label" for="exampleRadios3">
                   15ml
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
-                <label class="form-check-label" for="exampleRadios1">
-                  20 ml
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios4" value="option1">
+                <label class="form-check-label" for="exampleRadios4">
+                  20ml
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
-                <label class="form-check-label" for="exampleRadios1">
-                  25 ml
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios5" value="option1">
+                <label class="form-check-label" for="exampleRadios5">
+                  25ml
                 </label>
               </div>
             </div>
@@ -117,11 +117,11 @@
           <% for(i=0; i<5 ;i++){ %>
             <div class="custom-card my-1" style="margin-right: 22px !important; margin-left: 1px">
               <div class="card-img"><a href="/item"><img src="/assets/images/static/img<%= i+1%>.jpg"></a></div>
-              <a class="order-modal-link" href="#" data-toggle="modal" data-target="#modal-product-to-cart">
-                <div class="cart-button-div">
-                  <p class="cart-button-text">Add to Cart</p>
-                </div>
-              </a>
+              <div class="cart-button-div">
+                <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
+                data-target="#modal-product-to-cart">
+                Add to Cart</button>
+              </div>
               <div class="card-desc">
                 <p class="card-title">Dugos Wild Forest Honey</p>
                 <p class="card-price price-symbol">230.99</p>
@@ -185,13 +185,12 @@
                 </ul>
                 </div>
               <% } %>
-
-
           </div>
         </div>
         <br>
         <hr>
-        <small class="text-muted block mb-2">45 reviews</small>
+        <small class="text-muted mb-2">45 reviews</small>
+        <a href=""><small class="card-reviews fl-r"><i class="fa fa-plus-square mr-1"></i>Add Review</small></a>
         <div class="review-block mb-4">
           <small class="review-name block">John S. Doe <i class="fa fa-check-circle"></i></small>
           <i class="fa fa-star"></i>
