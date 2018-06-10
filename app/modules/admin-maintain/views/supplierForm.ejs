@@ -32,29 +32,29 @@
 				<div class="row">
 					<form class="form-horizontal">
 						<div class="form-group">
-
+              <input type="text" id="sno" value="<%=lastsupplier%>">
 							<label for="FName" class="col-sm-2 control-label">First Name</label>
 							<div class="col-sm-2">
 								<input type="text" class="input-sm form-control" id="FName" placeholder="">
 							</div>
 
               <label for="MName" class="col-sm-2 control-label">Middle Name</label>
-							<div class="col-sm-1">
+							<div class="col-sm-2">
 								<input type="text" class="input-sm form-control" id="MName" placeholder="">
 							</div>
 
               <label for="FName" class="col-sm-2 control-label">Last Name</label>
 							<div class="col-sm-2">
-								<input type="text" class="input-sm form-control" id="FName" placeholder="">
+								<input type="text" class="input-sm form-control" id="LName" placeholder="">
 							</div>
 						</div>
 
 						<div class="form-group">
 
-							<label for="Bname" class="col-sm-2 control-label">Business Name</label>
+							<label for="BName" class="col-sm-2 control-label">Business Name</label>
 
 							<div class="col-sm-4">
-								<input type="text" class="input-sm form-control" id="Bname" placeholder="">
+								<input type="text" class="input-sm form-control" id="BName" placeholder="">
 							</div>
 						</div>
 
@@ -64,6 +64,15 @@
 
 							<div class="col-sm-4">
 								<input type="text" class="input-sm form-control" id="address" placeholder="">
+							</div>
+						</div>
+
+            <div class="form-group">
+
+							<label for="email" class="col-sm-2 control-label">Business Email</label>
+
+							<div class="col-sm-4">
+								<input type="email" class="input-sm form-control" id="email" placeholder="">
 							</div>
 						</div>
 
@@ -93,31 +102,38 @@
 
             <div class="form-group">
 
-							<label for="brands" class="col-sm-2 control-label">Business TIN</label>
+							<label for="tin" class="col-sm-2 control-label">Business TIN</label>
 
 							<div class="col-sm-4">
-								<input type="text" class="input-sm form-control" id="brands" placeholder="">
+								<input type="text" class="input-sm form-control" id="tin" placeholder="">
 							</div>
 						</div>
 
             <div class="form-group">
 
-              <label for="brands" class="col-sm-2 control-label">Invoice Available?</label>
+              <label for="invoice" class="col-sm-2 control-label">Invoice Available?</label>
 
               <div class="col-sm-4">
-                <input type="radio" value="yes"id="brands"> Yes
-                <input type="radio" value="no" id="brands"> No </br>
+                <label>
+                  <input type="radio" id="invoice" value="yes" name="r3" class="flat-red" checked>
+                  Yes
+                </label>
+
+                <label>
+                  <input type="radio" name="r3" class="flat-red">
+                  No
+                </label>
               </div>
             </div>
 
             <div class="form-group">
 
-							<label for="brands" class="col-sm-2 control-label">Supplier Type</label>
+							<label for="" class="col-sm-2 control-label">Supplier Type</label>
 
 							<div class="col-sm-4">
-                <select class="input-sm form-control">
-                  <option value="consignor">Consignor</option>
-                  <option value="Outright">Outright</option>
+                <select id="type" class="input-sm form-control">
+                  <option value="1">Consignor</option>
+                  <option value="2">Outright</option>
                 </select>
 
 							</div>
@@ -125,23 +141,28 @@
 
             <div class="form-group">
 
-              <label for="brands" class="col-sm-2 control-label">Contract Available?</label>
+							<label for="" class="col-sm-2 control-label">Business Type</label>
 
-              <div class="col-sm-4">
-                <input type="radio" value="yes"id="brands"> Yes
-                <input type="radio" value="no" id="brands"> No </br>
-              </div>
-            </div>
+							<div class="col-sm-4">
+                <select id="businesstype" class="input-sm form-control">
+                  <% if (businesstype == null || businesstype == undefined){ %>
+
+                  <% }else if (businesstype.length == 0){ %>
+
+                  <% }else{ %>
+                  <%  businesstype.forEach(function(i){ %>
+                      <option value="<%=i.intBusinessTypeNo%>"><%= i.strBusinessType%></option>
+                  <%  }) %>
+                  <% } %>
 
 
-            <div class="form-group">
+                </select>
 
-              <label for="brands" class="col-sm-2 control-label">Contract No</label>
+							</div>
+						</div>
 
-              <div class="col-sm-4">
-                <input type="text" class="input-sm form-control" id="brands" placeholder="">
-              </div>
-            </div>
+
+
 
 
 					</form>
@@ -153,8 +174,10 @@
 
 
         <div class="box-footer">
-                  <a href="suppliers.html"><button type="submit" class="btn btn-default">Back</button></a>
-                  <a href="suppliers.html"><button type="submit" class="btn btn-info pull-right">Submit</button></a>
+                  <a href="suppliers.html"><button type="button" class="btn btn-default">Back</button></a>
+                  <button type="button" id="sub" class="btn btn-info pull-right">Submit</button>
+                  <a href="/maintenance/supplier"><button type="button" id="response" class="btn btn-default">Back</button></a>
+
               </div>
                 <!-- /.box-footer -->
 			</div>
@@ -275,6 +298,8 @@
 <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<!-- iCheck 1.0.1 -->
+<script src="/assets/admin/plugins/iCheck/icheck.min.js"></script>
 <!-- sweetalert  -->
 <script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
 <!-- Notification  -->
@@ -294,7 +319,71 @@
 	  'scroll'		: true
     })
   })
+
 </script>
+
+<script>
+$(document).ready(function(){
+
+    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+      checkboxClass: 'icheckbox_flat-green',
+      radioClass   : 'iradio_flat-green'
+    })
+
+    $('#response').hide();
+
+    $('#sub').on('click',function(){
+
+      var inv = 0;
+      var cont = 0;
+      if ($('#invoice').prop('checked')== true){
+        inv = 1;
+      }
+      if ($('#contractavailable').prop('checked') == true){
+        cont = 1;
+      }
+
+      $.ajax({
+        url: '/maintenance/addSupplier',
+        method: 'POST',
+        datatype: "json",
+        data: {
+          userid: $('#sno').val(),
+          fname: $('#FName').val(),
+          mname: $('#MName').val(),
+          lname: $('#LName').val(),
+          bname: $('#BName').val(),
+          address: $('#address').val(),
+          email: $('#email').val(),
+          brands: $('#brands').val(),
+          phone: $('#phone').val(),
+          mobile: $('#mobile').val(),
+          tin: $('#tin').val(),
+          invoice: inv,
+          type: $('#type').val(),
+          businesstype: $('#businesstype').val()
+
+        },
+        success: function(response,status,http){
+            if (response == "yes"){
+
+              swal("Success","Supplier Added", "success");
+              $('#response').click();
+            }else{
+              swal("Error!","There's a problem inserting supplier record, try again.", "error");
+            }
+
+        }
+      })
+
+
+    });
+
+
+
+})
+</script>
+
 
 <script>
 $('#title').html("USG | Suppliers");

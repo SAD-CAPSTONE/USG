@@ -50,7 +50,46 @@ router.get('/supplier', (req,res)=>{
 });
 
 router.get('/supplierForm',(req,res)=>{
-  res.render('admin-maintain/views/supplierForm');
+  db.query(`Select * from tblUser order by intUserID desc limit 1`,(err1,results1,fields1)=>{
+      if (err1) console.log(err1);
+
+      db.query(`Select * from tblbusinesstype where intStatus = 1`,(err2,results2,fields2)=>{
+        if (err2) console.log(err2);
+
+        var lastnum = "1000";
+        if (results1 == null || results1 == undefined){
+
+        }else if(results1.length == 0){
+
+        }else{
+          lastnum = parseInt(results1[0].intUserID) + 1;
+        }
+        console.log(lastnum);
+        res.render('admin-maintain/views/supplierForm', {lastsupplier: lastnum, businesstype: results2});
+
+      });
+
+  });
+});
+
+router.post('/addSupplier',(req,res)=>{
+  db.query(`Insert into tblUser (intUserID, intUserTypeNo, strFname, strMname,
+    strLname) values ("${req.body.userid}", 2, "${req.body.fname}", "${req.body.mname}", "${req.body.lname}")`,(err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+
+    db.query(`Insert into tblSupplier (intUserID, intBusinessTypeNo, strBrands,
+      strBusinessName, strBusinessAddress, strBusinessEmail, strSupplierPhone, strSupplierMobile, strBusinessTIN, intInvoiceAvailable, intSupplierType) values ("${req.body.userid}", ${req.body.businesstype}, "${req.body.brands}", "${req.body.bname}", "${req.body.address}", "${req.body.email}", "${req.body.phone}","${req.body.mobile}", "${req.body.tin}", ${req.body.invoice}, ${req.body.type})`,(err2,results2,fields2)=>{
+      if (err2) console.log(err2);
+
+      res.send("yes");
+
+
+    });
+  });
+});
+
+router.post('/test',(req,res)=>{
+  res.send("yes");
 });
 
 router.get('/productCategory', (req,res)=>{
@@ -83,7 +122,33 @@ router.post('/addBusinessType',(req,res)=>{
 });
 
 router.get('/FAQ', (req,res)=>{
-  res.render('admin-maintain/views/FAQ');
+  db.query(`Select * from tblfaq`,(err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+    db.query(`Select * from tblfaq order by intfaqno desc limit 1`,(err2,results2,fields2)=>{
+      if (err2) console.log(err2);
+      var num = "1000";
+      if (results2 == null || results2 == undefined){
+
+      }else if (results2.length == 0){
+
+      }else{
+        num = parseInt(results2[0].intFaqNo) + 1;
+      }
+      res.render('admin-maintain/views/FAQ', {re: results1, lastfaq: num });
+
+    });
+
+  });
+});
+
+router.post('/addFaq',(req,res)=>{
+  db.query(`Insert into tblfaq (intFaqNo, strQuestion, strAnswer) values ("${req.body.fno}", "${req.body.question}", "${req.body.answer}")`,(err1,results1,fields1)=>{
+    if (err1){
+     console.log(err1);
+     res.send("no");
+    }
+    if (!err1) res.send("yes");
+  });
 });
 
 router.get('/promotion', (req,res)=>{
