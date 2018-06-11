@@ -1,2 +1,2 @@
 # Notes
-- master branch is unstable.
+- Switch to master branch
