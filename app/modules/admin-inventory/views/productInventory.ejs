@@ -84,6 +84,7 @@
                       <form>
                       <td>
 
+                      <button type="button" data-toggle="modal" data-target="#editInventory" class="btn btn-default btn-sm" ><i class="fa fa-edit"></i></button>
                       <a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="btn btn-default btn-sm" >View Transactions</button></a>
                       <a href="/inventory/viewStock?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="btn btn-default btn-sm" >View Stocks</button></a>
 
@@ -352,6 +353,55 @@
   <!-- /.modal-dialog -->
  </div>
 
+ <div class="modal fade" id="editInventory">
+   <div class="modal-dialog">
+   <div class="modal-content">
+     <div class="modal-header">
+     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+       <span aria-hidden="true">&times;</span></button>
+     <h4 class="modal-title">Edit Details</h4>
+     </div>
+     <div class="modal-body">
+
+      <div class="dropdown show">
+        <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Select changes <i class="fa fa-caret-down"></i>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <li><a class="dropdown-item" id="form1_active" href="#">Price</a></li>
+          <li><a class="dropdown-item" id="form2_active" href="#">Shelf No</a></li>
+          <li><a class="dropdown-item" id="form3_active" href="#">Critical Limit</a></li>
+          <li><a class="dropdown-item" id="form4_active" href="#">Change Promo Type</a></li>
+          <li><a class="dropdown-item" id="form5_active" href="#">Change Supplier</a></li>
+        </ul>
+      </div>
+
+      <div id="form1">
+        <form>
+          <div class="form-group">
+            <label for="">Form1</label>
+            <input type="text" class="form-control">
+          </div>
+        </form>
+      </div>
+
+      <div id="form2">
+        <form>
+          <div class="form-group">
+            <label for="">Form2</label>
+            <input type="text" class="form-control">
+          </div>
+        </form>
+      </div>
+
+
+
+     </div>
+   <!-- /.modal-content -->
+ </div>
+  <!-- /.modal-dialog -->
+ </div>
+</div>
 
 
 
@@ -460,6 +510,10 @@
   <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
   <!-- AdminLTE App -->
   <script src="/assets/admin/dist/js/adminlte.min.js"></script>
+  <!-- sweetalert  -->
+  <script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+  <!-- Notification  -->
+  <script src="/assets/admin/notification.js"></script>
 
   <!-- page script (new added) -->
   <script>
@@ -475,6 +529,21 @@
   	  'scroll'		: true
       })
     })
+  </script>
+
+  <script>
+  $('#form1').hide();
+  $('#form2').hide();
+
+  $('#form1_active').on('click',function(){
+    $('#form1').show();
+
+  })
+
+  $('#form2_active').on('click',function(){
+    $('#form2').show();
+
+  })
   </script>
 
   <script>
