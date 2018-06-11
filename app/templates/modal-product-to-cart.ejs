@@ -1,0 +1,45 @@
+<div id="modal-product-to-cart" class="modal fade" role="dialog" tabindex="-1"  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header"></div>
+      <div class="modal-body">
+        <div class="product-img"><img src=""></div>
+        <div class="right-pane">
+          <p class="title"></p>
+          <div class="order-details">
+            <p class="select-label">Select Size:</p>
+            <select class="form-control-sm select-size"></select>
+            <div class="input-group quantity">
+              <div class="input-group-prepend addon">
+                <button class="btn btn-primary quantity-buttons minus-btn" type="button">
+                  <small class="quantity-text quantity-text-minus">-</small>
+                </button>
+              </div>
+              <input class="form-control quantity-input" type="text" readonly="">
+              <div class="input-group-append addon">
+                <button class="btn btn-primary quantity-buttons plus-btn" type="button">
+                  <small class="quantity-text quantity-text-plus">+</small>
+                </button>
+              </div>
+            </div>
+            <p class="quantity-label">Quantity:</p>
+            <p class="price price-symbol"></p>
+            <button class="btn btn-primary btn-sm add-button" type="button">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer"></div>
+    </div>
+  </div>
+</div>
+
+<div class="alert">
+  <div>
+    <p class="m-0">
+      <span></span> x '
+      <span></span>
+      (<span></span>)'
+    </p>
+    <p class="m-0"> has been added to Cart</p>
+  </div>
+</div>

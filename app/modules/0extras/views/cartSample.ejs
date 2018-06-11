@@ -1,0 +1,21 @@
+<%- include('../../../templates/master.ejs') -%>
+
+<div class="container container-errorpage">
+  <br>
+  <button id="getCart" hidden>Get Cart</button>
+  <button id="clearCart"> Clear Cart</button>
+  <input type="text" id="itemName" placeholder="Name" style="width: 100px;"/>
+  <input type="number" id="itemPrice" placeholder="Price" step="0.01" style="width: 100px;" min="0"/>
+  <input type="number" id="itemStock" placeholder="Stock" style="width: 100px;" min="1"/>
+  <input type="number" id="itemQuantity" placeholder="Quantity" style="width: 100px;" min="1"/>
+  <button id="newItem"> Add New Item </button>
+  <br><br>
+
+  <h3>Cart:</h3>
+  <div id="cartList" style="width: 300px">
+  </div>
+</div>
+
+<%- include('../../../templates/scripts.ejs') -%>
+<%- include('../../../templates/scripts-customer.ejs') -%>
+<%- include('../../../templates/closer.ejs') -%>
