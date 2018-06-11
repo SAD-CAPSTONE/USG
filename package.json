@@ -1,42 +1,39 @@
 {
-  "name": "USG",
+  "name": "express-boilerplate",
   "version": "1.0.0",
-  "description": "capstone project",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/PUP-CCIS/express-boilerplate.git"
-  },
-  "keywords": [
-    "expressjs",
-    "boilerplate"
-  ],
-  "author": "Janelle Alag",
+  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/PUP-CCIS/express-boilerplate/issues"
-  },
-  "homepage": "https://github.com/PUP-CCIS/express-boilerplate#readme",
   "dependencies": {
     "async": "^2.6.0",
+    "bcrypt": "^2.0.1",
     "body-parser": "^1.17.2",
+    "cookie-session": "^2.0.0-beta.3",
     "dotenv": "^4.0.0",
     "ejs": "^2.5.9",
     "express": "^4.15.3",
     "express-fileupload": "^0.4.0",
+    "express-flash": "0.0.2",
     "express-session": "^1.15.4",
     "method-override": "^2.3.10",
     "moment": "^2.22.1",
     "morgan": "^1.8.2",
     "mysql": "^2.13.0",
     "node-mysql-transaction": "^0.2.1",
+    "npm": "^6.0.0",
     "nodemon": "^1.17.3",
+    "passport": "^0.4.0",
+    "passport-facebook": "^2.1.1",
+    "passport-google-oauth20": "^1.0.0",
+    "passport-local": "^1.0.0",
     "pug": "^2.0.0-rc.2",
     "serve-static": "^1.12.3",
     "sweetalert": "^2.1.0",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "winston": "^2.3.1"
   }
 }
