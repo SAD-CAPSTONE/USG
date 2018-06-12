@@ -1,5 +1,5 @@
 <%- include('../../../templates/navbar.ejs') -%>
-
+<%- include('../../../templates/modals/cart-modal.ejs') -%>
 
 <style>
   .x-scrolling-div .simplebar-content {
@@ -123,87 +123,7 @@
   </div>
 </div>
 
-<%- include('../../../templates/modal-product-to-cart.ejs') -%>
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
-<script type="text/javascript">
-  var t1, t2;
-  // GET - Cart Button, Get Modal
-  $('.x-scrolling-div').on('click', '.cart-btn', function(){
-    let pid = $(this).closest('.custom-card').find('.product-id').val();
-    console.log(pid);
-    $.get(`/home/modal-cart/${pid}`).then((res) => {
-      let data = res.product, modal = $('#modal-product-to-cart');
-      modal.find('img').attr("src", data.img);
-      modal.find('.title').text(data.name);
-      modal.find('.price').text(data.curPrice);
-      modal.find('.quantity-input').val(data.curQty);
-      modal.find('.select-size').html('');
-      data.sizes.forEach((size)=>{
-        modal.find('.select-size').append(`<option value="${size}" class='sel'>${size}</option>`);
-      })
-      modal.find('.select-size').val(data.curSize);
-    }).catch((error) => {
-      console.log(error);
-    });
-  });
-  // GET - Select Option onchange, Get Price
-  $('.select-size').on('change', function(){
-    $.get(`/home/modal-cart-price/${this.value}`).then((res) => {
-      $('.price').html(`${res.price}`);
-    }).catch((error) => {
-      console.log(error);
-    });
-  });
-  // GET - Plus Button, Get New Quantity
-  $('#modal-product-to-cart').on('click', '.plus-btn', ()=>{
-    $.get(`/home/modal-cart-qty/plus`).then((res) => {
-      $('#modal-product-to-cart').find('.quantity-input').val(`${res.qty}`);
-    }).catch((error) => {
-      console.log(error);
-    });
-  });
-  // GET - Minus Button, Get New Quantity
-  $('#modal-product-to-cart').on('click', '.minus-btn', ()=>{
-    $.get(`/home/modal-cart-qty/minus`).then((res) => {
-      $('#modal-product-to-cart').find('.quantity-input').val(`${res.qty}`);
-    }).catch((error) => {
-      console.log(error);
-    });
-  });
-  // POST - Add to Cart
-  $('#modal-product-to-cart').on('click', '.add-button', ()=>{
-    let modal = $('#modal-product-to-cart');
-    $.post(`/home/modal-cart`).then((res) => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-
-      let data = res.cart;
-      modal.modal('toggle');
-      modal.next().css({
-        "max-width": "100%",
-        "padding": "20px 23px 20px 20px",
-        "border-left": "3px solid #00AF6E"
-      });
-      modal.next().children('div').css("opacity", "1");
-      t1 = setTimeout(()=>{
-        modal.next().css({
-          "max-width": "0",
-          "padding": "20px 0px 20px 0px",
-          "border-left": "none"
-        });
-      },5000);
-      t2 = setTimeout(()=>{
-        modal.next().children('div').css("opacity", "0");
-      },4700);
-
-      modal.next().find('span:first-of-type').text(data[data.length-1].curQty);
-      modal.next().find('span:nth-of-type(2)').text(data[data.length-1].name);
-      modal.next().find('span:nth-of-type(3)').text(data[data.length-1].curSize);
-    }).catch((error) => {
-      console.log(error);
-    });
-  });
-</script>
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <%- include('../../../templates/closer.ejs') -%>

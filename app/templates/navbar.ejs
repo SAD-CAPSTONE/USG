@@ -35,44 +35,17 @@
     <div class="cart-sidebar-header">
       <h2>Your Cart</h2>
     </div>
-
+    <button id="getCart" type="button" hidden></button>
     <ul class="list-unstyled components">
       <div id="cart-pad">
-        <% for(i=0; i<5 ;i++){ %>
-          <div class="cart-product-container">
-            <div class="product-card">
-              <div class="product-pic"><a href="/item"><img src="/assets/images/static/img<%= i+2%>.jpg"/></a></div>
-              <div class="product-desc">
-                <p class="product-title">SuperScoops Premium Vegan Ice Cream Choco Milk</p>
-                <small class="product-size text-muted">Size: 12 ml</small>
-                <small class="product-oldprice text-muted">
-                <span><s class="price-symbol">285.99</s></span><span> (-10%)</span><br>
-              </small>
-                <div class="input-group quantity">
-                  <div class="input-group-prepend addon">
-                    <button class="btn btn-primary quantity-buttons" type="button">
-                    <small class="quantity-text quantity-text-minus">-</small>
-                  </button>
-                  </div>
-                  <input class="form-control quantity-input" type="text" readonly="" value="1">
-                  <div class="input-group-append addon">
-                    <button class="btn btn-primary quantity-buttons" type="button">
-                    <small class="quantity-text quantity-text-plus">+</small>
-                  </button>
-                  </div>
-                </div>
-                <p class="product-price price-symbol">255.99</p>
-              </div>
-            </div>
-            <div class="product-remove"><i class="fa fa-remove product-remove-icon"></i></div>
-          </div>
-          <%}%>
+        <!-- cart cards -->
       </div>
     </ul>
 
     <ul class="list-unstyled checkout">
       <p>Subtotal</p>
-      <p class="price-symbol">2,500.99</p>
+      <button id="subtotal-btn" type="button" hidden></button>
+      <p class="price-symbol"></p>
       <li><a href="/summary/checkout" class="article">Check Out</a></li>
     </ul>
   </div>
