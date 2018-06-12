@@ -84,7 +84,7 @@
                       <form>
                       <td>
 
-                      <button type="button" data-toggle="modal" data-target="#editInventory" class="btn btn-default btn-sm" ><i class="fa fa-edit"></i></button>
+                      <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>" data-promotype="<%=i.intPromoType%>" data-toggle="modal" data-target="#editInventory" class="editbutton btn btn-default btn-sm" ><i class="fa fa-edit"></i></button>
                       <a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="btn btn-default btn-sm" >View Transactions</button></a>
                       <a href="/inventory/viewStock?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="btn btn-default btn-sm" >View Stocks</button></a>
 
@@ -376,23 +376,52 @@
         </ul>
       </div>
 
+      <!-- Update -->
       <div id="form1">
-        <form>
+      </br>
+        <form method="post" action="/inventory/update">
+
           <div class="form-group">
-            <label for="">Form1</label>
-            <input type="text" class="form-control">
+            <input type="hidden" name="ino" class="ino">
+            <input type="hidden" name="pno" class="pno">
+            <div class="for_price">
+              <label for="">SRP</label>
+              <input type="number" name="srp" class="srp form-control">
+              <label for="">Product Price</label>
+              <input type="number" name="price" class="price form-control">
+            </div>
+            <div class="for_shelf">
+              <label for="">Shelf</label>
+              <input type="number" name="shelf" class="shelf form-control">
+            </div>
+            <div class="for_critical">
+              <label for="">Critical Limit</label>
+              <input type="number" name="critical" class="critical form-control">
+            </div>
+
+            <div class="for_promo">
+              <label for="">Promo Type</label>
+              <select name="promotype" class="promotype form-control">
+                <option value="0">None</option>
+                <option value="1">Discount</option>
+                <option value="2">Package</option>
+              </select>
+              <small>Note: You can choose where to add product in the Promotion/Package Discount Section</small>
+            </div>
+            <div class="for_changes">
+              <input type="hidden" name="changes" class="changes form-control">
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+
           </div>
         </form>
       </div>
 
-      <div id="form2">
-        <form>
-          <div class="form-group">
-            <label for="">Form2</label>
-            <input type="text" class="form-control">
-          </div>
-        </form>
-      </div>
+
 
 
 
@@ -533,17 +562,77 @@
 
   <script>
   $('#form1').hide();
-  $('#form2').hide();
+
+
+  $('.for_promo').hide();
+  $('.for_price').hide();
+  $('.for_critical').hide();
+  $('.for_shelf').hide();
+
 
   $('#form1_active').on('click',function(){
+    $('.for_price').show();
+    $('.for_shelf').hide();
+    $('.for_critical').hide();
+    $('.for_promo').hide();
+    $('.changes').val("Price Changes");
     $('#form1').show();
+
 
   })
 
   $('#form2_active').on('click',function(){
-    $('#form2').show();
+    $('.for_shelf').show();
+    $('.for_price').hide();
+    $('.for_critical').hide();
+    $('.for_promo').hide();
+    $('.changes').val("Changed Shelf Number");
+    $('#form1').show();
+
 
   })
+
+  $('#form3_active').on('click',function(){
+    $('.for_critical').show();
+    $('.for_price').hide();
+    $('.for_shelf').hide();
+    $('.for_promo').hide();
+    $('.changes').val("Changed Critical Limit");
+
+    $('#form1').show();
+
+
+  })
+
+  $('#form4_active').on('click',function(){
+    $('.for_promo').show();
+    $('.for_price').hide();
+    $('.for_shelf').hide();
+    $('.for_critical').hide();
+    $('.changes').val("Changed Promo Type");
+
+    $('#form1').show();
+
+
+  })
+
+  $('#form5_active').on('click',function(){
+    $('#form1').show();
+
+
+  })
+  </script>
+
+  <script>
+    $('.editbutton').on('click',function(){
+      $('.ino').val($(this).data('number'));
+      $('.pno').val($(this).data('product'));
+      $('.price').val($(this).data('price'));
+      $('.srp').val($(this).data('srp'));
+      $('.shelf').val($(this).data('shelf'));
+      $('.critical').val($(this).data('critical'));
+      $('.promotype').val($(this).data('promotype'));
+    })
   </script>
 
   <script>
