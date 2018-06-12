@@ -55,7 +55,7 @@ passport.use(
           db.query(`SELECT * FROM tbluser ORDER BY intUserID DESC LIMIT 1`, function(err, results, fields) {
             if (err) console.log(err);
             let newID = results[0] ? parseInt(results[0].intUserID)+1 : firstID;
-            db.query(`INSERT INTO tbluser (intUserID, intUserTypeNo, strFname, strLname, strEmail, intFacebook) VALUES (?,2,?,?,?,?)`,
+            db.query(`INSERT INTO tbluser (intUserID, intUserTypeNo, strFname, strLname, strEmail, intFacebook) VALUES (?,3,?,?,?,?)`,
             [newID, profile.name.givenName, profile.name.familyName, profile.emails[0].value, profile.id], (err, results, fields) => {
               if (err) console.log(err);
               console.log('>>>>>>> RECORD ADDED');
@@ -96,7 +96,7 @@ passport.use(
           db.query(`SELECT * FROM tbluser ORDER BY intUserID DESC LIMIT 1`, function(err, results, fields) {
             if (err) console.log(err);
             let newID = results[0] ? parseInt(results[0].intUserID)+1 : firstID;
-            db.query(`INSERT INTO tbluser (intUserID, intUserTypeNo, strFname, strLname, strEmail, intGoogle) VALUES (?,2,?,?,?,?)`,
+            db.query(`INSERT INTO tbluser (intUserID, intUserTypeNo, strFname, strLname, strEmail, intGoogle) VALUES (?,3,?,?,?,?)`,
             [newID, profile.name.givenName, profile.name.familyName, profile.emails[0].value, profile.id], (err, results, fields) => {
               if (err) console.log(err);
               console.log('>>>>>>> RECORD ADDED');

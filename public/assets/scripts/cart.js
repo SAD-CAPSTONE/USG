@@ -47,6 +47,7 @@ $(() => {
         <div class="cart-product-container">
           <p> Cart currently empty </p>
         </div>`);
+      $('#subtotal-btn').click();
     });
   });
 
@@ -62,11 +63,20 @@ $(() => {
       }),
       success: (res) => {
         $(this).parent().remove();
-        res.cart ? 0 :
+        $("#checkout-products > .product-div").each(function(index) {
+          $(this).find('.inventory-id').val() == res.inv ?
+            $(this).remove() : 0
+        });
+        if(!res.cart){
           $('#cart-pad').append(`
             <div class="cart-product-container">
               <p> Cart currently empty </p>
             </div>`);
+          $('#checkout-products').append(`
+            <div class="product-div pos-relative px-3">
+              <p class="fs-09em"> Cart currently empty </p>
+            </div>`);
+        }
         $('#subtotal-btn').click();
       }
     });
@@ -85,7 +95,11 @@ $(() => {
         action: 'plus'
       }),
       success: (res) => {
-        $(this).closest('.product-card').find('.quantity-input').val(res.qty);
+        $(this).closest('.product-card').find('.quantity-input').val(res.cart.curQty);
+        $("#checkout-products > .product-div").each(function(index) {
+          $(this).find('.inventory-id').val() == res.cart.inv ?
+            $(this).find('.quantity').text(res.cart.curQty) : 0
+        });
         $('#subtotal-btn').click();
       }
     });
@@ -104,7 +118,11 @@ $(() => {
         action: 'minus'
       }),
       success: (res) => {
-        $(this).closest('.product-card').find('.quantity-input').val(res.qty);
+        $(this).closest('.product-card').find('.quantity-input').val(res.cart.curQty);
+        $("#checkout-products > .product-div").each(function(index) {
+          $(this).find('.inventory-id').val() == res.cart.inv ?
+            $(this).find('.quantity').text(res.cart.curQty) : 0
+        });
         $('#subtotal-btn').click();
       }
     });
@@ -112,8 +130,9 @@ $(() => {
 
   // GET - Subtotal
   $('#subtotal-btn').on('click', () => {
-    $.get('/cart/list/subtotal').then((res) => {
+    $.get('/cart/list/total/sub').then((res) => {
       $('.checkout').find('button+p').text(`${res.subtotal}`)
+      $('#total-btn').click();
     }).catch((error) => {
       console.log(error)
     });
