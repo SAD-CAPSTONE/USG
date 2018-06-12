@@ -218,7 +218,7 @@ router.get('/transactions', (req,res)=>{
   var product = req.query.product;
   var ino = req.query.ino;
 
-  db.query(`Select * from tblinventorytransactions join tbluser on tblinventorytransactions.intuserID = tbluser.intUserID where intinventoryno = ${ino}`, (err1,results1,fields1)=>{
+  db.query(`Select * from tblinventorytransactions join tbluser on tblinventorytransactions.intuserID = tbluser.intUserID where intinventoryno = ${ino} order by transactionDate desc`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
 
     db.query(`Select * from tblproductlist where intProductNo = ${product}`, (err2,results2,fields2)=>{
@@ -384,6 +384,61 @@ where tblproductstock.expirationDate between '${dates[0]}' and '${dates[1]}'`,(e
   res.send(results1);
 
 });
+});
+
+router.post('/updateShelf',(req,res)=>{
+  db.query(`Update tblProductInventory set intShelfNo = ${req.body.shelf} where intInventoryNo = ${req.body.ino}`,(err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+
+    var num = "1000";
+    db.query(`Select * from tblInventoryTransactions order by intTransactionID desc limit 1`,(err2,results2,fields2)=>{
+      if (err2) console.log(err2);
+
+      if (results2 == null || results2 == undefined){
+
+      }else if (results2.length == 0){
+
+      }else{
+        num = parseInt(results2[0].intTransactionID) + 1;
+      }
+
+      db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intUserID, intShelfNo, strTypeOfChanges) values ("${num}","${req.body.ino}", "1000",${req.body.shelf},"Price Changes")`, (err3,results3,fields3)=>{
+        if (err3) console.log(err3);
+
+        var url = `/inventory/productInventory?product=${req.body.pno}`;
+        res.redirect(url);
+      });
+
+    });
+
+  });
+});
+
+router.post('/update',(req,res)=>{
+  db.query(`Update tblProductInventory set productSRP = ${req.body.srp}, productPrice =
+    ${req.body.price}, intShelfNo = ${req.body.shelf}, intCriticalLimit = ${req.body.critical}, intPromoType = ${req.body.promotype} where intInventoryno = "${req.body.ino}"`,(err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+    var num = "1000";
+    db.query(`Select * from tblInventoryTransactions order by intTransactionID desc limit 1`,(err2,results2,fields2)=>{
+      if (err2) console.log(err2);
+
+      if (results2 == null || results2 == undefined){
+
+      }else if (results2.length == 0){
+
+      }else{
+        num = parseInt(results2[0].intTransactionID) + 1;
+      }
+
+      db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intUserID, productSRP, productPrice, intShelfNo, intCriticalLimit, intPromoType, strTypeOfChanges) values ("${num}","${req.body.ino}", "1000",${req.body.srp},${req.body.price}, ${req.body.shelf}, ${req.body.critical}, ${req.body.promotype},"${req.body.changes}")`, (err3,results3,fields3)=>{
+        if (err3) console.log(err3);
+
+        var url = `/inventory/productInventory?product=${req.body.pno}`;
+        res.redirect(url);
+      });
+
+    })
+  });
 });
 
 
