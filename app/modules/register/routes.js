@@ -49,8 +49,8 @@ router.post('/', newUserID, checkUser, (req, res) => {
   if(req.body.password == req.body.confirm && req.checkUser == 0){
     bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
       let stringquery = req.body.middlename ?
-      `INSERT INTO tbluser (intUserID, intUserTypeNo, strFname, strMname, strLname, strEmail, strUsername, strPassword) VALUES (?,2,?,?,?,?,?,?)`:
-      `INSERT INTO tbluser (intUserID, intUserTypeNo, strFname, strLname, strEmail, strUsername, strPassword) VALUES (?,2,?,?,?,?,?)`;
+      `INSERT INTO tbluser (intUserID, intUserTypeNo, strFname, strMname, strLname, strEmail, strUsername, strPassword) VALUES (?,3,?,?,?,?,?,?)`:
+      `INSERT INTO tbluser (intUserID, intUserTypeNo, strFname, strLname, strEmail, strUsername, strPassword) VALUES (?,3,?,?,?,?,?)`;
       let bodyarray = [req.newUserID, req.body.firstname];
       req.body.middlename ? bodyarray.push(req.body.middlename) : bodyarray;
       bodyarray.push(req.body.lastname, req.body.email, req.body.username, hash);
