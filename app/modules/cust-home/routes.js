@@ -38,10 +38,10 @@ function newProducts(req,res,next){
 
 router.get('/', popularProducts, newProducts, (req,res)=>{
   console.log(`??????????? Session Values: ${JSON.stringify(req.user, null, 2)}`);
-  // console.log(req.session.modal_cart);
-  // console.log(req.session.cart);
-  req.session.modal_cart = null;
-  req.session.cart = null;
+  console.log(req.session.modal_cart);
+  console.log(req.session.cart);
+  // req.session.modal_cart = null;
+  // req.session.cart = null;
   // console.log(JSON.stringify(req.session.cart, null, 2));
   res.render('cust-home/views/index', {thisUser: req.user, popularProducts: req.popularProducts, newProducts: req.newProducts});
 });
