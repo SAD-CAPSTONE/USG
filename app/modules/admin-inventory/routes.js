@@ -10,6 +10,10 @@ var url = require('url');
 
 router.use(fileUpload());
 
+router.get('/someRoute',(req,res)=>{
+  res.render('admin-inventory/views/sample');
+});
+
 router.get('/allProducts', (req,res)=>{
 
   db.query(`Select * from tblproductlist join tblproductbrand on tblproductlist.intBrandNo = tblproductbrand.intBrandNo
