@@ -15,8 +15,8 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Maintenance</a></li>
-        <li class="active">Consignor Application</li>
+        <li><a href="#">Utilities</a></li>
+        <li class="active">Business Information</li>
       </ol>
     </section>
 
@@ -37,7 +37,7 @@
 				<h5>Business Name:</h5>
 				</div>
 				<div class="col-md-5">
-				<h6>Ultra Super Green Trading Corporation</h6>
+				<h6><%= re[0].strbusinessName %></h6>
 				</div>
 			</div>
 
@@ -47,7 +47,7 @@
 				<h5>Business Address:</h5>
 				</div>
 				<div class="col-md-5">
-				<h6>Elizabeth Building, Katipunan Ave., Quezon City</h6>
+				<h6><%= re[0].strbusinessAddress %></h6>
 				</div>
 			</div>
 
@@ -57,7 +57,7 @@
 				<h5>Business Phone:</h5>
 				</div>
 				<div class="col-md-5">
-				<h6>713-0345</h6>
+				<h6><%= re[0].strbusinessPhone %></h6>
 				</div>
 			</div>
 
@@ -67,7 +67,7 @@
 				<h5>Business Mobile:</h5>
 				</div>
 				<div class="col-md-5">
-				<h6>09470741773</h6>
+				<h6><%= re[0].strbusinessMobile %></h6>
 				</div>
 			</div>
 
@@ -77,15 +77,15 @@
 				<h5>Business Email Address:</h5>
 				</div>
 				<div class="col-md-5">
-				<h6>info.ultrasupergreen@gmail.com</h6>
+				<h6><%= re[0].strbusinessEmail %></h6>
 				</div>
 			</div>
 
 			<div class="box-footer">
       <a href="consApplication.html"><button class="btn btn-default" >Back</button></a>
 
-				<button type="button" class="btn btn-primary pull-right" style="margin-right: 5px;">
-				<i class="fa fa-check"></i>Submit
+				<button type="button" data-toggle="modal" data-target="#edit" class="btn btn-primary pull-right" style="margin-right: 5px;">
+				Edit
 				</button>
 			</div>
 			<!-- /.box-footer -->
@@ -108,58 +108,61 @@
 
   <!-- Modals -->
 
-	<div class="modal fade" id="sendInvitation">
-	  <div class="modal-dialog">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title">Invitation Form</h4>
-		  </div>
-		  <div class="modal-body">
-			<!-- Horizontal Form -->
 
-					<!-- form start -->
-          <form role="form">
-              <div class="box-body">
-                <div class="form-group">
-                  <label for="receiver">To:</label>
-                  <input type="text" class="form-control" id="receiver" disabled value="PICOLE" placeholder="">
+   	<div class="modal fade" id="edit">
+   	  <div class="modal-dialog">
+   		<div class="modal-content">
+   		  <div class="modal-header">
+   			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+   			  <span aria-hidden="true">&times;</span></button>
+   			<h4 class="modal-title">Business Information </h4>
+   		  </div>
+   		  <div class="modal-body">
+   			<!-- Horizontal Form -->
+
+   					<!-- form start -->
+            <form role="form">
+                <div class="box-body">
+                  <div class="form-group">
+                    <label for="name">Business Name:</label>
+                    <input type="text" value="<%=re[0].strbusinessName%>" required class="form-control" id="name" placeholder="">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="address">Business Address:</label>
+                    <textarea class="form-control" value="<%=re[0].strbusinessAddress%>" id="address" placeholder=""><%=re[0].strbusinessAddress%></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="phone">Business Phone:</label>
+                    <input type="text" value="<%=re[0].strbusinessPhone%>" required class="form-control" id="phone" placeholder="">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="phone">Business Mobile:</label>
+                    <input type="text" value="<%=re[0].strbusinessMobile%>" required class="form-control" id="mobile" placeholder="">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="email">Business Email Address:</label>
+                    <input type="text" value="<%=re[0].strbusinessEmail%>" required class="form-control" id="email" placeholder="">
+                  </div>
+
+
+
                 </div>
-                <div class="form-group">
-                  <label for="exampleInputEmail1">Set Preferred Schedules for Product Presentation:</label>
-                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="ex. June 10, 2018 8:00 onwards">
-                </div>
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Special Note:</label>
-                  <textarea class="form-control" id="exampleInputPassword1"> </textarea>
-                </div>
+              </form>
 
-                <div class="form-group">
-                  <label for="exampleInputFile">Insert PDF for other requirements</label>
-                  <input type="file" id="exampleInputFile">
-
-                  <p class="help-block">Include in the requirements the documents to bring.</p>
-                </div>
-                <!-- <div class="checkbox">
-                  <label>
-                    <input type="checkbox"> Check me out
-                  </label>
-                </div> -->
-              </div>
-            </form>
-
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-			<button type="button" class="btn btn-primary">Save changes</button>
-		  </div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-  <!-- /.modal-dialog -->
-</div>
-
+   			  </div>
+   			  <div class="modal-footer">
+   				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+   				<button type="button" id="save" class="btn btn-primary">Save changes</button>
+   			  </div>
+   		</div>
+   		<!-- /.modal-content -->
+   	</div>
+     <!-- /.modal-dialog -->
+   </div>
 
   <!-- Main Footer -->
   <footer class="main-footer">
@@ -265,23 +268,37 @@
 <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<!-- sweetalert  -->
+<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+<!-- Notification  -->
+<script src="/assets/admin/notification.js"></script>
 
 <!-- page script (new added) -->
+
 <script>
-  $(function () {
-    $('#example2').DataTable({
-      'paging'      : true,
-      'lengthChange': true,
-      'searching'   : true,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : true,
-	  'select'		: true,
-	  'scroll'		: true
+$(document).ready(function(){
+  $('#save').on('click',function(){
+    $.ajax({
+      url: '/utilities/updateBusinessInfo',
+      method: 'post',
+      datatype: "json",
+      data: {
+        name: $('#name').val(),
+        address: $('#address').val(),
+        phone: $('#phone').val(),
+        mobile: $('#mobile').val(),
+        email: $('#email').val()
+      },
+      success: function(response,status,http){
+        if (response == "yes"){
+          swal("Success!", "You edited the business information", "success");
+          window.location.reload();
+        }
+      }
     })
   })
+});
 </script>
-
 
 <script>
 $('#title').html("USG | Business Information");

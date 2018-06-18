@@ -20,3 +20,8 @@ Payment Legend
 2 - Partially Paid
 3 - Cancelled
 4 - Refunded
+
+Supplier Legend
+1 - active
+0 - inactive/Terminated
+2 - rejected
