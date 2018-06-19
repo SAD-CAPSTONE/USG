@@ -8,7 +8,7 @@ var url = require('url');
 
 
 
-router.use(fileUpload());
+//router.use(fileUpload());
 
 router.get('/someRoute',(req,res)=>{
   res.render('admin-inventory/views/sample');
@@ -16,9 +16,9 @@ router.get('/someRoute',(req,res)=>{
 
 router.get('/allProducts', (req,res)=>{
 
-  db.query(`Select * from tblproductlist join tblproductbrand on tblproductlist.intBrandNo = tblproductbrand.intBrandNo
+  db.query(`Select tblproductlist.intstatus as stats, tblproductlist.*, tblproductbrand.*,tblsubcategory.*, tblcategory.* from tblproductlist join tblproductbrand on tblproductlist.intBrandNo = tblproductbrand.intBrandNo
   join tblSubCategory on tblproductlist.intSubcategoryno = tblsubcategory.intsubcategoryno
-  join tblcategory on tblsubcategory.intcategoryno = tblcategory.intcategoryno where tblproductlist.intStatus = 1`, (err1,results1,fields1)=>{
+  join tblcategory on tblsubcategory.intcategoryno = tblcategory.intcategoryno `, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
     db.query(`Select * from tblProductBrand where intStatus = 1`, (err2,results2,fields2)=>{
       if (err2) console.log(err2);
@@ -38,17 +38,68 @@ router.get('/allProducts', (req,res)=>{
 
 router.post('/addProduct', (req,res)=>{
 
-  if (!req.files){
-      db.query(`Insert into tblProductList (intProductNo, intSubCategoryNo, intBrandNo, strProductCode, strProductName, strDescription, strProductPicture) values ("${req.body.add_prodno}", ${req.body.add_pcat}, ${req.body.add_brand}, "${req.body.add_pcode}", "${req.body.add_pname}", "${req.body.add_pdesc}", "" )`, (err1,results1,fields1)=>{
-        if (err1) console.log(err1);
-        res.send('success');
+  db.query(`Select * from tblProductList Order by intProductno desc limit 1`,(err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+
+    // generate ID
+    var lastnum = "1000";
+    if (results1 == null || results1 == undefined){
+
+    }else if(results1.length == 0){
+
+    }else{
+      lastnum = parseInt(results1[0].intProductNo) + 1;
+    }
+
+    // Insert new product
+
+    if (!req.files){
+        db.query(`Insert into tblProductList (intProductNo, intSubCategoryNo, intBrandNo, strProductCode, strProductName, strDescription, strProductPicture) values ("${lastnum}", ${req.body.add_pcat}, ${req.body.add_brand}, "${req.body.add_pcode}", "${req.body.add_pname}", "${req.body.add_pdesc}", "" )`, (err1,results1,fields1)=>{
+          if (err1) console.log(err1);
+          res.send('not successful');
+        });
+    }else{
+
+      let sample = req.files.add_pic;
+      var filename = req.files.add_pic.name;
+
+      db.query(`Insert into tblProductList (intProductNo, intSubCategoryNo, intBrandNo, strProductCode, strProductName, strDescription, strProductPicture) values ("${lastnum}", ${req.body.add_pcat}, ${req.body.add_brand}, "${req.body.add_pcode}", "${req.body.add_pname}", "${req.body.add_pdesc}", "${filename}")`, (err2,results2,fields2)=>{
+        if (err2) console.log(err2);
+        var link = path.join(path.dirname(path.dirname(path.dirname(__dirname))), 'public/images/'+filename);
+        sample.mv(link, function(err){
+          if (err) console.log(err);
+          res.redirect('/inventory/allProducts');
+
+        });
+
       });
+
+    }
+  });
+
+});
+
+router.post('/editProduct',(req,res)=>{
+
+  var checked = 0;
+  if (req.body.active == 'on') checked = 1;
+
+
+  if (!req.files){
+      db.query(`Update tblProductList set intSubCategoryNo = "${req.body.view_pcat}", intBrandNo = "${req.body.view_brand}", strProductCode="${req.body.view_pcode}", strProductName = "${req.body.view_pname}", strDescription="${req.body.view_pdesc}", strProductPicture = "", intStatus = ${checked} where intProductNo = "${req.body.view_prodno}"`,(err1,results1,fields1)=>{
+        if (err1) console.log(err1);
+        res.redirect('/inventory/allProducts');
+
+      });
+
   }else{
 
-    let sample = req.files.add_pic;
-    var filename = req.files.add_pic.name;
+    let sample = req.files.view_pic;
+    var filename = req.files.view_pic.name;
 
-    db.query(`Insert into tblProductList (intProductNo, intSubCategoryNo, intBrandNo, strProductCode, strProductName, strDescription, strProductPicture) values ("${req.body.add_prodno}", ${req.body.add_pcat}, ${req.body.add_brand}, "${req.body.add_pcode}", "${req.body.add_pname}", "${req.body.add_pdesc}", "${filename}")`, (err2,results2,fields2)=>{
+
+
+    db.query(`Update tblProductList set intSubCategoryNo = "${req.body.view_pcat}", intBrandNo = "${req.body.view_brand}", strProductCode="${req.body.view_pcode}", strProductName = "${req.body.view_pname}", strDescription="${req.body.view_pdesc}", strProductPicture = "${filename}", intStatus = ${checked} where intProductNo = "${req.body.view_prodno}"`, (err2,results2,fields2)=>{
       if (err2) console.log(err2);
       var link = path.join(path.dirname(path.dirname(path.dirname(__dirname))), 'public/images/'+filename);
       sample.mv(link, function(err){
@@ -56,11 +107,8 @@ router.post('/addProduct', (req,res)=>{
         res.redirect('/inventory/allProducts');
 
       });
-
     });
-
   }
-
 });
 
 router.post('/addImage', (req,res)=>{

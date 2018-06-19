@@ -21,13 +21,13 @@
     <section class="content">
       <div class="row">
         <div class="col-xs-12">
-          <div class="box">
+          <div class="box animated slideInUp">
             <div class="box-header">
               <h4 align="center"> ALL PRODUCTS</h4>
             </br>
-            <h6>Note: See inventory to check the supplier and stock of the specific product</h6>
+            <h5>Note: See inventory to check the supplier and stock of the specific product</h5>
 
-          <h6>Note: Please monitor stocks regularly, check if there are damaged products</h6>
+          <h5>Note: Please monitor stocks regularly, check if there are damaged products</h5>
             </div>
 			<!-- buttons -->
     </br>
@@ -59,7 +59,7 @@
                     <td><%=i.strProductName%></td>
                     <td><%=i.strDescription%></td>
                     <td>
-                    <% if (i.intStatus == 1){ %>
+                    <% if (i.stats == 1){ %>
                       <span class="label label-success">Active</span>
                     <% }else{ %>
                       <span class="label label-danger">Inactive</span>
@@ -69,7 +69,8 @@
 
                     <!-- ERROR IN THIS AREA (req.query) -->
 
-                    <td><button type="button" data-toggle="modal" data-target="#viewProduct" class="viewButton btn btn-default btn-sm" data-prodno="<%=i.intProductNo%>" data-prodcode="<%=i.strProductCode%>" data-prodname="<%=i.strProductName%>" data-proddesc="<%=i.strDescription%>" data-prodbrand="<%=i.intBrandNo%>" data-prodcateg="<%=i.intSubCategoryNo%>" data-prodpicture="<%=i.strProductPicture%>" >View Details</button>
+                    <td><button type="button" data-toggle="modal" data-target="#viewProduct" class="viewButton btn btn-default btn-sm" data-prodno="<%=i.intProductNo%>" data-prodcode="<%=i.strProductCode%>" data-prodname="<%=i.strProductName%>" data-proddesc="<%=i.strDescription%>" data-prodbrand="<%=i.intBrandNo%>" data-prodcateg="<%=i.intSubCategoryNo%>" data-prodpicture="<%=i.strProductPicture%>"
+                    data-status="<%=i.stats%>" >View Details</button>
                     <% var url = i.intProductNo %>
                     <a href="/inventory/productInventory?product=<%=url%>"><button type="button" class="btn btn-default btn-sm"  >Inventory</button></a>
 
@@ -99,8 +100,8 @@
 
 	<!-- Modals -->
 
-	<div class="modal fade" id="addProduct">
-	  <div class="modal-dialog">
+<div class="modal fade" id="addProduct">
+  <div class="modal-dialog">
 		<div class="modal-content">
 		  <div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -113,19 +114,6 @@
         <form role="form" method="post" enctype="multipart/form-data" action="/inventory/addProduct">
           <div class="box-body">
 
-            <div class="form-group">
-
-              <% var number = "1000"; %>
-              <% if (list == null || list == undefined || list.length == 0 ) { %>
-              <% number = "1000"; %>
-              <% }else{ %>
-                <% var number = parseInt(list[0].intProductNo) + 1 %>
-                <!-- <input type="text" class="form-control" value="<%=number%>" disabled id="add_prodno" name="add_prodno" > -->
-
-              <% } %>
-
-                <input type="hidden" class="form-control" value="<%=number%>"  id="add_prodno" name="add_prodno" >
-            </div>
             <div class="form-group">
               <label for="add_pcode">Product Code</label>
               <input type="text" class="form-control" required id="add_pcode" name="add_pcode" >
@@ -181,29 +169,29 @@
       </form>
 		</div>
 		<!-- /.modal-content -->
-	</div>
-</div>
-  <!-- /.modal-dialog -->
+	  </div>
+  </div>
+<!-- /.modal-dialog -->
 </div>
 
 
-	<div class="modal fade" id="viewProduct">
-	  <div class="modal-dialog">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title">Product Information Form</h4>
-		  </div>
-		  <div class="modal-body">
+<div class="modal fade" id="viewProduct">
+  <div class="modal-dialog">
+  	<div class="modal-content">
+  	  <div class="modal-header">
+  		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  		  <span aria-hidden="true">&times;</span></button>
+  		<h4 class="modal-title">Product Information Form</h4>
+  	  </div>
+  	  <div class="modal-body">
 
         <!-- form start -->
-        <form role="form" method="post" enctype="multipart/form-data" action="/inventory/addProduct">
+        <form role="form" method="post" enctype="multipart/form-data" action="/inventory/editProduct">
           <div class="box-body">
 
             <div class="form-group">
-              <label for="view_prodno">Product No</label>
-              <input type="hidden" class="form-control" value="" disabled id="view_prodno" name="" >
+
+              <input type="hidden" class="form-control" id="view_prodno" name="view_prodno" >
             </div>
             <div class="form-group">
               <label for=""></label>
@@ -250,6 +238,15 @@
               </select>
             </div>
             <div class="form-group">
+              <label for="notify">
+
+                <input type="checkbox" name="active" checked id="active" class="flat-red">
+                &nbsp; Active
+
+              </label>
+
+            </div>
+            <div class="form-group">
               <label for="view_pic">Product Picture</label>
               <input type="file" class="form-control" id="view_pic" name="view_pic" required placeholder="">
             </div>
@@ -258,55 +255,55 @@
           </div>
           <!-- /.box-body -->
 
-			  <div class="modal-footer">
-				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-				<button type="submit" class="btn btn-primary">Save changes</button>
-			  </div>
+  		  <div class="modal-footer">
+  			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+  			<button type="submit" class="btn btn-primary">Save changes</button>
+  		  </div>
 
       </form>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-</div>
+  	</div>
+  	<!-- /.modal-content -->
+  </div>
+  </div>
   <!-- /.modal-dialog -->
 </div>
 
 
-	<div class="modal fade" id="addImage">
-	  <div class="modal-dialog">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title"></h4>
-		  </div>
-		  <div class="modal-body">
-			<!-- Horizontal Form -->
+<div class="modal fade" id="addImage">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+    	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    	  <span aria-hidden="true">&times;</span></button>
+    	<h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+    	<!-- Horizontal Form -->
 
-					<!-- form start -->
-						<form class="form-horizontal" enctype="multipart/form-data" method="post" action="/inventory/addImage">
-						  <div class="box-body">
+    			<!-- form start -->
+    				<form class="form-horizontal" enctype="multipart/form-data" method="post" action="/inventory/addImage">
+    				  <div class="box-body">
 
-							<div class="form-group">
-							  <label for="inputConsignorName" class="col-sm-2 control-label">File</label>
+    					<div class="form-group">
+    					  <label for="inputConsignorName" class="col-sm-2 control-label">File</label>
 
-							  <div class="col-sm-10">
-								<input type="file" class="form-control" name="filename" id="inputConsignorName" placeholder="">
-							  </div>
+    					  <div class="col-sm-10">
+    						<input type="file" class="form-control" name="filename" id="inputConsignorName" placeholder="">
+    					  </div>
 
-							</div>
+    					</div>
 
-						  </div>
-						  <!-- /.box-body -->
-			  </div>
-			  <div class="modal-footer">
-				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-				<button type="submit"  class="btn btn-primary">Save changes</button>
-			  </div>
+    				  </div>
+    				  <!-- /.box-body -->
+    	  </div>
+    	  <div class="modal-footer">
+    		<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+    		<button type="submit"  class="btn btn-primary">Save changes</button>
+    	  </div>
         </form>
-		</div>
-		<!-- /.modal-content -->
-	</div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
   <!-- /.modal-dialog -->
 </div>
 
@@ -418,6 +415,8 @@
 <script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
 <!-- Notification  -->
 <script src="/assets/admin/notification.js"></script>
+<!-- iCheck 1.0.1 -->
+<script src="/assets/admin/plugins/iCheck/icheck.min.js"></script>
 
 <!-- page script (new added) -->
 <script>
@@ -453,6 +452,7 @@
          $this.attr('selected','selected');
          return false;
       }
+
     });
 
     var categ = $(this).data('prodcateg');
@@ -463,6 +463,14 @@
          return false;
       }
     });
+
+    var stats = $(this).data('status');
+    if ( stats == 1){
+      $('#active').iCheck('check');
+    }else{
+      $('#active').iCheck('uncheck');
+
+    }
 
   });
 </script>
@@ -483,20 +491,10 @@ $(".navi a:contains('All Products')").parent().addClass("active");
 </script>
 
 <script>
-
-  $(document).ready(function(){
-    $('#s').click(function(){
-      $.post('/inventory/samp',{
-        name: "j"
-      },
-      function(data,status){
-        if (status == 'success'){
-          swal("Good job!","", "success");
-        }else{
-          swal("","", "error");
-        }
-      });
-    })
+  //Flat red color scheme for iCheck
+  $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+    checkboxClass: 'icheckbox_flat-green',
+    radioClass   : 'iradio_flat-green'
   })
 </script>
 

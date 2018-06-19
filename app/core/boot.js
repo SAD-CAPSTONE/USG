@@ -14,7 +14,7 @@ module.exports = app => {
     app.engine('html', require('ejs').renderFile);
     app.set('view engine', 'ejs');
     app.set('views', path.join(path.dirname(__dirname), 'modules'));
-    app.use(morgan('dev'));
+    //app.use(morgan('dev'));
     app.use(serveStatic(path.join(path.dirname(path.dirname(__dirname)), 'public')));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
