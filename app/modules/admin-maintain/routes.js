@@ -171,18 +171,92 @@ router.post('/addPromotion',(req,res)=>{
 router.get('/promotionList',(req,res)=>{
   var promono = req.query.promo;
   db.query(`Select * from tblpromolist
-join tblpromo on tblpromo.intpromono = tblpromolist.intpromono
-join tblproductinventory on tblpromolist.intinventoryno = tblproductinventory.intinventoryno
-join tbluser on tbluser.intuserid = tblproductinventory.intuserid
-where tblpromolist.intpromono = ${promono}`, (err1,results1,fields1)=>{
-  if (err1) console.log(err1);
+    join tblpromo on tblpromo.intpromono = tblpromolist.intpromono
+    join tblproductinventory on tblpromolist.intinventoryno = tblproductinventory.intinventoryno
+    join tbluser on tbluser.intuserid = tblproductinventory.intuserid
+    where tblpromolist.intpromono = ${promono}`, (err1,results1,fields1)=>{
+      if (err1) console.log(err1);
 
-  res.render('admin-maintain/views/promolist', {re: results1, promo: promono});
+      // product list
+      db.query(`Select * from tblproductinventory
+        join tblproductlist on tblproductinventory.intproductno = tblproductlist.intproductno
+        join tbluser on tblproductinventory.intuserid = tbluser.intuserid
+        join tblproductbrand on tblproductlist.intbrandno = tblproductbrand.intbrandno
+        join tbluom on tblproductinventory.intuomno = tbluom.intuomno
+        where tblproductinventory.intPromotype = 1
+        and tblproductinventory.intinventoryno not in (Select intInventoryno from tblpromolist)`,(err2,results2,fields2)=>{
+          if (err2) console.log(err2);
+
+          res.render('admin-maintain/views/promolist', {re: results1, promo: promono, productlist: results2});
+
+        });
+
+  });
 });
+
+router.post('/addToPromo',(req,res)=>{
+  db.query(`Select * from tblpromolist order by intpromolistno desc limit 1`,(err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+    var num = "1000";
+    if (results1 == null || results1 == undefined){
+
+    }else if (results1.length == 0){
+
+    }else{
+      num = parseInt(results1[0].intPromoListNo) + 1;
+    }
+    db.query(`Insert into tblpromolist (intPromoListno, intPromoNo, intInventoryNo) values("${num}","${req.body.pno}","${req.body.ino}")`,(err2,results2,fields2)=>{
+      if (err2) console.log(err2);
+
+      if (!err2) res.send("yes");
+    });
+
+  });
 });
 
 router.get('/package', (req,res)=>{
-  res.render('admin-maintain/views/package');
+  db.query(`Select * from tblpackage`,(err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+
+      res.render('admin-maintain/views/package',{re: results1, moment: moment});
+
+
+  });
+});
+
+router.post('/addPackage',(req,res)=>{
+  db.query(`Select * from tblpackage order by intPackageNo desc limit 1`,(err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+
+    var num = "1000";
+    if (results1 == null || results1 == undefined){
+
+    }else if (results1.length == 0){
+
+    }else{
+      num = parseInt(results1[0].intPackageNo) + 1;
+    }
+
+    db.query(`Insert into tblpackage (intPackageNo, intAdminID, strPackageName, strPackageDescription, packagePrice, dateDue) values ("${num}","1000","${req.body.pname}","${req.body.pdesc}",${req.body.pprice}, "${req.body.pdue}")`,(err2,results2,fields2)=>{
+      if (err2) console.log(err2);
+      if (!err2) res.send("yes");
+    });
+  })
+});
+
+router.get('/packageList',(req,res)=>{
+  var pack = req.query.package;
+
+  db.query(`Select * from tblpackagelist
+    join tblproductinventory on tblpackagelist.intinventoryno = tblproductinventory.intinventoryno
+    join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
+    join tbluom on tblproductinventory.intuomno = tbluom.intuomno
+    join tbluser on tblproductinventory.intuserid = tbluser.intuserid
+    where tblpackagelist.intpackageno = ${pack}`,(err1,results1,fields1)=>{
+      if (err1) console.log(err1);
+
+      res.render('admin-maintain/views/packagelist',{re:results1, moment: moment, package: pack});
+    });
 });
 
 router.get('/measurements', (req,res)=>{

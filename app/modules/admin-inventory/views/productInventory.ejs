@@ -61,7 +61,7 @@
                       <td><%=i.intInventoryNo%></td>
                       <td><%=i.strFname%>&nbsp;<%=i.strLname%></td>
                       <td><%=i.intSize%>&nbsp;<%=i.strUnitName%></td>
-                      <td><%=i.productSRP%></td>
+                      <td><%=(i.productSRP).toFixed(2)%></td>
                       <td><%=i.productPrice%></td>
                       <!-- <td><%= moment(i.expirationDate).format("MMM Do YYYY")%></td> -->
                       <td><%=i.intQuantity%></td>

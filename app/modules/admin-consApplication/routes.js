@@ -33,6 +33,13 @@ router.post('/sendInvitation', (req,res)=>{
 router.post('/acceptConsignor', (req,res)=>{
   db.query(`Update tblContract set intContractStatus = 1`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
+
+    db.query(`Update tblSupplier set intStatus = 1
+      where tblSupplier.intUserID = (Select intConsignorID from tblContract where intContractNo = ${req.body.data})`,(err2,results2,fields2)=>{
+        if (err2) console.log(err2);
+
+        res.send("yes");
+      });
   });
 });
 
@@ -42,8 +49,27 @@ router.post('/terminateContract',(req,res)=>{
 
     db.query(`Update tblProductOwnership set intStatus = 0`, (err2,results2,fields2)=>{
       if (err2) console.log(err2);
+
+      db.query(`Update tblSupplier set intStatus = 0
+        where tblSupplier.intUserID = (Select intConsignorID from tblContract where intContractNo = ${req.body.data})`,(err3,results3,fields3)=>{
+          if (err3) console.log(err3);
+          if (!err3) res.send("yes");
+        });
+
     });
   });
+});
+
+router.post('/reject',(req,res)=>{
+  db.query(`Update tblContract set intContractStatus = 2`,(err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+
+    db.query(`Update tblSupplier set intStatus = 2
+      where tblSupplier.intUserID = (Select intConsignorID from tblContract where intContractNo = ${req.body.data})`,(err2,results2,fields2)=>{
+        if (err2) console.log(err2);
+        if (!err2) res.send("yes");
+      });
+  })
 });
 
 router.post('/addConsignorProduct',(req,res)=>{
@@ -58,17 +84,11 @@ router.post('/addConsignorProduct',(req,res)=>{
       itemNo = parseInt(results1[0].int) + 1;
 
     }
-
     db.query(`Insert into tblProductOwnership (intItemOwnNo,strProduct,intUserID) values ("${itemNo}","${req.body.mytext}","${req.body.consignorNo}")`,(err2,results2,fields2)=>{
       if (err2) console.log(err2);
 
     });
-
-
   });
-
-  
-
 });
 
 // <%- include('../../../templates/admin-navbar.ejs') -%>

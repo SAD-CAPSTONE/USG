@@ -1,142 +1,144 @@
 $(() => {
 
-  // GET
+  // GET - Load cart
   $('#getCart').on('click', () => {
-    $.get('/extras/res-cart').then((res) => {
-      console.log(res.cart[res.cart.length - 1]);
-      let list = $('#cartList');
-      list.html('');
+    let list = $('#cart-pad');
+    list.html('');
+    $.get('/cart/list').then((res) => {
       res.cart.forEach((data) => {
-        list.append('\
-        <div class="quantGroup mb-3">\
-          <input type="hidden" class="id" value="'+data.id+'">\
-          <input type="hidden" class="stock" value="'+data.stock+'">\
-          <p class="name mb-0">Name: '+data.name+'</p>\
-          <p class="price mb-0">Price: Php '+data.price+'</p>\
-          <p class="total mb-0">Total: Php '+data.total+'</p>\
-          <small><i>'+data.stock+' Item/s Left</i></small><br>\
-          <button type="button" class="minus" style="padding: 1px 9px;"> - </button>\
-          <input type="number" class="quantity" value="'+data.quantity+'" style="width: 100px;" readonly/>\
-          <button type="button" class="plus"> + </button>\
-          <button type="button" class="delitem btn-danger"> X </button>\
-        </div>');
+        list.append(`
+          <div class="cart-product-container">
+            <div class="product-card">
+              <input class="inventory-id" value="${data.inv}" hidden/>
+              <div class="product-pic"><a href="/item"><img src="${data.img}"/></a></div>
+              <div class="product-desc">
+                <p class="product-title">${data.name}</p>
+                <small class="product-size text-muted">Size: ${data.curSize}</small>
+                <small class="product-oldprice text-muted">
+                  <span><s class="price-symbol">0</s></span><span> (-0%)</span><br>
+                </small>
+                <div class="input-group quantity">
+                  <div class="input-group-prepend addon">
+                    <button class="btn btn-primary quantity-buttons minus" type="button">
+                    <small class="quantity-text quantity-text-minus">-</small>
+                  </button>
+                  </div>
+                  <input class="form-control quantity-input" type="text" readonly="" value="${data.curQty}">
+                  <div class="input-group-append addon">
+                    <button class="btn btn-primary quantity-buttons plus" type="button">
+                    <small class="quantity-text quantity-text-plus">+</small>
+                  </button>
+                  </div>
+                </div>
+                <p class="product-price price-symbol">${data.curPrice}</p>
+              </div>
+            </div>
+            <div class="product-remove"><i class="fa fa-remove product-remove-icon"></i></div>
+          </div>`)
       });
+      res.cart.length ? 0 :
+        list.append(`
+          <div class="cart-product-container">
+            <p> Cart currently empty </p>
+          </div>`);
+      $('#subtotal-btn').click();
     }).catch((error) => {
-      let list = $('#cartList');
-      list.html('');
-      list.append('<i> Empty </i>');
+      list.append(`
+        <div class="cart-product-container">
+          <p> Cart currently empty </p>
+        </div>`);
+      $('#subtotal-btn').click();
     });
   });
 
-  // POST
-  $('#newItem').on('click', (event) => {
-    event.preventDefault();
-
-    let itemName = $('#itemName');
-    let itemPrice = $('#itemPrice');
-    let itemStock = $('#itemStock');
-    let itemQuantity = $('#itemQuantity');
-
-    $.post('/extras/res-cart', {
-      name: itemName.val(),
-      price: itemPrice.val(),
-      stock: itemStock.val(),
-      quantity: itemQuantity.val()
-    }).then((res) => {
-      itemName.val('');
-      itemPrice.val('');
-      itemStock.val('');
-      itemQuantity.val('');
-      $('#getCart').click();
-    }).catch((error) => {
-      console.log(error);
-    });
-  });
-
-  // PUT PLUS
-  $('#cartList').on('click', '.plus', function() {
-    let thisDiv = $(this).closest('.quantGroup');
-    let id = thisDiv.find('.id').val();
-    let stock = thisDiv.find('.stock').val();
-    let newQuantity = thisDiv.find('.quantity').val();
-    newQuantity = parseInt(newQuantity)+1;
-    if (newQuantity > stock){
-      newQuantity = stock;
-    }
-
+  // DELETE - Remove product
+  $('#cart-pad').on('click', '.product-remove', function() {
+    let inv = $(this).prev().find('.inventory-id').val();
     $.ajax({
-      url: '/extras/res-cart/' + id,
-      method: 'PUT',
-      contentType: 'application/json',
-      data: JSON.stringify({
-        newQuantity: newQuantity
-      }),
-      success: (res) => {
-        console.log(res);
-        $('#getCart').click();
-      }
-    });
-  });
-
-  // PUT MINUS
-  $('#cartList').on('click', '.minus', function() {
-    let thisDiv = $(this).closest('.quantGroup');
-    let id = thisDiv.find('.id').val();
-    let newQuantity = thisDiv.find('.quantity').val();
-    newQuantity = parseInt(newQuantity)-1;
-    if (newQuantity < 2){
-      newQuantity = 1;
-    }
-
-    $.ajax({
-      url: '/extras/res-cart/' + id,
-      method: 'PUT',
-      contentType: 'application/json',
-      data: JSON.stringify({
-        newQuantity: newQuantity
-      }),
-      success: (res) => {
-        console.log(res);
-        $('#getCart').click();
-      }
-    });
-  });
-
-  // DELETE
-  $('#cartList').on('click', '.delitem', function() {
-    let thisDiv = $(this).closest('.quantGroup');
-    let id = thisDiv.find('.id').val();
-
-    $.ajax({
-      url: '/extras/res-cart/' + id,
+      url: `/cart/list`,
       method: 'DELETE',
       contentType: 'application/json',
+      data: JSON.stringify({
+        inv: inv
+      }),
       success: (res) => {
-        console.log(res);
-        $('#getCart').click();
+        $(this).parent().remove();
+        $("#checkout-products > .product-div").each(function(index) {
+          $(this).find('.inventory-id').val() == res.inv ?
+            $(this).remove() : 0
+        });
+        if(!res.cart){
+          $('#cart-pad').append(`
+            <div class="cart-product-container">
+              <p> Cart currently empty </p>
+            </div>`);
+          $('#checkout-products').append(`
+            <div class="product-div pos-relative px-3">
+              <p class="fs-09em"> Cart currently empty </p>
+            </div>`);
+        }
+        $('#subtotal-btn').click();
       }
     });
   });
 
-  // CLEAR
-  $('#clearCart').on('click', (event) => {
-    event.preventDefault();
+  // PUT - Plus Button, Get New Quantity
+  $('#cart-pad').on('click', '.plus', function() {
+    let inv = $(this).closest('.product-card').find('.inventory-id').val();
 
-    $.get('/extras/clear-cart').then((res) => {
-      console.log(res.cart[0]);
-    }).catch((error) => {
-      $('#getCart').click();
+    $.ajax({
+      url: `/cart/list`,
+      method: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        inv: inv,
+        action: 'plus'
+      }),
+      success: (res) => {
+        $(this).closest('.product-card').find('.quantity-input').val(res.cart.curQty);
+        $("#checkout-products > .product-div").each(function(index) {
+          $(this).find('.inventory-id').val() == res.cart.inv ?
+            $(this).find('.quantity').text(res.cart.curQty) : 0
+        });
+        $('#subtotal-btn').click();
+      }
     });
   });
 
-  // GET onload
-  $('#getCart').click();
+  // PUT - Minus Button, Get New Quantity
+  $('#cart-pad').on('click', '.minus', function() {
+    let inv = $(this).closest('.product-card').find('.inventory-id').val();
 
-  // Pressing Enter
-  $(document).keypress((e) => {
-    if (e.which == 13) {
-      $('#newItem').click();
-    }
+    $.ajax({
+      url: `/cart/list`,
+      method: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        inv: inv,
+        action: 'minus'
+      }),
+      success: (res) => {
+        $(this).closest('.product-card').find('.quantity-input').val(res.cart.curQty);
+        $("#checkout-products > .product-div").each(function(index) {
+          $(this).find('.inventory-id').val() == res.cart.inv ?
+            $(this).find('.quantity').text(res.cart.curQty) : 0
+        });
+        $('#subtotal-btn').click();
+      }
+    });
   });
+
+  // GET - Subtotal
+  $('#subtotal-btn').on('click', () => {
+    $.get('/cart/list/total/sub').then((res) => {
+      $('.checkout').find('button+p').text(`${res.subtotal}`)
+      $('#total-btn').click();
+    }).catch((error) => {
+      console.log(error)
+    });
+  });
+
+  // Click Button on Load
+  $('#getCart').click();
 
 });

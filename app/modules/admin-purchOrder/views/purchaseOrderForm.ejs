@@ -63,7 +63,7 @@
 
        <div class="row">
          <div class="col-sm-3">
-           <h4> &nbsp; Vendor </h4>
+           <h4> &nbsp; Supplier </h4>
          </div>
 
        </div>
@@ -86,7 +86,7 @@
            <div class="form-group">
 
 
-             <label for="contract" class="col-sm-2 control-label"> Contract or Department</label>
+             <label for="contract" class="col-sm-2 control-label"> Contract No.</label>
 
              <div class="col-sm-4">
 
@@ -127,6 +127,7 @@
 
            &nbsp; &nbsp;<button type="button" id="addButton" disabled class="addRow btn btn-success btn-xs" ><i class="fa fa-plus"></i> Add Product</button>
            &nbsp; &nbsp; <a href="" data-toggle="modal" id="searchProduct"  data-target="#selectProduct" hidden>Click here to view products of supplier</a>
+
            <!-- /.box-header -->
 
            <div class="box-body table-responsive">
@@ -136,7 +137,7 @@
                <th>Product Name</th>
                <th >Quantity</th>
                <th >Unit Price</th>
-               <th >Actions</th>
+
                <th> Total </th>
              </thead>
 
@@ -461,8 +462,10 @@
 <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
-
+<!-- sweetalert  -->
 <script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+<!-- Notification  -->
+<script src="/assets/admin/notification.js"></script>
 
 <!-- page script (new added) -->
 
@@ -604,9 +607,9 @@ $(document).ready(function() {
             count,
             '<input style="width: 200px" required type="text" name="product[]" value="" class="form-control">',
             '<input style="width: 80px" required type="number" name="quantity[]" value="0" class="form-control">',
-            '<input style="width: 80px" type="number" name="price[]" value="2" class="form-control">',
-            '<input style="width: 80px" type="number" name="total[]" value="2" class="total form-control">',
-            ""
+            '<input style="width: 80px" type="number" name="price[]" value="2" class="price form-control">',
+            '<input style="width: 80px" type="number" name="total[]" value="2" class="total form-control">'
+
         ] ).draw( false );
         //validity = 0;
         count++;
@@ -616,29 +619,19 @@ $(document).ready(function() {
 
     } );
 
-    // Automatically add a first row of data
-    //$('#addRow').click();
 
    $('#sub').on('click', function(){
      $(this).submit();
    });
-  //    var $dataElements = $('#example').find('td'),
-  //   data = [];
-  //
-  //
-  // $.each($dataElements, function(i, elem){
-  //   data.push($(elem).val());
-  //
-  // });
-  //
-  // $.ajax({url:'/purchaseOrder/samp', method: 'POST', data: {data:JSON.stringify(data)} });
-  //  });
+
 
 } );
 </script>
 
 <script>
-
+function a(){
+  alert();
+}
 </script>
 
 

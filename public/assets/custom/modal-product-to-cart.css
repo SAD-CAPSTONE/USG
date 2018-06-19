@@ -3,7 +3,7 @@
   top: 20%;
 }
 #modal-product-to-cart .modal-content  {
-  border-radius: 0px;
+  border: none;
 }
 #modal-product-to-cart .modal-header {
   display: none;

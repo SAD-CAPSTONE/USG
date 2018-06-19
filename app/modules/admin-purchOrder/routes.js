@@ -15,10 +15,7 @@ router.get('/', (req,res)=>{
 });
 
 router.get('/form', (req,res)=>{
-  //var test = "AD1";
-  //var test2 = test.substr(2);
 
-  // select all data from purchaseOrder
   db.query(`Select * from tblPurchaseOrder`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
 
@@ -34,8 +31,6 @@ router.get('/form', (req,res)=>{
         // select purchase order no
         db.query(`Select * from tblPurchaseOrder order by intPurchaseOrderNo desc limit 1`, (err4,results4,fields4)=>{
           if (err4) console.log(err4);
-
-
 
             res.render('admin-purchOrder/views/purchaseOrderForm',  {re: results1, su: results2, products: results3, moment: moment, POno: results4});
 

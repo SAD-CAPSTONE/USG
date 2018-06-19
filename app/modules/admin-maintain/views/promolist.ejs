@@ -27,7 +27,7 @@
          </div>
        </br>
 		<!-- buttons -->
-			&nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addPromotion"><i class="fa fa-plus"></i> Add New Promo</button>
+			&nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addProduct"><i class="fa fa-plus"></i> Add Product</button>
          <!-- /.box-header -->
          <div class="box-body table-responsive">
            <table id="example2" class="table table-bordered table-hover">
@@ -79,6 +79,58 @@
 <!-- /.content-wrapper -->
 
 
+  <!-- Modals -->
+
+	<div class="modal fade" id="addProduct">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title">Select Product you want to add</h4>
+		  </div>
+		  <div class="modal-body">
+
+        <div class="box-body table-responsive">
+          <table id="example3" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Supplier</th>
+              <th></th>
+
+            </tr>
+            </thead>
+            <tbody>
+             <% if (productlist == null || productlist == undefined){ %>
+
+             <% }else if(productlist.length == 0){ %>
+
+             <% }else{ %>
+               <% productlist.forEach(function(i){ %>
+                 <tr>
+                   <td><%=i.strBrand%> &nbsp;<%=i.strProductName%>&nbsp;   <%=i.intSize%> <%=i.strUnitName%></td>
+                   <td><%=i.strFname%> <%=i.strLname%></td>
+                   <td><button data-ino="<%=i.intInventoryNo%>" data-pno="<%=promo%>" id="select" class="btn btn-primary btn-xs">Select</button></td>
+
+
+                 </tr>
+               <% }) %>
+             <% } %>
+
+
+            </tbody>
+
+          </table>
+        </div>
+
+		  </div>
+
+		</div>
+		<!-- /.modal-content -->
+	</div>
+  <!-- /.modal-dialog -->
+</div>
 
 <!-- Main Footer -->
 <footer class="main-footer">
@@ -190,6 +242,32 @@ immediately after the control sidebar -->
 <script src="/assets/admin/notification.js"></script>
 
 <!-- page script (new added) -->
+
+<script>
+$(document).ready(function(){
+  $('#select').on('click',function(){
+    $.ajax({
+      url: '/maintenance/addToPromo',
+      method: 'POST',
+      datatype: "json",
+      data: {
+        ino: $(this).data('ino'),
+        pno: $(this).data('pno')
+      },
+      success: function(response,status,http){
+        if (response == "yes"){
+
+            swal("Success","You added this product to the promo", "success");
+            window.location.reload();
+        }else{
+
+        }
+      }
+    });
+  });
+})
+</script>
+
 <script>
   $(function () {
     $('#example2').DataTable({
@@ -205,7 +283,20 @@ immediately after the control sidebar -->
   })
 </script>
 
-
+<script>
+  $(function () {
+    $('#example3').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
 
 <script>
   $('#title').html("USG | Promotions");
