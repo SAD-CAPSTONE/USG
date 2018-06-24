@@ -2,6 +2,10 @@ var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
 
+router.get('/register', (req,res)=>{
+  res.render('admin-consApplication/views/cons-register');
+});
+
 router.get('/', (req,res)=>{
   db.query(`Select tblContract.intContractStatus as stats, tblContract.*,tblSupplier.*,S.* from tblContract join
     tblSupplier on tblContract.intConsignorID = tblSupplier.intUserID
