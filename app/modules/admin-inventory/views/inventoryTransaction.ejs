@@ -35,7 +35,6 @@
                   <thead>
                   <tr>
                     <th>Transaction Date</th>
-                    <th>Batch No</th>
                     <th>Shelf No</th>
                     <th>Critical Limit</th>
                     <th>SRP</th>
@@ -52,7 +51,6 @@
                     <% re.forEach(function(i){ %>
                       <tr>
                       <td><%= moment(i.transactionDate).format("MM/DD/YYYY HH:mm")%></td>
-                      <td><%=i.intBatchNo%></td>
                       <td><%=i.intShelfNo%></td>
                       <td><%=i.intCriticalLimit%></td>
                       <td><%=i.productSRP%></td>
