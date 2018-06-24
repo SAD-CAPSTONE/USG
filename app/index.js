@@ -16,7 +16,7 @@ module.exports = app => {
             });
         });
         app.get('*', function(req, res){
-          res.render('0extras/views/noroute');
+          res.render('cust-0extras/views/noroute');
         });
     });
 }
