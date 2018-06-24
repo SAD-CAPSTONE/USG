@@ -303,7 +303,7 @@
 				<button type="button" onclick="accept(<%=contract[0].intContractNo%>)" class="accept btn btn-primary pull-right" id="accept" style="margin-right: 5px;">
 				<i id="checkIcon" class="checkIcon fa fa-check"></i> Accept Consignor
 				</button>
-        <button type="button" id="reject"  class=" btn btn-danger pull-right"  style="margin-right: 5px;">
+        <button type="button" id="reject" onclick="reject(<%=contract[0].intContractNo%>)"  class="reject btn btn-danger pull-right"  style="margin-right: 5px;">
 				<i  class=" fa fa-close"></i> Reject Consignor
 				</button>
         <button type="button" data-toggle="modal" data-target="#addProduct" class=" btn bg-orange pull-right" id="add"  style="margin-right: 5px;">
@@ -412,7 +412,7 @@
     </div>
     <div class="modal-footer">
     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-    <button type="submit" class="btn btn-primary">Save changes</button>
+    <button type="submit" data-dismiss="modal" class="btn btn-primary">Save changes</button>
       </form>
     </div>
   </div>
@@ -526,8 +526,10 @@
 <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
-
+<!-- sweetalert  -->
 <script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+<!-- Notification  -->
+<script src="/assets/admin/notification.js"></script>
 
 <!-- page script (new added) -->
 <script>
@@ -551,21 +553,24 @@
   });
 </script>
 
-<% if (contract[0].intContractStatus == 3 || contract[0].intContractStatus == 1){ %>
+<% if (contract[0].intContractStatus == 3){ %>
   <script>
+  // for product sampling
     $('.invite').attr('disabled','disabled');
-    $('.add').hide();
+
    </script>
 <% } %>
 
 <% if (contract[0].intContractStatus == 0 ){ %>
   <script>
+  // for pending
     $('#add').hide();
    </script>
 <% } %>
 
 <% if ( contract[0].intContractStatus == 1){ %>
   <script>
+  // for accepted
     $('.accept').attr('class', 'terminate btn btn-danger pull-right');
     $('#accept').html("Terminate Contract");
     $('.checkIcon').attr('class','fa fa-close');
@@ -577,6 +582,7 @@
 
 <% if ( contract[0].intContractStatus == 4){ %>
   <script>
+  // for terminated
     $('.accept').attr('class', 'terminate btn btn-danger pull-right');
     $('#accept').html("Terminated");
     $('.terminate').attr('disabled','disabled');
@@ -587,7 +593,21 @@
    </script>
 <% } %>
 
+<% if ( contract[0].intContractStatus == 2){ %>
+  <script>
+  // for rejected
+    $('.accept').attr('class', 'terminate btn btn-danger pull-right');
+    $('#accept').html("Rejected");
+    $('.terminate').attr('disabled','disabled');
+    $('.checkIcon').attr('class','fa fa-close');
+    $('.invite').attr('disabled','disabled');
+    $('.reject').hide();
+    $('#add').hide();
+   </script>
+<% } %>
+
 <script>
+
   $('.sendInvite').on('click', function(){
     $.ajax({url:'/consApplication/sendInvitation', method: 'POST' });
     $('.invite').attr('disabled','disabled');
@@ -601,6 +621,45 @@
 </script>
 
 <script>
+
+  function reject(contract){
+    swal({
+      title: "Are you sure?",
+      text: "You cannot undo this once you rejected the consignor",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonClass: "btn-danger",
+      confirmButtonText: "Reject Consignor",
+      cancelButtonText: "Back",
+      closeOnConfirm: false,
+      closeOnCancel: false
+    },
+    function(isConfirm){
+      if(isConfirm){
+        $.ajax({
+          url: '/consApplication/reject',
+          method: 'post',
+          datatype: 'json',
+          data: {data: contract},
+          success: function(response,status,http){
+            if (response == "yes"){
+              swal("Rejected!", "You rejected this consignor", "success");
+              $('.invite').attr('disabled','disabled');
+              $('.accept').attr('class', 'terminate btn btn-danger pull-right');
+              $('.terminate').attr('disabled','disabled');
+              $('#accept').html('Rejected');
+              $('#checkIcon').attr('class','fa fa-close');
+              $('#add').hide();
+            }
+          }
+        });
+      }else{
+        swal("Cancelled", "", "error");
+
+      }
+    });
+  } // reject function
+
   function accept(contract){
     var idClass = document.getElementById('accept');
 
@@ -611,7 +670,7 @@
         text: "Please check carefully the documents attached in this application",
         type: "warning",
         showCancelButton: true,
-        confirmButtonClass: "btn-danger",
+        confirmButtonClass: "btn-primary",
         confirmButtonText: "Accept Consignor",
         cancelButtonText: "Back",
         closeOnConfirm: false,
@@ -619,15 +678,25 @@
       },
       function(isConfirm) {
         if (isConfirm) {
-          $.ajax({url:'/consApplication/acceptConsignor', method: 'POST', data: contract});
-          swal("Accepted!", "Please add products to the inventory.", "success");
-          $('.invite').attr('disabled','disabled');
-          $('.accept').attr('class', 'terminate btn btn-danger pull-right');
-          $('#accept').html('Terminate Contract');
+          $.ajax({
+            url:'/consApplication/acceptConsignor',
+            method: 'POST',
+            datatype: 'json',
+            data: {data: contract},
+            success: function(response,status,http){
+              if (response == "yes"){
+                swal("Accepted!", "Please add products to the inventory.", "success");
+                $('.invite').attr('disabled','disabled');
+                $('.accept').attr('class', 'terminate btn btn-danger pull-right');
+                $('#accept').html('Terminate Contract');
 
-          $('#checkIcon').attr('class','fa fa-close');
-          $('#reject').hide();
-          $('#add').click();
+                $('#checkIcon').attr('class','fa fa-close');
+                $('#reject').hide();
+                $('#add').click();
+                $('#add').show();
+              }
+            }
+          });
         } else {
           swal("Cancelled", "", "error");
         }
@@ -647,14 +716,24 @@
       },
       function(isConfirm) {
         if (isConfirm) {
-          $.ajax({url:'/consApplication/terminateContract', method: 'POST', data: contract});
-          swal("Terminated!", "Please pull out products from the inventory.", "success");
-          $('.invite').attr('disabled','disabled');
-          $('.accept').attr('class', 'terminate btn btn-danger pull-right');
-          $('.terminate').attr('disabled','disabled');
-          $('#accept').html('Terminated');
-          $('#checkIcon').attr('class','fa fa-close');
-          $('#add').hide();
+          $.ajax({
+            url:'/consApplication/terminateContract',
+            method: 'POST',
+            datatype: 'json',
+            data: {data: contract},
+            success: function(response,status,http){
+              if (response == "yes"){
+                swal("Terminated!", "Please pull out products from the inventory.", "success");
+                $('.invite').attr('disabled','disabled');
+                $('.accept').attr('class', 'terminate btn btn-danger pull-right');
+                $('.terminate').attr('disabled','disabled');
+                $('#accept').html('Terminated');
+                $('#checkIcon').attr('class','fa fa-close');
+                $('#add').hide();
+              }
+            }
+          });
+
         } else {
           swal("Cancelled", "", "error");
         }

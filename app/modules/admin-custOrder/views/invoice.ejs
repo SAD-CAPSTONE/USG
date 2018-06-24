@@ -31,7 +31,8 @@
       <div class="col-xs-12">
         <h2 class="page-header">
           <i class="fa fa-globe"></i> Ultra Super Green Trading  Corporation.
-          <small class="pull-right">Date: 2/10/2014</small>
+          <small class="pull-right">Date: <%= moment(customer[0].dateOrdered).format("MM/DD/YYYY")%> </small>
+
         </h2>
       </div>
       <!-- /.col -->
@@ -52,7 +53,7 @@
       <div class="col-sm-4 invoice-col">
         To
         <address>
-          <strong>Janelle Alag</strong><br>
+          <strong><%= customer[0].strFname %> <%= customer[0].strMname %> <%= customer[0].strLname %></strong><br>
           156 M.H Delpilar St., Pamplona 1,<br>
           Las Piñas City, Metro Manila 94107<br>
           Phone: (555) 539-1037<br>
@@ -63,9 +64,9 @@
       <div class="col-sm-4 invoice-col">
         <b>Invoice #007612</b><br>
         <br>
-        <b>Order ID:</b> 4F3S8J<br>
-        <b>Payment Due:</b> 2/22/2014<br>
-        <b>Account:</b> 968-34567
+        <b>Order No:</b> <%= customer[0].intOrderNo %><br>
+        <b>Payment Due:</b> --<br>
+        <b>Account:</b> --
       </div>
       <!-- /.col -->
     </div>
@@ -86,23 +87,24 @@
           </tr>
           </thead>
           <tbody>
-          <tr>
-            <td>1</td>
-            <td>Raw Ritual Seacharon</td>
-            <td>RWRTLSEACHRN</td>
-            <td>All-natural chicharon</td>
-            <td>php 64.50</td>
-            <td>php 64.50</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Go Black Honey Lemon</td>
-            <td>GBLCKHNEYLEMON</td>
-            <td>A flavored drink honey lemon</td>
-            <td>php 50.00</td>
-            <td>php 100.00</td>
-          </tr>
-          
+          <% if (orderlist == null || orderlist == undefined){ %>
+
+          <% }else{ %>
+            <% orderlist.forEach(function(i){ %>
+              <tr>
+                <td><%= i.intQuantity %></td>
+                <td><%= i.strProductName %></td>
+                <td><%= i.strProductCode %></td>
+                <td><%= i.strDescription %></td>
+                <td>Php <%= i.purchasePrice %></td>
+                <td>Php <%= i.intQuantity * i.purchasePrice %></td>
+              </tr>
+            <%  }) %>
+
+          <% } %>
+
+
+
           </tbody>
         </table>
       </div>
@@ -122,25 +124,25 @@
       </div>
       <!-- /.col -->
       <div class="col-xs-6">
-        <p class="lead">Amount Due 2/22/2014</p>
+        <p class="lead">Amount Due --</p>
 
         <div class="table-responsive">
           <table class="table">
             <tr>
               <th style="width:50%">Subtotal:</th>
-              <td>$250.30</td>
+              <td>PHP <%= total %></td>
             </tr>
             <tr>
               <th>Tax (9.3%)</th>
-              <td>$10.34</td>
+              <td>--</td>
             </tr>
             <tr>
               <th>Shipping:</th>
-              <td>$5.80</td>
+              <td>--</td>
             </tr>
             <tr>
               <th>Total:</th>
-              <td>$265.24</td>
+              <td>PHP <%= total %></td>
             </tr>
           </table>
         </div>
@@ -152,10 +154,10 @@
     <!-- this row will not appear when printing -->
     <div class="row no-print">
       <div class="col-xs-12">
-        <a href="invoice-print.html" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Print</a>
-        <button type="button" class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Submit Payment
+        <a href="/customerOrder/invoice-print?order=<%= customer[0].intOrderNo %>" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Print</a>
+        <button type="button" disabled class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Submit Payment
         </button>
-        <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px;">
+        <button type="button" disabled class="btn btn-primary pull-right" style="margin-right: 5px;">
           <i class="fa fa-download"></i> Generate PDF
         </button>
       </div>
@@ -270,6 +272,8 @@ immediately after the control sidebar -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
 
 <script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+<!-- Notification  -->
+<script src="/assets/admin/notification.js"></script>
 
 <!-- page script (new added) -->
 

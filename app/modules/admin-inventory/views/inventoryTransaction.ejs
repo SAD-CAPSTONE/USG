@@ -7,7 +7,7 @@
     <h1>
 
     </h1>
-    <strong><small>Product Code: <%=title[0].strProductCode%> &nbsp; &nbsp; Product Name: <%=title[0].strProductName%></small></strong>
+    <strong><h5>Product Name: <%=title[0].strProductName%> &nbsp; &nbsp; Product Code: <%=title[0].strProductCode%> </h5></strong>
     <ol class="breadcrumb">
       <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
       <li><a href="#">Maintenance</a></li>
@@ -35,13 +35,13 @@
                   <thead>
                   <tr>
                     <th>Transaction Date</th>
-                    <th>Batch No</th>
                     <th>Shelf No</th>
                     <th>Critical Limit</th>
-                    <th>Date Placed</th>
-
+                    <th>SRP</th>
+                    <th>Product Price</th>
+                    <th>Promo Type</th>
                     <th>Type of Changes</th>
-                    <th>Actions</th>
+
                   </tr>
                   </thead>
                   <tbody>
@@ -50,19 +50,22 @@
                   <% }else { %>
                     <% re.forEach(function(i){ %>
                       <tr>
-                      <td><%= moment(i.transactionDate).format("MMM Do YYYY")%></td>
-                      <td><%=i.intBatchNo%></td>
+                      <td><%= moment(i.transactionDate).format("MM/DD/YYYY HH:mm")%></td>
                       <td><%=i.intShelfNo%></td>
                       <td><%=i.intCriticalLimit%></td>
-                      <td><%= moment(i.datePlaced).format("MMM Do YYYY")%></td>
-
+                      <td><%=i.productSRP%></td>
+                      <td><%=i.productPrice%></td>
+                      <td><% if (i.intPromoType == 0){ %>
+                        None
+                      <% }else if(i.intPromoType == 1){ %>
+                        Discount
+                      <% }else{ %>
+                        Package
+                      <% } %>
+                      </td>
                       <td><%=i.strTypeOfChanges%></td>
 
-                      <!-- <td><%= moment(i.expirationDate).format("MMM Do YYYY")%></td> -->
 
-                      <td>
-
-                      </td>
 
                     </tr>
                     <% }) %>
@@ -202,6 +205,8 @@
   <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
   <!-- AdminLTE App -->
   <script src="/assets/admin/dist/js/adminlte.min.js"></script>
+  <!-- Notification  -->
+  <script src="/assets/admin/notification.js"></script>
 
   <!-- page script (new added) -->
   <script>

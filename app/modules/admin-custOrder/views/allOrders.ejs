@@ -7,7 +7,7 @@
     <section class="content-header">
       <h1>
 
-        <small>Note: Please monitor stocks regularly, check if there is damaged products.</small>
+        <small>Note: Change order status by clicking assess button.</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -58,13 +58,16 @@
                         <span class="label label-default">Delivered</span>
                       <% }else if(i.Stat == 4){ %>
                         <span class="label label-default">Will not deliver</span>
-                      <% }else{ %>
+                      <% }else if(i.Stat == 5){ %>
                         <span class="label label-default">Returned</span>
+                      <% }else{ %>
+                        <span class="label label-danger">Cancelled</span>
+
                       <% } %>
                     </td>
                     <td>
                       <% orderno = i.intOrderNo %>
-                      <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="btn btn-default btn-sm">View Invoice</button></a>  
+                      <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="btn btn-default btn-sm">View Invoice</button></a>
 
                         <a href="/customerOrder/assessOrder?order=<%=orderno%>"><button class="btn btn-primary btn-sm">Assess</button></a>
 
@@ -256,6 +259,10 @@
 <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<!-- sweetalert  -->
+<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>  
+<!-- Notification  -->
+<script src="/assets/admin/notification.js"></script>
 
 
 
