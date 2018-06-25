@@ -328,6 +328,10 @@ router.post('/addSubCategory', (req,res)=>{
   });
 });
 
+router.get('/customer',(req,res)=>{
+  res.render('admin-maintain/views/customer');
+});
+
 // <%- include('../../../templates/admin-navbar.ejs') -%>
 
 exports.maintenance = router;

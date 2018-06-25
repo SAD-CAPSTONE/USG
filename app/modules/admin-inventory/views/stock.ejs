@@ -844,9 +844,11 @@ immediately after the control sidebar -->
                     i.strBusinessName,
                     i.expirationDate,
                     "status here",
-                    ""
+                    `<button class="pulloutitem btn btn-danger btn-sm" data-batch="${i.intBatchNo}">Pull-out</button> `
                 ] ).draw( false );
               });
+
+              runner();
 
             } // validity
 
@@ -859,39 +861,45 @@ immediately after the control sidebar -->
   </script>
 
   <script>
-  $('#pull-out').on('click',function(){
-    swal({
-      title: "Are you sure?",
-      text: "You cannot undo pullout stock from inventory",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonClass: "btn-danger",
-      confirmButtonText: "Pull-out List from Inventory",
-      cancelButtonText: "Back",
-      closeOnConfirm: false,
-      showLoaderOnConfirm: true
-    }, function(isConfirm){
-      $.ajax({
-        url: '/inventory/pullOut',
-        method: 'post',
-        success: function(response, status, http){
-          if(response == "yes"){
-            setTimeout(function(){
-              swal("Success!", "List are pulled out from inventory", "success");
-              window.location.reload();
-            }, 2000);
-          }else{
-            setTimeout(function(){
-              swal("Error", "There's an error", "error");
-            }, 2000);
+  function runner(){
+    $('.pulloutitem').on('click',function(){
+      alert($(this).data('batch'));
+      swal({
+        title: "Are you sure?",
+        text: "You cannot undo pullout stock from inventory",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonClass: "btn-danger",
+        confirmButtonText: "Pull-out List from Inventory",
+        cancelButtonText: "Back",
+        closeOnConfirm: false,
+        showLoaderOnConfirm: true
+      }, function(isConfirm){
+        $.ajax({
+          url: '/inventory/pullOutItem',
+          method: 'post',
+          datatype: "json",
+          data: {o: '$(this).data('batch')'},
+          success: function(response, status, http){
+            if(response){
+              setTimeout(function(){
+                swal("Success!", response, "success");
+                window.location.reload();
+              }, 2000);
+            }else{
+              setTimeout(function(){
+                swal("Error", "There's an error", "error");
+              }, 2000);
+            }
           }
-        }
 
+        })
       })
-    })
 
 
-  });
+    });
+  }
+
   </script>
 
   <script>
