@@ -7,12 +7,12 @@
     <section class="content-header">
       <h1>
 
-        <small>Note: Please monitor stocks regularly, check if there is damaged products.</small>
+        <small>Note: .</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Maintenance</a></li>
-        <li class="active">Products per Supplier</li>
+        <li class="active">Customers</li>
       </ol>
     </section>
 
@@ -22,8 +22,9 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">All Products and Respective Suppliers</h3>
+              <h4 align="center">Customers</h4>
             </div>
+			<!-- buttons -->
 
             <!-- /.box-header -->
             <div class="box-body table-responsive">
@@ -31,11 +32,14 @@
                 <thead>
                 <tr>
                   <th>No</th>
-                  <th>Product Name</th>
-                  <th>Supplier Name</th>
+                  <th>Name</th>
+                  <th>Username</th>
+				          <th>Status</th>
+                  <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
+
 
 
                 </tbody>
@@ -43,11 +47,6 @@
               </table>
             </div>
             <!-- /.box-body -->
-
-            <div class="box-footer">
-              <a href="voucher.html"><button type="submit" class="btn btn-default">Back</button></a>
-
-            </div>
           </div>
           <!-- /.box -->
 
@@ -169,6 +168,10 @@
 <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<!-- sweetalert  -->
+<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+<!-- Notification  -->
+<script src="/assets/admin/notification.js"></script>
 
 <!-- page script (new added) -->
 <script>
@@ -187,10 +190,9 @@
 </script>
 
 <script>
-$('#title').html("USG | Supplier Products");
+$('#title').html("USG | Voucher");
 $(".treeview a:contains('Maintenance')").parent().addClass("active");
-$(".treeview a:contains('Inventory')").parent().addClass("active");
-$(".navi a:contains('Products per Supplier')").parent().addClass("active");
+$(".navi a:contains('Customer')").parent().addClass("active");
 </script>
 
 
