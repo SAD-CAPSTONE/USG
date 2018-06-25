@@ -1,0 +1,79 @@
+<%- include('../../../templates/sidebar.ejs') -%>
+
+<style>
+  #sidebar>.row>.col:first-of-type>a:nth-of-type(1)>h5 {
+    border-left: 4px solid var(--primary-color);
+  }
+</style>
+
+<!-- main content title -->
+<h4 class="lead pl-1 pb-2"><b>Account Dashboard</b></h4>
+<!-- main content -->
+<div class="row">
+  <div class="col-md-6 mb-3">
+    <div style="padding-bottom: 8.5px;" class="card">
+      <div class="card-header"> Personal information</div>
+      <div class="card-body">
+        <h4>John Doe</h4>
+        <h6 class="text-muted">johndoe@mail.com<br/><br/></h6><a data-toggle="modal" data-target="#EditInfo" class="btn btn-custom-primary"><i class="fa fa-fw fa-wrench"></i> Edit</a>
+        <div id="EditInfo" tabindex="-1" role="dialog" aria-labelledby="EditInfoTitle" aria-hidden="true" class="modal fade">
+          <div role="document" class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 id="EditInfoTitle" class="modal-title"><b> Edit Personal Information</b></h5>
+                <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col">
+                    <label for="fname"><b>First Name</b></label>
+                    <input id="fname" type="text" name="fname" value="John" required="" class="form-control material mb-3" />
+                  </div>
+                  <div class="col">
+                    <label for="mname"><b>Middle Name</b></label>
+                    <input id="mname" type="text" name="mname" class="form-control material mb-3" />
+                  </div>
+                  <div class="col">
+                    <label for="lname"><b>Last Name</b></label>
+                    <input id="lname" type="text" name="lname" value="Doe" required="" class="form-control material mb-3" />
+                  </div>
+                </div>
+                <label for="email"><b>Email</b></label>
+                <input id="email" type="text" name="email" value="johndoe@mail.com" required="" class="form-control material mb-3" />
+                <label for="dsa"><b>Default Shipping Address</b></label>
+                <input id="dsa" type="text" name="dsa" class="form-control material mb-3" />
+                <label for="dba"><b>Default Billing Address</b></label>
+                <input id="dba" type="text" name="dba" class="form-control material mb-3" />
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-custom-primary">Submit</button>
+                <button type="button" ,="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 mb-3">
+    <div class="card">
+      <div class="card-header"> Default Billing Address </div>
+      <div class="card-body">
+        <p>No default billing address available.<br/><br/><br/><br/><br/></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 mb-3">
+    <div class="card">
+      <div class="card-header"> Default Shipping Address </div>
+      <div class="card-body">
+        <h6 class="text-muted">No default shipping address available<br/><br/><br/><br/><br/><br/></h6>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../../templates/sidebar-closer.ejs') -%>
+<%- include('../../../templates/scripts.ejs') -%>
+<%- include('../../../templates/scripts-customer.ejs') -%>
+<%- include('../../../templates/closer.ejs') -%>

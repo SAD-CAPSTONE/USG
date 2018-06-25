@@ -1,0 +1,101 @@
+<%- include('../../../templates/navbar.ejs') -%>
+
+<script>
+  function printExternal(url) {
+    var printWindow = window.open(url, 'Print', 'left=200, top=100, width=950, height=500, toolbar=0, resizable=0');
+    printWindow.addEventListener('load', function() {
+      printWindow.print();
+      printWindow.close();
+    }, true);
+  }
+</script>
+<!-- <a onclick="printExternal('/invoice');" class="fake-link"> -->
+
+<div id="summary-container" class="container">
+  <div id="summary-main-pane" class="fl-l">
+    <div>
+      <p class="m-0 fs-08em fw-400 inline-block">Products will be delivered within 7 working days</p>
+      <a class="inline" href=""><p class="m-0 fs-08em fw-400 fl-r">Cancel Order</p></a>
+    </div>
+    <div class="p-0">
+      <div id="header" class="px-3 py-1">
+        <div class="products-col inline-block">
+          <p class="inline m-0 fs-08em fw-400">Product</p>
+        </div>
+        <div class="price-col inline-block">
+          <p class="inline m-0 fs-08em fw-400">Price</p>
+        </div>
+        <div class="quantity-col inline-block">
+          <p class="inline m-0 fs-08em fw-400">Quantity</p>
+        </div>
+      </div>
+      <% for(i=0;i<5;i++){ %>
+        <div class="product-div pos-relative px-3">
+          <div class="inline-block va-t">
+            <img src="/assets/images/products/img<%= i+5%>.jpg" height="100" width="100" alt="product">
+            <div class="px-2">
+              <p class="m-0 fs-08em fw-400 lh-p3em">The Superfoods Grocer Super Tempeh Plant Powered Protein</p>
+              <p class="fs-08em fw-400 text-muted">15ml</p>
+              <a class="fw-400" href=""><i class="fa fa-minus-circle"></i></a>
+              <div class="price">
+                <p class="mb-0 fs-1em fw-400 lh-p3em price-symbol">500.00</p>
+                <p class="mb-0 fs-09em lh-p3em text-muted price-symbol"><s>1,000.00</s> (-50%)</p>
+              </div>
+            </div>
+          </div>
+          <div class="inline-block va-t mt-2">
+            <p class="mb-1 fs-1em fw-400 lh-p3em price-symbol">500.00</p>
+            <p class="mb-1 fs-09em lh-p3em text-muted price-symbol"><s>1,000.00</s></p>
+            <p class="mb-1 fs-09em lh-p3em text-muted">50% off</p>
+          </div>
+          <div class="inline-block va-t mt-2">
+            <p class="m-0 fs-09em fw-400 lh-p3em">12</p>
+            <a class="fw-400 no-decoration" href=""><i class="fa fa-minus-circle mt-2"></i></a>
+          </div>
+
+        </div>
+      <% } %>
+    </div>
+  </div>
+  <div id="summary-details-pane" class="fl-r">
+    <div>
+      <p class="m-0 mb-1">Shipping & Billing</p>
+      <small>Shipping Address</small>
+      <small class="address block px-1 mb-1">
+        El Pueblo Manila, 8010 Anonas, Santa Mesa, Maynila, Kalakhang Maynila
+        <br>09236835707
+      </small>
+      <small>Billing Address</small>
+      <small class="address block px-1">
+        Anonas, Santa Mesa, Maynila, 1016 Kalakhang Maynila
+        <br>09237438990
+      </small>
+    </div>
+    <div>
+      <p class="m-0 mb-1">Order Summary</p>
+      <small class="label">Subtotal (5)</small>
+      <small class="price price-symbol">2,500.00</small>
+      <br>
+      <small class="label">Shipping Fee</small>
+      <small class="price price-symbol">100.00</small>
+      <br>
+      <small class="label label-total">Total</small>
+      <small id="payment-method">Cash on Delivery</small>
+      <small class="price total price-symbol">2,600.00</small>
+      <div class="pos-relative mb-3">
+        <small class="text-muted price vat block">VAT applied</small>
+      </div>
+      <button type="button" id="print-btn" class="btn btn-custom-primary btn-sm fl-r">Print Slip</button>
+      <div id="more-details">
+        <a href=""><small class="block fs-08em fw-400">Vouchers Used</small></a>
+        <small>Date Ordered: Nov 10, 2017</small>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../../templates/footer.ejs') -%>
+<%- include('../../../templates/scripts.ejs') -%>
+<%- include('../../../templates/scripts-customer.ejs') -%>
+<%- include('../../../templates/closer.ejs') -%>

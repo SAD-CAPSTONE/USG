@@ -7,7 +7,7 @@
     <section class="content-header">
       <h1>
 
-        <small>Note: Please monitor stocks regularly, check if there is damaged products.</small>
+        <small>Note: This will show up in the start up page.</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -22,7 +22,7 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Frequently Asked Questions</h3>
+              <h4 align="center">Frequently Asked Questions</h4>
             </div>
 			<!-- buttons -->
 				&nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addQuestion"><i class="fa fa-plus"></i> Add New Question</button>
@@ -34,32 +34,36 @@
                   <th>No</th>
                   <th>Question</th>
                   <th>Answer</th>
-				  <th>Status</th>
+				          <th>Status</th>
                   <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>How do I place an Order?</td>
-                  <td>For more info, please just explore our site</td>
-                  <td><span class="label label-success">Active</span></td>
-                  <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>When will I receive my order?</td>
-                  <td>After the delivery process is done</td>
-                  <td><span class="label label-success">Active</span></td>
-                  <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>How do I contact customer service?</td>
-                  <td>Monday - Friday 8am-9pm 7130345</td>
-                  <td><span class="label label-success">Active</span></td>
-                  <td><a href=""><button class="btn btn-default btn-sm">Edit</button></a></td>
-                </tr>
+                <% if (re == null|| re == undefined){ %>
+
+                <% }else if(re.length == 0){ %>
+
+                <% }else{ %>
+                <%  re.forEach(function(i){ %>
+                  <tr>
+                    <td><%= i.intFaqNo %></td>
+                    <td><%= i.strQuestion %></td>
+                    <td><%= i.strAnswer %></td>
+                    <td>
+                      <% if (i.intStatus == 1){ %>
+                        <span class="label label-success">Active</span>
+
+                      <% }else{ %>
+                        <span class="label label-danger">Inactive</span>
+
+                      <% } %>
+                    </td>
+                    <td><a href=""><button disabled class="btn btn-default btn-sm">Edit</button></a></td>
+                  </tr>
+                <%  }) %>
+                <% } %>
+
+
 
                 </tbody>
 
@@ -93,10 +97,12 @@
 			<!-- Horizontal Form -->
 
 					<!-- form start -->
+
           <form role="form">
               <div class="box-body">
                 <div class="form-group">
                   <label for="question">Question:</label>
+                  <input type="hidden" value="<%=lastfaq%>" id="fno">
                   <input type="text" class="form-control" id="question" placeholder="">
                 </div>
 
@@ -105,18 +111,14 @@
                   <textarea class="form-control" id="answer" placeholder=""></textarea>
                 </div>
 
-                <!-- <div class="checkbox">
-                  <label>
-                    <input type="checkbox"> Check me out
-                  </label>
-                </div> -->
+
               </div>
             </form>
 
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-			<button type="button" class="btn btn-primary">Save</button>
+			<button type="button" id="save" class="btn btn-primary">Save</button>
 		  </div>
 		</div>
 		<!-- /.modal-content -->
@@ -228,6 +230,10 @@
 <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<!-- sweetalert  -->
+<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+<!-- Notification  -->
+<script src="/assets/admin/notification.js"></script>
 
 <!-- page script (new added) -->
 <script>
@@ -243,6 +249,30 @@
 	  'scroll'		: true
     })
   })
+</script>
+
+<script>
+  $('#save').on('click',function(){
+    $.ajax({
+      url: '/maintenance/addFaq',
+      method: 'POST',
+      datatype: "json",
+      data: {
+        fno: $('#fno').val(),
+        question: $('#question').val(),
+        answer: $('#answer').val()
+      },
+      success: function(response,status,http){
+        if (response == "yes"){
+          swal("Success","You added a Frequently Asked Question!", "success");
+          window.location.reload();
+        }else{
+          swal("Success","You added a Frequently Asked Question!", "success");
+
+        }
+      }
+    })
+  });
 </script>
 
 <script>

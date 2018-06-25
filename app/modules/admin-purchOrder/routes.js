@@ -15,10 +15,7 @@ router.get('/', (req,res)=>{
 });
 
 router.get('/form', (req,res)=>{
-  //var test = "AD1";
-  //var test2 = test.substr(2);
 
-  // select all data from purchaseOrder
   db.query(`Select * from tblPurchaseOrder`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
 
@@ -35,8 +32,6 @@ router.get('/form', (req,res)=>{
         db.query(`Select * from tblPurchaseOrder order by intPurchaseOrderNo desc limit 1`, (err4,results4,fields4)=>{
           if (err4) console.log(err4);
 
-
-
             res.render('admin-purchOrder/views/purchaseOrderForm',  {re: results1, su: results2, products: results3, moment: moment, POno: results4});
 
 
@@ -50,10 +45,10 @@ router.get('/form', (req,res)=>{
 
 });
 
-router.post('/samp',(req,res)=>{
+router.post('/submitForm',(req,res)=>{
 
   console.log(`Entering 1`);
-  //console.log(req.body.POnum);
+
   // query the last list no
   db.query(`Select * from tblPurchaseOrderList order by intPOrderlistno desc limit 1`,(err1,results1,fields1)=>{
     if (err1) console.log(err1);
@@ -64,6 +59,7 @@ router.post('/samp',(req,res)=>{
     var startProdListNo = 1000;
 
     console.log(`entering 2`);
+
     // insert to purchase Order table
     db.query(`Insert into tblPurchaseOrder (intPurchaseOrderNo, intSupplierID, intAdminID, strSpecialNote) values ("${req.body.POnum}","${req.body.supplier}", "1000", "${req.body.specialnote}")`, (err2,results2,fields2)=>{
       if (err2) console.log(err2);
@@ -77,20 +73,8 @@ router.post('/samp',(req,res)=>{
     }
 
     console.log(`Entering 3`);
-    // insert to list table
 
-    // db.query(`Insert into tblPurchaseOrderList (intPOrderlistno, intPurchaseOrderNo,      strProduct, intQuantity) values ("${startProdListNo}", "${req.body.POno}", "${product[0]}", "${quantity[0]}")`, (err3,results3,fields3)=>{
-    //   if (err3) console.log(err3);
-    //
-    //   //counter++;
-    //   //startProdListNo++;
-    //   //console.log(`Success product ${counter+1}`);
-    // });
-
-
-
-  //  while ( counter < product.length && counter < quantity.length){
-
+    // insert each purchase order list in db
       async.eachSeries(product,function(data,callback){
         db.query(`Insert into tblPurchaseOrderList (intPOrderlistno, intPurchaseOrderNo,      strProduct, intQuantity) values ("${startProdListNo}", "${req.body.POnum}", "${product[counter]}", "${quantity[counter]}")`, (err3,results3,fields3)=>{
            if (err3) console.log(err3);
@@ -102,24 +86,8 @@ router.post('/samp',(req,res)=>{
 
       }, function(err, results){
         console.log("Puchase order done!");
+        res.send("yes");
       });
-
-      //  db.query(`Insert into tblPurchaseOrderList (intPOrderlistno, intPurchaseOrderNo,      strProduct, intQuantity) values ("${startProdListNo}", "${req.body.POno}", "", "")`, ()=>{
-      //    //if (err3) console.log(err3);
-      //
-      //   console.log(`Success product ${counter+1}`);
-      //   counter++;
-      //   startProdListNo++;
-      //
-      // });
-
-      // console.log("this");
-      // counter++;
-
-    //}
-
-
-
 
   });
 });

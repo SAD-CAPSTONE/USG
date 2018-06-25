@@ -46,15 +46,15 @@
                  <tr>
                    <td><%= moment(i.historyDate).format("MM/DD/YYYY") %></td>
                    <td>
-                     <% if (i.Stat == 0){ %>
+                     <% if (i.intStatus == 0){ %>
                        <span class="label label-warning">Pending</span>
-                     <% }else if(i.Stat == 1){ %>
+                     <% }else if(i.intStatus == 1){ %>
                        <span class="label label-info">Processing</span>
-                     <% }else if(i.Stat == 2){ %>
+                     <% }else if(i.intStatus == 2){ %>
                        <span class="label label-default">Shipped</span>
-                     <% }else if (i.Stat == 3){ %>
+                     <% }else if (i.intStatus == 3){ %>
                        <span class="label label-default">Delivered</span>
-                     <% }else if(i.Stat == 4){ %>
+                     <% }else if(i.intStatus == 4){ %>
                        <span class="label label-default">Will not deliver</span>
                      <% }else{ %>
                        <span class="label label-default">Returned</span>
@@ -195,6 +195,8 @@
  <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
  <!-- AdminLTE App -->
  <script src="/assets/admin/dist/js/adminlte.min.js"></script>
+ <!-- Notification  -->
+ <script src="/assets/admin/notification.js"></script>
 
 
 

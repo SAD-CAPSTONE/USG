@@ -1,0 +1,247 @@
+<%- include('../../../templates/navbar.ejs') -%>
+<%- include('../../../templates/modals/cart-modal.ejs') -%>
+
+<style>
+  #main-desc .simplebar-content {
+    height: auto !important;
+    overflow-x: hidden !important;
+  }
+  #main-desc .simplebar-scroll-content {
+    height: 100% !important;
+  }
+  .x-scrolling-div .simplebar-content {
+    height: auto !important;
+    overflow-y: hidden !important;
+  }
+  .x-scrolling-div .simplebar-scroll-content {
+    overflow-y: hidden !important;
+  }
+</style>
+
+<div id="item-container" class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb p-0 mb-2">
+      <li class="breadcrumb-item"><a href="#">Supplements</a></li>
+      <li class="breadcrumb-item"><a href="#">Subcategory</a></li>
+      <li class="breadcrumb-item active" aria-current="page">The Healthy Grocery Raw Cordyceps</li>
+    </ol>
+  </nav>
+  <div class="row">
+    <div id="item-main-pane" class="">
+      <div>
+        <img src="/assets/images/products/img3.jpg" alt="image">
+        <!-- rating,title,desc -->
+        <div id="main-desc">
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star-half-o"></i>&nbsp
+          <small class="text-muted">1,173 ratings</small>
+          <a href="#"><i class="fa fa-share-alt"></i></a>
+          <p class="mb-2">The Healthy Grocery Raw Cordyceps</p>
+          <div id="main-desc-text" data-simplebar="">
+            <small class="block indent">
+              Cordyceps is a genus of ascomycete fungi (sac fungi) that includes about 400 species.
+              Most Cordyceps species are endoparasitoids, parasitic mainly on insects and other
+              arthropods (they are thus entomopathogenic fungi); a few are parasitic on other fungi.
+              The generic name Cordyceps is derived from the Greek word κορδύλη kordýlē, meaning
+              "club", and the Latin stem -ceps, meaning "head".
+            </small><br>
+            <small class="block indent">
+              The genus has a worldwide distribution and most of the approximately 400 species[1]
+              have been described from Asia (notably Nepal, China, Japan, Bhutan, Korea, Vietnam,
+              and Thailand). Cordyceps species are particularly abundant and diverse in humid
+              temperate and tropical forests.
+            </small>
+          </div>
+          <button type="button" class="btn btn-custom-primary btn-block mt-3" data-toggle="modal" data-target="#modal-product-to-cart">Add to Cart</button>
+        </div>
+
+
+        <div id="item-options">
+          <!-- size,price -->
+          <div>
+            <div class="fl-l">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                <label class="form-check-label" for="exampleRadios1">
+                  &nbsp5ml
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+                <label class="form-check-label" for="exampleRadios2">
+                  10ml
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option2">
+                <label class="form-check-label" for="exampleRadios3">
+                  15ml
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios4" value="option1">
+                <label class="form-check-label" for="exampleRadios4">
+                  20ml
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios5" value="option1">
+                <label class="form-check-label" for="exampleRadios5">
+                  25ml
+                </label>
+              </div>
+            </div>
+            <div id="item-price" class="fl-r pos-relative">
+              <p class="m-0 price-symbol">2,350.95</p>
+              <small class="text-muted"><s class="price-symbol">2,350.95</s></small>
+            </div>
+          </div>
+          <!-- quantity,add-to-cart -->
+          <div>
+            <div class="input-group quantity mb-2">
+              <div class="input-group-prepend addon"><button class="btn btn-primary quantity-buttons" type="button"><small class="quantity-text quantity-text-minus">-</small></button></div><input class="form-control quantity-input" type="text" readonly="" value="1">
+              <div class="input-group-append addon"><button class="btn btn-primary quantity-buttons" type="button"><small class="quantity-text quantity-text-plus">+</small></button></div>
+            </div>
+            <button class="btn btn-custom-primary radius-0">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p><b>Related Products</b></p>
+        <div class="container x-scrolling-div products-container" data-simplebar="">
+          <% relatedProducts.forEach((prod)=>{ %>
+            <div class="custom-card my-1" style="margin-right: 22px !important; margin-left: 1px">
+              <div class="card-img"><a href="/item"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
+              <div class="cart-button-div">
+                <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
+                <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
+                data-target="#modal-product-to-cart">
+                Add to Cart</button>
+              </div>
+
+              <div class="card-desc">
+                <p class="card-title"><%= prod.strBrand%> <%= prod.strProductName%></p>
+                <p class="card-price price-symbol"><%= prod.productPrice%></p>
+                <small class="card-oldprice text-muted">
+                  <span><s class="price-symbol">0</s></span> (-0%)<br>
+                </small>
+                <small class="card-rating">
+                  <%
+                  rating = prod.aveRating;
+                  for(i=0; i<5; i++){
+                    if (rating < 1 && rating >= 0.5) {
+                    %> <i class="fa fa-star-half-o"></i> <%
+                    } else if (rating < 0.5) {
+                    %> <i class="fa fa-star-o"></i> <%
+                    } else {
+                    %> <i class="fa fa-star"></i> <%
+                    }
+                    --rating;
+                  }%>
+                  <span class="fs-08em fw-400">(<%= prod.cntRating%>)</span>
+                </small>
+                <small class="card-reviews"><%= prod.cntReview%> reviews</small>
+              </div>
+            </div>
+            <%})%>
+        </div>
+      </div>
+    </div>
+
+    <div id="item-review-pane" class="">
+      <div>
+        <p><b>Ratings & Review</b></p>
+        <div id="rating">
+          <div class="fl-l">
+            <h2 class="m-0 pt-1">4.5</h2>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star-half-o"></i>
+            <small class="text-muted block">1,173 ratings</small>
+          </div>
+          <div class="fl-r">
+            <%for(i=5; i>0; i--){%>
+              <div class="stars">
+                <ul class="list-unstyled inline m-0">
+              <%for(j=0; j<5; j++){
+                if (i > j){ %>
+                  <li class="inline"><i class="fa fa-star"></i></li>
+              <% }else{ %>
+                  <li class="inline"><i class="fa fa-star-o"></i></li>
+              <% }
+              } %>
+                <li class="inline">
+                  <% switch(i){
+                    case 5:%> <small class="ml-1 inline">1,120</small>
+                      <% break;
+                    case 4:%> <small class="ml-1 inline">40</small>
+                      <% break;
+                    case 3:%> <small class="ml-1 inline">10</small>
+                      <% break;
+                    case 2:%> <small class="ml-1 inline">2</small>
+                      <% break;
+                    case 1:%> <small class="ml-1 inline">1</small>
+                      <% break;
+                  }
+                  %>
+                </li>
+                </ul>
+                </div>
+              <% } %>
+          </div>
+        </div>
+        <br>
+        <hr>
+        <small class="text-muted mb-2">45 reviews</small>
+        <a href=""><small class="card-reviews fl-r"><i class="fa fa-plus-square mr-1"></i>Add Review</small></a>
+        <div class="review-block mb-4">
+          <small class="review-name block">John S. Doe <i class="fa fa-check-circle"></i></small>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star-half-o"></i>
+          <small class="text-muted">10/24/17</small>
+          <small class="review-desc block">
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in
+          </small>
+        </div>
+        <div class="review-block mb-4">
+          <small class="review-name block">Jocelyn Flores <i class="fa fa-check-circle"></i></small>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star-half-o"></i>
+          <small class="text-muted">10/24/17</small>
+          <small class="review-desc block">
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in
+          </small>
+        </div>
+        <div class="review-block mb-4">
+          <small class="review-name block">John Wick <i class="fa fa-check-circle"></i></small>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star-half-o"></i>
+          <small class="text-muted">10/24/17</small>
+          <small class="review-desc block">
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in
+          </small>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../../templates/footer.ejs') -%>
+<%- include('../../../templates/scripts.ejs') -%>
+<%- include('../../../templates/scripts-customer.ejs') -%>
+<%- include('../../../templates/closer.ejs') -%>

@@ -1,0 +1,80 @@
+<%- include('../../../templates/navbar.ejs') -%>
+
+<div id="summary-container" class="container">
+  <div id="summary-main-pane" class="fl-l">
+    <div>
+      <p class="m-0 fs-08em fw-400 inline-block">Products will be delivered within 7 working days</p>
+      <a id="refresh" class="inline" href="#"><p class="m-0 fs-08em fw-400 fl-r">Refresh List</p></a>
+    </div>
+    <div class="p-0">
+      <div id="header" class="px-3 py-1">
+        <div class="products-col inline-block">
+          <p class="inline m-0 fs-08em fw-400">Product</p>
+        </div>
+        <div class="price-col inline-block">
+          <p class="inline m-0 fs-08em fw-400">Price</p>
+        </div>
+        <div class="quantity-col inline-block">
+          <p class="inline m-0 fs-08em fw-400">Quantity</p>
+        </div>
+      </div>
+      <button id="getSummary" type="button" hidden></button>
+      <div id="checkout-products">
+        <!-- products -->
+      </div>
+    </div>
+  </div>
+  <div id="summary-details-pane" class="fl-r">
+    <div>
+      <p class="m-0 mb-1">Shipping & Billing</p>
+      <small>Shipping Address</small>
+      <a href="" class="edit"><small>Edit</small></a>
+      <small class="address block px-1 mb-1">
+        El Pueblo Manila, 8010 Anonas, Santa Mesa, Maynila, Kalakhang Maynila
+        <br>09236835707
+      </small>
+      <small>Billing Address</small>
+      <a href="" class="edit"><small>Edit</small></a>
+      <small class="address block px-1">
+        Anonas, Santa Mesa, Maynila, 1016 Kalakhang Maynila
+        <br>09237438990
+      </small>
+    </div>
+    <div>
+      <p class="m-0 mb-1">Order Summary</p>
+      <small class="label">Subtotal (5)</small>
+      <small class="price subtotal price-symbol">0.00</small>
+      <br>
+      <small class="label">Shipping Fee</small>
+      <small class="price fee price-symbol">0.00</small>
+      <br>
+      <div class="mt-1 mb-2">
+        <input type="text" name="" value="" class="inline-block va-b material" placeholder="Enter Voucher Code">
+        <button type="button" class="btn btn-sm btn-custom-primary va-b inline-block">Apply</button>
+      </div>
+      <button id="total-btn" type="button" hidden></button>
+      <small class="label label-total">Total</small>
+      <small class="price total price-symbol">0.00</small>
+      <div class="pos-relative">
+        <small class="text-muted price vat block">VAT applied</small>
+      </div>
+      <div class="pos-relative mt-3">
+        <label class="radio-inline">
+          <input type="radio" name="opt2">
+          <small class="ml-3 mr-2">Cash on Delivery</small>
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="opt2">
+          <small class="ml-3">Bank Deposit</small>
+        </label>
+      </div>
+      <button type="button" class="btn btn-custom-primary btn-sm btn-block">Place Order</button>
+    </div>
+  </div>
+</div>
+
+<%- include('../../../templates/footer.ejs') -%>
+<%- include('../../../templates/scripts.ejs') -%>
+<%- include('../../../templates/scripts-customer.ejs') -%>
+<script src="/assets/scripts/cart-summary.js" charset="utf-8"></script>
+<%- include('../../../templates/closer.ejs') -%>

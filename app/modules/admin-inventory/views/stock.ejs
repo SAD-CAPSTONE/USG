@@ -6,7 +6,8 @@
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      <small>Note: Please Monitor stocks regularly</small>
+      Stocks
+      <small></small>
 
     </h1>
     <ol class="breadcrumb">
@@ -18,18 +19,25 @@
 
   <!-- Main content -->
   <section class="content">
+    <div class="alert alert-info alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <h4><i class="icon fa fa-info"></i> Note</h4>
+        Please monitor stocks regularly</br>
+        If the product does not show here, there may be no supplier for that product.
+    </div>
     <div class="row">
       <div class="col-xs-12">
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs">
-            <li ><a href="#stock" data-toggle="tab"><i class="fa fa-bars"></i> All Stocks</a></li>
-            <li><a href="#addStock" data-toggle="tab"><i class="fa fa-plus"></i> Add to Stock</a></li>
-            <li class="active"><a href="#expired" data-toggle="tab"><i class="fa fa-calendar-times-o"></i> Expired Products</a></li>
+            <li class="active"><a href="#stock" data-toggle="tab"><i class="fa fa-bars"></i> All Stocks</a></li>
+
+            <li><a href="#addInventory" data-toggle="tab"><i class="fa fa-plus"></i> Add to Stock</a></li>
+            <li ><a href="#expired" data-toggle="tab"><i class="fa fa-calendar-times-o"></i> Expired Products</a></li>
           </ul>
           <div class="tab-content">
 
             <!-- Inventory -->
-            <div class="tab-pane " id="stock">
+            <div class="tab-pane active " id="stock">
 
               </br>
               <!-- /.box-header -->
@@ -56,8 +64,16 @@
                       <td><%=i.strProductCode%></td>
                       <td><%=i.strProductName%></td>
                       <td><%=i.strBrand%></td>
-                      <td><%=i.Quantity%></td>
-                      <td><span class="label label-warning">Critical Level</span></td>
+                      <td><%=i.quantity%></td>
+                      <td>
+                        <% if (i.quantity < i.intCriticalLimit || i.quantity == i.intCriticalLimit) { %>
+                          <span class="label label-danger">Critical Limit</span>
+                        <% }else if(i.quantity == 0){ %>
+                          <span class="label label-warning">No Stocks</span>
+                        <% }else{ %>
+                          <span class="label label-success">Above Critical Limit</span>
+                        <% } %>
+                      </td>
                       <td>
                       <% var url = i.intProductNo %>
                         <a href="/inventory/productInventory?product=<%=url%>"><button type="button" class="btn btn-info">Check Inventory</button> </a>
@@ -74,6 +90,93 @@
               <!-- /.box-body -->
             </div>
             <!-- /#fa-icons -->
+
+            <!-- New product Item-->
+            <div class="tab-pane" id="addInventory">
+
+                <!-- form start -->
+                <form role="form" method="post" enctype="multipart/form-data"  action="/inventory/addToStock">
+
+                    <!-- Product -->
+                    <div class="box box-default">
+                        <div class="box-header with-border">
+                        <h3 class="box-title">Product Information</h3>
+
+                        <div class="box-tools pull-right">
+                          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                        </div>
+                      </div>
+                      <!-- /.box-header -->
+                      <div class="box-body">
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#selectInventory"><i class="fa fa-search"></i> Select Product </button>
+                            <p> &nbsp;&nbsp;&nbsp;New product? Click <a data-toggle="modal" data-target="#addProduct">here</a></p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <div class="row">
+                            <input type="hidden" class="form-control" required id="ino_name" name="ino_name" >
+                            <div class="col-sm-6">
+                              <label for="add_pname">Product Name</label>
+                              <input type="text" disabled class="form-control" required id="product_name" name="product_name" >
+                            </div>
+                            <div class="col-sm-4">
+                              <label for="add_brand">Brand</label>
+                              <input type="text" disabled class="form-control" required id="brand_name" name="brand_name" >
+                            </div>
+
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <label for="add_pname">Batch Number</label>
+                              <input type="number" required id="batch" class="form-control" disabled  >
+                            </div>
+                          </div>
+
+                        </div>
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <label for="add_pname">Expiration Date</label>
+                              <input type="date" name="expiration" required class="form-control"   >
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <label for="add_pname">Quantity</label>
+                              <input type="number" name="quantity" required class="form-control"   >
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                      <!-- /.box-body -->
+                    <!-- /.box -->
+                    </div>
+
+
+
+
+                    <div class="box-footer">
+                      <a href="purchaseOrderList.html"><button type="submit" class="btn btn-default">Back</button></a>
+                      <button type="submit" class="btn btn-info pull-right">Submit</button>
+                      <a href="/inventory/sample">this</a>
+                    </div>
+                    <!-- /.box-footer -->
+
+              </form>
+
+            </div>
 
 
             <!-- New product Item-->
@@ -260,39 +363,6 @@
                     <!-- /.box -->
                     </div>
 
-                    <!-- Stock Quantity -->
-                    <div class="box box-default">
-                      <div class="box-header with-border">
-                        <h3 class="box-title">Other information</h3>
-
-                        <div class="box-tools pull-right">
-                          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-
-                        </div>
-                      </div>
-                      <!-- /.box-header -->
-                      <div class="box-body">
-                        <div class="box-body table-responsive">
-                          <table id="quantity_table" class="table table-bordered table-hover">
-                          <thead>
-                            <th style="width: 10px">#</th>
-                            <th>Product Name</th>
-                            <th >Quantity</th>
-                            <th >Unit Price</th>
-                            <th >Actions</th>
-                            <th> Total </th>
-                          </thead>
-
-                          <tbody>
-
-                        </tbody>
-
-                          </table>
-                        </div>
-                      </div>
-                      <!-- /.box-body -->
-                    <!-- /.box -->
-                    </div>
 
 
                     <div class="box-footer">
@@ -307,62 +377,63 @@
             </div>
 
             <!-- Inventory -->
-            <div class="tab-pane active" id="expired">
-            </br>
-              <!-- Date range -->
-              <div class="row">
-                <div class="form-group col-sm-4">
-                  <label>Select date range:</label>
+            <div class="tab-pane" id="expired">
+              </br>
+                <!-- Date range -->
+                <div class="row">
+                  <div class="form-group col-sm-4">
+                    <label>Select date range:</label>
 
-                  <div class="input-group">
-                    <div class="input-group-addon">
-                      <i class="fa fa-calendar"></i>
+                    <div class="input-group">
+                      <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                      <input type="text" class="form-control" id="reservation">
+
                     </div>
-                    <input type="text" class="form-control" id="reservation">
+                    <!-- /.input group -->
+                  </div>
+                  <!-- /.form group -->
+                  <div class="col-xs-2">
+                    </br>
+
+                    <button id="search-expired" class="btn btn-default"><i class="fa fa-search"></i> Search</button>
 
                   </div>
-                  <!-- /.input group -->
+                  <div class="col-xs-2">
+                    </br>
+
+                    <button id="pull-out" class="btn btn-danger"><i class="fa fa-close"></i> Pull-out all from inventory</button>
+                  </div>
                 </div>
-                <!-- /.form group -->
-                <div class="col-xs-2">
-                  </br>
 
-                  <button id="search-expired" class="btn btn-default"><i class="fa fa-search"></i> Search</button>
+                </br>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive">
+                  <table id="expired-table" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
 
+                      <th>No</th>
+                      <th>Barcode</th>
+                      <th>Product Name</th>
+                      <th>Brand</th>
+                      <th>Supplier</th>
+                      <th>Expiration Date</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+
+
+
+                    </tbody>
+
+                  </table>
                 </div>
-                <div class="col-xs-2">
-                  </br>
-
-                  <button id="pull-out" class="btn btn-danger"><i class="fa fa-close"></i> Pull-out all from inventory</button>
-                </div>
-              </div>
-
-              </br>
-              <!-- /.box-header -->
-              <div class="box-body table-responsive">
-                <table id="expired-table" class="table table-bordered table-hover">
-                  <thead>
-                  <tr>
-
-                    <th>No</th>
-                    <th>Barcode</th>
-                    <th>Product Name</th>
-                    <th>Brand</th>
-                    <th>Expiration Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-
-
-
-
-                  </tbody>
-
-                </table>
-              </div>
-              <!-- /.box-body -->
+                <!-- /.box-body -->
             </div>
 
 
@@ -393,7 +464,7 @@
     <div class="modal-body">
 
       <!-- form start -->
-      <form role="form" method="post" action="/inventory/addSupplier2">
+      <form role="form" method="post" action="#">
         <div class="box-body">
           <div class="form-group">
             <div class="row">
@@ -563,114 +634,176 @@
 </div>
 
 
+<div class="modal fade" id="selectInventory">
+  <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Product List</h4>
+    </div>
+    <div class="modal-body">
 
-    <!-- Main Footer -->
-    <footer class="main-footer">
-      <!-- To the right -->
-      <div class="pull-right hidden-xs">
-        Ultra Super Green
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+      <table id="inventorytable" class="table table-bordered table-hover">
+        <thead>
+          <% if (products == null || products == undefined || products.length == 0){ %>
+             <h4> No records of products </h4>
+          <% } else { %>
+        <tr>
+          <th style="width: 40%">Product</th>
+          <th>Brand</th>
+          <th>Price</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+
+          <% products.forEach(function(i){ %>
+        <tr>
+              <td><%=i.strProductName%> <%=i.intSize%> <%=i.strUnitName%></td>
+              <td><%=i.strBrand%></td>
+              <td>₱ <%=i.productPrice.toFixed(2)%></td>
+              <td><button data-dismiss="modal" data-inventory="<%=i.intInventoryNo%>" data-product="<%=i.strProductName%> <%=i.intSize%> <%=i.strUnitName%>"  data-brand="<%=i.strBrand%>" class="inventorysetter btn btn-info btn-sm">Select</button></td>
+
+        </tr>
+        <% }) %>
+      <% } %>
+
+
+        </tbody>
+
+      </table>
+    </div>
+    <!-- /.box-body -->
+
+     </div>
+      <div class="modal-footer">
+      <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-primary">Save changes</button>
       </div>
-      <!-- Default to the left -->
-      <strong>Copyright &copy; 2016 <a href="#">AdminLTE template</a>.</strong> All rights reserved.
-    </footer>
-
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-      <!-- Create the tabs -->
-      <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-        <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-        <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-      </ul>
-      <!-- Tab panes -->
-      <div class="tab-content">
-        <!-- Home tab content -->
-        <div class="tab-pane active" id="control-sidebar-home-tab">
-          <h3 class="control-sidebar-heading">Recent Activity</h3>
-          <ul class="control-sidebar-menu">
-            <li>
-              <a href="javascript:;">
-                <i class="menu-icon fa fa-birthday-cake bg-red"></i>
-
-                <div class="menu-info">
-                  <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
-
-                  <p>Will be 23 on April 24th</p>
-                </div>
-              </a>
-            </li>
-          </ul>
-          <!-- /.control-sidebar-menu -->
-
-          <h3 class="control-sidebar-heading">Tasks Progress</h3>
-          <ul class="control-sidebar-menu">
-            <li>
-              <a href="javascript:;">
-                <h4 class="control-sidebar-subheading">
-                  Custom Template Design
-                  <span class="pull-right-container">
-                      <span class="label label-danger pull-right">70%</span>
-                    </span>
-                </h4>
-
-                <div class="progress progress-xxs">
-                  <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-                </div>
-              </a>
-            </li>
-          </ul>
-          <!-- /.control-sidebar-menu -->
-
-        </div>
-        <!-- /.tab-pane -->
-        <!-- Stats tab content -->
-        <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-        <!-- /.tab-pane -->
-        <!-- Settings tab content -->
-        <div class="tab-pane" id="control-sidebar-settings-tab">
-          <form method="post">
-            <h3 class="control-sidebar-heading">General Settings</h3>
-
-            <div class="form-group">
-              <label class="control-sidebar-subheading">
-                Report panel usage
-                <input type="checkbox" class="pull-right" checked>
-              </label>
-
-              <p>
-                Some information about this general settings option
-              </p>
-            </div>
-            <!-- /.form-group -->
-          </form>
-        </div>
-        <!-- /.tab-pane -->
-      </div>
-    </aside>
-    <!-- /.control-sidebar -->
-    <!-- Add the sidebar's background. This div must be placed
-    immediately after the control sidebar -->
-    <div class="control-sidebar-bg"></div>
   </div>
-  <!-- ./wrapper -->
+  <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
 
-  <!-- REQUIRED JS SCRIPTS -->
 
-  <!-- jQuery 3 -->
-  <script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-  <!-- Bootstrap 3.3.7 -->
-  <script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <!-- DataTables (new added)	 -->
-  <script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-  <script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-  <!-- SlimScroll -->
-  <script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-  <!-- FastClick -->
-  <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-  <!-- AdminLTE App -->
-  <script src="/assets/admin/dist/js/adminlte.min.js"></script>
 
-  <script src="/assets/admin/bower_components/moment/min/moment.min.js"></script>
-  <script src="/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+<!-- Main Footer -->
+<footer class="main-footer">
+  <!-- To the right -->
+  <div class="pull-right hidden-xs">
+    Ultra Super Green
+  </div>
+  <!-- Default to the left -->
+  <strong>Copyright &copy; 2016 <a href="#">AdminLTE template</a>.</strong> All rights reserved.
+</footer>
+
+<!-- Control Sidebar -->
+<aside class="control-sidebar control-sidebar-dark">
+  <!-- Create the tabs -->
+  <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+    <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+    <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <!-- Home tab content -->
+    <div class="tab-pane active" id="control-sidebar-home-tab">
+      <h3 class="control-sidebar-heading">Recent Activity</h3>
+      <ul class="control-sidebar-menu">
+        <li>
+          <a href="javascript:;">
+            <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+
+            <div class="menu-info">
+              <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+
+              <p>Will be 23 on April 24th</p>
+            </div>
+          </a>
+        </li>
+      </ul>
+      <!-- /.control-sidebar-menu -->
+
+      <h3 class="control-sidebar-heading">Tasks Progress</h3>
+      <ul class="control-sidebar-menu">
+        <li>
+          <a href="javascript:;">
+            <h4 class="control-sidebar-subheading">
+              Custom Template Design
+              <span class="pull-right-container">
+                  <span class="label label-danger pull-right">70%</span>
+                </span>
+            </h4>
+
+            <div class="progress progress-xxs">
+              <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+            </div>
+          </a>
+        </li>
+      </ul>
+      <!-- /.control-sidebar-menu -->
+
+    </div>
+    <!-- /.tab-pane -->
+    <!-- Stats tab content -->
+    <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
+    <!-- /.tab-pane -->
+    <!-- Settings tab content -->
+    <div class="tab-pane" id="control-sidebar-settings-tab">
+      <form method="post">
+        <h3 class="control-sidebar-heading">General Settings</h3>
+
+        <div class="form-group">
+          <label class="control-sidebar-subheading">
+            Report panel usage
+            <input type="checkbox" class="pull-right" checked>
+          </label>
+
+          <p>
+            Some information about this general settings option
+          </p>
+        </div>
+        <!-- /.form-group -->
+      </form>
+    </div>
+    <!-- /.tab-pane -->
+  </div>
+</aside>
+<!-- /.control-sidebar -->
+<!-- Add the sidebar's background. This div must be placed
+immediately after the control sidebar -->
+<div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<!-- jQuery 3 -->
+<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- DataTables (new added)	 -->
+<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!-- SlimScroll -->
+<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<!-- Moment -->
+<script src="/assets/admin/bower_components/moment/min/moment.min.js"></script>
+<!-- Date range picker -->
+<script src="/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<!-- sweetalert  -->
+<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+<!-- Notification  -->
+<script src="/assets/admin/notification.js"></script>
 
   <!-- page script (new added) -->
 
@@ -688,7 +821,9 @@
         datatype: "json",
         data: {val: $('#reservation').val()},
         success: function(response,status,http){
-          if (response){
+          if (response == "no"){
+
+          }else{
             var t = $('#expired-table').DataTable();
             var table = document.getElementById("expired-table");
             var row = table.getElementsByTagName("tr");
@@ -696,16 +831,17 @@
 
             var tr = table.getElementsByTagName("tr");
             var validity = 1;
-            
+
             $('#pull-out').show();
 
             if (validity){
               response.forEach(function(i){
                 t.row.add( [
-                    i.intProductQuantityNo,
+                    i.intBatchNo,
                     i.strBarcode,
                     i.strProductName,
-                    "brand",
+                    i.strBrand,
+                    i.strBusinessName,
                     i.expirationDate,
                     "status here",
                     ""
@@ -721,6 +857,43 @@
   })
 
   </script>
+
+  <script>
+  $('#pull-out').on('click',function(){
+    swal({
+      title: "Are you sure?",
+      text: "You cannot undo pullout stock from inventory",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonClass: "btn-danger",
+      confirmButtonText: "Pull-out List from Inventory",
+      cancelButtonText: "Back",
+      closeOnConfirm: false,
+      showLoaderOnConfirm: true
+    }, function(isConfirm){
+      $.ajax({
+        url: '/inventory/pullOut',
+        method: 'post',
+        success: function(response, status, http){
+          if(response == "yes"){
+            setTimeout(function(){
+              swal("Success!", "List are pulled out from inventory", "success");
+              window.location.reload();
+            }, 2000);
+          }else{
+            setTimeout(function(){
+              swal("Error", "There's an error", "error");
+            }, 2000);
+          }
+        }
+
+      })
+    })
+
+
+  });
+  </script>
+
   <script>
     $(function () {
       $('#example2').DataTable({
@@ -797,11 +970,47 @@
   </script>
 
   <script>
+    $(function () {
+      $('#inventorytable').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+      'select'		: true,
+      'scroll'		: true
+      })
+    })
+  </script>
+
+  <script>
     $('.productsetter').on('click', function(){
       $('#add_pno').val($(this).data('productid'));
       $('#add_pname').val($(this).data('productname'));
       $('#add_brand').val($(this).data('brand'));
       $('#add_pcode').val($(this).data('pcode'));
+    })
+  </script>
+
+
+  <script>
+
+    $('.inventorysetter').on('click',function(){
+      $('#ino_name').val($(this).data('inventory'))
+      $('#product_name').val($(this).data('product'))
+      $('#brand_name').val($(this).data('brand'))
+
+      <% num = "1000" %>
+      <% if (lastbatch == undefined || lastbatch == null){ %>
+
+      <% }else if(lastbatch.length == 0){ %>
+
+      <% }else{ %>
+      <%   num = parseInt(lastbatch[0].intBatchNo) + 1; %>
+      <% } %>
+      $('#batch').val("<%=num%>")
+
     })
   </script>
 
@@ -816,7 +1025,7 @@
 
 
     <script>
-      $('#title').html("USG | All Products");
+      $('#title').html("USG | Stocks");
       $(".treeview a:contains('Maintenance')").parent().addClass("active");
       $(".treeview a:contains('Inventory')").parent().addClass("active");
       $(".navi a:contains('Stocks')").parent().addClass("active");

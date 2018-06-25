@@ -45,6 +45,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
    <link rel="stylesheet" href="/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.css">
    <!-- iCheck for checkboxes and radio inputs -->
    <link rel="stylesheet" href="/assets/admin/plugins/iCheck/all.css">
+   <!-- animate -->
+   <link rel="stylesheet" href="/assets/admin/animate.css">
 
 
 
@@ -193,8 +195,8 @@ desired effect
         <li class="header">Quick Tools</li>
         <li class="navi"><a href="/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard	</span></a></li>
         <li class="navi">
-            <a href=""><i class="fa fa-cart-arrow-down"></i> <span>Orders</span><span class="pull-right-container">
-            <small class="label pull-right bg-green">new</small>
+            <a href="/customerOrder/checkNewOrders"><i class="fa fa-cart-arrow-down"></i> <span>Orders</span><span class="pull-right-container">
+            <small id="notiforder" class="label pull-right bg-green">new</small>
           </span></a>
         </li>
         <li class="navi"><a href="/inventory/allStocks"><i class="fa fa-bar-chart"></i> <span>Stocks</span></a></li>

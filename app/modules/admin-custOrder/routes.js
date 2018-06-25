@@ -7,6 +7,32 @@ router.get('/', (req,res)=>{
   res.render('admin-custOrder/views/allOrders');
 });
 
+router.post('/checkNewOrders',(req,res)=>{
+    db.query(`Select CURDATE() - INTERVAL 2 DAY as DatesFrom, tblOrder.intStatus as Stat,
+      tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+      join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where dateOrdered >= CURDATE() - INTERVAL 2 DAY and tblOrder.intStatus = 0 LIMIT 1`, (err1,results1,fields1)=>{
+        if (err1) console.log(err1);
+
+        if (results1 == null || results1 == undefined){
+          res.send("no");
+        }else if(results1.length > 0){
+          res.send("new");
+        }else{
+          res.send("no");
+        }
+  });
+});
+
+router.get('/checkNewOrders',(req,res)=>{
+  db.query(`Select CURDATE() - INTERVAL 2 DAY as DatesFrom, tblOrder.intStatus as Stat,
+    tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where dateOrdered >= CURDATE() - INTERVAL 2 DAY and tblOrder.intStatus = 0 LIMIT 1`,(err1,results1,fields1)=>{
+      if (err1) console.log(err1);
+
+      res.render('admin-custOrder/views/newOrders', {re: results1})
+    });
+});
+
 router.get('/allOrders', (req,res)=>{
   db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
 join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID`, (err1,results1,fields1)=>{
@@ -16,17 +42,6 @@ join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID`, (err1,results1,f
 });
 });
 
-router.get('/recentOrders', (req,res)=>{
-  res.render('admin-custOrder/views/recentOrders');
-});
-
-router.get('/cancelledOrders', (req,res)=>{
-  res.render('admin-custOrder/views/cancelledOrders');
-});
-
-router.get('/invoice', (req,res)=>{
-  res.render('admin-custOrder/views/invoice');
-});
 
 router.get('/assessOrder',(req,res)=>{
   var orderno = req.query.order;
@@ -149,11 +164,62 @@ router.get('/invoice', (req,res)=>{
             where tblOrder.intOrderno = ${orderno}`, (err3,results3,fields3)=>{
               if (err3) console.log(err3);
 
-              res.render('admin-custOrder/views/invoice', {orderlist: results1, customer: results2, total: results3[0].totalAll, moment: moment});
+              res.render('admin-custOrder/views/invoice', {orderlist: results1, customer: results2, moment: moment, total: results3[0].totalAll });
             });
         });
     });
 
+});
+
+router.get('/recentOrders', (req,res)=>{
+
+  db.query(`
+    Select CURDATE() - INTERVAL 5 DAY as DatesFrom, tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where dateOrdered >= CURDATE() - INTERVAL 5 DAY`, (err1,results1,fiels1)=>{
+    if (err1) console.log(err1);
+
+    res.render('admin-custOrder/views/recentOrders', {re: results1, moment: moment});
+  });
+});
+
+router.get('/cancelledOrders',(req,res)=>{
+  db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where tblOrder.intStatus = 6`, (err1,results1,fields1)=>{
+      if (err1) console.log(err1);
+
+      res.render('admin-custOrder/views/cancelledOrders',{re: results1});
+  });
+});
+
+router.get('/invoice-print',(req,res)=>{
+  var orderno = req.query.order;
+
+  // Order list
+  db.query(`Select * from tblOrder
+    join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
+    join tblproductlist on tblorderdetails.intproductno = tblproductlist.intproductno
+    where tblOrder.intOrderno = ${orderno}`, (err1,results1,fields1)=>{
+      if (err1) console.log(err1);
+
+      // customer
+      db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.*
+        from tblOrder join tblUser on tblOrder.intUSerID = tblUser.intUserID
+        join tblCustomer on tblUser.intUserID = tblCustomer.intUserID
+        where tblOrder.intOrderno = ${orderno}`, (err2,results2,fields2)=>{
+          if (err2) console.log(err2);
+
+          // total
+          db.query(`Select SUM(tblorderdetails.intquantity * tblorderdetails.purchaseprice) as
+            totalAll from tblOrder
+            join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
+            join tblproductlist on tblorderdetails.intproductno = tblproductlist.intproductno
+            where tblOrder.intOrderno = ${orderno}`, (err3,results3,fields3)=>{
+              if (err3) console.log(err3);
+
+              res.render('admin-custOrder/views/invoice-print', {orderlist: results1, customer: results2, moment: moment, total: results3[0].totalAll });
+            });
+        });
+    });
 });
 
 // <%- include('../../../templates/admin-navbar.ejs') -%>

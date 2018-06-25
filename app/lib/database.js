@@ -19,11 +19,11 @@ module.exports = () => {
 
     /**
      * Otherwise, create a new pool (https://github.com/mysqljs/mysql#pooling-connections)
-     * 
+     *
      * Notice that the values for the options object of the createPool() function all comes
      * from process.env. Check your .env file. :)
      */
-    pool = mysql.createPool({
+    pool = mysql.createConnection({
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
