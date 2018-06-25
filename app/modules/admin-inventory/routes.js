@@ -565,7 +565,7 @@ router.post('/searchExpired',(req,res)=>{
     join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
     join tblProductBrand on tblproductlist.intbrandno = tblproductbrand.intBrandNo
     join tblSupplier on tblProductInventory.intuserID = tblSupplier.intUserID
-    where tblbatch.expirationDate between '1111-12-12' and '1111-12-12'`,(err1,results1,fiels1)=>{
+    where tblbatch.expirationDate between '2018-06-24' and '2018-06-24' and tblbatch.intStatus = 1`,(err1,results1,fiels1)=>{
       if (err1) console.log(err1);
       //console.log(results1);
       if (results1 == null || results1 == undefined){
@@ -580,9 +580,107 @@ router.post('/searchExpired',(req,res)=>{
   });
 });
 
+router.post('/pullOutItem',(req,res)=>{
+
+  var batch = req.body.o;
+  var pullOutNo = "1000";
+
+  db.beginTransaction(function(err){
+    if (err){
+      console.log(err);
+    }else{
+      db.query(`Update tblbatch set intStatus = 0 where intBatchNo = "${batch}"`,(err1,results1,fields1)=>{
+        if (err1){
+          console.log(err1);
+        }else{
+          db.query(`Select * from tblbatch where intBatchNo = "${batch}" `,(err2,results2,fields2)=>{
+            if (err2){
+              db.rollback(function(){
+                console.log(err2);
+              })
+            }else{
+              console.log(batch);
+              db.query(`Update tblProductInventory set intQuantity = intQuantity - ${results2[0].intQuantity} where intInventoryNo = "${results2[0].intInventoryNo}"`,(err3,results3,fields3)=>{
+                if (err3){
+                  db.rollback(function(){
+                    console.log(err3);
+                  })
+                }else{
+                  db.query(`Select * from tblstockpullout`, (err4,results4,fields4)=>{
+                    if (err4){
+                      db.rollback(function(){
+                        console.log(err4);
+                      })
+                    }else{
+                      if (results4 == null || results4 == undefined){
+
+                      }else if(results4.length == 0){
+
+                      }else{
+                        pullOutNo = parseInt(results4[0]) + 1;
+                      }
+
+                      db.query(`Insert into tblstockpullout (intPullOutNo, intBatchNo, intAdminID) values("${pullOutNo}","${batch}","1000")`,(err5,results5,fields5)=>{
+                        if (err5){
+                          db.rollback(function(){
+                            console.log(err5);
+                          })
+                        }else{
+                          res.send("yes");
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+  });
+
+  res.send(req.body.o);
+});
+
 router.post('/pullOut',(req,res)=>{
-  
-  res.send("yes");
+
+  var dates = (req.body.val).split("-");
+  var pullOutNo = "1000";
+
+  db.beginTransaction(function(err){
+    if(err){
+      console.log(err);
+    }else{
+      db.query(`Update tblBatch set intStatus = 0 where expirationDate between '1111-12-12' and '1111-12-12'`,(err1,results1,fields1)=>{
+        if (err1){
+          db.rollback(function(){
+            console.log(err1);
+          })
+        }else{
+          db.query(`Select * from tblstockpullout order by intPulloutNo desc limit 1`,(err2,results2,fields2)=>{
+            if (err2){
+              db.rollback(function(){
+                console.log(err2);
+              })
+            }else{
+              if(results2 == null || results2 == undefined){
+
+              }else if(results2.length == 0){
+
+              }else{
+                pullOutNo = parseInt(results2[0].intPullOutNo) + 1;
+              }
+
+
+            }
+
+          });
+        }
+      });
+    }
+  })
+
 });
 
 
