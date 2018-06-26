@@ -409,29 +409,8 @@
 
                 </br>
                 <!-- /.box-header -->
-                <div class="box-body table-responsive">
-                  <table id="expired-table" class="table table-bordered table-hover">
-                    <thead>
-                    <tr>
+                <div id="tabl" class="box-body table-responsive">
 
-                      <th>No</th>
-                      <th>Barcode</th>
-                      <th>Product Name</th>
-                      <th>Brand</th>
-                      <th>Supplier</th>
-                      <th>Expiration Date</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-
-
-
-
-                    </tbody>
-
-                  </table>
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -815,92 +794,15 @@ immediately after the control sidebar -->
     //Date range picker
     $('#reservation').daterangepicker();
     $('#search-expired').on('click',function(){
-      $.ajax({
-        url: '/inventory/searchExpired',
-        method: 'post',
-        datatype: "json",
-        data: {val: $('#reservation').val()},
-        success: function(response,status,http){
-          if (response == "no"){
-
-          }else{
-            var t = $('#expired-table').DataTable();
-            var table = document.getElementById("expired-table");
-            var row = table.getElementsByTagName("tr");
-            var rows = t.rows( '.selected' );
-
-            var tr = table.getElementsByTagName("tr");
-            var validity = 1;
-
-            $('#pull-out').show();
-
-            if (validity){
-              response.forEach(function(i){
-                t.row.add( [
-                    i.intBatchNo,
-                    i.strBarcode,
-                    i.strProductName,
-                    i.strBrand,
-                    i.strBusinessName,
-                    i.expirationDate,
-                    "status here",
-                    `<button class="pulloutitem btn btn-danger btn-sm" data-batch="${i.intBatchNo}">Pull-out</button> `
-                ] ).draw( false );
-              });
-
-              runner();
-
-            } // validity
-
-          }
-        }
-      })
+      $('#tabl').load('/inventory/searchExpired');
     });
+
+
   })
 
   </script>
 
-  <script>
-  function runner(){
-    $('.pulloutitem').on('click',function(){
-      alert($(this).data('batch'));
-      swal({
-        title: "Are you sure?",
-        text: "You cannot undo pullout stock from inventory",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonClass: "btn-danger",
-        confirmButtonText: "Pull-out List from Inventory",
-        cancelButtonText: "Back",
-        closeOnConfirm: false,
-        showLoaderOnConfirm: true
-      }, function(isConfirm){
-        $.ajax({
-          url: '/inventory/pullOutItem',
-          method: 'post',
-          datatype: "json",
-          data: {o: '$(this).data('batch')'},
-          success: function(response, status, http){
-            if(response){
-              setTimeout(function(){
-                swal("Success!", response, "success");
-                window.location.reload();
-              }, 2000);
-            }else{
-              setTimeout(function(){
-                swal("Error", "There's an error", "error");
-              }, 2000);
-            }
-          }
 
-        })
-      })
-
-
-    });
-  }
-
-  </script>
 
   <script>
     $(function () {
@@ -962,20 +864,7 @@ immediately after the control sidebar -->
     })
   </script>
 
-  <script>
-    $(function () {
-      $('#expired-table').DataTable({
-        'paging'      : true,
-        'lengthChange': true,
-        'searching'   : true,
-        'ordering'    : true,
-        'info'        : true,
-        'autoWidth'   : true,
-      'select'		: true,
-      'scroll'		: true
-      })
-    })
-  </script>
+
 
   <script>
     $(function () {
