@@ -599,7 +599,10 @@ $(document).ready(function() {
        url: '/purchaseOrder/submitForm',
        method: 'post',
        success: function(response,status,http){
-
+         if(response == "yes"){
+           swal("Success","You created a purchase order record","success");
+           location.reload();
+         }
        }
      })
    });
