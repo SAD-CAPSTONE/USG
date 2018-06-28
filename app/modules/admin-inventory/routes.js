@@ -11,7 +11,7 @@ var url = require('url');
 //router.use(fileUpload());
 
 router.get('/someRoute',(req,res)=>{
-  res.render('admin-inventory/views/sample');
+  res.render('admin-inventory/views/loader');
 });
 
 router.get('/allProducts', (req,res)=>{
@@ -557,8 +557,8 @@ router.post('/newStock', (req,res)=>{
   });
 });
 
-router.post('/searchExpired',(req,res)=>{
-  var dates = (req.body.val).split("-");
+router.get('/searchExpired',(req,res)=>{
+  //var dates = (req.body.val).split("-");
 
   db.query(`Select * from tblbatch
     join tblproductinventory on tblbatch.intinventoryno = tblproductinventory.intinventoryno
@@ -567,15 +567,9 @@ router.post('/searchExpired',(req,res)=>{
     join tblSupplier on tblProductInventory.intuserID = tblSupplier.intUserID
     where tblbatch.expirationDate between '2018-06-24' and '2018-06-24' and tblbatch.intStatus = 1`,(err1,results1,fiels1)=>{
       if (err1) console.log(err1);
-      //console.log(results1);
-      if (results1 == null || results1 == undefined){
-        res.send("no")
-      }else if(results1.length == 0){
-        res.send("no");
-      }else{
-        res.send(results1);
 
-      }
+        res.render('admin-inventory/views/loader',{re: results1, moment: moment});
+      
 
   });
 });
@@ -591,7 +585,9 @@ router.post('/pullOutItem',(req,res)=>{
     }else{
       db.query(`Update tblbatch set intStatus = 0 where intBatchNo = "${batch}"`,(err1,results1,fields1)=>{
         if (err1){
-          console.log(err1);
+          db.rollback(function(){
+            console.log(err1);
+          })
         }else{
           db.query(`Select * from tblbatch where intBatchNo = "${batch}" `,(err2,results2,fields2)=>{
             if (err2){
@@ -626,7 +622,17 @@ router.post('/pullOutItem',(req,res)=>{
                             console.log(err5);
                           })
                         }else{
-                          res.send("yes");
+                          db.commit(function(e1){
+                            if(e1){
+                              db.rollback(function(){
+                                console.log(e1);
+                              })
+                            }else{
+
+                              res.send("yes");
+                            }
+                          })
+
                         }
                       });
                     }
@@ -640,7 +646,7 @@ router.post('/pullOutItem',(req,res)=>{
     }
   });
 
-  res.send(req.body.o);
+
 });
 
 router.post('/pullOut',(req,res)=>{

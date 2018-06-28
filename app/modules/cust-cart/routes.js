@@ -91,10 +91,12 @@ router.get('/list', (req, res)=>{
   req.session.cart ? 0 : req.session.cart = [];
 
   modal = req.session.modal_cart;
-  req.session.modal_cart.curSize = modal.sizes[0][0];
-  req.session.modal_cart.curPrice = modal.sizes[0][1];
-  req.session.modal_cart.curQty = 1;
-
+  if (modal){
+    req.session.modal_cart.curSize = modal.sizes[0][0];
+    req.session.modal_cart.curPrice = modal.sizes[0][1];
+    req.session.modal_cart.curQty = 1;
+  }
+  
   res.send({cart: req.session.cart});
 });
 router.put('/list', (req, res)=>{

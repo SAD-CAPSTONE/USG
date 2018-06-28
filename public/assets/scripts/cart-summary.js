@@ -59,21 +59,12 @@ $(() => {
       }),
       success: (res) => {
         $(this).parents('.product-div').remove();
-        $("#cart-pad > .cart-product-container").each(function(index) {
-          $(this).find('div > .inventory-id').val() == res.inv ?
-            $(this).remove() : 0
-        });
-        if(!res.cart){
-          $('#cart-pad').append(`
-            <div class="cart-product-container">
-              <p> Cart currently empty </p>
-            </div>`);
+        res.cart ? 0 :
           $('#checkout-products').append(`
             <div class="product-div pos-relative px-3">
               <p class="fs-09em"> Cart currently empty </p>
             </div>`);
-        }
-        $('#subtotal-btn').click();
+        $('#total-btn').click();
       }
     });
   });
@@ -96,5 +87,13 @@ $(() => {
 
   // Click Button on Load
   $('#getSummary').click();
+
+  // Nav Cart
+  $('#nav-cart').css("cursor" , "not-allowed");
+  $('#nav-cart *').css("color", "rgba(255,255,255,.75)");
+  $('.overlay').remove();
+  $('#cartSidebarCollapse').on('click', function() {
+    $('#cart-sidebar').removeClass('active');
+  });
 
 });
