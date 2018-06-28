@@ -4,6 +4,7 @@ const db = require('../../lib/database')();
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const newUserID = require('../cust-0extras/newUserID');
+const passport = require('passport');
 
 function checkUser(req,res,next){
   /*Match form's email and username to DB, Match(body);
@@ -53,10 +54,25 @@ router.post('/', newUserID, checkUser, (req, res) => {
       req.body.middlename ? bodyarray.push(req.body.middlename) : bodyarray;
       bodyarray.push(req.body.lastname, req.body.email, req.body.username, hash);
 
-      db.query(stringquery, bodyarray, (err, results, fields) => {
+      db.beginTransaction(function(err) {
         if (err) console.log(err);
-          req.flash('regSuccess', 'Sign up Success!');
-          res.redirect('/login');
+        db.query(stringquery, bodyarray, (err, results, fields) => {
+          if (err) console.log(err);
+          db.query(`INSERT INTO tblcustomer (intUserID) VALUES (?)`,[req.newUserID], (err, results, fields) => {
+            if (err) console.log(err);
+            db.commit(function(err) {
+              if (err) console.log(err);
+              req.flash('regSuccess', 'Sign up Success!');
+              req.session.pendRoute || req.session.pendRoute != 0 ?
+                passport.authenticate('local')(req, res, ()=> {
+                  req.session.pendRoute == 1 ?
+                    res.redirect('/account/dashboard'):
+                    res.redirect('/summary/checkout');
+                }) :
+                res.redirect('/login');
+            });
+          });
+        });
       });
     });
   }

@@ -105,6 +105,10 @@ a:hover {
 .form-control[readonly] {
   background-color: white;
 }
+*:disabled {
+  background: #B9B9B9 !important;
+  border-color: #B9B9B9 !important;
+}
 
 /* card & modal */
 .card {
@@ -211,6 +215,27 @@ input.material:focus, input.material:active {
   border-bottom-color: #12BBAD;
   outline: none;
   box-shadow: none;
+}
+input#mobile {
+  padding-left: 41px;
+}
+#mobile-label::after {
+  content: '+63';
+  position: absolute;
+  bottom: -37.5px;
+  left: 12px;
+  font-weight: 400;
+}
+.required-field {
+  position: relative;
+}
+.required-field::after{
+  content:'*';
+  color: #17AACB;
+  font-size: 1.2em;
+  position: absolute;
+  right: -9px;
+  top: -2px;
 }
 
 /* Button */

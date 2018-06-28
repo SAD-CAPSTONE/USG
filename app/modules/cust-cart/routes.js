@@ -96,7 +96,7 @@ router.get('/list', (req, res)=>{
     req.session.modal_cart.curPrice = modal.sizes[0][1];
     req.session.modal_cart.curQty = 1;
   }
-  
+
   res.send({cart: req.session.cart});
 });
 router.put('/list', (req, res)=>{
@@ -131,8 +131,10 @@ router.get('/list/total/:type', (req, res)=>{
       return temp + (obj.curPrice * obj.curQty);
     },0) : 0
   let fee = 100.00;
+  length = req.session.cart.length;
   req.params.type == 'total' ?
     res.send({
+      cartLength: length,
       subtotal: priceFormat(subtotal.toFixed(2)),
       fee: priceFormat(fee.toFixed(2)),
       total: priceFormat((subtotal+fee).toFixed(2)) }) :
