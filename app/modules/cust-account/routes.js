@@ -19,7 +19,6 @@ function contactDetails (req, res, next){
     INNER JOIN tblcustomer ON tbluser.intUserID= tblcustomer.intUserID
     WHERE tbluser.intUserID= ?`,[req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
-    console.log(results)
     req.contactDetails = results[0];
     return next();
   });

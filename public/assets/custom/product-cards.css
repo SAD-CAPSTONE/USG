@@ -10,11 +10,6 @@
   box-shadow: none;
 
   transition: all 0.25s ease;
-  /* border: none;
-  box-shadow:
-    0 2px 2px 0 rgba(0,0,0,0.14),
-    0 3px 1px -2px rgba(0,0,0,0.12),
-    0 1px 5px 0 rgba(0,0,0,0.2); */
 }
 .custom-card:hover {
   box-shadow:
@@ -55,19 +50,19 @@
   overflow: hidden;
 }
 .custom-card .card-price {
-  color:#12BBAD;
+  color:var(--primary-color);
   font-size:1.1em;
   margin:0px;
   padding-top: 2px;
 }
 .custom-card .cart-button-div:hover + .card-desc > .card-price {
-  color:#00AF66;
+  color: var(--price-color);
 }
 
 .custom-card .cart-button-div {
   height:0px;
   position:absolute;
-  background: #12BBAD;
+  background: var(--primary-color);
   bottom:0px;
   width:100%;
   transition:all 0.25s ease;
@@ -89,10 +84,10 @@
   transition:all .25s ease;
 }
 .custom-card .cart-btn:hover {
-  background:#00AF66;
+  background: var(--price-color);
 }
 .custom-card .cart-btn:active {
-  background:#00AF66 !important;
+  background: var(--price-color) !important;
 }
 .custom-card:hover .cart-btn {
   opacity:1;

@@ -16,6 +16,7 @@ function allProducts(req,res,next){
     if (err) console.log(err);
     results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) );
     req.allProducts= results;
+    console.log(results);
     return next();
   });
 }
