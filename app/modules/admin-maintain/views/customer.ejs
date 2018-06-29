@@ -39,9 +39,28 @@
                 </tr>
                 </thead>
                 <tbody>
+                  <% if (re == null || re == undefined){ %>
 
-
-
+                  <% }else if (re.length == 0){ %>
+    
+                  <% }else{ %>
+                   <%  re.forEach(function(i){ %>
+                      <tr>
+                        <td><%= i.intUserID %></td>
+                        <td><%= i.strFname%> <%=i.strMname %> <%=i.strLname %></td>
+                        <td><%= i.strUsername %></td>
+                        <td>
+                          <% if (i.Stats == 1){ %>
+                            <span class="label label-success">Active</span>
+                          <% }else if(i.Stats == 0){ %>
+                            <span class="label label-danger">Inactive</span></td>
+                          <% }else{ %>
+                          <% } %>
+                          </td>
+                        <td><a href=""><button disabled class="btn btn-default btn-sm">View Details</button></a></td>
+                      </tr>
+                    <%  }) %>
+                    <% } %>
                 </tbody>
 
               </table>

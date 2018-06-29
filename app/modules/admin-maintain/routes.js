@@ -328,10 +328,16 @@ router.post('/addSubCategory', (req,res)=>{
   });
 });
 
-router.get('/customer',(req,res)=>{
-  res.render('admin-maintain/views/customer');
-});
+router.get('/customer', (req,res)=>{
+  db.query(`SELECT tblcustomer.intStatus as Stats, tblUser.*,tblcustomer.* from
+    tblUser join tblcustomer on tblUser.intUserID =
+    tblcustomer.intUserID`,(err1,results1,fields1)=>{
+      if (err1) console.log(err1);
+      res.render('admin-maintain/views/customer', {re: results1});
+      console.log(results1);
 
+  });
+});
 // <%- include('../../../templates/admin-navbar.ejs') -%>
 
 exports.maintenance = router;
