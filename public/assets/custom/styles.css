@@ -105,6 +105,10 @@ a:hover {
 .form-control[readonly] {
   background-color: white;
 }
+*:disabled {
+  background: #B9B9B9 !important;
+  border-color: #B9B9B9 !important;
+}
 
 /* card & modal */
 .card {
@@ -211,6 +215,27 @@ input.material:focus, input.material:active {
   border-bottom-color: #12BBAD;
   outline: none;
   box-shadow: none;
+}
+input#mobile {
+  padding-left: 41px;
+}
+#mobile-label::after {
+  content: '+63';
+  position: absolute;
+  bottom: -37.5px;
+  left: 12px;
+  font-weight: 400;
+}
+.required-field {
+  position: relative;
+}
+.required-field::after{
+  content:'*';
+  color: #17AACB;
+  font-size: 1.2em;
+  position: absolute;
+  right: -9px;
+  top: -2px;
 }
 
 /* Button */
@@ -373,6 +398,9 @@ nav .dropdown-item:hover {
 }
 #sidebar>.row>.col:last-of-type {
   margin-top: 20px;
+}
+#sidebar #main-content .card-body {
+  height: 175px;
 }
 
 #topbar {
@@ -564,6 +592,7 @@ li.nav-item > a{
   #store-main #filters-div {
     display: none;
   }
+
 /* Product------------------------------------------------------ */
 :root {
   --item-img-width: 270px;
@@ -615,8 +644,8 @@ li.nav-item > a{
 
 #item-main-pane #item-options{
   position: absolute;
-  right: 0px;
-  bottom: 0px;
+  right: 5px;
+  bottom: 5px;
   padding: 10px;
   z-index: 10;
   background: white;
@@ -675,8 +704,7 @@ li.nav-item > a{
 }
 
 #item-main-pane > div:nth-child(2) {
-  height: 370px;
-
+  height: 355px;
 }
 
 #item-review-pane {
@@ -779,6 +807,7 @@ li.nav-item > a{
 
 #summary-main-pane .product-div > div:nth-child(2) {
   width: var(--price-col-width);
+
 }
 #summary-main-pane .product-div > div:nth-child(2) p:first-of-type{
   color: #00AF6E;
@@ -802,6 +831,7 @@ li.nav-item > a{
 #summary-details-pane > div a.edit{
   position: absolute;
   right: 15px;
+  padding-top: 2px;
 }
 #summary-details-pane > div .address{
   color: #868686;
@@ -986,9 +1016,14 @@ li.nav-item > a{
   }
 }
 @media (max-width: 992px) {
+  .container {
+    max-width: none;
+  }
+  div.search {
+    margin: auto;
+  }
   .search>input {
     width: 300px !important;
-    margin-left: 190px !important;
   }
 
   #item-main-pane {
@@ -1017,9 +1052,11 @@ li.nav-item > a{
   }
 }
 @media (max-width: 768px) {
+  div.search {
+    margin: auto;
+  }
   .search>input {
     width: 300px !important;
-    margin-left: 100px !important;
   }
 
   #store-sidebar {
