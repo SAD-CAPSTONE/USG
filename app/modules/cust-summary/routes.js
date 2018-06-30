@@ -53,7 +53,7 @@ router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsN
   db.beginTransaction(function(err) {
     if (err) console.log(err);
     db.query(`INSERT INTO tblorder (intOrderNo, intUserID, intStatus, intPaymentMethod, strShippingAddress, strBillingAddress)
-      VALUES (?,?,?,?,?,?)`,[req.newOrderNo, req.user.intUserID, 1, req.body.paymentMethod, req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress], (err, results, fields) => {
+      VALUES (?,?,?,?,?,?)`,[req.newOrderNo, req.user.intUserID, 0, req.body.paymentMethod, req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress], (err, results, fields) => {
       if (err) console.log(err);
       function multiInsert(i){
         let cart = req.session.cart;
