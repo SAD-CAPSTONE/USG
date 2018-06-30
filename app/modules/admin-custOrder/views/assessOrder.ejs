@@ -120,9 +120,9 @@
                               <tr>
                                 <td><%= i.strProductCode %></td>
                                 <td><%= i.strProductName %></td>
-                                <td><%= i.intQuantity %></td>
+                                <td><%= i.quantity %></td>
                                 <td>Php <%= i.purchasePrice %></td>
-                                <td>Php <%= i.intQuantity * i.purchasePrice %></td>
+                                <td>Php <%= i.quantity * i.purchasePrice %></td>
 
                               </tr>
                             <% }) %>
@@ -433,7 +433,8 @@ $('#submit').on('click',function(){
           orderStatus: $('#orderstatus').val(),
           paymentStatus: $('#paymentstatus').val(),
           notify: notifyCustomer,
-          message: $('#message').val()
+          message: $('#message').val(),
+          total: '<%=total%>'
 
           },
     success: function(response,status,http){

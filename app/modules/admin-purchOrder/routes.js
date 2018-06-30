@@ -40,10 +40,139 @@ router.get('/form', (req,res)=>{
     });
   });
 
+});
 
+router.post('/submit',(req,res)=>{
+
+    var ponum = "1000";
+    var startProdListNo = 1000;
+    var product = req.body.product; //[prod1,prod2,prod3]
+    var quantity = req.body.quantity; // [quan1,quan2,quan3]
+    var counter = 0;
+
+    db.beginTransaction(function(err){
+      if(err){
+        console.log(err);
+      }else{
+        console.log('entering 1');
+        // Select last purchase order no
+        db.query(`Select * from tblPurchaseOrder order by intPurchaseOrderNo desc limit 1`,(err1,results1,fields1)=>{
+          if (err1){
+            db.rollback(function(){
+              console.log(err1);
+            })
+          }else{
+            if(results1 == undefined || results1 == null){
+
+            }else if(results1.length == 0){
+
+            }else{
+              ponum = parseInt(results1[0].intPurchaseOrderNo) + 1;
+            }
+            console.log('entering 2')
+            // Insert into purchase order
+            db.query(`Insert into tblPurchaseOrder (intPurchaseOrderNo, intSupplierID, intAdminID, strSpecialNote) values ("${ponum}","${req.body.supplier}", "1000", "${req.body.specialnote}")`,(err2,results2,fields2)=>{
+              if(err2){
+                db.rollback(function(){
+                  console.log(err2);
+                })
+              }else{
+                console.log('entering 3')
+                // Get the last po list number
+                db.query(`Select * from tblPurchaseOrderList order by intPOrderlistno desc limit 1`,(err3,results3,fields3)=>{
+                  if (err3){
+                    db.rollback(function(){
+                      console.log(err3);
+                    })
+                  }else{
+                    if(results3 == undefined || results3 == null){
+
+                    }else if(results3.length == 0){
+
+                    }else{
+                      startProdListNo = parseInt(results3[0].intPOrderListNo) +1;
+                    }
+
+                    console.log('entering 4')
+                    // insert each to purchase order List
+                    async.eachSeries(product,function (data,callback){
+                      db.query(`Insert into tblPurchaseOrderList (intPOrderListNo, intPurchaseOrderNo,
+                        strProduct, intQuantity) values ("${startProdListNo}", "${ponum}", "${product[counter]}", "${quantity[counter]}")`, (err4,results4,fields4)=>{
+                         if (err4){
+                           db.rollback(function(){
+                             console.log(err4);
+                           })
+                         }else{
+                           console.log('entering 5')
+                           startProdListNo++;
+                           counter++;
+                           callback();
+                         }
+                      });
+                    }, function(err, results){
+                      db.commit(function(erra){
+                        if (erra){
+                          db.rollback(function(){
+                            console.log(erra);
+                          });
+                        }else{
+                          res.send("yes");
+
+                        }
+                      })
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    })
+
+});
+
+router.post('/test',(req,res)=>{
+  var product = req.body.product; //[prod1,prod2,prod3]
+  var quantity = req.body.quantity; // [quan1,quan2,quan3]
+  var counter = 0;
+  var startProdListNo = 1000;
+
+  db.query(`Select * from tblPurchaseOrderList order by intPOrderlistno desc limit 1`,(e1,r1,f1)=>{
+    if (e1) console.log(e1);
+    if (r1 == undefined || r1 == null){
+
+    }else if(r1.length == 0){
+
+    }else{
+      startProdListNo = parseInt(r1[0].intPOrderListNo) + 1;
+    }
+
+    async.eachSeries(product,function(data,c){
+      db.query(`Insert into tblPurchaseOrderList (intPOrderListNo, intPurchaseOrderNo, strProduct, intQuantity) values ("${startProdListNo}", "1000", "${product[counter]}", "${quantity[counter]}")`, (err3,results3,fields3)=>{
+         if (err3) console.log(err3);
+         console.log(results3)
+         counter++;
+         startProdListNo++;
+         c();
+    });
+
+    }, function(err, results){
+      if (err){
+        res.send(err);
+      }else{
+        res.send("yes");
+      }
+
+
+    });
+
+
+  });
 
 
 });
+
 
 router.post('/submitForm',(req,res)=>{
 
