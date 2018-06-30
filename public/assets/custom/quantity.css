@@ -10,22 +10,22 @@
 .quantity-buttons {
   width: 19px;
   border-radius: 0px;
-  background: #12BBAD;
-  border: #12BBAD;
+  background: var(--primary-color);
+  border: var(--primary-color);
   height: 100%;
   padding: 0px;
   position: relative;
 }
 .quantity-buttons:hover {
-  background: #0F988D;
+  background: var(--primary-hover);
 }
 .quantity-buttons:focus {
-  box-shadow: 0 0 0 0rem rgba(18, 187, 173, .4);
-  background: #0F988D;
+  box-shadow: 0 0 0 0rem var(--primary-focus);
+  background: var(--primary-hover);
 }
 .quantity-buttons:active {
-  background: #0F988D !important;
-  box-shadow: 0 0 0 0.1rem rgba(18, 187, 173, .4) !important;
+  background: var(--primary-hover) !important;
+  box-shadow: 0 0 0 0.1rem var(--primary-focus) !important;
 }
 .quantity-text {
   position: absolute;
@@ -41,10 +41,10 @@
 .quantity-input {
   padding: 5px;
   text-align: center;
-  border: 1px solid #12BBAD;
+  border: 1px solid var(--primary-color);
   background: white !important;
 }
 .quantity-input:focus {
-  box-shadow: 0 0 0 0rem rgba(18, 187, 173, .4);
-  border: 1px solid #12BBAD;
+  box-shadow: 0 0 0 0rem var(--primary-focus);
+  border: 1px solid var(--primary-color);
 }

@@ -17,15 +17,15 @@ $(() => {
   function chekoutBtnActive(){
     $('#cart-sidebar ul.checkout a').attr('href','/summary/checkout');
     $('#cart-sidebar ul.checkout a').css({
-      'background-color':'rgba(18, 187, 173, .8)',
+      'background-color':'var(--cart-button-color)',
       'cursor':'pointer'
     });
     $('#cart-sidebar ul.checkout a')
       .mouseenter(function (){
-        $(this).css('background-color','#00AF66');
+        $(this).css('background-color','var(--price-color)');
       })
       .mouseleave(function (){
-        $(this).css('background-color','rgba(18, 187, 173, .8)');
+        $(this).css('background-color','var(--cart-button-color)');
       });
   }
 

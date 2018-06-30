@@ -61,11 +61,10 @@ router.post('/addProduct', (req,res)=>{
     }else{
 
       let sample = req.files.add_pic;
-      var filename = req.files.add_pic.name;
 
       db.query(`Insert into tblProductList (intProductNo, intSubCategoryNo, intBrandNo, strProductCode, strProductName, strDescription, strProductPicture) values ("${lastnum}", ${req.body.add_pcat}, ${req.body.add_brand}, "${req.body.add_pcode}", "${req.body.add_pname}", "${req.body.add_pdesc}", "${filename}")`, (err2,results2,fields2)=>{
         if (err2) console.log(err2);
-        var link = path.join(path.dirname(path.dirname(path.dirname(__dirname))), 'public/images/'+filename);
+        var link = path.join(path.dirname(path.dirname(path.dirname(__dirname))), 'public/assets/images/products/'+lastnum);
         sample.mv(link, function(err){
           if (err) console.log(err);
           res.redirect('/inventory/allProducts');
@@ -95,9 +94,7 @@ router.post('/editProduct',(req,res)=>{
   }else{
 
     let sample = req.files.view_pic;
-    var filename = req.files.view_pic.name;
-
-
+    var filename = req.body.view_prodno;
 
     db.query(`Update tblProductList set intSubCategoryNo = "${req.body.view_pcat}", intBrandNo = "${req.body.view_brand}", strProductCode="${req.body.view_pcode}", strProductName = "${req.body.view_pname}", strDescription="${req.body.view_pdesc}", strProductPicture = "${filename}", intStatus = ${checked} where intProductNo = "${req.body.view_prodno}"`, (err2,results2,fields2)=>{
       if (err2) console.log(err2);
@@ -569,7 +566,7 @@ router.get('/searchExpired',(req,res)=>{
       if (err1) console.log(err1);
 
         res.render('admin-inventory/views/loader',{re: results1, moment: moment});
-      
+
 
   });
 });

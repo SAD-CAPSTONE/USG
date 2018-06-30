@@ -27,27 +27,32 @@
   <div id="summary-details-pane" class="fl-r">
     <div>
       <p class="m-0 mb-1 inline-block">Shipping & Billing</p>
-      <a href="" class="edit"><small>Edit</small></a>
+      <a data-toggle="modal" data-target="#EditAddress" class="edit" href><small>Edit</small></a>
 
-      <small class="block">Shipping Address</small>
+      <div>
+        <small class="required-field">Shipping Address</small>
+      </div>
       <small class="address block px-1 mb-1">
-        El Pueblo Manila, 8010 Anonas, Santa Mesa, Maynila, Kalakhang Maynila
+        <% if(thisUserContact.strShippingAddress){ %>
+          <%= thisUserContact.strShippingAddress%>
+        <% }else{ %>
+          <em>Shipping Address not set</em>
+        <% } %>
       </small>
 
-      <small>Billing Address</small>
+      <small class="required-field">Billing Address</small>
       <small class="address block px-1 mb-1">
-        Anonas, Santa Mesa, Maynila, 1016 Kalakhang Maynila
+        <% if(thisUserContact.strBillingAddress){ %>
+          <%= thisUserContact.strBillingAddress%>
+        <% }else{ %>
+          <em>Billing Address not set</em>
+        <% } %>
       </small>
 
-      <small>Contact Numbers</small>
-      <small class="address block px-1">
-        09236835707
-        <br>799-0725
-      </small>
     </div>
     <div>
       <p class="m-0 mb-1">Order Summary</p>
-      <small class="label">Subtotal (5)</small>
+      <small class="label">Subtotal (0)</small>
       <small class="price subtotal price-symbol">0.00</small>
       <br>
       <small class="label">Shipping Fee</small>
@@ -63,20 +68,54 @@
       <div class="pos-relative">
         <small class="text-muted price vat block">VAT applied</small>
       </div>
-      <div class="pos-relative mt-3">
-        <label class="radio-inline">
-          <input type="radio" name="opt1" checked>
-          <small class="ml-3 mr-2">Cash on Delivery</small>
-        </label>
-        <label class="radio-inline">
-          <input type="radio" name="opt2">
-          <small class="ml-3">Bank Deposit</small>
-        </label>
-      </div>
-      <button id="place-order" type="button" class="btn btn-custom-primary btn-sm btn-block">Place Order</button>
+      <form id="checkout-form">
+        <div class="pos-relative mt-3">
+          <label class="radio-inline">
+            <input type="radio" name="paymentMethod" value="1" checked>
+            <small class="ml-3 mr-2">Cash on Delivery</small>
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="paymentMethod" value="2">
+            <small class="ml-3">Bank Deposit</small>
+          </label>
+        </div>
+        <% if(thisUserContact.strShippingAddress && thisUserContact.strBillingAddress){ %>
+          <button id="place-order" type="submit" class="btn btn-custom-primary btn-sm btn-block sb-1">Place Order</button>
+        <% }else{ %>
+          <button id="place-order" type="submit" class="btn btn-custom-primary btn-sm btn-block sb-0">Place Order</button>
+        <% } %>
+      </form>
     </div>
   </div>
 </div>
+
+<div id="EditAddress" tabindex="-1" role="dialog" aria-labelledby="EditAddressTitle" aria-hidden="true" class="modal fade">
+  <div role="document" class="modal-dialog">
+    <div class="modal-content">
+      <form action="/summary/checkout/address" method="POST" class="m-0">
+        <div class="modal-header">
+          <h5 id="EditAddressTitle" class="modal-title"><b>Shipping & Billing</b></h5>
+          <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+        </div>
+        <div class="modal-body">
+          <label for="dsa" class="required-field"><b>Shipping Address</b></label>
+          <input id="dsa" type="text" name="sa" value="<%= thisUserContact.strShippingAddress%>" class="form-control material mb-3" minlength="10" maxlength="100" required/>
+
+          <label for="dba" class="required-field"><b>Billing Address</b></label>
+          <input id="dba" type="text" name="ba" value="<%= thisUserContact.strBillingAddress%>" class="form-control material mb-3" minlength="10" maxlength="100" required/>
+        </div>
+        <div class="modal-footer">
+          <!-- <a href="/home">
+            <button type="button" class="btn btn-custom-primary">Save Default</button>
+          </a> -->
+          <button type="submit" class="btn btn-custom-primary">Apply</button>
+          <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
