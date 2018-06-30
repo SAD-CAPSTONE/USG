@@ -101,8 +101,8 @@
       </div>
       <div id="products-div" class="products-container">
         <% allProducts.forEach((prod)=>{ %>
-          <div class="custom-card my-2">
-            <div class="card-img"><a href="/item"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
+          <div class="custom-card this-product my-2">
+            <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
             <div class="cart-button-div">
               <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
               <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"

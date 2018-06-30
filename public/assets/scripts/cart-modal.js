@@ -2,7 +2,7 @@ let t1, t2;
 
 // GET - Cart Button, Get Modal
 $('.products-container').on('click', '.cart-btn', function(){
-  let pid = $(this).closest('.custom-card').find('.product-id').val();
+  let pid = $(this).closest('.this-product').find('.product-id').val();
   console.log(pid);
   $.get(`/cart/modal/${pid}`).then((res) => {
     let data = res.product, modal = $('#modal-product-to-cart');

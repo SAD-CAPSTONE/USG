@@ -39,7 +39,7 @@ $(() => {
           <div class="cart-product-container">
             <div class="product-card">
               <input class="inventory-id" value="${data.inv}" hidden/>
-              <div class="product-pic"><a href="/item"><img src="${data.img}"/></a></div>
+              <div class="product-pic"><a href="/item/${data.id}"><img src="${data.img}"/></a></div>
               <div class="product-desc">
                 <p class="product-title">${data.name}</p>
                 <small class="product-size text-muted">Size: ${data.curSize}</small>
