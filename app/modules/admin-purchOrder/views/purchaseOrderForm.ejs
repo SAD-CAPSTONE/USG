@@ -578,16 +578,19 @@ $(document).ready(function() {
       var tr = table.getElementsByTagName("tr");
       var validity = 1;
 
+
+
       if (validity){
         t.row.add( [
             count,
             '<input style="width: 200px" required type="text" name="product[]" value="" class="form-control">',
             '<input style="width: 80px" required type="number" name="quantity[]" value="0" class="form-control">',
             '<input style="width: 80px" type="number" name="price[]" value="2" class="price form-control">',
-            '<input style="width: 80px" type="number" name="total[]" value="2" class="total form-control">'
+            '<input style="width: 80px" disabled type="number" name="total[]" value="2" class="total form-control">'
 
         ] ).draw( false );
         //validity = 0;
+
         count++;
       }
 
@@ -617,11 +620,7 @@ $(document).ready(function() {
 } );
 </script>
 
-<script>
-function a(){
-  alert();
-}
-</script>
+
 
 
 

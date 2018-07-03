@@ -441,9 +441,10 @@ $('#submit').on('click',function(){
       if (response){
         if (response == "yes"){
           swal("Success!","","success");
-          window.location.reload();
+          location.reload();
         }else{
           swal("Error!","","error");
+          location.reload();
         }
       }
     }
