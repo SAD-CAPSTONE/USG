@@ -20,7 +20,7 @@
     <!-- Main content -->
     <section class="content">
 
-    <form method="POST" action="/receiveDelivery/newDeliveryRecord">
+    <form id="receiveForm">
 
     <div class="box box-success">
 			<div class="box-header with-border">
@@ -41,11 +41,11 @@
 						<div class="form-group">
 							<label for="purcNo">Receive Order Number:</label>
               <% var number = "1000"; %>
-              <% if (re.length == 0 || re == null || re == undefined){ %>
+              <% if (re == null || re == undefined){ %>
 
+              <% }else if(re.length == 0){ %>
               <% }else{ %>
                 <%  number = parseInt(re[0].intReceiveOrderNo) + 1 %>
-
               <% } %>
               <input type="text" value="<%= number %>" name="rno" class="form-control">
 						</div>
@@ -449,10 +449,12 @@ $(document).ready(function(){
     } );
 
 
-    $('#sub').on('click', function(){
-      $(this).attr('type', 'submit');
-      $(this).submit();
-    });
+    $('#receiveForm').submit(function(e){
+      e.preventDefault();
+      $.ajax({
+        url: ''
+      })
+    })
 
 
 
