@@ -141,7 +141,7 @@
 						<div class="box-body table-responsive">
 						  <table id="example" class="table table-bordered table-hover">
               <thead>
-							<tr>
+
 							  <th style="width: 10px">#</th>
 							  <th>Product Name</th>
 							  <th>Variant (if any)</th>
@@ -151,9 +151,10 @@
                 <th>Status</th>
 							  <th>SRP</th>
                 <th>Total Amount</th>
-							</tr>
+
             </thead>
 						<tbody>
+            </tbody>
 
 						</table>
 						</div>
@@ -177,7 +178,7 @@
 
 			<div class="box-footer">
           <a href="receiveDeliveryList.html"><button type="button" class="btn btn-default">Back</button></a>
-          <a href=""><button id="sub" disabled type="button" class="btn btn-info pull-right">Submit Form</button></a>
+          <a href=""><button disabled id="sub" type="submit" class="btn btn-info pull-right">Submit Form</button></a>
       </div>
               <!-- /.box-footer -->
 
@@ -212,20 +213,22 @@
             <th>Order No</th>
             <th>Business Name</th>
             <th>Date Ordered</th>
-            <th></th>
+
           </tr>
           </thead>
 
           <tbody>
-            <% if (pu == null || pu == undefined || pu.length == 0){ %>
+            <% if (pu == null || pu == undefined){ %>
 
-            <% } else { %>
+            <% } else if(pu.length == 0){ %>
+
+            <% }else{ %>
             <% pu.forEach(function(i){ %>
           <tr>
                 <td><%=i.intPurchaseOrderNo%></td>
                 <td><%=i.strBusinessName%></td>
                 <td><%=moment(i.dateOrdered).format("MMM Do YYYY")%></td>
-                <!-- /* <td><button data-dismiss="modal" data-supplierid="<%=i.intUserID%>" data-business="<%=i.strBusinessName%>" data-baddress="<%=i.strBusinessAddress%>"  class="setter btn btn-info btn-sm">Select</button></td> */ -->
+
 
           </tr>
           <% }) %>
@@ -351,6 +354,10 @@
 <script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<!-- sweetalert  -->
+<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+<!-- Notification  -->
+<script src="/assets/admin/notification.js"></script>
 
 <!-- page script (new added) -->
 <script>
@@ -452,7 +459,19 @@ $(document).ready(function(){
     $('#receiveForm').submit(function(e){
       e.preventDefault();
       $.ajax({
-        url: ''
+        url: '/receiveDelivery/newDeliveryRecord',
+        type: 'post',
+        data: $('#receiveForm').serialize(),
+        success: function(response,status,http){
+          if (response){
+            swal("Success!","You have created a delivery record", "success");
+            window.location.href = "/receiveDelivery";
+          }
+        },
+        error: function(re){
+          swal("Error!",re, "error");
+          location.reload();
+        }
       })
     })
 
