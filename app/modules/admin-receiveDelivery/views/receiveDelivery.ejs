@@ -26,7 +26,7 @@
               <h3 class="box-title">Receive Delivery From Customers</h3>
             </div>
 			  <!-- buttons -->
-        &nbsp; &nbsp;<a href="/receiveDelivery/Form"><button type="button"  class="btn btn-success btn-sm"><i class="fa fa-plus"></i>Receive New Delivery</button></a>
+        &nbsp; &nbsp;<a href="/receiveDelivery/Form"><button type="button"  class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Receive New Delivery</button></a>
             <!-- /.box-header -->
             <div class="box-body table-responsive">
               <table id="example2" class="table table-bordered table-hover">
@@ -41,14 +41,23 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                  <td>007612</td>
-                  <td>123456</td>
-                  <td>PICOLE</td>
-                  <td>03/21/2018</td>
+                  <% if (re == null || re == undefined){ %>
 
-                  <td><a href="delivery.html"><button class="btn btn-default btn-sm">View Details</button></a></td>
-                </tr>
+                  <% }else if (re.length == 0){ %>
+
+                  <% }else{ %>
+                    <% re.forEach(function(i){ %>
+                      <tr>
+                        <td><%=i.intReceiveOrderNo%></td>
+                        <td><%=i.intPurchaseOrderNo%></td>
+                        <td><%=i.strBusinessName%></td>
+                        <td><%= moment(i.dateOrderReceived).format("MM/DD/YYYY") %></td>
+
+                        <td><a href="delivery.html"><button disabled class="btn btn-default btn-sm">View Details</button></a></td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+
 
 
                 </tbody>
