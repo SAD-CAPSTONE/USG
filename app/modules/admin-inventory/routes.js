@@ -5,6 +5,7 @@ var path = require('path');
 var moment = require('moment');
 var async = require('async');
 var url = require('url');
+var fs = require('fs');
 
 
 
@@ -62,7 +63,7 @@ router.post('/addProduct', (req,res)=>{
 
       let sample = req.files.add_pic;
 
-      db.query(`Insert into tblProductList (intProductNo, intSubCategoryNo, intBrandNo, strProductCode, strProductName, strDescription, strProductPicture) values ("${lastnum}", ${req.body.add_pcat}, ${req.body.add_brand}, "${req.body.add_pcode}", "${req.body.add_pname}", "${req.body.add_pdesc}", "${lastnum}")`, (err2,results2,fields2)=>{
+      db.query(`Insert into tblProductList (intProductNo, intSubCategoryNo, intBrandNo, strProductCode, strProductName, strDescription, strProductPicture) values ("${lastnum}", ${req.body.add_pcat}, ${req.body.add_brand}, "${req.body.add_pcode}", "${req.body.add_pname}", "${req.body.add_pdesc}", "${lastnum}.jpg")`, (err2,results2,fields2)=>{
         if (err2) console.log(err2);
         var link = path.join(path.dirname(path.dirname(path.dirname(__dirname))), 'public/assets/images/products/'+lastnum);
         sample.mv(link, function(err){
@@ -83,6 +84,13 @@ router.post('/editProduct',(req,res)=>{
   var checked = 0;
   if (req.body.active == 'on') checked = 1;
 
+  var linky = path.join(path.dirname(path.dirname(path.dirname(__dirname))), 'public/images/'+req.body.view_prodno+'.jpg');
+
+  fs.unlink(linky,function(err){
+        if(err) return console.log(err);
+        console.log('file deleted successfully');
+   });
+
 
   if (!req.files){
       db.query(`Update tblProductList set intSubCategoryNo = "${req.body.view_pcat}", intBrandNo = "${req.body.view_brand}", strProductCode="${req.body.view_pcode}", strProductName = "${req.body.view_pname}", strDescription="${req.body.view_pdesc}", strProductPicture = "", intStatus = ${checked} where intProductNo = "${req.body.view_prodno}"`,(err1,results1,fields1)=>{
@@ -96,9 +104,9 @@ router.post('/editProduct',(req,res)=>{
     let sample = req.files.view_pic;
     var filename = req.body.view_prodno;
 
-    db.query(`Update tblProductList set intSubCategoryNo = "${req.body.view_pcat}", intBrandNo = "${req.body.view_brand}", strProductCode="${req.body.view_pcode}", strProductName = "${req.body.view_pname}", strDescription="${req.body.view_pdesc}", strProductPicture = "${filename}", intStatus = ${checked} where intProductNo = "${req.body.view_prodno}"`, (err2,results2,fields2)=>{
+    db.query(`Update tblProductList set intSubCategoryNo = "${req.body.view_pcat}", intBrandNo = "${req.body.view_brand}", strProductCode="${req.body.view_pcode}", strProductName = "${req.body.view_pname}", strDescription="${req.body.view_pdesc}", strProductPicture = "${filename}.jpg", intStatus = ${checked} where intProductNo = "${req.body.view_prodno}"`, (err2,results2,fields2)=>{
       if (err2) console.log(err2);
-      var link = path.join(path.dirname(path.dirname(path.dirname(__dirname))), 'public/images/'+filename);
+      var link = path.join(path.dirname(path.dirname(path.dirname(__dirname))), 'public/assets/images/products/'+filename+'.jpg');
       sample.mv(link, function(err){
         if (err) console.log(err);
         res.redirect('/inventory/allProducts');
