@@ -139,6 +139,7 @@
                               <label for="add_pname">Batch Number</label>
                               <input type="number" required id="batch" class="form-control" disabled  >
                             </div>
+
                           </div>
 
                         </div>
@@ -148,14 +149,15 @@
                               <label for="add_pname">Expiration Date</label>
                               <input type="date" name="expiration" required class="form-control"   >
                             </div>
+                            <div class="col-sm-4">
+                              <label for="add_pname">Quantity</label>
+                              <input type="number" name="quantity" required class="form-control"   >
+                            </div>
                           </div>
                         </div>
                         <div class="form-group">
                           <div class="row">
-                            <div class="col-sm-6">
-                              <label for="add_pname">Quantity</label>
-                              <input type="number" name="quantity" required class="form-control"   >
-                            </div>
+
                           </div>
                         </div>
 
@@ -923,7 +925,7 @@ immediately after the control sidebar -->
 
     <script>
       $('#title').html("USG | Stocks");
-      $(".treeview a:contains('Maintenance')").parent().addClass("active");
+    
       $(".treeview a:contains('Inventory')").parent().addClass("active");
       $(".navi a:contains('Stocks')").parent().addClass("active");
     </script>

@@ -8,9 +8,6 @@ var url = require('url');
 var fs = require('fs');
 
 
-
-//router.use(fileUpload());
-
 router.get('/someRoute',(req,res)=>{
   res.render('admin-inventory/views/loader');
 });
@@ -216,27 +213,26 @@ router.post('/addSupplier', (req,res)=>{
 
 router.post('/addProductItem', (req,res)=>{
   // Change to transaction
-
+  var url = `/inventory/productInventory?product=${req.body.add_productno}`;
   db.query(`
-    Insert into tblProductInventory (intInventoryNo, intProductNo, intUserID, productSRP,      intUOMno, intSize, productPrice) values ("${req.body.add_inventoryno}","${req.body.add_productno}", "${req.body.add_sno}", ${req.body.add_srp}, "${req.body.add_uom}", ${req.body.add_size}, ${req.body.add_price})`, (err1,results1,fields1)=>{
+    Insert into tblProductInventory (intInventoryNo, intProductNo, intUserID, productSRP,      intUOMno, intSize, productPrice, strBarcode) values ("${req.body.add_inventoryno}","${req.body.add_productno}", "${req.body.add_sno}", ${req.body.add_srp}, "${req.body.add_uom}", ${req.body.add_size}, ${req.body.add_price}, "${req.body.add_barcode}")`, (err1,results1,fields1)=>{
       if (err1) console.log(err1);
       db.query(`Select * from tblinventorytransactions order by intTransactionID desc limit 1`, (err2,results2,fields2)=>{
         if (err2) console.log(err2);
 
 
-        if (results2 == 'null' || results2 == 'undefined' || results2.length == 0){
+        if (results2 == null || results2 == undefined || results2.length == 0){
            db.query(`Insert into tblinventorytransactions (intTransactionID,intInventoryNo, intBatchNo, intShelfNo, intCriticalLimit,  strTypeOfChanges, intUserID ) values ("1000","${req.body.add_inventoryno}",${req.body.add_batch},${req.body.add_shelf},${req.body.add_critical},"New Product Item","1000")`, (err3,results3,fields3)=>{
              if (err3) console.log(err3);
 
-             res.redirect('/inventory/productInventory?product=1000');
-
+             res.send(url);
            });
 
         }else{
           var ino = parseInt(results2[0].intTransactionID) + 1;
           db.query(`Insert into tblinventorytransactions (intTransactionID,intInventoryNo, intBatchNo, intShelfNo, intCriticalLimit,  strTypeOfChanges, intUserID ) values ("${ino}","${req.body.add_inventoryno}",${req.body.add_batch},${req.body.add_shelf},${req.body.add_critical},"New Product Item","1000")`, (err4,results4,fields4)=>{
             if (err4) console.log(err4);
-            res.redirect('/inventory/productInventory?product=1000');
+            res.send(url);
 
 
           });

@@ -112,14 +112,16 @@
               <div class="row">
                 <div class="col-sm-8">
                   <!-- form start -->
-                  <form role="form" method="post" enctype="multipart/form-data"     action="/inventory/addProductItem">
+                  <form role="form" id="newProductForm" >
                     <div class="box-body">
 
                       <div class="form-group">
 
                         <% var number = "1000"; %>
-                        <% if (list == null || list == undefined || list.length == 0 ) { %>
-                        <% number = "1000"; %>
+                        <% if (list == null || list == undefined) { %>
+
+                        <% }else if(list.length == 0){ %>
+
                         <% }else{ %>
                           <% var number = parseInt(list[0].intInventoryNo) + 1 %>
                           <!-- <input type="text" class="form-control" value="<%=number%>" disabled id="add_prodno" name="add_prodno" > -->
@@ -189,8 +191,8 @@
                       <div class="form-group">
                         <div class="row">
                           <div class="col-xs-4">
-                            <label for="add_batch">Batch No</label>
-                            <input type="number" class="form-control" id="add_batch" name="add_batch" >
+                            <label for="add_barcode">Barcode</label>
+                            <input type="number" class="form-control" id="add_barcode" name="add_barcode" >
                           </div>
                           <div class="col-xs-4">
                             <label for="shelf">Shelf No</label>
@@ -769,7 +771,7 @@
 
   <script>
     $('#title').html("USG | All Products");
-    $(".treeview a:contains('Maintenance')").parent().addClass("active");
+
     $(".treeview a:contains('Inventory')").parent().addClass("active");
     $(".navi a:contains('All Products')").parent().addClass("active");
   </script>
@@ -795,6 +797,27 @@
       $('#add_sno').val($(this).data('supplierid'));
       $('#add_sname').val($(this).data('supplier'));
       $('#add_bname').val($(this).data('business'));
+    })
+  </script>
+
+  <script>
+    $('#newProductForm').submit(function(e){
+      e.preventDefault();
+      $.ajax({
+        url: '/inventory/addProductItem',
+        type: 'post',
+        data: $('#newProductForm').serialize(),
+        success: function(response, status, http){
+          if (response){
+            swal("Success!","You added a new product item!", "success");
+            location.href = response;
+          }
+        },
+        error: function(response){
+          swal("Error!","Please try again", "error");
+          location.reload();
+        }
+      })
     })
   </script>
 
