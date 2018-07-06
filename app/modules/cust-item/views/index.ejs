@@ -65,48 +65,45 @@
             <div id="item-options">
               <div>
                 <div class="input-group quantity mb-2">
-                  <div class="input-group-prepend addon"><button class="btn btn-primary quantity-buttons" type="button"><small class="quantity-text quantity-text-minus">-</small></button></div><input class="form-control quantity-input" type="text" readonly="" value="1">
-                  <div class="input-group-append addon"><button class="btn btn-primary quantity-buttons" type="button"><small class="quantity-text quantity-text-plus">+</small></button></div>
+                  <div class="input-group-prepend addon">
+                    <button class="btn btn-primary quantity-buttons minus-btn" type="button">
+                      <small class="quantity-text quantity-text-minus">-</small>
+                    </button>
+                  </div>
+                  <input class="form-control quantity-input" type="text" readonly="" value="1">
+                  <div class="input-group-append addon">
+                    <button class="btn btn-primary quantity-buttons plus-btn" type="button">
+                      <small class="quantity-text quantity-text-plus">+</small>
+                    </button>
+                  </div>
                 </div>
-                <button class="btn btn-custom-primary radius-0">Add to Cart</button>
+                <button id="thisItemBtn" class="btn btn-custom-primary radius-0">Add to Cart</button>
+                <input type="text" value="<%= thisProduct.intProductNo%>" hidden />
               </div>
               <div>
-                <div class="fl-l">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-                    <label class="form-check-label" for="exampleRadios1">
-                      &nbsp5ml
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-                    <label class="form-check-label" for="exampleRadios2">
-                      10ml
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option2">
-                    <label class="form-check-label" for="exampleRadios3">
-                      15ml
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios4" value="option1">
-                    <label class="form-check-label" for="exampleRadios4">
-                      20ml
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios5" value="option1">
-                    <label class="form-check-label" for="exampleRadios5">
-                      25ml
-                    </label>
-                  </div>
+                <div id="radio-container" class="fl-l">
+                  <% thisInventory.forEach((inv, i)=>{ %>
+                    <div class="form-check radio-div">
+                      <input class="prod-price" type="radio" value="<%= inv.productPrice%>" hidden />
+                      <% if(i==0){ %>
+                        <input id="<%= inv.intInventoryNo%>" class="form-check-input sizes-radio" type="radio" name="invSizes" value="<%= inv.intInventoryNo%>" checked>
+                      <% }else{ %>
+                        <input id="<%= inv.intInventoryNo%>" class="form-check-input sizes-radio" type="radio" name="invSizes" value="<%= inv.intInventoryNo%>">
+                      <% } %>
+                      <label class="form-check-label" for="<%= inv.intInventoryNo%>">
+                        <%= inv.intSize%><%= inv.strUnitName%>
+                      </label>
+                    </div>
+                  <% }) %>
                 </div>
-                <div id="item-price" class="fl-r pos-relative">
-                  <p class="m-0 price-symbol">2,350.95</p>
-                  <small class="text-muted"><s class="price-symbol">2,350.95</s></small>
-                </div>
+                <% thisInventory.forEach((inv, i)=>{
+                  if(i==0){ %>
+                  <div id="item-price" class="fl-r pos-relative">
+                    <p class="m-0 price-symbol"><%= inv.productPrice%></p>
+                    <small class="text-muted"><s class="price-symbol">0</s></small>
+                  </div>
+                <% }
+                }) %>
               </div>
             </div>
           </div>
@@ -242,4 +239,49 @@
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
+<script type="text/javascript">
+  // GET - InvNo + Display Price
+  $('#radio-container').on('click', '.sizes-radio', function() {
+    $('#item-price p').text($(this).prev().val());
+    $.get(`/cart/item-inv/${this.value}`).then((res) => {
+
+    }).catch((error) => {
+      console.log(error);
+    });
+  })
+  // GET - Plus Button
+  $('#item-options').on('click', '.plus-btn', ()=>{
+    $.get(`/cart/item-qty/plus`).then((res) => {
+      $('#item-options').find('.quantity-input').val(`${res.qty}`);
+    }).catch((error) => {
+      console.log(error);
+    });
+  });
+  // GET - Minus Button
+  $('#item-options').on('click', '.minus-btn', ()=>{
+    $.get(`/cart/item-qty/minus`).then((res) => {
+      $('#item-options').find('.quantity-input').val(`${res.qty}`);
+    }).catch((error) => {
+      console.log(error);
+    });
+  });
+  // GET & POST to Cart
+  $('#item-options').on('click', '#thisItemBtn', function(){
+    let pid = $(this).next().val();
+    console.log(pid);
+    $('#item-options').find('.quantity-input').val(1);
+    $.get(`/cart/item-post/${pid}`).then((res) => {
+      return $.post(`/cart/modal/item`);
+    })
+    .then((res) => {
+      let modal = $('#modal-product-to-cart'), data = res.cart;
+
+      postToCart(modal, data, res, 0);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  });
+
+</script>
 <%- include('../../../templates/closer.ejs') -%>

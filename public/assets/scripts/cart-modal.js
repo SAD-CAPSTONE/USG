@@ -1,5 +1,38 @@
 let t1, t2;
 
+function postToCart(modal, data, res, tog){
+  clearTimeout(t1);
+  clearTimeout(t2);
+
+  tog == 1 ? modal.modal('toggle'): 0;
+  modal.next().css({
+    "max-width": "100%",
+    "padding": "20px 23px 20px 20px"
+  });
+  data[res.latest].curQty == res.limit ?
+    modal.next().css("border-left", "3px solid #FFC107"):
+    modal.next().css("border-left", "3px solid #00AF6E");
+  modal.next().children('div').css("opacity", "1");
+
+  t1 = setTimeout(()=>{
+    modal.next().css({
+      "max-width": "0",
+      "padding": "20px 0px 20px 0px",
+      "border-left": "none"
+    });
+  },5000);
+  t2 = setTimeout(()=>{
+    modal.next().children('div').css("opacity", "0");
+  },4700);
+
+  data[res.latest].curQty == res.limit ?
+    modal.next().find('p:nth-of-type(2)').text(`Maximum quantity reached (${data[res.latest].curQty})`):
+    modal.next().find('p:nth-of-type(2)').text(`has been added (${data[res.latest].curQty} in cart)`);
+  modal.next().find('p:first-of-type').text(`${data[res.latest].name} ${data[res.latest].curSize}`);
+
+  $('#getCart').click();
+}
+
 // GET - Cart Button, Get Modal
 $('.products-container').on('click', '.cart-btn', function(){
   let pid = $(this).closest('.this-product').find('.product-id').val();
@@ -49,38 +82,9 @@ $('#modal-product-to-cart').on('click', '.minus-btn', ()=>{
 
 // POST - Add to Cart
 $('#modal-product-to-cart').on('click', '.add-button', ()=>{
-  let modal = $('#modal-product-to-cart');
-  $.post(`/cart/modal`).then((res) => {
-    let data = res.cart;
-
-    clearTimeout(t1);
-    clearTimeout(t2);
-    modal.modal('toggle');
-    modal.next().css({
-      "max-width": "100%",
-      "padding": "20px 23px 20px 20px"
-    });
-    data[res.latest].curQty == 10 ?
-      modal.next().css("border-left", "3px solid #FFC107"):
-      modal.next().css("border-left", "3px solid #00AF6E");
-    modal.next().children('div').css("opacity", "1");
-    t1 = setTimeout(()=>{
-      modal.next().css({
-        "max-width": "0",
-        "padding": "20px 0px 20px 0px",
-        "border-left": "none"
-      });
-    },5000);
-    t2 = setTimeout(()=>{
-      modal.next().children('div').css("opacity", "0");
-    },4700);
-
-    data[res.latest].curQty == 10 ?
-      modal.next().find('p:nth-of-type(2)').text(`Maximum quantity reached (${data[res.latest].curQty})`):
-      modal.next().find('p:nth-of-type(2)').text(`has been added (${data[res.latest].curQty} in cart)`);
-    modal.next().find('p:first-of-type').text(`${data[res.latest].name} ${data[res.latest].curSize}`);
-
-    $('#getCart').click();
+  $.post(`/cart/modal/modal`).then((res) => {
+    let modal = $('#modal-product-to-cart'), data = res.cart;
+    postToCart(modal, data, res, 1);
   }).catch((error) => {
     console.log(error);
   });

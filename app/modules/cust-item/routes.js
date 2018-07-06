@@ -34,6 +34,16 @@ function thisProduct(req,res,next){
     }
   });
 }
+function thisInventory(req,res,next){
+  db.query(`SELECT * FROM tblproductlist
+    INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
+    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno
+    WHERE tblproductlist.intProductNo= ?`,[req.params.prodid], (err, results, fields)=> {
+    if (err) console.log(err);
+    req.thisInventory = results;
+    return next();
+  });
+}
 function relatedProducts(req,res,next){
   /*Related Products;
   *(tblproductlist)*(tblproductbrand)*(tblproductinventory)*(tblproductreview)*/
@@ -51,7 +61,7 @@ function relatedProducts(req,res,next){
   });
 }
 function productReviews(req,res,next){
-  /*Related Products, Match(params);
+  /*Review of Current Product, Match(params);
   *(tblproductlist)*(tblproductreview)*(tbluser)*/
   db.query(`SELECT * FROM tblproductlist
     INNER JOIN tblproductreview ON tblproductlist.intProductNo= tblproductreview.intProductNo
@@ -65,10 +75,13 @@ function productReviews(req,res,next){
   });
 }
 
-router.get('/:prodid', thisProduct, relatedProducts, productReviews, (req,res)=>{
+router.get('/:prodid', thisProduct, thisInventory, relatedProducts, productReviews, (req,res)=>{
+  req.session.item_qty = 1;
+  req.session.item_inv = req.thisInventory[0].intInventoryNo;
   res.render('cust-item/views/index', {
     thisUser: req.user,
     thisProduct: req.thisProduct,
+    thisInventory: req.thisInventory,
     relatedProducts: req.relatedProducts,
     productReviews: req.productReviews
   });
