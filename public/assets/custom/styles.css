@@ -869,11 +869,8 @@ li.nav-item > a{
   border-radius: 0;
 
   position: fixed;
-  bottom: 15;
-  left: 25;
   z-index: 15;
 
-  max-width: 0px;
   max-height: 94px;
 
   transition: all 1s ease;

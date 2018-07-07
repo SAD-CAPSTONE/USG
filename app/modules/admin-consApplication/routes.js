@@ -2,8 +2,12 @@ var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
 
-router.get('/register', (req,res)=>{
+router.get('/register-consignor', (req,res)=>{
   res.render('admin-consApplication/views/cons-register');
+});
+
+router.get('/consignor-dash', (req,res)=>{
+  res.render('admin-consApplication/views/cons-dashboard');
 });
 
 router.get('/', (req,res)=>{
