@@ -70,7 +70,16 @@ router.get('/assessOrder',(req,res)=>{
         where tblOrder.intOrderno = "${orderno}"`, (err3,results3,fields3)=>{
           if (err3) console.log(err3);
 
-        res.render('admin-custOrder/views/assessOrder', {orderlist: results1, customer: results2, moment: moment, total: results3[0].totalAll});
+          // total payment
+          db.query(`Select sum(amountPaid) as total from tblCustomerpayment
+            where intStatus = 1 and intOrderno = ${orderno}
+            group by intOrderno`,(err4,results4,fields4)=>{
+              if(err4) console.log(err4);
+
+              res.render('admin-custOrder/views/assessOrder', {orderlist: results1, customer: results2, moment: moment, total: results3[0].totalAll, payment: results4[0].total});
+
+            });
+
 
       });
 
