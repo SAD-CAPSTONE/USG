@@ -19,11 +19,11 @@
         <p>Thank you for your interest in becoming one of our health & wellness partner. </p>
 
         <p>Please fill out this form and email the following documents to info.ultrasupergreen@gmail.com and mktg.ultrasupergreen@gmail.com. Use the subject line: "Consignment Application - (Name of your Brand or Company)" : </p>
-        
+
         <p>•	Company Profile </p>
         <p>•	Product Information Sheet with complete list of ingredients - Excel format </p>
         <p>•	Price list  </p>
-        <p>•	DTI /SEC Registration 
+        <p>•	DTI /SEC Registration
         <p>•	Official Receipt and/or BIR Registration  </p>
         <p>•	Sales Invoice and Delivery receipt  </p>
         <p>•	FDA Registration (if any) </p>
@@ -32,33 +32,33 @@
                <p>All Natural, homemade or herbal </p>
         <input type="button" name="next" class="next action-button" value="Start" style="margin-left: 240px;" />
       </fieldset>
-   
+
     <!--STEP 1 Business Profile-->
     <fieldset>
       <div role="alert" class="alert alert-info text-primary" style=""><i>All fields are required in order to successfully register</i></div>
       <!-- Text input-->
       <div class="form-group">
-        <label class="control-label" for="textinput">Business Name</label>  
+        <label class="control-label" for="textinput">Business Name</label>
         <div class="">
-        <input id="textinput" name="textinput" placeholder="Your Answer" class="form-control input-md" required="" type="text">
-        <span class="help-block">Specify Business Name</span>  
+        <input id="textinput" name="businessname" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+        <span class="help-block">Specify Business Name</span>
         </div>
       </div>
-      
+
       <!-- Text input-->
       <div class="form-group">
-        <label class="control-label" for="textinput">Brand Name</label>  
+        <label class="control-label" for="textinput">Brand Name</label>
         <div class="">
-        <input id="textinput" name="textinput" placeholder="Your Answer" class="form-control" required="" type="text">
-        <span class="help-block">List all if you have multiple brands</span>  
+        <input id="textinput" name="brandname" placeholder="Your Answer" class="form-control" required="" type="text">
+        <span class="help-block">List all if you have multiple brands, separated by a comma</span>
         </div>
       </div>
-      
+
       <!-- Select Basic -->
       <div class="form-group">
-        <label class="control-label" for="selectbasic">Type of Business</label>
+        <label class="control-label" for="businesstype">Type of Business</label>
         <div class="">
-          <select id="selectbasic" name="selectbasic" class="form-control">
+          <select id="selectbasic" name="businessType"  class="form-control">
             <option value="1">choose</option>
             <option value="2">Single Proprietorship / Small Business</option>
             <option value="3">Business Partnership - e.g Incorporated, Corporation, Pvt. Ltd., etc.</option>
@@ -68,13 +68,13 @@
           </select>
         </div>
       </div>
-      
+
       <!-- Text input-->
       <div class="form-group">
-        <label class="control-label" for="textinput">Business Address</label>  
+        <label class="control-label" for="textinput">Business Address</label>
         <div class="">
-        <input id="textinput" name="textinput" placeholder="Your Answer" class="form-control input-md" required="" type="text">
-          
+        <input id="textinput" name="businessaddress" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+
         </div>
       </div>
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
@@ -86,10 +86,10 @@
       <div role="alert" class="alert alert-info text-primary"><i>All fields are required in order to successfully register</i></div>
       <!-- Text input-->
       <div class="form-group">
-        <label class="control-label" for="textinput">Business Tin</label>  
+        <label class="control-label" for="textinput">Business Tin</label>
         <div class="">
-        <input id="textinput" name="textinput" placeholder="Your Answer" class="form-control input-md" required="" type="text">
-          
+        <input id="textinput" name="businesstin" placeholder="Your Answer" class="form-control input-md"  type="text">
+
         </div>
       </div>
 
@@ -97,8 +97,8 @@
       <div class="form-group">
         <label class="control-label" for="selectbasic">Is your business BIR registered? If not, we would require a sales invoice</label>
         <div class="">
-          <select id="selectbasic" name="selectbasic" class="form-control">
-            <option value="1">choose</option>
+          <select id="selectbasic" name="birregistered" class="form-control">
+
             <option value="2">Yes</option>
             <option value="3">No</option>
             <option value="4">We are working on it</option>
@@ -110,29 +110,32 @@
       <div class="form-group">
         <label class="control-label" for="selectbasic">Type of Supplier </label>
         <div class="">
-          <select id="selectbasic" name="selectbasic" class="form-control">
-            <option value="1">choose</option>
-            <option value="2">Consignment</option>
-            <option value="3">Kiosk / Booth (500 rental per day / minimum of 3 days)</option>
+          <select id="selectbasic" name="suppliertype" class="form-control">
+
+            <option value="1">Consignment</option>
+            <option value="2">Kiosk / Booth (500 rental per day / minimum of 3 days)</option>
           </select>
         </div>
       </div>
 
       <!-- Text input-->
       <div class="form-group">
-        <label class="control-label" for="textinput">Contact Person and Designation</label>  
+        <label class="control-label" for="textinput">Supplier Information</label>
         <div class="">
-        <input id="textinput" name="textinput" placeholder="Your Answer" class="form-control input-md" required="" type="text">
-          
+        <input id="textinput" name="fname" placeholder="First Name" class="form-control input-md" required="" type="text">
+        <input id="textinput" name="mname" placeholder="Middle Name" class="form-control input-md" required="" type="text">
+        <input id="textinput" name="lname" placeholder="Last Name" class="form-control input-md" required="" type="text">
+
         </div>
       </div>
 
       <!-- Text input-->
       <div class="form-group">
-        <label class="control-label" for="textinput">Contact Numbers</label>  
+        <label class="control-label" for="textinput">Contact Number</label>
         <div class="">
-        <input id="textinput" name="textinput" placeholder="Your Answer" class="form-control input-md" required="" type="text">
-          
+        <input id="textinput" name="mobile" placeholder="Mobile" class="form-control input-md" required="" type="text">
+        <input id="textinput" name="phone" placeholder="Phone" class="form-control input-md" required="" type="text">
+
         </div>
       </div>
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
@@ -144,19 +147,19 @@
       <div role="alert" class="alert alert-info text-primary"><i>All fields are required in order to successfully register</i></div>
       <!-- Text input-->
       <div class="form-group">
-        <label class="control-label" for="textinput">Best Time &amp; Day to reach you</label>  
+        <label class="control-label" for="textinput">Best Time &amp; Day to reach you</label>
         <div class="">
-        <input id="textinput" name="textinput" placeholder="Your Answer" class="form-control input-md" required="" type="text">
-          
+        <input id="textinput" name="besttime" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+
         </div>
       </div>
 
       <!-- Text input-->
       <div class="form-group">
-        <label class="control-label" for="textinput">Email address</label>  
+        <label class="control-label" for="textinput">Email address</label>
         <div class="">
-        <input id="textinput" name="textinput" placeholder="Your Answer" class="form-control input-md" required="" type="text">
-          
+        <input id="textinput" name="email" placeholder="Your Answer" class="form-control input-md" required="" type="email">
+
         </div>
       </div>
 
@@ -166,13 +169,13 @@
         <div class="">
         <div class="checkbox">
           <label for="checkboxes-0">
-            <input name="checkboxes" id="checkboxes-0" value="1" type="checkbox">
+            <input name="discount" id="checkboxes-0" value="40" type="checkbox">
             We agree with the 40% discount/ commision on all product consignment
           </label>
         </div>
         <div class="checkbox">
           <label for="checkboxes-1">
-            <input name="checkboxes" id="checkboxes-1" value="2" type="checkbox">
+            <input name="discount" id="checkboxes-1" value="0" type="checkbox">
             We have a higher offer for Ultra Super Green - (email proposal)
           </label>
         </div>
@@ -184,12 +187,12 @@
         <label class="control-label" for="prependedcheckbox"></label>
         <div class="">
           <div class="input-group">
-            <span class="input-group-addon">     
-                <input type="checkbox">     
+            <span class="input-group-addon">
+                <input type="checkbox">
             </span>
             <input id="prependedcheckbox" name="prependedcheckbox" class="form-control" placeholder="Other please specify" required="" type="text">
           </div>
-          
+
         </div>
       </div>
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
@@ -204,120 +207,15 @@
         <label class="control-label" for="checkboxes">Product category</label>
         <hr>
         <div class="">
-        <div class="checkbox">
-          <label for="checkboxes-0">
-            <input name="checkboxes" id="checkboxes-0" value="1" type="checkbox">
-            Food - Dairy
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-1">
-            <input name="checkboxes" id="checkboxes-1" value="2" type="checkbox">
-            Beverage -Dairy
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-2">
-            <input name="checkboxes" id="checkboxes-2" value="3" type="checkbox">
-            Cleaning products - home, car, etc.
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-3">
-            <input name="checkboxes" id="checkboxes-3" value="4" type="checkbox">
-            Pet Care - food and hygiene products
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-4">
-            <input name="checkboxes" id="checkboxes-4" value="5" type="checkbox">
-            Beverage - Non Dairy
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-5">
-            <input name="checkboxes" id="checkboxes-5" value="6" type="checkbox">
-            Food - Vegan
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-6">
-            <input name="checkboxes" id="checkboxes-6" value="7" type="checkbox">
-            Food - Vegatarian
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-7">
-            <input name="checkboxes" id="checkboxes-7" value="8" type="checkbox">
-            Food - Bread and Pastries
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-8">
-            <input name="checkboxes" id="checkboxes-8" value="9" type="checkbox">
-            Non food / other merchandise / souvenir items
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-9">
-            <input name="checkboxes" id="checkboxes-9" value="10" type="checkbox">
-            Aromatherapy
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-10">
-            <input name="checkboxes" id="checkboxes-10" value="11" type="checkbox">
-            Herbal supplements - Capsules
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-11">
-            <input name="checkboxes" id="checkboxes-11" value="12" type="checkbox">
-            Herbal supplements - Concentrate / Juice
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-12">
-            <input name="checkboxes" id="checkboxes-12" value="13" type="checkbox">
-            Herbal supplements - tablets
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-13">
-            <input name="checkboxes" id="checkboxes-13" value="14" type="checkbox">
-            Weight loss supplements
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-14">
-            <input name="checkboxes" id="checkboxes-14" value="15" type="checkbox">
-            Coffee beans - Brewed
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-15">
-            <input name="checkboxes" id="checkboxes-15" value="16" type="checkbox">
-            Instant Coffee
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-16">
-            <input name="checkboxes" id="checkboxes-16" value="17" type="checkbox">
-            Meat Products
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-17">
-            <input name="checkboxes" id="checkboxes-17" value="18" type="checkbox">
-            Produce - Fruits
-          </label>
-        </div>
+
+
         <div class="checkbox">
           <label for="checkboxes-18">
             <input name="checkboxes" id="checkboxes-18" value="19" type="checkbox">
             Produce - Vegetables
           </label>
         </div>
+
         </div>
       </div>
 
@@ -326,12 +224,12 @@
         <label class="control-label" for="prependedcheckbox"></label>
         <div class="">
           <div class="input-group">
-            <span class="input-group-addon">     
-                <input type="checkbox">     
+            <span class="input-group-addon">
+                <input type="checkbox">
             </span>
             <input id="prependedcheckbox" name="prependedcheckbox" class="form-control" placeholder="Other please specify" type="text">
           </div>
-          
+
         </div>
       </div>
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
@@ -353,50 +251,15 @@
               Certified Organic / No harmful chemicals (Carcinogens, sulfates, etc.)
             </label>
           </div>
-          <div class="checkbox">
-            <label for="checkboxes-1">
-              <input name="checkboxes" id="checkboxes-1" value="2" type="checkbox">
-              Gluten-free
-            </label>
-          </div>
-          <div class="checkbox">
-            <label for="checkboxes-2">
-              <input name="checkboxes" id="checkboxes-2" value="3" type="checkbox">
-              Vegan
-            </label>
-          </div>
-          <div class="checkbox">
-            <label for="checkboxes-3">
-              <input name="checkboxes" id="checkboxes-3" value="4" type="checkbox">
-              Vegetarian
-            </label>
-          </div>
-          <div class="checkbox">
-            <label for="checkboxes-4">
-              <input name="checkboxes" id="checkboxes-4" value="5" type="checkbox">
-              No Certifications / homemade/ all natural products
-            </label>
-          </div>
-          <div class="checkbox">
-            <label for="checkboxes-5">
-              <input name="checkboxes" id="checkboxes-5" value="6" type="checkbox">
-              Herbal Products
-            </label>
-          </div>
-          <div class="checkbox">
-            <label for="checkboxes-6">
-              <input name="checkboxes" id="checkboxes-6" value="7" type="checkbox">
-              Eco-Friendly
-            </label>
-          </div>
+
           </div>
         </div>
-        
+
         <!-- Select Basic -->
         <div class="form-group">
           <label class="control-label" for="selectbasic">FDA Registration Status</label>
           <div class="">
-            <select id="selectbasic" name="selectbasic" class="form-control">
+            <select id="selectbasic" name="fdareg" class="form-control">
               <option value="1">choose</option>
               <option value="2">Registered</option>
               <option value="3">In-Process</option>
@@ -406,22 +269,29 @@
             </select>
           </div>
         </div>
-        
+
         <!-- Text input-->
         <div class="form-group">
-          <label class="control-label" for="textinput">FDA Registration ID Number </label>  
+          <label class="control-label" for="textinput">FDA Registration ID Number </label>
           <div class="">
-          <input id="textinput" name="textinput" placeholder="Your Answer" class="form-control input-md" required="" type="text">
-            
+          <input id="textinput" name="fdaregid" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+
         </div>
       </div>
       <!-- Text input-->
       <div class="form-group">
-          <label class="control-label" for="textinput">Proposed Schedule of Product Delivery </label>  
+          <label class="control-label" for="textinput">Proposed Schedule of Product Delivery </label>
           <div class="">
-          <input id="textinput" name="textinput" placeholder="Your Answer" class="form-control input-md" required="" type="text">
-            
+          <input id="textinput" name="sched" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+
         </div>
+
+        <div class="form-group">
+            <label class="control-label" for="textinput">Frequency of Delivery </label>
+            <div class="">
+            <input id="textinput" name="freq" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+
+          </div>
       </div>
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
       <input type="button" name="next" class="next action-button" value="Next" />
@@ -437,13 +307,13 @@
             <div class="">
             <div class="checkbox">
               <label for="checkboxes-0">
-                <input name="checkboxes" id="checkboxes-0" value="1" type="checkbox">
+                <input name="replacement" id="checkboxes-0" value="1" type="checkbox">
                 I hereby agree to replace any goods/products that are about to expire, non-moving, damaged upon delivery or with valid customer complaints
               </label>
             </div>
             </div>
           </div>
-          
+
           <!-- Multiple Checkboxes -->
           <div class="form-group">
             <label class="control-label" for="checkboxes">Marketing &amp; Promotions</label>
@@ -459,9 +329,9 @@
           <p>Kindly allow a maximum of 5 business days for review and approval.  </p>
 
           <p>Once your application has been reviewed and pass our initial requirements, the consignor is required to do an in-store product sampling and/or demo activity to test the market to get instant feedback from our customers.  </p>
-          
+
           <p>This will be scheduled by appointment. (Monday or Sundays only) 12:00nn to 6:00pm. First come, first served basis.  </p>
-          
+
           <p>If everything goes well, we would proceed with our partnership and we can start carrying your brand. </p>
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
       <input type="submit" name="submit" class="submit action-button" value="Submit" />
@@ -472,23 +342,43 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
   <script src="jq/external/jquery/jquery.js"></script>
   <script src="jq/jquery-ui.min.js"></script>
+
+  <script>
+  ('#sub').on('click',function(){
+    $.ajax({
+      url: '/consApplication/register',
+      type: 'post',
+      data: ('#registration').serialize();
+      success: function(response,status,http){
+        if(response){
+          swal("Success!","","success");
+          location.reload();
+        }
+      },
+      error: function(response){
+        swal("error",response,"error")
+      }
+    })
+  })
+  </script>
+
   <script>
     var current_fs, next_fs, previous_fs; //fieldsets
     var left, opacity, scale; //fieldset properties which we will animate
     var animating; //flag to prevent quick multi-click glitches
-    
+
     $(".next").click(function(){
       if(animating) return false;
       animating = true;
-      
+
       current_fs = $(this).parent();
       next_fs = $(this).parent().next();
-      
+
       //activate next step on progressbar using the index of next_fs
       $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
-      
+
       //show the next fieldset
-      next_fs.show(); 
+      next_fs.show();
       //hide the current fieldset with style
       current_fs.animate({opacity: 0}, {
         step: function(now, mx) {
@@ -504,29 +394,29 @@
             'position': 'absolute'
           });
           next_fs.css({'left': left, 'opacity': opacity});
-        }, 
-        duration: 800, 
+        },
+        duration: 800,
         complete: function(){
           current_fs.hide();
           animating = false;
-        }, 
+        },
         //this comes from the custom easing plugin
         easing: 'easeInOutBack'
       });
     });
-    
+
     $(".previous").click(function(){
       if(animating) return false;
       animating = true;
-      
+
       current_fs = $(this).parent();
       previous_fs = $(this).parent().prev();
-      
+
       //de-activate current step on progressbar
       $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
-      
+
       //show the previous fieldset
-      previous_fs.show(); 
+      previous_fs.show();
       //hide the current fieldset with style
       current_fs.animate({opacity: 0}, {
         step: function(now, mx) {
@@ -539,21 +429,21 @@
           opacity = 1 - now;
           current_fs.css({'left': left});
           previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
-        }, 
-        duration: 800, 
+        },
+        duration: 800,
         complete: function(){
           current_fs.hide();
           animating = false;
-        }, 
+        },
         //this comes from the custom easing plugin
         easing: 'easeInOutBack'
       });
     });
-    
+
     $(".submit").click(function(){
       return false;
     })</script>
-  
+
 </body>
 
 </html>
