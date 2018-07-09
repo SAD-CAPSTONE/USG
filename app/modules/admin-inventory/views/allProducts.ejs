@@ -195,8 +195,8 @@
             </div>
             <div class="form-group">
               <label for=""></label>
-              <div style="width: 30%">
-              <img src="" class="img-responsive"  disabled id="pic" name="" >
+              <center><div style="width: 60%">
+              <img src="" class="img-responsive" disabled id="pic" name=""  ></center>
             </div>
             </div>
             <div class="form-group">
@@ -441,7 +441,7 @@
     $('#view_pname').val($(this).data('prodname'));
     $('#view_pdesc').val($(this).data('proddesc'));
     $('#view_prodpic').val($(this).data('prodpic'));
-    var filename = "/images/" + $(this).data('prodpicture');
+    var filename = "/assets/images/products/" + $(this).data('prodpicture');
     //alert(filename);
     $('#pic').attr('src',filename);
 
@@ -485,7 +485,7 @@
 
 <script>
 $('#title').html("USG | All Products");
-$(".treeview a:contains('Maintenance')").parent().addClass("active");
+
 $(".treeview a:contains('Inventory')").parent().addClass("active");
 $(".navi a:contains('All Products')").parent().addClass("active");
 </script>

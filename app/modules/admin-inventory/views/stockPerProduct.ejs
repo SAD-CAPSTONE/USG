@@ -296,7 +296,7 @@
 
   <script>
     $('#title').html("USG | All Products");
-    $(".treeview a:contains('Maintenance')").parent().addClass("active");
+  
     $(".treeview a:contains('Inventory')").parent().addClass("active");
     $(".navi a:contains('All Products')").parent().addClass("active");
   </script>
@@ -346,7 +346,7 @@
           if (response){
             if (response == "yes"){
               window.location.reload();
-              
+
             }else{
               swal("Error!", "", "error");
             }

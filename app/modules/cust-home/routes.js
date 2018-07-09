@@ -38,8 +38,8 @@ function newProducts(req,res,next){
 
 router.get('/', popularProducts, newProducts, (req,res)=>{
   console.log(`??????????? Session Values: ${JSON.stringify(req.user, null, 2)}`);
-  console.log(req.session.modal_cart);
-  console.log(req.session.cart);
+  console.log(`??????????? Modal Cart Values: ${JSON.stringify(req.session.modal_cart, null, 2)}`);
+  console.log(`??????????? Cart List Values: ${JSON.stringify(req.session.cart, null, 2)}`);
   // req.session.modal_cart = null;
   // req.session.cart = null;
   // console.log(JSON.stringify(req.session.cart, null, 2));

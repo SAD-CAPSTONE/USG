@@ -1,5 +1,34 @@
 $(() => {
 
+  function chekoutBtnDisabled(){
+    $('#cart-sidebar ul.checkout a').removeAttr('href');
+    $('#cart-sidebar ul.checkout a').css({
+      'background-color':'#B9B9B9',
+      'cursor':'not-allowed'
+    });
+    $('#cart-sidebar ul.checkout a')
+      .mouseenter(function (){
+        $(this).css('background-color','#B9B9B9');
+      })
+      .mouseleave(function (){
+        $(this).css('background-color','#B9B9B9');
+      });
+  }
+  function chekoutBtnActive(){
+    $('#cart-sidebar ul.checkout a').attr('href','/summary/checkout');
+    $('#cart-sidebar ul.checkout a').css({
+      'background-color':'rgba(18, 187, 173, .8)',
+      'cursor':'pointer'
+    });
+    $('#cart-sidebar ul.checkout a')
+      .mouseenter(function (){
+        $(this).css('background-color','#00AF66');
+      })
+      .mouseleave(function (){
+        $(this).css('background-color','rgba(18, 187, 173, .8)');
+      });
+  }
+
   // GET - Load cart
   $('#getCart').on('click', () => {
     let list = $('#cart-pad');
@@ -36,11 +65,16 @@ $(() => {
             <div class="product-remove"><i class="fa fa-remove product-remove-icon"></i></div>
           </div>`)
       });
-      res.cart.length ? 0 :
+      if(!res.cart.length){
         list.append(`
           <div class="cart-product-container">
             <p> Cart currently empty </p>
           </div>`);
+        chekoutBtnDisabled();
+      }
+      else{
+        chekoutBtnActive();
+      }
       $('#subtotal-btn').click();
     }).catch((error) => {
       list.append(`
@@ -63,19 +97,15 @@ $(() => {
       }),
       success: (res) => {
         $(this).parent().remove();
-        $("#checkout-products > .product-div").each(function(index) {
-          $(this).find('.inventory-id').val() == res.inv ?
-            $(this).remove() : 0
-        });
         if(!res.cart){
           $('#cart-pad').append(`
             <div class="cart-product-container">
               <p> Cart currently empty </p>
             </div>`);
-          $('#checkout-products').append(`
-            <div class="product-div pos-relative px-3">
-              <p class="fs-09em"> Cart currently empty </p>
-            </div>`);
+          chekoutBtnDisabled();
+        }
+        else{
+          chekoutBtnActive();
         }
         $('#subtotal-btn').click();
       }
@@ -96,10 +126,6 @@ $(() => {
       }),
       success: (res) => {
         $(this).closest('.product-card').find('.quantity-input').val(res.cart.curQty);
-        $("#checkout-products > .product-div").each(function(index) {
-          $(this).find('.inventory-id').val() == res.cart.inv ?
-            $(this).find('.quantity').text(res.cart.curQty) : 0
-        });
         $('#subtotal-btn').click();
       }
     });
@@ -119,10 +145,6 @@ $(() => {
       }),
       success: (res) => {
         $(this).closest('.product-card').find('.quantity-input').val(res.cart.curQty);
-        $("#checkout-products > .product-div").each(function(index) {
-          $(this).find('.inventory-id').val() == res.cart.inv ?
-            $(this).find('.quantity').text(res.cart.curQty) : 0
-        });
         $('#subtotal-btn').click();
       }
     });
@@ -132,7 +154,6 @@ $(() => {
   $('#subtotal-btn').on('click', () => {
     $.get('/cart/list/total/sub').then((res) => {
       $('.checkout').find('button+p').text(`${res.subtotal}`)
-      $('#total-btn').click();
     }).catch((error) => {
       console.log(error)
     });

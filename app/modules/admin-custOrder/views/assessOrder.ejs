@@ -120,9 +120,9 @@
                               <tr>
                                 <td><%= i.strProductCode %></td>
                                 <td><%= i.strProductName %></td>
-                                <td><%= i.intQuantity %></td>
-                                <td>Php <%= i.purchasePrice %></td>
-                                <td>Php <%= i.intQuantity * i.purchasePrice %></td>
+                                <td><%= i.quantity %></td>
+                                <td>₱ <%= (i.purchasePrice).toFixed(2) %></td>
+                                <td>₱ <%= (i.quantity * i.purchasePrice).toFixed(2) %></td>
 
                               </tr>
                             <% }) %>
@@ -142,13 +142,21 @@
                         <table class="table table-bordered">
                           <tr>
                             <th></th>
+                            <th></th>
                           </tr>
                           <tr>
-                            <td>Discount: 0%</td>
+                            <td>Discount:</td>
+                            <td align="right"> 0%</td>
 
                           </tr>
                           <tr>
-                            <td>Total: PHP <%= total %></td>
+                            <td>Total: </td>
+                            <td align="right">₱ <%= (total).toFixed(2) %></td>
+                          </tr>
+
+                          <tr>
+                            <td>Amount Due: </td>
+                            <td align="right">₱ <%= (total - payment).toFixed(2) %></td>
                           </tr>
 
                         </table>
@@ -433,16 +441,18 @@ $('#submit').on('click',function(){
           orderStatus: $('#orderstatus').val(),
           paymentStatus: $('#paymentstatus').val(),
           notify: notifyCustomer,
-          message: $('#message').val()
+          message: $('#message').val(),
+          total: '<%=total%>'
 
           },
     success: function(response,status,http){
       if (response){
         if (response == "yes"){
           swal("Success!","","success");
-          window.location.reload();
+          location.reload();
         }else{
           swal("Error!","","error");
+          location.reload();
         }
       }
     }

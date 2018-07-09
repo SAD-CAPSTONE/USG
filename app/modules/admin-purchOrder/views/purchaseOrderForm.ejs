@@ -33,18 +33,18 @@
        <small><b>Mobile Number:</b> (0955) 904-4744</small> </br>
        </br>
 
-       <form class="form-horizontal" method="post" action="/purchaseOrder/submitForm">
+       <form class="form-horizontal" id="purchaseForm" >
        <div class="row">
          <div class="col-md-2">
            <div class="form-group">
              <label for="purcNo">P.O Number:</label>
-             <% var POo = "1000"; %>
+             <% var P = "1000"; %>
              <% if( POno == null || POno == undefined || POno.length == 0){ %>
 
              <% }else{ %>
-             <%  POo = parseInt(POno[0].intPurchaseOrderNo) + 1 %>
+             <%  P = parseInt(POno[0].intPurchaseOrderNo) + 1 %>
              <% } %>
-               &nbsp;<input type="text" value="<%=POo%>" name="POnum" id="purcNo" class="form-control">
+               &nbsp;<input type="text" value="<%=P%>" name="POnum" id="purcNo" class="form-control">
 
            </div>
          </div>
@@ -578,41 +578,49 @@ $(document).ready(function() {
       var tr = table.getElementsByTagName("tr");
       var validity = 1;
 
+
+
       if (validity){
         t.row.add( [
             count,
             '<input style="width: 200px" required type="text" name="product[]" value="" class="form-control">',
             '<input style="width: 80px" required type="number" name="quantity[]" value="0" class="form-control">',
             '<input style="width: 80px" type="number" name="price[]" value="2" class="price form-control">',
-            '<input style="width: 80px" type="number" name="total[]" value="2" class="total form-control">'
+            '<input style="width: 80px" disabled type="number" name="total[]" value="2" class="total form-control">'
 
         ] ).draw( false );
         //validity = 0;
+
         count++;
       }
 
     } );
 
-   $('#sub').on('click', function(){
-     $(this).submit();
-     $.ajax({
-       url: '/purchaseOrder/submitForm',
-       method: 'post',
-       success: function(response,status,http){
 
+
+   $('#purchaseForm').submit(function(e){
+     e.preventDefault();
+     $.ajax({
+       url: '/purchaseOrder/submit',
+       type: 'post',
+       data: $('#purchaseForm').serialize(),
+       success: function(response,status,http){
+         if (response == "yes"){
+           swal("Success","You successfully ordered", "success");
+           location.reload();
+         }
+       },
+       error: function(response){
+         swal("Error",response,"error");
        }
-     })
-   });
+     });
+   })
 
 
 } );
 </script>
 
-<script>
-function a(){
-  alert();
-}
-</script>
+
 
 
 
