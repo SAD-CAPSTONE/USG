@@ -334,8 +334,35 @@ router.get('/customer', (req,res)=>{
     tblcustomer.intUserID`,(err1,results1,fields1)=>{
       if (err1) console.log(err1);
       res.render('admin-maintain/views/customer', {re: results1});
-      console.log(results1);
 
+
+  });
+});
+
+router.get('/productCertification',(req,res)=>{
+  db.query(`Select * from tblProductCertification`,(err1,results1,fields1)=>{
+    if(err1) console.log(err1);
+    res.render('admin-maintain/views/certifications',{certification: results1});
+  });
+});
+
+router.post('/addCertification',(req,res)=>{
+  var certno = "1000";
+  db.query(`Select * from tblProductCertification order by intCertificationNo desc limit 1`,(err1,results1,fields1)=>{
+    if(err1) console.log(err1);
+
+    if(results1 == null || results1 == undefined){
+
+    }else if(results1.length == 0){
+
+    }else{
+      certno = parseInt(results1[0].intCertificationNo) + 1;
+    }
+
+    db.query(`Insert into tblProductCertification (intCertificationNo, strCertification) values ("${certno}", "${req.body.certification}")`, (err2,results2,fields2)=>{
+      if (err2) console.log(err2);
+      res.send("yes");
+    })
   });
 });
 // <%- include('../../../templates/admin-navbar.ejs') -%>
