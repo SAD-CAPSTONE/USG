@@ -1,5 +1,5 @@
 <%- include('../../../templates/master.ejs') -%>
-<form id="msform">
+<form id="msform" novalidate>
     <!-- progressbar -->
     <ul id="progressbar">
       <li class="active tes">Start</li>
@@ -11,7 +11,7 @@
       <li class="tes">Agreement</li>
     </ul>
     <!-- fieldsets -->
-     <!--STEP 1 Business Profile-->
+     <!--START-->
      <fieldset class=" box-shadow-mini">
         <img src="/assets/images/static2/img10.jpg" style="padding-left:0px; padding-bottom:30px; width:95%;">
         <h2 class="text-center">USG Supplier Information Sheet (Consignment Application)</h2>
@@ -49,7 +49,7 @@
       <div class="form-group">
         <label class="control-label" for="textinput">Brand Name</label>
         <div class="">
-        <input id="textinput" name="brandname" placeholder="Your Answer" class="form-control" required="" type="text">
+        <input id="textinput" name="brands" placeholder="Your Answer" class="form-control" required="" type="text">
         <span class="help-block">List all if you have multiple brands, separated by a comma</span>
         </div>
       </div>
@@ -59,12 +59,16 @@
         <label class="control-label" for="businesstype">Type of Business</label>
         <div class="">
           <select id="selectbasic" name="businessType"  class="form-control">
-            <option value="1">choose</option>
-            <option value="2">Single Proprietorship / Small Business</option>
-            <option value="3">Business Partnership - e.g Incorporated, Corporation, Pvt. Ltd., etc.</option>
-            <option value="4">Social Enterprise</option>
-            <option value="5">Online Seller / Authorized Distributor or Dealer</option>
-            <option value="6">MLM - Multi Level Marketing</option>
+            <% if (btype == null || btype == undefined){ %>
+
+            <% }else if(btype.length == 0){ %>
+
+            <% }else{ %>
+              <% btype.forEach(function(i){ %>
+                <option value="<%=i.intBusinessTypeNo%>"><%=i.strBusinessType%></option>
+              <% }) %>
+            <% } %>
+
           </select>
         </div>
       </div>
@@ -93,15 +97,28 @@
         </div>
       </div>
 
-      <!-- Select Basic -->
+      <!-- BIR stats -->
       <div class="form-group">
         <label class="control-label" for="selectbasic">Is your business BIR registered? If not, we would require a sales invoice</label>
         <div class="">
-          <select id="selectbasic" name="birregistered" class="form-control">
+          <select id="selectbasic" name="birstat" class="form-control">
 
-            <option value="2">Yes</option>
-            <option value="3">No</option>
-            <option value="4">We are working on it</option>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+            <option value="2">We are working on it</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- DTI stats -->
+      <div class="form-group">
+        <label class="control-label" for="selectbasic">Is your business DTI registered?</label>
+        <div class="">
+          <select id="selectbasic" name="dtistat" class="form-control">
+
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+            <option value="2">We are working on it</option>
           </select>
         </div>
       </div>
@@ -125,6 +142,7 @@
         <input id="textinput" name="fname" placeholder="First Name" class="form-control input-md" required="" type="text">
         <input id="textinput" name="mname" placeholder="Middle Name" class="form-control input-md" required="" type="text">
         <input id="textinput" name="lname" placeholder="Last Name" class="form-control input-md" required="" type="text">
+
 
         </div>
       </div>
@@ -154,7 +172,7 @@
         </div>
       </div>
 
-      <!-- Text input-->
+      <!-- Email-->
       <div class="form-group">
         <label class="control-label" for="textinput">Email address</label>
         <div class="">
@@ -163,19 +181,19 @@
         </div>
       </div>
 
-      <!-- Multiple Checkboxes -->
+      <!-- Consignment Price -->
       <div class="form-group">
         <label class="control-label" for="checkboxes">Consignment Discount</label>
         <div class="">
         <div class="checkbox">
           <label for="checkboxes-0">
-            <input name="discount" id="checkboxes-0" value="40" type="checkbox">
+            <input name="consignment" id="checkboxes-0" value="40" type="checkbox">
             We agree with the 40% discount/ commision on all product consignment
           </label>
         </div>
         <div class="checkbox">
           <label for="checkboxes-1">
-            <input name="discount" id="checkboxes-1" value="0" type="checkbox">
+            <input name="consignment" id="checkboxes-1" value="0" type="checkbox">
             We have a higher offer for Ultra Super Green - (email proposal)
           </label>
         </div>
@@ -190,7 +208,7 @@
             <span class="input-group-addon">
                 <input type="checkbox">
             </span>
-            <input id="prependedcheckbox" name="prependedcheckbox" class="form-control" placeholder="Other please specify" required="" type="text">
+            <input id="prependedcheckbox" disabled name="prependedcheckbox" class="form-control" placeholder="Other please specify" required="" type="text">
           </div>
 
         </div>
@@ -201,53 +219,63 @@
 
     <!--STEP 4 Products-->
     <fieldset>
-    <div role="alert" class="alert alert-info text-primary"><i>All fields are required in order to successfully register</i></div>
-      <!-- Multiple Checkboxes -->
-      <div class="form-group">
-        <label class="control-label" for="checkboxes">Product category</label>
-        <hr>
-        <div class="">
+      <div role="alert" class="alert alert-info text-primary"><i>All fields are required in order to successfully register</i></div>
+        <!-- Category -->
+        <div class="form-group">
+          <label class="control-label" for="checkboxes">Product category</label>
+          <hr>
+          <div class="">
 
 
-        <div class="checkbox">
-          <label for="checkboxes-18">
-            <input name="checkboxes" id="checkboxes-18" value="19" type="checkbox">
-            Produce - Vegetables
-          </label>
-        </div>
+          <div class="checkbox">
+            <label for="checkboxes-18">
+              <% if (category == null || category == undefined){ %>
 
-        </div>
-      </div>
+              <% }else if(category.length == 0){ %>
 
-      <!-- Prepended checkbox -->
-      <div class="form-group">
-        <label class="control-label" for="prependedcheckbox"></label>
-        <div class="">
-          <div class="input-group">
-            <span class="input-group-addon">
-                <input type="checkbox">
-            </span>
-            <input id="prependedcheckbox" name="prependedcheckbox" class="form-control" placeholder="Other please specify" type="text">
+              <% }else{ %>
+                <% category.forEach(function(i){ %>
+                  <input name="category" id="checkboxes-18" value="<%=i.intSubCategoryNo%>" type="checkbox">
+                  <%=i.strCategory%>-<%=i.strSubCategory%> </br>
+                <% }) %>
+              <% } %>
+
+            </label>
           </div>
 
+          </div>
         </div>
-      </div>
-      <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
-      <input type="button" name="next" class="next action-button" value="Next" />
+
+        <!-- Prepended checkbox -->
+        <div class="form-group">
+          <label class="control-label" for="prependedcheckbox"></label>
+          <div class="">
+            <div class="input-group">
+              <span class="input-group-addon">
+                  <input type="checkbox">
+              </span>
+              <input id="prependedcheckbox" name="prependedcheckbox" class="form-control" placeholder="Other please specify" type="text">
+            </div>
+
+          </div>
+        </div>
+        <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
+        <input type="button" name="next" class="next action-button" value="Next" />
     </fieldset>
+
 
     <!--STEP 5 Product Details-->
     <fieldset>
       <div role="alert" class="alert alert-info text-primary"><i>All fields are required in order to successfully register</i></div>
       <!-- Text input-->
-      <!-- Multiple Checkboxes -->
+      <!-- certification -->
       <div class="form-group">
           <label class="control-label" for="checkboxes">Product Certifications / Awards &amp; Recognition </label>
           <hr>
           <div class="">
           <div class="checkbox">
             <label for="checkboxes-0">
-              <input name="checkboxes" id="checkboxes-0" value="1" type="checkbox">
+              <input name="certification" id="checkboxes-0" value="1" type="checkbox">
               Certified Organic / No harmful chemicals (Carcinogens, sulfates, etc.)
             </label>
           </div>
@@ -259,7 +287,7 @@
         <div class="form-group">
           <label class="control-label" for="selectbasic">FDA Registration Status</label>
           <div class="">
-            <select id="selectbasic" name="fdareg" class="form-control">
+            <select id="selectbasic" name="fdastat" class="form-control">
               <option value="1">choose</option>
               <option value="2">Registered</option>
               <option value="3">In-Process</option>
@@ -274,7 +302,7 @@
         <div class="form-group">
           <label class="control-label" for="textinput">FDA Registration ID Number </label>
           <div class="">
-          <input id="textinput" name="fdaregid" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+          <input id="textinput" name="fda" placeholder="Your Answer" class="form-control input-md" required="" type="text">
 
         </div>
       </div>
@@ -282,9 +310,10 @@
       <div class="form-group">
           <label class="control-label" for="textinput">Proposed Schedule of Product Delivery </label>
           <div class="">
-          <input id="textinput" name="sched" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+          <input id="textinput" name="deliverysched" placeholder="Your Answer" class="form-control input-md" required="" type="text">
 
         </div>
+      </div
 
         <div class="form-group">
             <label class="control-label" for="textinput">Frequency of Delivery </label>
@@ -296,6 +325,8 @@
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
       <input type="button" name="next" class="next action-button" value="Next" />
     </fieldset>
+
+
 
     <!--STEP 6 Agreement-->
     <fieldset>
@@ -320,7 +351,7 @@
             <div class="">
             <div class="checkbox">
               <label for="checkboxes-0">
-                <input name="checkboxes" id="checkboxes-0" value="1" type="checkbox">
+                <input name="marketing" id="checkboxes-0" value="1" type="checkbox">
                 I / Our company would like to actively participate and support any marketing and promotional activities of Ultra Super Green (e.g. product sampling, special events and other local market events)
               </label>
             </div>
@@ -340,27 +371,12 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
-  <script src="jq/external/jquery/jquery.js"></script>
-  <script src="jq/jquery-ui.min.js"></script>
+  <!-- jQuery 3 -->
+  <script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/assets/jquery/jquery-ui.min.js"></script>
 
-  <script>
-  ('#sub').on('click',function(){
-    $.ajax({
-      url: '/consApplication/register',
-      type: 'post',
-      data: ('#registration').serialize();
-      success: function(response,status,http){
-        if(response){
-          swal("Success!","","success");
-          location.reload();
-        }
-      },
-      error: function(response){
-        swal("error",response,"error")
-      }
-    })
-  })
-  </script>
+
+
 
   <script>
     var current_fs, next_fs, previous_fs; //fieldsets
@@ -439,10 +455,27 @@
         easing: 'easeInOutBack'
       });
     });
+    </script>
+    <script>
+      $('#msform').submit(function(e){
+        e.preventDefault();
 
-    $(".submit").click(function(){
-      return false;
-    })</script>
+        $.ajax({
+          url: '/consApplication/register',
+          type: 'post',
+          data: $('#msform').serialize(),
+          success: function(response,status,http){
+            alert("Success");
+            location.reload();
+          },
+          error: function(response){
+            alert(response);
+
+          }
+        });
+      })
+    </script>
+
 
 </body>
 
