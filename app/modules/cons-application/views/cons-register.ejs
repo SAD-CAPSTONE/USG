@@ -275,8 +275,17 @@
           <div class="">
           <div class="checkbox">
             <label for="checkboxes-0">
-              <input name="certification" id="checkboxes-0" value="1" type="checkbox">
-              Certified Organic / No harmful chemicals (Carcinogens, sulfates, etc.)
+              <% if (certification == null || certification == undefined){ %>
+
+              <% }else if(certification.length == 0){ %>
+
+              <% }else{ %>
+                <% certification.forEach(function(i){ %>
+                  <input name="certification" id="checkboxes-0" value="<%=i.intCertificationNo%>" type="checkbox">
+                  <%= i.strCertification %> </br>
+                <% }) %>
+              <% } %>
+
             </label>
           </div>
 
@@ -288,12 +297,12 @@
           <label class="control-label" for="selectbasic">FDA Registration Status</label>
           <div class="">
             <select id="selectbasic" name="fdastat" class="form-control">
-              <option value="1">choose</option>
-              <option value="2">Registered</option>
-              <option value="3">In-Process</option>
-              <option value="4">We have not registered but our products have an accreditation or third party lab results as proof of authenticity and efficacy</option>
-              <option value="5">N/A - for non food only except for beauty products and cosmetics</option>
-              <option value="6">None</option>
+
+              <option value="1">Registered</option>
+              <option value="2">In-Process</option>
+              <option value="3">We have not registered but our products have an accreditation or third party lab results as proof of authenticity and efficacy</option>
+              <option value="4">N/A - for non food only except for beauty products and cosmetics</option>
+              <option value="5">None</option>
             </select>
           </div>
         </div>
@@ -461,7 +470,7 @@
         e.preventDefault();
 
         $.ajax({
-          url: '/consApplication/register',
+          url: '/consRegistration/register',
           type: 'post',
           data: $('#msform').serialize(),
           success: function(response,status,http){
