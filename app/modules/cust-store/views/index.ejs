@@ -5,41 +5,45 @@
   <div class="row">
     <div id="store-sidebar" class="p-0">
       <div>
-        <p class="m-0"><b>Food & Beverages</b></p>
-
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">All Subcategories</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Fruits & Vegetables</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Grains</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Legumes</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Nuts and Seeds</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Dairy Products and Eggs</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Livestock Feed</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Meats and Poultry</small>
-        </div>
+        <p class="m-0"><b><%= thisCategory %></b></p>
+        <% if(subcategories[0]){ %>
+          <div>
+            <input id="All Subcategories" type="checkbox" checked/>
+            <small class="ml-3 mb-0">
+              <label class="form-check-label" for="All Subcategories">
+                All Subcategories
+              </label>
+            </small>
+          </div>
+        <% } %>
+        <% subcategories.forEach((sub)=>{ %>
+          <div>
+            <input id="<%= sub.intSubCategoryNo%>" type="checkbox" checked/>
+            <small class="ml-3 mb-0">
+              <label class="form-check-label" for="<%= sub.intSubCategoryNo%>">
+                <%= sub.strSubCategory %>
+              </label>
+            </small>
+          </div>
+        <% }) %>
 
       </div>
       <div>
         <p class="m-0"><b>Other Categories</b></p>
-        <small class="block">All Products</small>
-        <small class="block">Supplemments</small>
-        <small class="block">Hygiene</small>
-        <small class="block">Cosmetics</small>
-        <small class="block">Stationary</small>
+        <% if(thisCategory != 'All Products'){ %>
+          <small class="block">
+            <a href="/store/All Products">
+              All Products
+            </a>
+          </small>
+        <% } %>
+        <% categories.forEach((cat)=>{ %>
+          <small class="block">
+            <a href="/store/<%= cat.strCategory %>">
+              <%= cat.strCategory %>
+            </a>
+          </small>
+        <% }) %>
       </div>
       <div>
         <p class="m-0 mb-1"><b>Price Range</b></p>
@@ -100,41 +104,6 @@
           <a href="" class="ml-1"><small>Clear All</small></a>
       </div>
       <div id="products-div" class="products-container">
-        <% allProducts.forEach((prod)=>{ %>
-          <div class="custom-card this-product my-2">
-            <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
-            <div class="cart-button-div">
-              <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
-              <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
-              data-target="#modal-product-to-cart">
-              Add to Cart</button>
-            </div>
-
-            <div class="card-desc">
-              <p class="card-title"><%= prod.strBrand%> <%= prod.strProductName%></p>
-              <p class="card-price price-symbol"><%= prod.productPrice%></p>
-              <small class="card-oldprice text-muted">
-                <span><s class="price-symbol">0</s></span> (-0%)<br>
-              </small>
-              <small class="card-rating">
-                <%
-                rating = prod.aveRating;
-                for(i=0; i<5; i++){
-                  if (rating < 1 && rating >= 0.5) {
-                  %> <i class="fa fa-star-half-o"></i> <%
-                  } else if (rating < 0.5) {
-                  %> <i class="fa fa-star-o"></i> <%
-                  } else {
-                  %> <i class="fa fa-star"></i> <%
-                  }
-                  --rating;
-                }%>
-                <span class="fs-08em fw-400">(<%= prod.cntRating%>)</span>
-              </small>
-              <small class="card-reviews"><%= prod.cntReview%> reviews</small>
-            </div>
-          </div>
-        <%})%>
 
         <!-- pagination -->
         <div class="row">
