@@ -16,8 +16,8 @@ $(() => {
   // GET - Load cart
   $('#getSummary').on('click', () => {
     let list = $('#checkout-products');
-    list.html('');
     $.get('/cart/list').then((res) => {
+      list.html('');
       res.cart.forEach((data) => {
         list.append(`
           <div class="product-div pos-relative px-3">
@@ -61,6 +61,7 @@ $(() => {
       }
       $('#total-btn').click();
     }).catch((error) => {
+      list.html('');
       list.append(`
         <div class="product-div pos-relative px-3">
           <p class="fs-09em"> Cart currently empty </p>

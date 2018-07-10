@@ -32,8 +32,8 @@ $(() => {
   // GET - Load cart
   $('#getCart').on('click', () => {
     let list = $('#cart-pad');
-    list.html('');
     $.get('/cart/list').then((res) => {
+      list.html('');
       res.cart.forEach((data) => {
         list.append(`
           <div class="cart-product-container">
@@ -77,6 +77,7 @@ $(() => {
       }
       $('#subtotal-btn').click();
     }).catch((error) => {
+      list.html('');
       list.append(`
         <div class="cart-product-container">
           <p> Cart currently empty </p>

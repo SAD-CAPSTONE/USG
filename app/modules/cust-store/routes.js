@@ -50,33 +50,4 @@ router.get('/:category', thisCategory, subcategories, categories, (req,res)=>{
   });
 });
 
-router.get('/load', (req,res)=>{
-  req.session.store ?
-    req.session.store.page = 1 :
-    req.session.store = {
-      page: 1,
-      subcategories: [],
-      price: { min: 0, max: 0 },
-      rating: 5,
-      sort: 'Popularity',
-      products: [],
-      count: 0
-    };
-  db.query(`SELECT B.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating,
-    COUNT(Review.strReview)AS cntReview FROM(
-  	SELECT A.*, Orders.intOrderDetailsNo, COUNT(Orders.intOrderDetailsNo)AS OrderCNT FROM(
-		SELECT tblproductlist.*, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.productPrice, Brand.strBrand FROM tblproductlist
-		INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
-		INNER JOIN (SELECT * FROM tblproductinventory)Inv ON tblproductlist.intProductNo= Inv.intProductNo
-		WHERE Brand.intStatus= 1)A
-  	LEFT JOIN (SELECT * FROM tblorderdetails)Orders ON A.intInventoryNo= Orders.intInventoryNo
-  	GROUP BY A.intProductNo)B
-    LEFT JOIN (SELECT * FROM tblproductreview)Review ON B.intProductNo = Review.intProductNo
-    GROUP BY B.intProductNo`, function (err,  results, fields) {
-    if (err) console.log(err);
-    res.send({store: req.session.store})
-  });
-});
-
-
 exports.store = router;
