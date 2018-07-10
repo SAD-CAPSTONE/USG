@@ -1,0 +1,482 @@
+<%- include('../../../templates/master.ejs') -%>
+<form id="msform" novalidate>
+    <!-- progressbar -->
+    <ul id="progressbar">
+      <li class="active tes">Start</li>
+      <li class="tes">Business Profile</li>
+      <li class="tes">Supplier Details</li>
+      <li class="tes">Consignment Details</li>
+      <li class="tes">Products</li>
+      <li class="tes">Product Details</li>
+      <li class="tes">Agreement</li>
+    </ul>
+    <!-- fieldsets -->
+     <!--START-->
+     <fieldset class=" box-shadow-mini">
+        <img src="/assets/images/static2/img10.jpg" style="padding-left:0px; padding-bottom:30px; width:95%;">
+        <h2 class="text-center">USG Supplier Information Sheet (Consignment Application)</h2>
+        <hr>
+        <p>Thank you for your interest in becoming one of our health & wellness partner. </p>
+
+        <p>Please fill out this form and email the following documents to info.ultrasupergreen@gmail.com and mktg.ultrasupergreen@gmail.com. Use the subject line: "Consignment Application - (Name of your Brand or Company)" : </p>
+
+        <p>•	Company Profile </p>
+        <p>•	Product Information Sheet with complete list of ingredients - Excel format </p>
+        <p>•	Price list  </p>
+        <p>•	DTI /SEC Registration
+        <p>•	Official Receipt and/or BIR Registration  </p>
+        <p>•	Sales Invoice and Delivery receipt  </p>
+        <p>•	FDA Registration (if any) </p>
+        <p>•	Eco Certification or Third Party Laboratory Results for product safety and efficacy (if any)  </p>
+        <p>•	If your product has no certification, you must indicate on your label that your product is either  </p>
+               <p>All Natural, homemade or herbal </p>
+        <input type="button" name="next" class="next action-button" value="Start" style="margin-left: 240px;" />
+      </fieldset>
+
+    <!--STEP 1 Business Profile-->
+    <fieldset>
+      <div role="alert" class="alert alert-info text-primary" style=""><i>All fields are required in order to successfully register</i></div>
+      <!-- Text input-->
+      <div class="form-group">
+        <label class="control-label" for="textinput">Business Name</label>
+        <div class="">
+        <input id="textinput" name="businessname" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+        <span class="help-block">Specify Business Name</span>
+        </div>
+      </div>
+
+      <!-- Text input-->
+      <div class="form-group">
+        <label class="control-label" for="textinput">Brand Name</label>
+        <div class="">
+        <input id="textinput" name="brands" placeholder="Your Answer" class="form-control" required="" type="text">
+        <span class="help-block">List all if you have multiple brands, separated by a comma</span>
+        </div>
+      </div>
+
+      <!-- Select Basic -->
+      <div class="form-group">
+        <label class="control-label" for="businesstype">Type of Business</label>
+        <div class="">
+          <select id="selectbasic" name="businessType"  class="form-control">
+            <% if (btype == null || btype == undefined){ %>
+
+            <% }else if(btype.length == 0){ %>
+
+            <% }else{ %>
+              <% btype.forEach(function(i){ %>
+                <option value="<%=i.intBusinessTypeNo%>"><%=i.strBusinessType%></option>
+              <% }) %>
+            <% } %>
+
+          </select>
+        </div>
+      </div>
+
+      <!-- Text input-->
+      <div class="form-group">
+        <label class="control-label" for="textinput">Business Address</label>
+        <div class="">
+        <input id="textinput" name="businessaddress" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+
+        </div>
+      </div>
+      <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
+      <input type="button" name="next" class="next action-button" value="Next" />
+    </fieldset>
+
+    <!--STEP 2 Supplier Details-->
+    <fieldset>
+      <div role="alert" class="alert alert-info text-primary"><i>All fields are required in order to successfully register</i></div>
+      <!-- Text input-->
+      <div class="form-group">
+        <label class="control-label" for="textinput">Business Tin</label>
+        <div class="">
+        <input id="textinput" name="businesstin" placeholder="Your Answer" class="form-control input-md"  type="text">
+
+        </div>
+      </div>
+
+      <!-- BIR stats -->
+      <div class="form-group">
+        <label class="control-label" for="selectbasic">Is your business BIR registered? If not, we would require a sales invoice</label>
+        <div class="">
+          <select id="selectbasic" name="birstat" class="form-control">
+
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+            <option value="2">We are working on it</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- DTI stats -->
+      <div class="form-group">
+        <label class="control-label" for="selectbasic">Is your business DTI registered?</label>
+        <div class="">
+          <select id="selectbasic" name="dtistat" class="form-control">
+
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+            <option value="2">We are working on it</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Select Basic -->
+      <div class="form-group">
+        <label class="control-label" for="selectbasic">Type of Supplier </label>
+        <div class="">
+          <select id="selectbasic" name="suppliertype" class="form-control">
+
+            <option value="1">Consignment</option>
+            <option value="2">Kiosk / Booth (500 rental per day / minimum of 3 days)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Text input-->
+      <div class="form-group">
+        <label class="control-label" for="textinput">Supplier Information</label>
+        <div class="">
+        <input id="textinput" name="fname" placeholder="First Name" class="form-control input-md" required="" type="text">
+        <input id="textinput" name="mname" placeholder="Middle Name" class="form-control input-md" required="" type="text">
+        <input id="textinput" name="lname" placeholder="Last Name" class="form-control input-md" required="" type="text">
+
+
+        </div>
+      </div>
+
+      <!-- Text input-->
+      <div class="form-group">
+        <label class="control-label" for="textinput">Contact Number</label>
+        <div class="">
+        <input id="textinput" name="mobile" placeholder="Mobile" class="form-control input-md" required="" type="text">
+        <input id="textinput" name="phone" placeholder="Phone" class="form-control input-md" required="" type="text">
+
+        </div>
+      </div>
+      <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
+      <input type="button" name="next" class="next action-button" value="Next" />
+    </fieldset>
+
+    <!--STEP 3 Consignment Details-->
+    <fieldset>
+      <div role="alert" class="alert alert-info text-primary"><i>All fields are required in order to successfully register</i></div>
+      <!-- Text input-->
+      <div class="form-group">
+        <label class="control-label" for="textinput">Best Time &amp; Day to reach you</label>
+        <div class="">
+        <input id="textinput" name="besttime" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+
+        </div>
+      </div>
+
+      <!-- Email-->
+      <div class="form-group">
+        <label class="control-label" for="textinput">Email address</label>
+        <div class="">
+        <input id="textinput" name="email" placeholder="Your Answer" class="form-control input-md" required="" type="email">
+
+        </div>
+      </div>
+
+      <!-- Consignment Price -->
+      <div class="form-group">
+        <label class="control-label" for="checkboxes">Consignment Discount</label>
+        <div class="">
+        <div class="checkbox">
+          <label for="checkboxes-0">
+            <input name="consignment" id="checkboxes-0" value="40" type="checkbox">
+            We agree with the 40% discount/ commision on all product consignment
+          </label>
+        </div>
+        <div class="checkbox">
+          <label for="checkboxes-1">
+            <input name="consignment" id="checkboxes-1" value="0" type="checkbox">
+            We have a higher offer for Ultra Super Green - (email proposal)
+          </label>
+        </div>
+        </div>
+      </div>
+
+      <!-- Prepended checkbox -->
+      <div class="form-group">
+        <label class="control-label" for="prependedcheckbox"></label>
+        <div class="">
+          <div class="input-group">
+            <span class="input-group-addon">
+                <input type="checkbox">
+            </span>
+            <input id="prependedcheckbox" disabled name="prependedcheckbox" class="form-control" placeholder="Other please specify" required="" type="text">
+          </div>
+
+        </div>
+      </div>
+      <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
+      <input type="button" name="next" class="next action-button" value="Next" />
+    </fieldset>
+
+    <!--STEP 4 Products-->
+    <fieldset>
+      <div role="alert" class="alert alert-info text-primary"><i>All fields are required in order to successfully register</i></div>
+        <!-- Category -->
+        <div class="form-group">
+          <label class="control-label" for="checkboxes">Product category</label>
+          <hr>
+          <div class="">
+
+
+          <div class="checkbox">
+            <label for="checkboxes-18">
+              <% if (category == null || category == undefined){ %>
+
+              <% }else if(category.length == 0){ %>
+
+              <% }else{ %>
+                <% category.forEach(function(i){ %>
+                  <input name="category" id="checkboxes-18" value="<%=i.intSubCategoryNo%>" type="checkbox">
+                  <%=i.strCategory%>-<%=i.strSubCategory%> </br>
+                <% }) %>
+              <% } %>
+
+            </label>
+          </div>
+
+          </div>
+        </div>
+
+        <!-- Prepended checkbox -->
+        <div class="form-group">
+          <label class="control-label" for="prependedcheckbox"></label>
+          <div class="">
+            <div class="input-group">
+              <span class="input-group-addon">
+                  <input type="checkbox">
+              </span>
+              <input id="prependedcheckbox" name="prependedcheckbox" class="form-control" placeholder="Other please specify" type="text">
+            </div>
+
+          </div>
+        </div>
+        <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
+        <input type="button" name="next" class="next action-button" value="Next" />
+    </fieldset>
+
+
+    <!--STEP 5 Product Details-->
+    <fieldset>
+      <div role="alert" class="alert alert-info text-primary"><i>All fields are required in order to successfully register</i></div>
+      <!-- Text input-->
+      <!-- certification -->
+      <div class="form-group">
+          <label class="control-label" for="checkboxes">Product Certifications / Awards &amp; Recognition </label>
+          <hr>
+          <div class="">
+          <div class="checkbox">
+            <label for="checkboxes-0">
+              <input name="certification" id="checkboxes-0" value="1" type="checkbox">
+              Certified Organic / No harmful chemicals (Carcinogens, sulfates, etc.)
+            </label>
+          </div>
+
+          </div>
+        </div>
+
+        <!-- Select Basic -->
+        <div class="form-group">
+          <label class="control-label" for="selectbasic">FDA Registration Status</label>
+          <div class="">
+            <select id="selectbasic" name="fdastat" class="form-control">
+              <option value="1">choose</option>
+              <option value="2">Registered</option>
+              <option value="3">In-Process</option>
+              <option value="4">We have not registered but our products have an accreditation or third party lab results as proof of authenticity and efficacy</option>
+              <option value="5">N/A - for non food only except for beauty products and cosmetics</option>
+              <option value="6">None</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="control-label" for="textinput">FDA Registration ID Number </label>
+          <div class="">
+          <input id="textinput" name="fda" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+
+        </div>
+      </div>
+      <!-- Text input-->
+      <div class="form-group">
+          <label class="control-label" for="textinput">Proposed Schedule of Product Delivery </label>
+          <div class="">
+          <input id="textinput" name="deliverysched" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+
+        </div>
+      </div
+
+        <div class="form-group">
+            <label class="control-label" for="textinput">Frequency of Delivery </label>
+            <div class="">
+            <input id="textinput" name="freq" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+
+          </div>
+      </div>
+      <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
+      <input type="button" name="next" class="next action-button" value="Next" />
+    </fieldset>
+
+
+
+    <!--STEP 6 Agreement-->
+    <fieldset>
+        <div role="alert" class="alert alert-info text-primary"><i>All fields are required in order to successfully register</i></div>
+        <!-- Text input-->
+        <!-- Multiple Checkboxes -->
+        <div class="form-group">
+            <label class="control-label" for="checkboxes">Product Replacement and Replenishment</label>
+            <div class="">
+            <div class="checkbox">
+              <label for="checkboxes-0">
+                <input name="replacement" id="checkboxes-0" value="1" type="checkbox">
+                I hereby agree to replace any goods/products that are about to expire, non-moving, damaged upon delivery or with valid customer complaints
+              </label>
+            </div>
+            </div>
+          </div>
+
+          <!-- Multiple Checkboxes -->
+          <div class="form-group">
+            <label class="control-label" for="checkboxes">Marketing &amp; Promotions</label>
+            <div class="">
+            <div class="checkbox">
+              <label for="checkboxes-0">
+                <input name="marketing" id="checkboxes-0" value="1" type="checkbox">
+                I / Our company would like to actively participate and support any marketing and promotional activities of Ultra Super Green (e.g. product sampling, special events and other local market events)
+              </label>
+            </div>
+            </div>
+          </div>
+          <p>Kindly allow a maximum of 5 business days for review and approval.  </p>
+
+          <p>Once your application has been reviewed and pass our initial requirements, the consignor is required to do an in-store product sampling and/or demo activity to test the market to get instant feedback from our customers.  </p>
+
+          <p>This will be scheduled by appointment. (Monday or Sundays only) 12:00nn to 6:00pm. First come, first served basis.  </p>
+
+          <p>If everything goes well, we would proceed with our partnership and we can start carrying your brand. </p>
+      <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
+      <input type="submit" name="submit" class="submit action-button" value="Submit" />
+    </fieldset>
+  </form>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+  <!-- jQuery 3 -->
+  <script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/assets/jquery/jquery-ui.min.js"></script>
+
+
+
+
+  <script>
+    var current_fs, next_fs, previous_fs; //fieldsets
+    var left, opacity, scale; //fieldset properties which we will animate
+    var animating; //flag to prevent quick multi-click glitches
+
+    $(".next").click(function(){
+      if(animating) return false;
+      animating = true;
+
+      current_fs = $(this).parent();
+      next_fs = $(this).parent().next();
+
+      //activate next step on progressbar using the index of next_fs
+      $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+      //show the next fieldset
+      next_fs.show();
+      //hide the current fieldset with style
+      current_fs.animate({opacity: 0}, {
+        step: function(now, mx) {
+          //as the opacity of current_fs reduces to 0 - stored in "now"
+          //1. scale current_fs down to 80%
+          scale = 1 - (1 - now) * 0.2;
+          //2. bring next_fs from the right(50%)
+          left = (now * 50)+"%";
+          //3. increase opacity of next_fs to 1 as it moves in
+          opacity = 1 - now;
+          current_fs.css({
+            'transform': 'scale('+scale+')',
+            'position': 'absolute'
+          });
+          next_fs.css({'left': left, 'opacity': opacity});
+        },
+        duration: 800,
+        complete: function(){
+          current_fs.hide();
+          animating = false;
+        },
+        //this comes from the custom easing plugin
+        easing: 'easeInOutBack'
+      });
+    });
+
+    $(".previous").click(function(){
+      if(animating) return false;
+      animating = true;
+
+      current_fs = $(this).parent();
+      previous_fs = $(this).parent().prev();
+
+      //de-activate current step on progressbar
+      $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+      //show the previous fieldset
+      previous_fs.show();
+      //hide the current fieldset with style
+      current_fs.animate({opacity: 0}, {
+        step: function(now, mx) {
+          //as the opacity of current_fs reduces to 0 - stored in "now"
+          //1. scale previous_fs from 80% to 100%
+          scale = 0.8 + (1 - now) * 0.2;
+          //2. take current_fs to the right(50%) - from 0%
+          left = ((1-now) * 50)+"%";
+          //3. increase opacity of previous_fs to 1 as it moves in
+          opacity = 1 - now;
+          current_fs.css({'left': left});
+          previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
+        },
+        duration: 800,
+        complete: function(){
+          current_fs.hide();
+          animating = false;
+        },
+        //this comes from the custom easing plugin
+        easing: 'easeInOutBack'
+      });
+    });
+    </script>
+    <script>
+      $('#msform').submit(function(e){
+        e.preventDefault();
+
+        $.ajax({
+          url: '/consApplication/register',
+          type: 'post',
+          data: $('#msform').serialize(),
+          success: function(response,status,http){
+            alert("Success");
+            location.reload();
+          },
+          error: function(response){
+            alert(response);
+
+          }
+        });
+      })
+    </script>
+
+
+</body>
+
+</html>
