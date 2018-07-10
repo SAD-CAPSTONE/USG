@@ -331,7 +331,7 @@ router.post('/addSubCategory', (req,res)=>{
 router.get('/customer', (req,res)=>{
   db.query(`SELECT tblcustomer.intStatus as Stats, tblUser.*,tblcustomer.* from
     tblUser join tblcustomer on tblUser.intUserID =
-    tblcustomer.intUserID`,(err1,results1,fields1)=>{
+    tblcustomer.intUserID`,(err1,results1)=>{
       if (err1) console.log(err1);
       res.render('admin-maintain/views/customer', {re: results1});
       console.log(results1);

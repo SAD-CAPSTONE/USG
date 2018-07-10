@@ -184,83 +184,73 @@
   		<h4 class="modal-title">Product Information Form</h4>
   	  </div>
   	  <div class="modal-body">
-
+        <div class-"container-fluid">
+          <div class="row">
         <!-- form start -->
-        <form role="form" method="post" enctype="multipart/form-data" action="/inventory/editProduct">
-          <div class="box-body">
-
-            <div class="form-group">
-
-              <input type="hidden" class="form-control" id="view_prodno" name="view_prodno" >
+            <form role="form" method="post" enctype="multipart/form-data" action="/inventory/editProduct">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for=""></label>
+                  <div class="col-md-4" style="width: 40%;">
+                    <img src="" class="img-responsive" disabled id="pic" name=""  ></div>
+                  <div class="col-md-7 ml-auto">
+                    <label for="view_pcode">Product Code</label>
+                    <input type="text" class="form-control" required id="view_pcode" name="view_pcode" >
+                  <div class="form-group">
+                    <label for="view_pname">Product Name</label>
+                    <input type="text" class="form-control" required id="view_pname" name="view_pname" >
+                  <div class="form-group">
+                      <label for="view_brand">Brand</label>
+                      <select class="form-control" required id="view_brand" name="view_brand"  >
+                        <% if (brand == null || brand == undefined || brand.length == 0){ %>
+                          <option></option>
+                        <% }else{ %>
+                          <% brand.forEach(function(s){ %>
+                            <option value="<%=s.intBrandNo%>"><%=s.strBrand%></option>
+                          <% }) %>
+      
+                        <% } %>
+                      </select>
+                  <div class="form-group">
+                      <label for="view_pdesc">Product Description</label>
+                      <textarea class="form-control" required id="view_pdesc" name="view_pdesc" ></textarea>
+                  <div class="form-group">
+                      <label for="view_pcat">Category</label>
+                      <select class="form-control" id="view_pcat" required name="view_pcat" >
+                            <% if (category == null || category == undefined || category.length == 0){ %>
+                              <option></option>
+                            <% }else{ %>
+                              <% category.forEach(function(s){ %>
+                                <option value="<%=s.intSubCategoryNo%>"><%=s.strSubCategory%></option>
+                              <% }) %>
+        
+                            <% } %>
+                      </select>
+                  <div class="form-group">
+                      <label for="notify">
+                      <input type="checkbox" name="active" checked id="active" class="flat-red">
+                        &nbsp; Active
+                      </label>
+                  <div class="form-group">
+                      <label for="view_pic">Product Picture</label>
+                      <input type="file" class="form-control" id="view_pic" name="view_pic" required placeholder="">
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+              <!-- /.box-body -->
             </div>
-            <div class="form-group">
-              <label for=""></label>
-              <div style="width: 35%;">
-              <img src="" class="img-responsive" disabled id="pic" name=""  >
-            </div>
-            </div>
-            <div class="form-group">
-              <label for="view_pcode">Product Code</label>
-              <input type="text" class="form-control" required id="view_pcode" name="view_pcode" >
-            </div>
-            <div class="form-group">
-              <label for="view_pname">Product Name</label>
-              <input type="text" class="form-control" required id="view_pname" name="view_pname" >
-            </div>
-            <div class="form-group">
-              <label for="view_brand">Brand</label>
-              <select class="form-control" required id="view_brand" name="view_brand"  >
-                <% if (brand == null || brand == undefined || brand.length == 0){ %>
-                  <option></option>
-                <% }else{ %>
-                  <% brand.forEach(function(s){ %>
-                    <option value="<%=s.intBrandNo%>"><%=s.strBrand%></option>
-                  <% }) %>
-
-                <% } %>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="view_pdesc">Product Description</label>
-              <textarea class="form-control" required id="view_pdesc" name="view_pdesc" ></textarea>
-            </div>
-            <div class="form-group">
-              <label for="view_pcat">Category</label>
-              <select class="form-control" id="view_pcat" required name="view_pcat" >
-                <% if (category == null || category == undefined || category.length == 0){ %>
-                  <option></option>
-                <% }else{ %>
-                  <% category.forEach(function(s){ %>
-                    <option value="<%=s.intSubCategoryNo%>"><%=s.strSubCategory%></option>
-                  <% }) %>
-
-                <% } %>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="notify">
-
-                <input type="checkbox" name="active" checked id="active" class="flat-red">
-                &nbsp; Active
-
-              </label>
-
-            </div>
-            <div class="form-group">
-              <label for="view_pic">Product Picture</label>
-              <input type="file" class="form-control" id="view_pic" name="view_pic" required placeholder="">
-            </div>
-
-
           </div>
-          <!-- /.box-body -->
-
   		  <div class="modal-footer">
   			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
   			<button type="submit" class="btn btn-primary">Save changes</button>
   		  </div>
-
-      </form>
+        </form>
   	</div>
   	<!-- /.modal-content -->
   </div>
