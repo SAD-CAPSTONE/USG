@@ -20,24 +20,22 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <th scope="row"><a href="/summary/order">Order#0003092</a></th>
-        <td>Ordered</td>
-        <td>Feb 14, 2018</td>
-        <td class="price-symbol">230</td>
-      </tr>
-      <tr>
-        <th scope="row"><a href="/summary/order">Order#0003014</a></th>
-        <td>Delivered</td>
-        <td>Feb 9, 2018</td>
-        <td class="price-symbol">150</td>
-      </tr>
-      <tr>
-        <th scope="row"><a href="/summary/order">Order#0002437</a></th>
-        <td>Delivered</td>
-        <td>Feb 4, 2018</td>
-        <td class="price-symbol">420</td>
-      </tr>
+      <% if (orders == null || orders == undefined){ %>
+
+      <% } else if (orders.length == 0) { %>
+      
+      <% } else{ %>
+        <% orders.forEach(function(i){ %>
+          <tr>
+            <td><%= i.intOrderNo %></td>
+            <td><%= i.intStatus %></td>
+            <td><%= i.dateOrdered %></td>
+          </tr>
+        <% }) %>
+        <% } %>
+          
+  
+     
     </tbody>
   </table>
 </div>
