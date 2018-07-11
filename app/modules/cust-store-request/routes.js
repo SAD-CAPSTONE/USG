@@ -39,8 +39,6 @@ router.get('/load', subcategories, (req,res)=>{
   //   price: { min: 100, max: 300 },
   //   rating: 0,
   //   sort: 5,
-  //   products: [],
-  //   count: 0,
   //   search: ''
   // }
   if (req.session.store){
@@ -63,8 +61,6 @@ router.get('/load', subcategories, (req,res)=>{
       price: { min: 0, max: 0 },
       rating: 0,
       sort: 1,
-      products: [],
-      count: 0,
       search: ''
     };
   }
@@ -119,7 +115,7 @@ router.get('/load', subcategories, (req,res)=>{
     start += pageLimit;
   }
   limitQuery = filterQuery.concat(`LIMIT ${start},${pageLimit} `);
-  console.log(limitQuery)
+  // console.log(limitQuery)
 
   db.beginTransaction(function(err) {
     if (err) console.log(err);
@@ -147,8 +143,6 @@ router.get('/load/sort/:sortVal', subcategories, (req,res)=>{
       price: { min: 0, max: 0 },
       rating: 0,
       sort: 1,
-      products: [],
-      count: 0,
       search: ''
     };
 
@@ -166,8 +160,6 @@ router.post('/load/price', subcategories, (req,res)=>{
       price: { min: 0, max: 0 },
       rating: 0,
       sort: 1,
-      products: [],
-      count: 0,
       search: ''
     };
 
