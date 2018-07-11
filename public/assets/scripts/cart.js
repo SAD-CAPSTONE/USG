@@ -17,29 +17,29 @@ $(() => {
   function chekoutBtnActive(){
     $('#cart-sidebar ul.checkout a').attr('href','/summary/checkout');
     $('#cart-sidebar ul.checkout a').css({
-      'background-color':'rgba(18, 187, 173, .8)',
+      'background-color':'var(--cart-button-color)',
       'cursor':'pointer'
     });
     $('#cart-sidebar ul.checkout a')
       .mouseenter(function (){
-        $(this).css('background-color','#00AF66');
+        $(this).css('background-color','var(--price-color)');
       })
       .mouseleave(function (){
-        $(this).css('background-color','rgba(18, 187, 173, .8)');
+        $(this).css('background-color','var(--cart-button-color)');
       });
   }
 
   // GET - Load cart
   $('#getCart').on('click', () => {
     let list = $('#cart-pad');
-    list.html('');
     $.get('/cart/list').then((res) => {
+      list.html('');
       res.cart.forEach((data) => {
         list.append(`
           <div class="cart-product-container">
             <div class="product-card">
               <input class="inventory-id" value="${data.inv}" hidden/>
-              <div class="product-pic"><a href="/item"><img src="${data.img}"/></a></div>
+              <div class="product-pic"><a href="/item/${data.id}"><img src="${data.img}"/></a></div>
               <div class="product-desc">
                 <p class="product-title">${data.name}</p>
                 <small class="product-size text-muted">Size: ${data.curSize}</small>
@@ -77,6 +77,7 @@ $(() => {
       }
       $('#subtotal-btn').click();
     }).catch((error) => {
+      list.html('');
       list.append(`
         <div class="cart-product-container">
           <p> Cart currently empty </p>

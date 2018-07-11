@@ -59,7 +59,7 @@
   border-radius: 0px;
   box-shadow: 0px 0px 0px;
   border: 0px;
-  border-bottom: 1px solid #12BBAD;
+  border-bottom: 1px solid var(--primary-color);
 }
 #modal-product-to-cart .quantity-label {
   margin: 0px;
@@ -82,7 +82,7 @@
   position: absolute;
   bottom: -5px;
   font-size: 1.4em;
-  color: #00AF66;
+  color: var(--price-color);
   margin-bottom: 0px;
 }
 
@@ -90,20 +90,20 @@
   position: absolute;
   right: 0px;
   bottom: 0px;
-  background: #12BBAD;
-  border: #12BBAD;
+  background: var(--primary-color);
+  border: var(--primary-color);
   height: 27px !important;
   border-radius: 0px;
 }
 #modal-product-to-cart .add-button:hover {
-  background: #00AF66;
-  border: #00AF66;
+  background: var(--price-color);
+  border: var(--price-color);
 }
 #modal-product-to-cart .add-button:active {
-  background: #12BBAD !important;
+  background: var(--primary-color) !important;
 }
 #modal-product-to-cart .add-button:focus {
-  box-shadow: 0 0 0 0.2rem rgba(18, 187, 173, .5) !important;
+  box-shadow: 0 0 0 0.2rem var(--primary-focus) !important;
 }
 
 @media (max-width: 576px) {

@@ -41,8 +41,8 @@
   </div>
   <div class="container x-scrolling-div products-container" data-simplebar="">
     <% popularProducts.forEach((prod)=>{ %>
-      <div class="custom-card my-1" style="margin-right: 22px !important; margin-left: 1px">
-        <div class="card-img"><a href="/item"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
+      <div class="custom-card this-product my-1" style="margin-right: 22px !important; margin-left: 1px">
+        <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
         <div class="cart-button-div">
           <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
           <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
@@ -86,8 +86,8 @@
   </div>
   <div class="container x-scrolling-div products-container" data-simplebar="">
     <% newProducts.forEach((prod)=>{ %>
-      <div class="custom-card my-1" style="margin-right: 22px !important; margin-left: 1px">
-        <div class="card-img"><a href="/item"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
+      <div class="custom-card this-product my-1" style="margin-right: 22px !important; margin-left: 1px">
+        <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
         <div class="cart-button-div">
           <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
           <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"

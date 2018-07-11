@@ -5,48 +5,52 @@
   <div class="row">
     <div id="store-sidebar" class="p-0">
       <div>
-        <p class="m-0"><b>Food & Beverages</b></p>
-
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">All Subcategories</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Fruits & Vegetables</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Grains</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Legumes</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Nuts and Seeds</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Dairy Products and Eggs</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Livestock Feed</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Meats and Poultry</small>
-        </div>
+        <p class="m-0"><b><%= thisCategory %></b></p>
+        <% if(subcategories[0]){ %>
+          <div>
+            <input id="All Subcategories" type="checkbox" checked/>
+            <small class="ml-3 mb-0">
+              <label class="form-check-label" for="All Subcategories">
+                All Subcategories
+              </label>
+            </small>
+          </div>
+        <% } %>
+        <% subcategories.forEach((sub)=>{ %>
+          <div>
+            <input id="<%= sub.intSubCategoryNo%>" type="checkbox" checked/>
+            <small class="ml-3 mb-0">
+              <label class="form-check-label" for="<%= sub.intSubCategoryNo%>">
+                <%= sub.strSubCategory %>
+              </label>
+            </small>
+          </div>
+        <% }) %>
 
       </div>
       <div>
         <p class="m-0"><b>Other Categories</b></p>
-        <small class="block">All Products</small>
-        <small class="block">Supplemments</small>
-        <small class="block">Hygiene</small>
-        <small class="block">Cosmetics</small>
-        <small class="block">Stationary</small>
+        <% if(thisCategory != 'All Products'){ %>
+          <small class="block">
+            <a href="/store/All Products">
+              All Products
+            </a>
+          </small>
+        <% } %>
+        <% categories.forEach((cat)=>{ %>
+          <small class="block">
+            <a href="/store/<%= cat.strCategory %>">
+              <%= cat.strCategory %>
+            </a>
+          </small>
+        <% }) %>
       </div>
       <div>
         <p class="m-0 mb-1"><b>Price Range</b></p>
-        <input type="number" class="inline-block material" placeholder="min"/> -
-        <input type="number" class="inline-block material" placeholder="max"/>
+        <input type="number" class="inline-block material min-range" placeholder="min"/> -
+        <input type="number" class="inline-block material max-range" placeholder="max"/>
         <div class="align-right">
-          <button class="btn btn-custom-primary btn-sm mt-3">Apply</button>
+          <button class="btn btn-custom-primary btn-sm mt-3 priceRangeBtn">Apply</button>
         </div>
       </div>
       <div>
@@ -79,13 +83,15 @@
     </div>
     <div id="store-main" class="col pos-relative p-0">
       <div>
-          <p class="m-0">8 items found</p>
+          <p class="m-0">0 items found</p>
           <div class="sort">
             <p class="m-0 inline">Sort By: </p>
-            <select class="inline" name="">
-              <option value="" selected>Popularity</option>
-              <option value="">Lowest to Highest Price</option>
-              <option value="">Highest to Lowest Price</option>
+            <select class="inline sortBy" name="">
+              <option value="1" selected>Popularity</option>
+              <option value="2">Rating</option>
+              <option value="3">Lowest to Highest Price</option>
+              <option value="4">Highest to Lowest Price</option>
+              <option value="5">A - Z</option>
             </select>
           </div>
           <hr>
@@ -100,42 +106,13 @@
           <a href="" class="ml-1"><small>Clear All</small></a>
       </div>
       <div id="products-div" class="products-container">
-        <% allProducts.forEach((prod)=>{ %>
-          <div class="custom-card my-2">
-            <div class="card-img"><a href="/item"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
-            <div class="cart-button-div">
-              <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
-              <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
-              data-target="#modal-product-to-cart">
-              Add to Cart</button>
-            </div>
-
-            <div class="card-desc">
-              <p class="card-title"><%= prod.strBrand%> <%= prod.strProductName%></p>
-              <p class="card-price price-symbol"><%= prod.productPrice%></p>
-              <small class="card-oldprice text-muted">
-                <span><s class="price-symbol">0</s></span> (-0%)<br>
-              </small>
-              <small class="card-rating">
-                <%
-                rating = prod.aveRating;
-                for(i=0; i<5; i++){
-                  if (rating < 1 && rating >= 0.5) {
-                  %> <i class="fa fa-star-half-o"></i> <%
-                  } else if (rating < 0.5) {
-                  %> <i class="fa fa-star-o"></i> <%
-                  } else {
-                  %> <i class="fa fa-star"></i> <%
-                  }
-                  --rating;
-                }%>
-                <span class="fs-08em fw-400">(<%= prod.cntRating%>)</span>
-              </small>
-              <small class="card-reviews"><%= prod.cntReview%> reviews</small>
-            </div>
+        <div id="store-products">
+          <!-- products -->
+          <div class="align-center">
+            <p> Loading Products ... </p>
+            <div class="loader"></div>
           </div>
-          <%})%>
-
+        </div>
         <!-- pagination -->
         <div class="row">
           <div class="col"> </div>
@@ -231,10 +208,10 @@
           <div class="col">
             <div class="mb-3">
               <p class="m-0"><b>Price Range</b></p>
-              <input type="number" class="inline-block" placeholder="min"/> -
-              <input type="number" class="inline-block" placeholder="max"/>
+              <input type="number" class="inline-block min-range" placeholder="min"/> -
+              <input type="number" class="inline-block max-range" placeholder="max"/>
               <div class="align-right">
-                <button class="btn btn-custom-primary btn-sm mt-3">Apply</button>
+                <button class="btn btn-custom-primary btn-sm mt-3 priceRangeBtn">Apply</button>
               </div>
             </div>
 
@@ -245,9 +222,102 @@
     </div>
   </div>
 </div>
+<button id="getStore" type="button" hidden></button>
 
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <script src="/assets/scripts/store.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(() => {
+
+  $('#getStore').on('click', () => {
+    let list = $('#store-products');
+    $.get('/storeRequest/load').then((res) => {
+      list.html('');
+      $('#store-main > div:first-child > p:first-of-type').text(`${res.count} items found`)
+      $('.sortBy').val(res.store.sort)
+      res.products.forEach((data) => {
+        list.append(`
+          <div class="custom-card this-product my-2">
+            <div class="card-img"><a href="/item/${data.intProductNo}"><img src="/assets/images/products/${data.strProductPicture}"></a></div>
+            <div class="cart-button-div">
+              <input type="number" class="product-id" value="${data.intProductNo}" hidden />
+              <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
+              data-target="#modal-product-to-cart">
+              Add to Cart</button>
+            </div>
+
+            <div class="card-desc">
+              <p class="card-title">${data.strBrand} ${data.strProductName}</p>
+              <p class="card-price price-symbol">${data.productPrice}</p>
+              <small class="card-oldprice text-muted">
+                <span><s class="price-symbol">0</s></span> (-0%)<br>
+              </small>
+              <small class="card-rating">
+
+              </small>
+              <small class="card-reviews">${data.cntReview} reviews</small>
+            </div>
+          </div>`);
+
+        let rating = data.aveRating, result = '';
+        for(i=0; i<5; i++){
+          if (rating < 1 && rating >= 0.5) {
+            result = result.concat('<i class="fa fa-star-half-o"></i> ');
+          } else if (rating < 0.5) {
+            result = result.concat('<i class="fa fa-star-o"></i> ');
+          } else {
+            result = result.concat('<i class="fa fa-star"></i> ');
+          }
+          --rating;
+        }
+
+        $('#store-products > .custom-card:last-of-type .card-rating').append(`
+          ${result} <span class="fs-08em fw-400">(${data.cntRating})</span>`)
+      });
+      if(!res.products.length){
+        list.append(`
+          <div class="align-center">
+            <p><em> No Products Found </em></p>
+          </div>`);
+      }
+    }).catch((error) => {
+      list.html('');
+      list.append(`
+        <div class="align-center">
+          <p><em> No Products Found </em></p>
+        </div>`);
+    });
+  });
+
+  $('.priceRangeBtn').on('click', function(){
+    console.log('xxxxxxxxxxxxxx');
+    event.preventDefault();
+    $.post(`/storeRequest/load/price`,{
+      min: $('.min-range').val(),
+      max: $('.max-range').val()
+    }).then((res) => {
+      console.log(res);
+      $('#getStore').click();
+    }).catch((error) => {
+      console.log(error);
+    });
+  });
+
+  $('.sortBy').on('change', function(){
+    $.get(`/storeRequest/load/sort/${this.value}`).then((res) => {
+      console.log(res);
+      $('#getStore').click();
+    }).catch((error) => {
+      console.log(error);
+    });
+  });
+
+  $('#getStore').click();
+
+});
+
+</script>
+
 <%- include('../../../templates/closer.ejs') -%>
