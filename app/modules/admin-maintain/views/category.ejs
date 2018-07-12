@@ -25,7 +25,7 @@
 					  <h3 class="box-title">Product Category</h3>
 					</div>
 					<!-- /.box-header -->
-          &nbsp;&nbsp;<button data-toggle="modal" data-target="#categorymodal" class="btn btn-primary btn-xs">Add Category</button>
+          &nbsp;&nbsp;<button data-toggle="modal" data-target="#categorymodal" class="large ui green button">Add Category</button>
 					<div class="box-body table-responsive">
 					  <table id="category" class="table table-bordered table-hover">
             <thead>
@@ -46,9 +46,10 @@
                   <td><%=i.strCategory%></td>
                   <td>
                     <% if (i.intStatus == 1) { %>
-                      <span class="label label-success">Active</span>
+                      <button data-no="<%=i.intCategoryNo%>" class="ui toggle button active inactivate_category">Active</button>
+
                     <% }else{ %>
-                      <span class="label label-danger">Inactive</span>
+                      <button data-no="<%=i.intCategoryNo%>" class="ui toggle button inactive activate_category">Inactive</button>
                     <% } %>
                   </td>
                   <td><button class="btn btn-default btn-sm">Edit</button></td>
@@ -72,7 +73,7 @@
 					  <h3 class="box-title">Product Sub-Category</h3>
 					</div>
 					<!-- /.box-header -->
-          &nbsp;&nbsp;<button data-toggle="modal" data-target="#subcategorymodal" class="btn btn-primary btn-xs">Add Sub-Category</button>
+          &nbsp;&nbsp;<button data-toggle="modal" data-target="#subcategorymodal" class="large ui green button">Add Sub-Category</button>
 					<div class="box-body table-responsive">
 					  <table id="subCategory" class="table table-bordered table-hover">
               <thead>
@@ -93,9 +94,9 @@
                     <td><%=i.strCategory%> - <%=i.strSubCategory%></td>
                     <td>
                       <% if (i.S == 1) { %>
-                        <span class="label label-success">Active</span>
+                        <button data-no="<%=i.intSubCategoryNo%>" class="ui toggle button active inactivate_subcategory">Active</button>
                       <% }else{ %>
-                        <span class="label label-danger">Inactive</span>
+                        <button data-no="<%=i.intSubCategoryNo%>" class="ui toggle button inactive activate_subcategory">Inactive</button>
                       <% } %>
                     </td>
                     <td><button class="btn btn-default btn-sm">Edit</button></td>
@@ -128,7 +129,7 @@
 		  <div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			  <span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title"></h4>
+			<h4 class="modal-title">Category</h4>
 		  </div>
 		  <div class="modal-body">
 			<!-- Horizontal Form -->
@@ -146,8 +147,8 @@
 
 		  </div>
 		  <div class="modal-footer">
-			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-			<button type="submit" class="btn btn-primary">Save</button>
+			<button type="button" class="large ui button" data-dismiss="modal">Close</button>
+			<button type="submit" class="large ui teal button">Save</button>
 		  </div>
       </form>
 		</div>
@@ -163,7 +164,7 @@
 		  <div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			  <span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title"></h4>
+			<h4 class="modal-title">SubCategory</h4>
 		  </div>
 		  <div class="modal-body">
 			<!-- Horizontal Form -->
@@ -191,8 +192,8 @@
 
 		  </div>
 		  <div class="modal-footer">
-			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-			<button type="submit" class="btn btn-primary">Save</button>
+			<button type="button" class="large ui button" data-dismiss="modal">Close</button>
+			<button type="submit" class="large ui teal button">Save</button>
 		  </div>
       </form>
 		</div>
@@ -292,19 +293,7 @@
 
 <!-- REQUIRED JS SCRIPTS -->
 
-<!-- jQuery 3 -->
-<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- DataTables (new added)	 -->
-<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<%- include('../../../templates/admin-footer.ejs') -%>
 
 <!-- page script (new added) -->
 
@@ -342,6 +331,73 @@
 $('#title').html("USG | Product Category");
 $(".treeview a:contains('Maintenance')").parent().addClass("active");
 $(".navi a:contains('Product Category')").parent().addClass("active");
+</script>
+
+<script>
+  $('.activate_category').on('click',function(){
+    $(this).removeClass("ui toggle button activate_category").addClass("ui toggle button active inactivate_category").html("Active");
+
+    $.ajax({
+      url: '/maintenance/activateCategory',
+      method: 'post',
+      datatype: 'json',
+      data: {no: $(this).data('no')},
+      success: function(response,status,http){
+        if (response){
+          swal("Success!", "You have activated category no"+$(this).data('no'), "success");
+        }
+      }
+    })
+  })
+
+  $('.inactivate_category').on('click',function(){
+    $(this).removeClass("ui toggle button active inactivate_category").addClass("ui toggle button  activate_category").html("Inactive");
+
+    $.ajax({
+      url: '/maintenance/inactivateCategory',
+      method: 'post',
+      datatype: 'json',
+      data: {no: $(this).data('no')},
+      success: function(response,status,http){
+        if (response){
+          swal("Success!", "You have activated category no"+$(this).data('no'), "success");
+        }
+      }
+    })
+  })
+
+  $('.inactivate_subcategory').on('click',function(){
+    $(this).removeClass("ui toggle button active inactivate_subcategory").addClass("ui toggle button  activate_subcategory").html("Inactive");
+
+    $.ajax({
+      url: '/maintenance/inactivateSubCategory',
+      method: 'post',
+      datatype: 'json',
+      data: {no: $(this).data('no')},
+      success: function(response,status,http){
+        if (response){
+          swal("Success!", "You have activated SubCategory no"+$(this).data('no'), "success");
+        }
+      }
+    })
+  })
+
+  $('.activate_subcategory').on('click',function(){
+    $(this).removeClass("ui toggle button activate_subcategory").addClass("ui toggle button active inactivate_subcategory").html("Active");
+
+    $.ajax({
+      url: '/maintenance/activateSubCategory',
+      method: 'post',
+      datatype: 'json',
+      data: {no: $(this).data('no')},
+      success: function(response,status,http){
+        if (response){
+          swal("Success!", "You have activated SubCategory no"+$(this).data('no'), "success");
+        }
+      }
+    })
+  })
+
 </script>
 
 

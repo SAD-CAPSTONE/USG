@@ -30,89 +30,74 @@
 
 				</div>
 				<div class="row">
-					<form class="form-horizontal">
+					<form class="form-horizontal" id="supplierForm">
 						<div class="form-group">
-              <input type="text" id="sno" value="<%=lastsupplier%>">
-							<label for="FName" class="col-sm-2 control-label">First Name</label>
+              
+							<label for="FName" class="col-sm-2 control-label">Name</label>
 							<div class="col-sm-2">
-								<input type="text" class="input-sm form-control" id="FName" placeholder="">
+								<input type="text" required class="input-sm form-control" name="fname" id="FName" placeholder="First Name">
 							</div>
 
-              <label for="MName" class="col-sm-2 control-label">Middle Name</label>
+
 							<div class="col-sm-2">
-								<input type="text" class="input-sm form-control" id="MName" placeholder="">
+								<input type="text" class="input-sm form-control" id="MName" name="mname" placeholder="Middle Name">
 							</div>
 
-              <label for="FName" class="col-sm-2 control-label">Last Name</label>
+
 							<div class="col-sm-2">
-								<input type="text" class="input-sm form-control" id="LName" placeholder="">
+								<input type="text" required class="input-sm form-control" id="LName" name="lname" placeholder="Last Name">
 							</div>
 						</div>
 
 						<div class="form-group">
-
 							<label for="BName" class="col-sm-2 control-label">Business Name</label>
-
 							<div class="col-sm-4">
-								<input type="text" class="input-sm form-control" id="BName" placeholder="">
+								<input type="text" required class="input-sm form-control" id="BName" name="bname" placeholder="">
 							</div>
 						</div>
 
 						<div class="form-group">
-
 							<label for="address" class="col-sm-2 control-label">Business Address</label>
-
 							<div class="col-sm-4">
-								<input type="text" class="input-sm form-control" id="address" placeholder="">
+								<input type="text" required class="input-sm form-control" name="address" id="address" placeholder="">
 							</div>
 						</div>
 
             <div class="form-group">
-
 							<label for="email" class="col-sm-2 control-label">Business Email</label>
-
 							<div class="col-sm-4">
-								<input type="email" class="input-sm form-control" id="email" placeholder="">
+								<input type="email" class="input-sm form-control" id="email" name="email" placeholder="">
 							</div>
 						</div>
 
             <div class="form-group">
-
 							<label for="brands" class="col-sm-2 control-label">Brands</label>
-
 							<div class="col-sm-4">
-								<input type="text" class="input-sm form-control" id="brands" placeholder="Separate with commas">
+								<input type="text" required class="input-sm form-control" name="brands" id="brands" placeholder="Separate with commas">
 							</div>
 						</div>
 
             <div class="form-group">
-
-							<label for="phone" class="col-sm-2 control-label">Phone No</label>
-
+							<label for="phone" class="col-sm-2 control-label">Contact numbers</label>
 							<div class="col-sm-2">
-								<input type="text" class="input-sm form-control" id="phone" placeholder="">
+								<input type="text" class="input-sm form-control" name="phone" id="phone" placeholder="Phone">
 							</div>
 
-              <label for="mobile" class="col-sm-2 control-label">Mobile No</label>
 
 							<div class="col-sm-2">
-								<input type="text" class="input-sm form-control" id="mobile" placeholder="">
+								<input type="text" class="input-sm form-control" name="mobile" id="mobile" placeholder="Mobile">
 							</div>
 						</div>
 
             <div class="form-group">
-
 							<label for="tin" class="col-sm-2 control-label">Business TIN</label>
-
 							<div class="col-sm-4">
-								<input type="text" class="input-sm form-control" id="tin" placeholder="">
+								<input type="text" class="input-sm form-control" name="tin" id="tin" placeholder="">
 							</div>
 						</div>
 
             <div class="form-group">
-
               <label for="invoice" class="col-sm-2 control-label">Invoice Available?</label>
-
               <div class="col-sm-4">
                 <label>
                   <input type="radio" id="invoice" value="yes" name="r3" class="flat-red" checked>
@@ -127,24 +112,19 @@
             </div>
 
             <div class="form-group">
-
 							<label for="" class="col-sm-2 control-label">Supplier Type</label>
-
 							<div class="col-sm-4">
-                <select id="type" class="input-sm form-control">
+                <select id="type" name="supptype" class="input-sm form-control">
                   <option value="1">Consignor</option>
                   <option value="2">Outright</option>
                 </select>
-
 							</div>
 						</div>
 
             <div class="form-group">
-
 							<label for="" class="col-sm-2 control-label">Business Type</label>
-
 							<div class="col-sm-4">
-                <select id="businesstype" class="input-sm form-control">
+                <select id="businesstype" name="busstype" class="input-sm form-control">
                   <% if (businesstype == null || businesstype == undefined){ %>
 
                   <% }else if (businesstype.length == 0){ %>
@@ -154,34 +134,19 @@
                       <option value="<%=i.intBusinessTypeNo%>"><%= i.strBusinessType%></option>
                   <%  }) %>
                   <% } %>
-
-
                 </select>
-
 							</div>
 						</div>
-
-
-
-
-
-					</form>
-
-
 				</div>
 
-
-
-
         <div class="box-footer">
-                  <a href="suppliers.html"><button type="button" class="btn btn-default">Back</button></a>
-                  <button type="button" id="sub" class="btn btn-info pull-right">Submit</button>
-                  <a href="/maintenance/supplier"><button type="button" id="response" class="btn btn-default">Back</button></a>
-
-              </div>
+        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+          <a href="/maintenance/supplier"><button type="button" class="big ui button">Back</button></a>
+          <button type="button" class="big ui teal  button">Submit</button>
+        </div>
                 <!-- /.box-footer -->
+      </form>
 			</div>
-
 
 
 		</div>
@@ -285,25 +250,7 @@
 
 <!-- REQUIRED JS SCRIPTS -->
 
-<!-- jQuery 3 -->
-<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- DataTables (new added)	 -->
-<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="/assets/admin/dist/js/adminlte.min.js"></script>
-<!-- iCheck 1.0.1 -->
-<script src="/assets/admin/plugins/iCheck/icheck.min.js"></script>
-<!-- sweetalert  -->
-<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
-<!-- Notification  -->
-<script src="/assets/admin/notification.js"></script>
+<%- include('../../../templates/admin-footer.ejs') -%>
 
 <!-- page script (new added) -->
 <script>
@@ -382,6 +329,23 @@ $(document).ready(function(){
 
 
 })
+</script>
+
+<script>
+  $('#supplierForm').submit(function(e){
+    e.preventDefault();
+
+    $.ajax({
+      url: '/maintenance/addSupplier',
+      method: 'post',
+      data: $('#supplierForm').serialize(),
+      success: function(response,status,http){
+        if(response){
+          swal("Success!","You've added a supplier","success");
+        }
+      }
+    })
+  })
 </script>
 
 

@@ -25,7 +25,7 @@
               <h4 align="center">Business Types</h4>
             </div>
 			<!-- buttons -->
-				&nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addType"><i class="fa fa-plus"></i> Add New Type</button>
+				&nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#addType"><i class="fa fa-plus"></i> Add New Type</button>
             <!-- /.box-header -->
             <div class="box-body table-responsive">
               <table id="example2" class="table table-bordered table-hover">
@@ -51,13 +51,14 @@
                         <td><%= moment(i.dateCreated).format("MM/DD/YYYY")%></td>
                         <td>
                           <% if (i.intStatus == 1){ %>
-                            <span class="label label-success">Active</span></td>
+                            <button data-no="<%=i.intBusinessTypeNo%>" class="ui toggle button active inactivate_type">Active</button>
 
                           <% }else{ %>
-                            <span class="label label-success">Inactive</span></td>
+                            <button data-no="<%=i.intBusinessTypeNo%>" class="ui toggle button inactive activate_type">Inactive</button>
 
                           <% } %>
-                        <td><a href=""><button disabled class="btn btn-default btn-sm">Inactivate</button></a></td>
+                        </td>
+                        <td></td>
                       </tr>
                     <% }) %>
                   <% } %>
@@ -218,23 +219,7 @@
 
 <!-- REQUIRED JS SCRIPTS -->
 
-<!-- jQuery 3 -->
-<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- DataTables (new added)	 -->
-<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="/assets/admin/dist/js/adminlte.min.js"></script>
-<!-- sweetalert  -->
-<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
-<!-- Notification  -->
-<script src="/assets/admin/notification.js"></script>
+<%- include('../../../templates/admin-footer.ejs') -%>
 
 <!-- page script (new added) -->
 <script>
@@ -274,6 +259,40 @@
       })
     });
   })
+</script>
+
+<script>
+$('.inactivate_type').on('click',function(){
+  $(this).removeClass("ui toggle button active inactivate_type").addClass("ui toggle button  activate_type").html("Inactive");
+
+  $.ajax({
+    url: '/maintenance/inactivateType',
+    method: 'post',
+    datatype: 'json',
+    data: {no: $(this).data('no')},
+    success: function(response,status,http){
+      if (response){
+        swal("Success!", "You have activated Business Type no"+$(this).data('no'), "success");
+      }
+    }
+  })
+})
+
+$('.activate_type').on('click',function(){
+  $(this).removeClass("ui toggle button activate_type").addClass("ui toggle button active inactivate_type").html("Active");
+
+  $.ajax({
+    url: '/maintenance/activateType',
+    method: 'post',
+    datatype: 'json',
+    data: {no: $(this).data('no')},
+    success: function(response,status,http){
+      if (response){
+        swal("Success!", "You have activated Business Type no"+$(this).data('no'), "success");
+      }
+    }
+  })
+})
 </script>
 
 <script>
