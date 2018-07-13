@@ -194,6 +194,7 @@
                   <div class="col-md-4" style="width: 40%;">
                     <img src="" class="img-responsive" disabled id="pic" name=""  ></div>
                   <div class="col-md-7 ml-auto">
+                    <input type="hidden" class="form-control" required id="view_prodno" name="view_prodno" >
                     <label for="view_pcode">Product Code</label>
                     <input type="text" class="form-control" required id="view_pcode" name="view_pcode" >
                   <div class="form-group">
@@ -258,44 +259,6 @@
   <!-- /.modal-dialog -->
 </div>
 
-
-<div class="modal fade" id="addImage">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-    	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    	  <span aria-hidden="true">&times;</span></button>
-    	<h4 class="modal-title"></h4>
-      </div>
-      <div class="modal-body">
-    	<!-- Horizontal Form -->
-
-    			<!-- form start -->
-    				<form class="form-horizontal" enctype="multipart/form-data" method="post" action="/inventory/addImage">
-    				  <div class="box-body">
-
-    					<div class="form-group">
-    					  <label for="inputConsignorName" class="col-sm-2 control-label">File</label>
-
-    					  <div class="col-sm-10">
-    						<input type="file" class="form-control" name="filename" id="inputConsignorName" placeholder="">
-    					  </div>
-
-    					</div>
-
-    				  </div>
-    				  <!-- /.box-body -->
-    	  </div>
-    	  <div class="modal-footer">
-    		<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-    		<button type="submit"  class="btn btn-primary">Save changes</button>
-    	  </div>
-        </form>
-    </div>
-    <!-- /.modal-content -->
-  </div>
-  <!-- /.modal-dialog -->
-</div>
 
 <!-- Main Footer -->
 <footer class="main-footer">
@@ -430,8 +393,8 @@
     $('#view_pcode').val($(this).data('prodcode'));
     $('#view_pname').val($(this).data('prodname'));
     $('#view_pdesc').val($(this).data('proddesc'));
-    $('#view_prodpic').val($(this).data('prodpic'));
-    var filename = "/assets/images/products/" + $(this).data('prodpicture');
+    $('#view_pic').val($(this).data('prodpic'));
+    var filename = "/assets/images/products/" + $(this).data('prodno')+'.jpg';
     //alert(filename);
     $('#pic').attr('src',filename);
 

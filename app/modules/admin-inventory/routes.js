@@ -81,7 +81,8 @@ router.post('/editProduct',(req,res)=>{
   var checked = 0;
   if (req.body.active == 'on') checked = 1;
 
-  var linky = path.join(path.dirname(path.dirname(path.dirname(__dirname))), 'public/images/'+req.body.view_prodno+'.jpg');
+  var linky = path.join(path.dirname(path.dirname(path.dirname(__dirname))), 'public/images/products/'+req.body.view_prodno+'.jpg');
+  console.log(linky);
 
   fs.unlink(linky,function(err){
         if(err) return console.log(err);
@@ -563,55 +564,32 @@ router.post('/pullOutItem',(req,res)=>{
       console.log(err);
     }else{
       db.query(`Update tblbatch set intStatus = 0 where intBatchNo = "${batch}"`,(err1,results1,fields1)=>{
-        if (err1){
-          db.rollback(function(){
-            console.log(err1);
-          })
+        if (err1){db.rollback(function(){console.log(err1)})
         }else{
           db.query(`Select * from tblbatch where intBatchNo = "${batch}" `,(err2,results2,fields2)=>{
-            if (err2){
-              db.rollback(function(){
-                console.log(err2);
-              })
+            if (err2){db.rollback(function(){console.log(err2)});
             }else{
               console.log(batch);
               db.query(`Update tblProductInventory set intQuantity = intQuantity - ${results2[0].intQuantity} where intInventoryNo = "${results2[0].intInventoryNo}"`,(err3,results3,fields3)=>{
-                if (err3){
-                  db.rollback(function(){
-                    console.log(err3);
-                  })
+                if (err3){db.rollback(function(){console.log(err3)})
                 }else{
                   db.query(`Select * from tblstockpullout`, (err4,results4,fields4)=>{
-                    if (err4){
-                      db.rollback(function(){
-                        console.log(err4);
-                      })
-                    }else{
-                      if (results4 == null || results4 == undefined){
-
-                      }else if(results4.length == 0){
-
-                      }else{
+                    if (err4){db.rollback(function(){console.log(err4)})}
+                    else{
+                      if (results4 == null || results4 == undefined){}else if(results4.length == 0){}
+                      else{
                         pullOutNo = parseInt(results4[0]) + 1;
                       }
-
-                      db.query(`Insert into tblstockpullout (intPullOutNo, intBatchNo, intAdminID) values("${pullOutNo}","${batch}","1000")`,(err5,results5,fields5)=>{
+                      db.query(`Insert into tblstockpullout (intPullOutNo, intBatchNo, intAdminID, intQuantity) values("${pullOutNo}","${batch}","1000",${results2[0].intQuantity})`,(err5,results5,fields5)=>{
                         if (err5){
-                          db.rollback(function(){
-                            console.log(err5);
-                          })
+                          db.rollback(function(){console.log(err5)})
                         }else{
                           db.commit(function(e1){
-                            if(e1){
-                              db.rollback(function(){
-                                console.log(e1);
-                              })
-                            }else{
-
+                            if(e1){db.rollback(function(){console.log(e1)})}
+                            else{
                               res.send("yes");
                             }
                           })
-
                         }
                       });
                     }
@@ -624,7 +602,6 @@ router.post('/pullOutItem',(req,res)=>{
       });
     }
   });
-
 
 });
 
