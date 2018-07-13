@@ -49,6 +49,10 @@ join tblUser on tblvoucherusers.intUserID = tblUser.intUserID
   });
 });
 
+router.post('/editVoucher',(req,res)=>{
+  res.send("yes");
+});
+
 // Batch -------------------------
 router.get('/batch', (req,res)=>{
   res.render('admin-maintain/views/batch');
@@ -98,25 +102,29 @@ router.post('/addSupplier',(req,res)=>{
         else{
           if(results1 == null || results1 == undefined){} else if (results1.length == 0){}
           else{
-            
+            no = parseInt(results1[0].intUserID) +1;
           }
+          db.query(`Insert into tblUser (intUserID, intUserTypeNo, strFName, strMName, strLName, strEmail) values ("${no}",2,"${req.body.fname}","${req.body.mname}","${req.body.lname}","${req.body.email}")`,(err2,results2,fields2)=>{
+            if(err2) {db.rollback(function(){console.log(err2)})}
+            else{
+              db.query(`Insert into tblSupplier (intUserID, intBusinessTypeNo, strBrands, strBusinessName, strBusinessEmail,strBusinessAddress,strSupplierPhone,strSupplierMobile,strBusinessTIN, intInvoiceAvailable, intSupplierType) values ("${no}","${req.body.busstype}","${req.body.brands}","${req.body.bname}","${req.body.email}","${req.body.address}","${req.body.phone}","${req.body.mobile}","${req.body.tin}","${req.body.inv}",${req.body.supptype})`,(err3,results3,fields3)=>{
+                if (err3) {db.rollback(function(){console.log(err3)})}
+                else{
+                  db.commit(function(erra){
+                    if (erra) {db.rollback(function(){console.log(erra)})}
+                    else{
+                      res.send("yes");
+                    }
+                  })
+                }
+              });
+            }
+          })
         }
       });
     }
-  })
-  db.query(`Insert into tblUser (intUserID, intUserTypeNo, strFname, strMname,
-    strLname) values ("${req.body.userid}", 2, "${req.body.fname}", "${req.body.mname}", "${req.body.lname}")`,(err1,results1,fields1)=>{
-    if (err1) console.log(err1);
-
-    db.query(`Insert into tblSupplier (intUserID, intBusinessTypeNo, strBrands,
-      strBusinessName, strBusinessAddress, strBusinessEmail, strSupplierPhone, strSupplierMobile, strBusinessTIN, intInvoiceAvailable, intSupplierType) values ("${req.body.userid}", ${req.body.businesstype}, "${req.body.brands}", "${req.body.bname}", "${req.body.address}", "${req.body.email}", "${req.body.phone}","${req.body.mobile}", "${req.body.tin}", ${req.body.invoice}, ${req.body.type})`,(err2,results2,fields2)=>{
-      if (err2) console.log(err2);
-
-      res.send("yes");
-
-
-    });
   });
+
 });
 
 router.post('/inactivateSupplier',(req,res)=>{

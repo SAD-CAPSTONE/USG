@@ -32,7 +32,7 @@
 				<div class="row">
 					<form class="form-horizontal" id="supplierForm">
 						<div class="form-group">
-              
+
 							<label for="FName" class="col-sm-2 control-label">Name</label>
 							<div class="col-sm-2">
 								<input type="text" required class="input-sm form-control" name="fname" id="FName" placeholder="First Name">
@@ -100,12 +100,12 @@
               <label for="invoice" class="col-sm-2 control-label">Invoice Available?</label>
               <div class="col-sm-4">
                 <label>
-                  <input type="radio" id="invoice" value="yes" name="r3" class="flat-red" checked>
+                  <input type="radio" id="invoice" value="1" name="inv" class="flat-red" checked>
                   Yes
                 </label>
 
                 <label>
-                  <input type="radio" name="r3" class="flat-red">
+                  <input type="radio" name="inv" value="0" class="flat-red">
                   No
                 </label>
               </div>
@@ -115,11 +115,19 @@
 							<label for="" class="col-sm-2 control-label">Supplier Type</label>
 							<div class="col-sm-4">
                 <select id="type" name="supptype" class="input-sm form-control">
+
+                  <option  value="2">Outright</option>
                   <option value="1">Consignor</option>
-                  <option value="2">Outright</option>
                 </select>
+
+
 							</div>
+              <div class="col-sm-4">
+                <button id="addContract_btn" data-toggle="modal" data-target="#contract_modal" class="large ui green basic button">Add Contract</button>
+              </div>
 						</div>
+
+
 
             <div class="form-group">
 							<label for="" class="col-sm-2 control-label">Business Type</label>
@@ -142,7 +150,7 @@
         <div class="box-footer">
         &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
           <a href="/maintenance/supplier"><button type="button" class="big ui button">Back</button></a>
-          <button type="button" class="big ui teal  button">Submit</button>
+          <button type="submit" class="big ui teal  button">Submit</button>
         </div>
                 <!-- /.box-footer -->
       </form>
@@ -156,6 +164,57 @@
 </div>
 
   <!-- /.content-wrapper -->
+
+  <div class="modal fade" id="contract_modal">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">Contract</h4>
+      </div>
+      <div class="modal-body">
+
+        <div class="ui big form">
+          <div class="two fields">
+            <div class="field">
+              <label>Application Date</label>
+              <input type="date">
+            </div>
+          </div>
+        </div>
+        <div class="ui big form">
+          <div class="two fields">
+            <div class="field">
+              <label>Start Date</label>
+              <input type="date">
+            </div>
+            <div class="field">
+              <label>End Date</label>
+              <input type="date">
+            </div>
+          </div>
+        </div>
+        <div class="ui big form">
+          <div class="field">
+            <label>Best time and day to reach</label>
+            <input type="text">
+          </div>
+        </div>
+
+        <!-- End of body -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="big ui button" data-dismiss="modal">Close</button>
+        <button type="submit" class="big ui teal button">Save</button>
+      </div>
+
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
 
 
 
@@ -279,53 +338,6 @@ $(document).ready(function(){
 
     $('#response').hide();
 
-    $('#sub').on('click',function(){
-
-      var inv = 0;
-      var cont = 0;
-      if ($('#invoice').prop('checked')== true){
-        inv = 1;
-      }
-      if ($('#contractavailable').prop('checked') == true){
-        cont = 1;
-      }
-
-      $.ajax({
-        url: '/maintenance/addSupplier',
-        method: 'POST',
-        datatype: "json",
-        data: {
-          userid: $('#sno').val(),
-          fname: $('#FName').val(),
-          mname: $('#MName').val(),
-          lname: $('#LName').val(),
-          bname: $('#BName').val(),
-          address: $('#address').val(),
-          email: $('#email').val(),
-          brands: $('#brands').val(),
-          phone: $('#phone').val(),
-          mobile: $('#mobile').val(),
-          tin: $('#tin').val(),
-          invoice: inv,
-          type: $('#type').val(),
-          businesstype: $('#businesstype').val()
-
-        },
-        success: function(response,status,http){
-            if (response == "yes"){
-
-              swal("Success","Supplier Added", "success");
-              $('#response').click();
-            }else{
-              swal("Error!","There's a problem inserting supplier record, try again.", "error");
-            }
-
-        }
-      })
-
-
-    });
-
 
 
 })
@@ -346,6 +358,14 @@ $(document).ready(function(){
       }
     })
   })
+</script>
+
+
+<script>
+$('#addContract_btn').show();
+$('#type').on('change',function(){
+  if($(this).val() == 1){$('#addContract_btn').show()}else {$('#addContract_btn').hide()}
+});
 </script>
 
 
