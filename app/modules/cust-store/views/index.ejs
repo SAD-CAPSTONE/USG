@@ -59,15 +59,20 @@
             </select>
           </div>
           <hr>
-          <div id="filters">
+          <div id="filters-link">
             <a href="#">
               <p id="filters-btn" class="m-0"><i class="fa fa-filter mr-1"></i>Filters and Categories</p>
             </a>
           </div>
-          <small>Filtered By: </small>
-          <small class="filter-tag">Price: 200 - 300<i class="fa fa-times ml-1"></i></small>
-          <small class="filter-tag">Rating: 2 & Up<i class="fa fa-times ml-1"></i></small>
-          <a href="" class="ml-1"><small>Clear All</small></a>
+          <small class="mr-1">Filtered By: </small>
+          <div id="filters" class="inline">
+            <!-- <small class="filter-tag">Price: 200 - 300<i class="fa fa-times ml-1"></i></small>
+            <small class="filter-tag">Rating: 2 & Up<i class="fa fa-times ml-1"></i></small> -->
+          </div>
+          <div class="inline-block">
+
+          </div>
+
       </div>
       <div id="products-div" class="products-container">
         <div id="store-products">
@@ -165,13 +170,39 @@
 $(() => {
 
   $('#getStore').on('click', () => {
-    let list = $('#store-products'), catList = $('.categories-div'), subList = $('.subcategories-div');
+    let list = $('#store-products'), catList = $('.categories-div'),
+    subList = $('.subcategories-div'), filters = $('#filters');
     $.get('/storeRequest/load').then((res) => {
       list.html('');
       $('#store-main > div:first-child > p:first-of-type').text(`${res.count} items found`);
       $('.sortBy').val(res.store.sort);
       $('.min-range').val(res.store.price.min);
       $('.max-range').val(res.store.price.max);
+      // filters
+      filters.html('');
+      res.store.rating ?
+        filters.append(`
+          <small class="filter-tag">Rating: ${res.store.rating} And Up
+          <i id="rating" class="fa fa-times ml-1"></i></small>`)
+        : 0 ;
+
+      let priceRange, price = res.store.price
+      priceRange = price.min ?
+        price.max != null ?
+          `${price.min} - ${price.max}` :
+          `${price.min} And Up`
+        :
+        price.max != null ?
+          `0 - ${price.max}` : null
+      priceRange ?
+        filters.append(`
+          <small class="filter-tag">Price: ${priceRange}
+          <i id="price" class="fa fa-times ml-1"></i></small>`)
+        : 0 ;
+
+      filters.children().length ?
+        filters.next().html(`<a href="#"><small>Clear All</small></a>`) :
+        filters.next().html(`<em><small class="text-muted">No Filters</small></em>`);
 
       // subcategories
       subList.html(`<p class="m-0"><b>${res.store.category}</b></p>`);
@@ -264,13 +295,45 @@ $(() => {
           </div>`);
       }
     }).catch((error) => {
-      list.html('');
-      list.append(`
+      list.html(`
         <div class="align-center">
           <p><em> No Products Found </em></p>
         </div>`);
     });
   });
+
+  $('.categories-div').on('click', '.categoryLink', function(){
+    event.preventDefault();
+    $.post('/storeRequest/category',{
+      cat: $(this).text()
+    }).then((res) => {
+      console.log(res)
+      $('#getStore').click();
+    }).catch((error) => {
+      console.log(error)
+    });
+  });
+
+  $('.subcategories-div').on('click', 'input', function(){
+    event.preventDefault();
+    let thisval;
+    if($(this).attr('checked')){
+      thisval = 'checked';
+    }
+    else{
+      thisval = 'unchecked'
+    }
+
+    $.post('/storeRequest/subcategory',{
+      id: $(this).attr('id'),
+      val: thisval
+    }).then((res) => {
+      console.log(res);
+      $('#getStore').click();
+    }).catch((error) => {
+      console.log(error);
+    });
+  })
 
   $('.sortBy').on('change', function(){
     event.preventDefault();
@@ -297,39 +360,8 @@ $(() => {
     });
   });
 
-  $('.categories-div').on('click', '.categoryLink', function(){
-    event.preventDefault();
-    $.post('/storeRequest/category',{
-      cat: $(this).text()
-    }).then((res) => {
-      console.log(res)
-      $('#getStore').click();
-    }).catch((error) => {
-      console.log(error)
-    });
-  });
-
-  $('.subcategories-div').on('click', 'input', function(){
-    let thisval;
-    if($(this).attr('checked')){
-      thisval = 'checked';
-    }
-    else{
-      thisval = 'unchecked'
-    }
-
-    $.post('/storeRequest/subcategory',{
-      id: $(this).attr('id'),
-      val: thisval
-    }).then((res) => {
-      console.log(res);
-      $('#getStore').click();
-    }).catch((error) => {
-      console.log(error);
-    });
-  })
-
   $('.stars').on('click', function(){
+    event.preventDefault();
     let rating = $(this).attr('id');
     $.post('/storeRequest/rating', {
       rating: rating
@@ -340,6 +372,18 @@ $(() => {
       console.log(error);
     });
   });
+
+  $('#filters').on('click', 'i', function(){
+    $.post(`/storeRequest/filters`, {
+      id: $(this).attr('id')
+    }).then((res) => {
+      console.log(res);
+      $('#getStore').click();
+    }).catch((error) => {
+      console.log(error);
+    });
+
+  })
 
   $('#getStore').click();
 

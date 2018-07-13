@@ -15,17 +15,6 @@ function thisCategory(req,res,next){
     return next();
   });
 }
-function subcategories(req,res,next){
-  /*Subcategories of current category, Match(params);
-  *(tblcategory)*(tblsubcategory)*/
-  db.query(`SELECT * FROM tblcategory
-    INNER JOIN tblsubcategory ON tblcategory.intCategoryNo= tblsubcategory.intCategoryNo
-    WHERE strCategory= ? AND tblsubcategory.intStatus= 1`, [req.params.category], function (err,  results, fields) {
-    if (err) console.log(err);
-    req.subcategories= results;
-    return next();
-  });
-}
 function categories(req,res,next){
   /*Other Categories, Match(params);
   *(tblcategory)*/

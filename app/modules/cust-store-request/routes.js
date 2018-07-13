@@ -66,7 +66,6 @@ function storeCheck(req,res,next){
   return next();
 }
 
-
 router.get('/load', thisCategory, subcategories, categories, storeCheck, (req,res)=>{
   // req.session.store = {
   //   page: 1,
@@ -89,7 +88,7 @@ router.get('/load', thisCategory, subcategories, categories, storeCheck, (req,re
       arr.push(data[0]); return arr;
     }, []);
   }
-  // console.log(req.session.store)
+  console.log(req.session.store)
 
   let filterQuery = productQuery, store = req.session.store;
   // category
@@ -115,12 +114,12 @@ router.get('/load', thisCategory, subcategories, categories, storeCheck, (req,re
   // price
   let price = store.price;
 
-  price.min || price.min == 0 ?
-    price.max || price.max == 0 ?
+  price.min != null ?
+    price.max != null ?
       filterQuery = filterQuery.concat(`AND productPrice BETWEEN ${price.min} AND ${price.max} `) :
       filterQuery = filterQuery.concat(`AND productPrice >= ${price.min} `)
     :
-    price.max || price.max == 0 ?
+    price.max != null ?
       filterQuery = filterQuery.concat(`AND productPrice <= ${price.max} `) : 0
 
   // products group by
@@ -203,5 +202,22 @@ router.post('/rating', subcategories, storeCheck, (req,res)=>{
   res.send('Store Rating Updated');
 });
 
+router.post('/rating', subcategories, storeCheck, (req,res)=>{
+  req.session.store.rating = parseInt(req.body.rating);
+  res.send('Store Rating Updated');
+});
+
+router.post('/filters', subcategories, storeCheck, (req,res)=>{
+  switch(req.body.id){
+    case 'rating':
+      req.session.store.rating = 0
+      break;
+    case 'price':
+      req.session.store.price.min = null;
+      req.session.store.price.max = null;
+      break;
+  }
+  res.send('Store Filters Updated');
+});
 
 exports.storeRequest = router;
