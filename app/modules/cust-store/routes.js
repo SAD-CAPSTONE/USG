@@ -5,13 +5,14 @@ const priceFormat = require('../cust-0extras/priceFormat');
 
 function thisCategory(req,res,next){
   /*Check current category, Match(params);
-  *(tblcategory)*(tblsubcategory)*/
-  db.query(`SELECT * FROM tblcategory WHERE strCategory= ? AND intStatus= 1`, [req.params.category], function (err,  results, fields) {
+  *(tblcategory)*/
+  req.session.category ?
+    0 : req.session.category = 'All Products';
+  db.query(`SELECT * FROM tblcategory WHERE strCategory= ? AND intStatus= 1`, [req.session.category], function (err,  results, fields) {
     if (err) console.log(err);
-    if(results[0] || req.params.category == 'All Products')
-      return next();
-    else
-      res.redirect('/store/All Products')
+    results[0] || req.params.category == 'All Products' ?
+      0 : req.params.category == 'All Products'
+    return next();
   });
 }
 function subcategories(req,res,next){
@@ -28,24 +29,16 @@ function subcategories(req,res,next){
 function categories(req,res,next){
   /*Other Categories, Match(params);
   *(tblcategory)*/
-  db.query(`SELECT * FROM tblcategory WHERE strCategory!= ? AND intStatus= 1`, [req.params.category], function (err,  results, fields) {
+  db.query(`SELECT * FROM tblcategory WHERE strCategory!= ? AND intStatus= 1`, [req.session.category], function (err,  results, fields) {
     if (err) console.log(err);
     req.categories= results;
     return next();
   });
 }
 
-router.get('/', (req,res)=>{
-  req.session.category ?
-    res.redirect(`/store/${req.session.category}`):
-    res.redirect(`/store/All Products`)
-});
-router.get('/:category', thisCategory, subcategories, categories, (req,res)=>{
-  req.session.category = req.params.category;
+router.get('/', thisCategory, categories, (req,res)=>{
   res.render('cust-store/views/index', {
     thisUser: req.user,
-    thisCategory: req.params.category,
-    subcategories: req.subcategories,
     categories: req.categories
   });
 });
