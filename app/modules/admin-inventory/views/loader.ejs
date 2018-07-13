@@ -8,9 +8,9 @@
     <th>Product Name</th>
     <th>Brand</th>
     <th>Supplier</th>
-    <th>Expiration Date</th>
-    <th>Status</th>
-    <th>Action</th>
+    <th >Expiration Date</th>
+
+    <th style="width: 20px">Action</th>
   </tr>
   </thead>
   <tbody>
@@ -27,7 +27,7 @@
           <td><%=i.strBrand%></td>
           <td><%=i.strFName%> <%=i.strLName%></td>
           <td><%= moment(i.expirationDate).format("MM/DD/YYYY")%></td>
-          <td>status here</td>
+
           <td>
             <button data-batch="<%=i.intBatchNo%>" class="pulloutitem btn btn-danger btn-sm">Pull-out</button>
           </td>

@@ -24,14 +24,12 @@
           <div class="box animated slideInUp">
             <div class="box-header">
               <h4 align="center"> ALL PRODUCTS</h4>
-            </br>
-            <h5 class="text-aqua">* See inventory to check the supplier and stock of the specific product</h5>
 
-          <h5 class="text-aqua">* Please monitor stocks regularly, check if there are damaged products</h5>
+
             </div>
 			<!-- buttons -->
     </br>
-				&nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addProduct"><i class="fa fa-plus"></i> Add New Product</button>
+				&nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#addProduct"><i class="fa fa-plus"></i> Add New Product</button>
 
         <!-- &nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" id="s"><i class="fa fa-plus"></i> Tester</button> -->
 
@@ -45,7 +43,7 @@
                   <th>Product Code</th>
                   <th>Product Name</th>
                   <th>Description</th>
-                  <th>Status</th>
+                  <th style="width: 10px">Status</th>
                   <th>Actions</th>
                 </tr>
                 </thead>
@@ -60,20 +58,22 @@
                     <td><%=i.strDescription%></td>
                     <td>
                     <% if (i.stats == 1){ %>
-                      <span class="label label-success">Active</span>
+                      <a class="ui green circular label"></a>
                     <% }else{ %>
-                      <span class="label label-danger">Inactive</span>
+                      <a class="ui red circular label">2</a>
                     <% } %>
 
                     </td>
 
                     <!-- ERROR IN THIS AREA (req.query) -->
 
-                    <td><button type="button" data-toggle="modal" data-target="#viewProduct" class="viewButton btn btn-default btn-sm" data-prodno="<%=i.intProductNo%>" data-prodcode="<%=i.strProductCode%>" data-prodname="<%=i.strProductName%>" data-proddesc="<%=i.strDescription%>" data-prodbrand="<%=i.intBrandNo%>" data-prodcateg="<%=i.intSubCategoryNo%>" data-prodpicture="<%=i.strProductPicture%>"
-                    data-status="<%=i.stats%>" >View Details</button>
+                    <td>
+                      <center>
+                      <button type="button" data-toggle="modal" data-target="#viewProduct" class="viewButton large ui teal button" data-prodno="<%=i.intProductNo%>" data-prodcode="<%=i.strProductCode%>" data-prodname="<%=i.strProductName%>" data-proddesc="<%=i.strDescription%>" data-prodbrand="<%=i.intBrandNo%>" data-prodcateg="<%=i.intSubCategoryNo%>" data-prodpicture="<%=i.strProductPicture%>"
+                    data-status="<%=i.stats%>" >View</button>
                     <% var url = i.intProductNo %>
-                    <a href="/inventory/productInventory?product=<%=url%>"><button type="button" class="btn btn-default btn-sm"  >Inventory</button></a>
-
+                    <a href="/inventory/productInventory?product=<%=url%>"><button type="button" class="large ui teal button"  >Inventory</button></a>
+                  </center>
                     </td>
 
                   </tr>
@@ -208,7 +208,7 @@
                           <% brand.forEach(function(s){ %>
                             <option value="<%=s.intBrandNo%>"><%=s.strBrand%></option>
                           <% }) %>
-      
+
                         <% } %>
                       </select>
                   <div class="form-group">
@@ -223,7 +223,7 @@
                               <% category.forEach(function(s){ %>
                                 <option value="<%=s.intSubCategoryNo%>"><%=s.strSubCategory%></option>
                               <% }) %>
-        
+
                             <% } %>
                       </select>
                   <div class="form-group">
@@ -247,8 +247,8 @@
             </div>
           </div>
   		  <div class="modal-footer">
-  			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-  			<button type="submit" class="btn btn-primary">Save changes</button>
+  			<button type="button" class="large ui button" data-dismiss="modal">Close</button>
+  			<button type="submit" class="large ui blue button">Save changes</button>
   		  </div>
         </form>
   	</div>

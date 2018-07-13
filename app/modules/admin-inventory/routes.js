@@ -259,39 +259,6 @@ router.get('/transactions', (req,res)=>{
   });
 });
 
-router.get('/sample', (req,res)=>{
-
-  function query1(callback){
-    setTimeout(function(){
-      callback("Test1");
-    }, 1000);
-  }
-  function query2(callback){
-    setTimeout(function(){
-      callback("Test2");
-    }, 1000);
-  }
-
-    async.parallel({
-    data1: function (cb) {
-      query1(function (data) {
-        cb(null, data);
-      });
-    },
-    data2: function (cb) {
-      query2(function (data) {
-        cb(null, data);
-      });
-    }
-      }, function (err, dataObject) {
-          console.log(dataObject.data1);
-         // render([dataObject.data1, dataObject.data2, dataObject.data3]);
-         // var profile = req.session.user;
-         //  res.render('businessman/views/transactionList', {profile: profile,event: dataObject.data1, item: dataObject.data2, service: dataObject.data3, user: `${req.session.user.strProviderFName}`+" "+ `${req.session.user.strProviderLName}`});
-      });
-
-});
-
 router.get('/allStocks', (req,res)=>{
 
   // Query inventory
@@ -558,18 +525,29 @@ router.post('/newStock', (req,res)=>{
   });
 });
 
-router.get('/searchExpired',(req,res)=>{
+var expired_result = "";
+router.get('/showExpired',(req,res)=>{
+  res.render('admin-inventory/views/loader',{re: expired_result, moment: moment});
+});
+
+router.post('/searchExpired',(req,res)=>{
   //var dates = (req.body.val).split("-");
+  var dates = (req.body.o).split("-");
+  var newDate = moment(dates[0]).format("YYYY/MM/DD");
+  var newDate1 = moment(dates[1]).format("YYYY/MM/DD");
+  console.log(newDate);
 
   db.query(`Select * from tblbatch
     join tblproductinventory on tblbatch.intinventoryno = tblproductinventory.intinventoryno
     join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
     join tblProductBrand on tblproductlist.intbrandno = tblproductbrand.intBrandNo
     join tblSupplier on tblProductInventory.intuserID = tblSupplier.intUserID
-    where tblbatch.expirationDate between '2018-06-24' and '2018-06-24' and tblbatch.intStatus = 1`,(err1,results1,fiels1)=>{
+    where tblbatch.expirationDate between '${newDate}' and '${newDate1}' and tblbatch.intStatus = 1`,(err1,results1,fiels1)=>{
       if (err1) console.log(err1);
 
-        res.render('admin-inventory/views/loader',{re: results1, moment: moment});
+      expired_result = results1;
+      res.send("yes")
+      //res.render('admin-inventory/views/loader',{re: results1, moment: moment});
 
 
   });
@@ -690,6 +668,15 @@ router.post('/pullOut',(req,res)=>{
 
 });
 
+router.get('/pulledOutStocks',(req,res)=>{
+
+  db.query(`Select tblStockPullOut.intQuantity as quantity, tblStockPullOut.*, tblProductInventory.*, tblBatch.*,
+    tblProductList.*, tblUom.*, tblUser.*, tblProductBrand.* from tblStockPullOut join tblBatch on tblStockPullOut.intBatchNo = tblBatch.intBatchNo join tblProductInventory on tblProductInventory.intInventoryNo = tblBatch.intInventoryNo join tblUom on tblProductInventory.intUomNo = tblUom.intUomno join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
+    join tblUser on tblProductInventory.intUserID = tblUser.intUserID join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo`,(err1,results1,fields1)=>{
+    if(err1) console.log(err1);
+    if(!err1) res.render('admin-inventory/views/stockPullOut',{re: results1, moment: moment});
+  });
+});
 
 router.post('/update',(req,res)=>{
 
