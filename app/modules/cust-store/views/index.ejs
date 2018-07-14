@@ -4,46 +4,11 @@
 <div id="store-container" class="container">
   <div class="row">
     <div id="store-sidebar" class="p-0">
-      <div>
-        <p class="m-0"><b><%= thisCategory %></b></p>
-        <% if(subcategories[0]){ %>
-          <div>
-            <input id="All Subcategories" type="checkbox" checked/>
-            <small class="ml-3 mb-0">
-              <label class="form-check-label" for="All Subcategories">
-                All Subcategories
-              </label>
-            </small>
-          </div>
-        <% } %>
-        <% subcategories.forEach((sub)=>{ %>
-          <div>
-            <input id="<%= sub.intSubCategoryNo%>" type="checkbox" checked/>
-            <small class="ml-3 mb-0">
-              <label class="form-check-label" for="<%= sub.intSubCategoryNo%>">
-                <%= sub.strSubCategory %>
-              </label>
-            </small>
-          </div>
-        <% }) %>
-
+      <div class="subcategories-div">
+        <p class="m-0"><b>All Products</b></p>
       </div>
-      <div>
+      <div class="categories-div">
         <p class="m-0"><b>Other Categories</b></p>
-        <% if(thisCategory != 'All Products'){ %>
-          <small class="block">
-            <a href="/store/All Products">
-              All Products
-            </a>
-          </small>
-        <% } %>
-        <% categories.forEach((cat)=>{ %>
-          <small class="block">
-            <a href="/store/<%= cat.strCategory %>">
-              <%= cat.strCategory %>
-            </a>
-          </small>
-        <% }) %>
       </div>
       <div>
         <p class="m-0 mb-1"><b>Price Range</b></p>
@@ -55,28 +20,27 @@
       </div>
       <div>
         <p class="m-0"><b>Rating</b></p>
-
-          <%for(i=5; i>0; i--){%>
-            <div class="stars">
-              <ul class="list-unstyled inline m-0 cursor-pointer">
-            <%for(j=0; j<5; j++){
-              if (i > j){ %>
-                <li class="inline"><i class="fa fa-star"></i></li>
-            <% }else{ %>
-                <li class="inline"><i class="fa fa-star-o"></i></li>
-            <% }
-            }
-            if (i !== 5){ %>
-              <li class="inline">
-                <small class="ml-1 inline">And Up</small>
-              </li>
-              </ul>
-              </div>
-            <% }else{ %>
-              </ul>
-              </div>
-            <% }
-          } %>
+        <%for(i=5; i>0; i--){%>
+          <div id="<%= i%>" class="stars">
+            <ul class="list-unstyled inline m-0 cursor-pointer">
+          <%for(j=0; j<5; j++){
+            if (i > j){ %>
+              <li class="inline"><i class="fa fa-star"></i></li>
+          <% }else{ %>
+              <li class="inline"><i class="fa fa-star-o"></i></li>
+          <% }
+          }
+          if (i !== 5){ %>
+            <li class="inline">
+              <small class="ml-1 inline">And Up</small>
+            </li>
+            </ul>
+            </div>
+          <% }else{ %>
+            </ul>
+            </div>
+          <% }
+        } %>
 
       </div>
 
@@ -95,15 +59,20 @@
             </select>
           </div>
           <hr>
-          <div id="filters">
+          <div id="filters-link">
             <a href="#">
               <p id="filters-btn" class="m-0"><i class="fa fa-filter mr-1"></i>Filters and Categories</p>
             </a>
           </div>
-          <small>Filtered By: </small>
-          <small class="filter-tag">Price: 200 - 300<i class="fa fa-times ml-1"></i></small>
-          <small class="filter-tag">Rating: 2 & Up<i class="fa fa-times ml-1"></i></small>
-          <a href="" class="ml-1"><small>Clear All</small></a>
+          <small class="mr-1">Filtered By: </small>
+          <div id="filters" class="inline">
+            <!-- <small class="filter-tag">Price: 200 - 300<i class="fa fa-times ml-1"></i></small>
+            <small class="filter-tag">Rating: 2 & Up<i class="fa fa-times ml-1"></i></small> -->
+          </div>
+          <div class="inline-block">
+
+          </div>
+
       </div>
       <div id="products-div" class="products-container">
         <div id="store-products">
@@ -135,43 +104,13 @@
       <div id="filters-div" class="pos-relative">
         <div class="row">
           <div class="col">
-            <div class="mb-3">
-              <p class="m-0"><b>Food & Beverages</b></p>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">All Subcategories</small>
-              </div>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">Fruits & Vegetables</small>
-              </div>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">Grains</small>
-              </div>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">Legumes</small>
-              </div>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">Nuts and Seeds</small>
-              </div>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">Dairy Products and Eggs</small>
-              </div>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">Livestock Feed</small>
-              </div>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">Meats and Poultry</small>
-              </div>
-
+            <div class="mb-3 subcategories-div">
+              <p class="m-0"><b>All Products</b></p>
             </div>
           </div>
           <div class="col">
-            <div class="mb-3">
+            <div class="mb-3 categories-div">
               <p class="m-0"><b>Other Categories</b></p>
-              <small class="block">All Products</small>
-              <small class="block">Supplemments</small>
-              <small class="block">Hygiene</small>
-              <small class="block">Cosmetics</small>
-              <small class="block">Stationary</small>
             </div>
           </div>
         </div>
@@ -180,28 +119,27 @@
           <div class="col">
             <div class="mb-3">
               <p class="m-0"><b>Rating</b></p>
-
-                <%for(i=5; i>0; i--){%>
-                  <div class="stars">
-                    <ul class="list-unstyled inline m-0 cursor-pointer">
-                  <%for(j=0; j<5; j++){
-                    if (i > j){ %>
-                      <li class="inline"><i class="fa fa-star"></i></li>
-                  <% }else{ %>
-                      <li class="inline"><i class="fa fa-star-o"></i></li>
-                  <% }
-                  }
-                  if (i !== 5){ %>
-                    <li class="inline">
-                      <small class="ml-1 inline">And Up</small>
-                    </li>
-                    </ul>
-                    </div>
-                  <% }else{ %>
-                    </ul>
-                    </div>
-                  <% }
-                } %>
+              <%for(i=5; i>0; i--){%>
+                <div id="<%= i%>" class="stars">
+                  <ul class="list-unstyled inline m-0 cursor-pointer">
+                <%for(j=0; j<5; j++){
+                  if (i > j){ %>
+                    <li class="inline"><i class="fa fa-star"></i></li>
+                <% }else{ %>
+                    <li class="inline"><i class="fa fa-star-o"></i></li>
+                <% }
+                }
+                if (i !== 5){ %>
+                  <li class="inline">
+                    <small class="ml-1 inline">And Up</small>
+                  </li>
+                  </ul>
+                  </div>
+                <% }else{ %>
+                  </ul>
+                  </div>
+                <% }
+              } %>
             </div>
 
           </div>
@@ -232,11 +170,87 @@
 $(() => {
 
   $('#getStore').on('click', () => {
-    let list = $('#store-products');
+    let list = $('#store-products'), catList = $('.categories-div'),
+    subList = $('.subcategories-div'), filters = $('#filters');
     $.get('/storeRequest/load').then((res) => {
       list.html('');
-      $('#store-main > div:first-child > p:first-of-type').text(`${res.count} items found`)
-      $('.sortBy').val(res.store.sort)
+      $('#store-main > div:first-child > p:first-of-type').text(`${res.count} items found`);
+      $('.sortBy').val(res.store.sort);
+      $('.min-range').val(res.store.price.min);
+      $('.max-range').val(res.store.price.max);
+      // filters
+      filters.html('');
+      res.store.rating ?
+        filters.append(`
+          <small class="filter-tag">Rating: ${res.store.rating} And Up
+          <i id="rating" class="fa fa-times ml-1"></i></small>`)
+        : 0 ;
+
+      let priceRange, price = res.store.price
+      priceRange = price.min ?
+        price.max != null ?
+          `${price.min} - ${price.max}` :
+          `${price.min} And Up`
+        :
+        price.max != null ?
+          `0 - ${price.max}` : null
+      priceRange ?
+        filters.append(`
+          <small class="filter-tag">Price: ${priceRange}
+          <i id="price" class="fa fa-times ml-1"></i></small>`)
+        : 0 ;
+
+      filters.children().length ?
+        filters.next().html(`<a href="#"><small>Clear All</small></a>`) :
+        filters.next().html(`<em><small class="text-muted">No Filters</small></em>`);
+
+      // subcategories
+      subList.html(`<p class="m-0"><b>${res.store.category}</b></p>`);
+      res.store.category != 'All Products' && res.store.all_subcategories.length ?
+        subList.append(`
+          <div>
+            <input id="allSub" class="cursor-pointer allSub" type="checkbox"/>
+            <small class="ml-3 mb-0">
+              <label class="form-check-label cursor-pointer" for="allSub">
+                All Subcategories
+              </label>
+            </small>
+          </div>`) : 0
+      res.store.all_subcategories.forEach((data)=>{
+        subList.append(`
+          <div>
+            <input id="${data[0]}" class="cursor-pointer ${data[0]}" type="checkbox"/>
+            <small class="ml-3 mb-0">
+              <label class="form-check-label cursor-pointer" for="${data[0]}">
+                ${data[1]}
+              </label>
+            </small>
+          </div>`);
+      })
+      res.store.subcategories.length == res.store.all_subcategories.reduce((arr, data)=>{
+        arr.push(data[0]); return arr;
+      }, []).length ?
+        $(`.subcategories-div input.allSub`).attr('checked','checked'): 0
+      res.store.subcategories.forEach((data)=>{
+        $(`.subcategories-div input.${data}`).attr('checked','checked');
+      })
+
+      // categories
+      catList.html(`<p class="m-0"><b>Other Categories</b></p>`);
+      res.store.category != 'All Products' ?
+        catList.append(`
+          <small class="block">
+            <a href='#' class="categoryLink">All Products</a>
+          </small>`) : 0
+      res.categories.forEach((data)=>{
+        catList.append(`
+          <small class="block">
+            <a href='#' class="categoryLink">${data.strCategory}</a>
+          </small>
+          `);
+      })
+
+      // products
       res.products.forEach((data) => {
         list.append(`
           <div class="custom-card this-product my-2">
@@ -260,7 +274,6 @@ $(() => {
               <small class="card-reviews">${data.cntReview} reviews</small>
             </div>
           </div>`);
-
         let rating = data.aveRating, result = '';
         for(i=0; i<5; i++){
           if (rating < 1 && rating >= 0.5) {
@@ -272,7 +285,6 @@ $(() => {
           }
           --rating;
         }
-
         $('#store-products > .custom-card:last-of-type .card-rating').append(`
           ${result} <span class="fs-08em fw-400">(${data.cntRating})</span>`)
       });
@@ -283,18 +295,61 @@ $(() => {
           </div>`);
       }
     }).catch((error) => {
-      list.html('');
-      list.append(`
+      list.html(`
         <div class="align-center">
           <p><em> No Products Found </em></p>
         </div>`);
     });
   });
 
-  $('.priceRangeBtn').on('click', function(){
-    console.log('xxxxxxxxxxxxxx');
+  $('.categories-div').on('click', '.categoryLink', function(){
     event.preventDefault();
-    $.post(`/storeRequest/load/price`,{
+    $.post('/storeRequest/category',{
+      cat: $(this).text()
+    }).then((res) => {
+      console.log(res)
+      $('#getStore').click();
+    }).catch((error) => {
+      console.log(error)
+    });
+  });
+
+  $('.subcategories-div').on('click', 'input', function(){
+    event.preventDefault();
+    let thisval;
+    if($(this).attr('checked')){
+      thisval = 'checked';
+    }
+    else{
+      thisval = 'unchecked'
+    }
+
+    $.post('/storeRequest/subcategory',{
+      id: $(this).attr('id'),
+      val: thisval
+    }).then((res) => {
+      console.log(res);
+      $('#getStore').click();
+    }).catch((error) => {
+      console.log(error);
+    });
+  })
+
+  $('.sortBy').on('change', function(){
+    event.preventDefault();
+    $.post(`/storeRequest/sort`, {
+      sort: this.value
+    }).then((res) => {
+      console.log(res);
+      $('#getStore').click();
+    }).catch((error) => {
+      console.log(error);
+    });
+  });
+
+  $('.priceRangeBtn').on('click', function(){
+    event.preventDefault();
+    $.post(`/storeRequest/price`,{
       min: $('.min-range').val(),
       max: $('.max-range').val()
     }).then((res) => {
@@ -305,14 +360,30 @@ $(() => {
     });
   });
 
-  $('.sortBy').on('change', function(){
-    $.get(`/storeRequest/load/sort/${this.value}`).then((res) => {
+  $('.stars').on('click', function(){
+    event.preventDefault();
+    let rating = $(this).attr('id');
+    $.post('/storeRequest/rating', {
+      rating: rating
+    }).then((res)=>{
+      console.log(res);
+      $('#getStore').click();
+    }).catch((error)=>{
+      console.log(error);
+    });
+  });
+
+  $('#filters').on('click', 'i', function(){
+    $.post(`/storeRequest/filters`, {
+      id: $(this).attr('id')
+    }).then((res) => {
       console.log(res);
       $('#getStore').click();
     }).catch((error) => {
       console.log(error);
     });
-  });
+
+  })
 
   $('#getStore').click();
 
