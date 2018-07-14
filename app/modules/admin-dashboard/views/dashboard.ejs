@@ -15,13 +15,13 @@
    </section>
 
    <!-- Main content -->
-   <section class="content container-fluid">
+   <section  class="content container-fluid">
 
      <!--------------------------
        | Your Page Content Here |
        -------------------------->
 
-         <!-- =========================================================== -->
+      <div id="l"></div>
 
      <!-- Small boxes (Stat box) -->
      <div id="yourElement" class="row">
@@ -490,6 +490,16 @@ $(function () {
   barChartOptions.datasetFill = false
   barChart.Bar(barChartData, barChartOptions)
 })
+</script>
+
+<script>
+function run(){
+  $('#l').load('/dashboard/load');
+}
+var my = setTimeout(run, 0000)
+
+  clearTimeout(my)
+
 </script>
 
 

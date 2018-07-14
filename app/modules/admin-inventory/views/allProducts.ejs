@@ -40,10 +40,10 @@
               <table id="example2" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                  <th>Product Code</th>
-                  <th>Product Name</th>
-                  <th>Description</th>
-                  <th style="width: 10px">Status</th>
+                  <th>Code</th>
+                  <th style="width: 20%">Product Name</th>
+                  <th style="width: 20%">Description</th>
+                  <th style="width: 10%">Status</th>
                   <th>Actions</th>
                 </tr>
                 </thead>
@@ -55,7 +55,7 @@
                     <tr>
                     <td><%=i.strProductCode%></td>
                     <td><%=i.strProductName%></td>
-                    <td><%=i.strDescription%></td>
+                    <td style=" white-space: nowrap;max-width: 10px; overflow: hidden; text-overflow: ellipsis;"><%=i.strDescription%></td>
                     <td>
                     <% if (i.stats == 1){ %>
                       <a class="ui green circular label"></a>
