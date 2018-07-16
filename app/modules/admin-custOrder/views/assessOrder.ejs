@@ -119,10 +119,10 @@
                             <% orderlist.forEach(function(i){ %>
                               <tr>
                                 <td><%= i.strProductCode %></td>
-                                <td><%= i.strProductName %></td>
+                                <td><%= i.strProductName %> <%=i.intSize%> <%=i.strUnitName%></td>
                                 <td><%= i.quantity %></td>
-                                <td>Php <%= i.purchasePrice %></td>
-                                <td>Php <%= i.quantity * i.purchasePrice %></td>
+                                <td>₱ <%= (i.purchasePrice).toFixed(2) %></td>
+                                <td>₱ <%= (i.quantity * i.purchasePrice).toFixed(2) %></td>
 
                               </tr>
                             <% }) %>
@@ -142,13 +142,21 @@
                         <table class="table table-bordered">
                           <tr>
                             <th></th>
+                            <th></th>
                           </tr>
                           <tr>
-                            <td>Discount: 0%</td>
+                            <td>Discount:</td>
+                            <td align="right"> 0%</td>
 
                           </tr>
                           <tr>
-                            <td>Total: PHP <%= total %></td>
+                            <td>Total: </td>
+                            <td align="right">₱ <%= (total).toFixed(2) %></td>
+                          </tr>
+
+                          <tr>
+                            <td>Amount Due: </td>
+                            <td align="right">₱ <%= (total - payment).toFixed(2) %></td>
                           </tr>
 
                         </table>

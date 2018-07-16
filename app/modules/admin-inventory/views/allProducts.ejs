@@ -24,14 +24,12 @@
           <div class="box animated slideInUp">
             <div class="box-header">
               <h4 align="center"> ALL PRODUCTS</h4>
-            </br>
-            <h5 class="text-aqua">* See inventory to check the supplier and stock of the specific product</h5>
 
-          <h5 class="text-aqua">* Please monitor stocks regularly, check if there are damaged products</h5>
+
             </div>
 			<!-- buttons -->
     </br>
-				&nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addProduct"><i class="fa fa-plus"></i> Add New Product</button>
+				&nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#addProduct"><i class="fa fa-plus"></i> Add New Product</button>
 
         <!-- &nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" id="s"><i class="fa fa-plus"></i> Tester</button> -->
 
@@ -42,10 +40,10 @@
               <table id="example2" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                  <th>Product Code</th>
-                  <th>Product Name</th>
-                  <th>Description</th>
-                  <th>Status</th>
+                  <th>Code</th>
+                  <th style="width: 20%">Product Name</th>
+                  <th style="width: 20%">Description</th>
+                  <th style="width: 10%">Status</th>
                   <th>Actions</th>
                 </tr>
                 </thead>
@@ -57,23 +55,25 @@
                     <tr>
                     <td><%=i.strProductCode%></td>
                     <td><%=i.strProductName%></td>
-                    <td><%=i.strDescription%></td>
+                    <td style=" white-space: nowrap;max-width: 10px; overflow: hidden; text-overflow: ellipsis;"><%=i.strDescription%></td>
                     <td>
                     <% if (i.stats == 1){ %>
-                      <span class="label label-success">Active</span>
+                      <a class="ui green circular label"></a>
                     <% }else{ %>
-                      <span class="label label-danger">Inactive</span>
+                      <a class="ui red circular label">2</a>
                     <% } %>
 
                     </td>
 
                     <!-- ERROR IN THIS AREA (req.query) -->
 
-                    <td><button type="button" data-toggle="modal" data-target="#viewProduct" class="viewButton btn btn-default btn-sm" data-prodno="<%=i.intProductNo%>" data-prodcode="<%=i.strProductCode%>" data-prodname="<%=i.strProductName%>" data-proddesc="<%=i.strDescription%>" data-prodbrand="<%=i.intBrandNo%>" data-prodcateg="<%=i.intSubCategoryNo%>" data-prodpicture="<%=i.strProductPicture%>"
-                    data-status="<%=i.stats%>" >View Details</button>
+                    <td>
+                      <center>
+                      <button type="button" data-toggle="modal" data-target="#viewProduct" class="viewButton large ui teal button" data-prodno="<%=i.intProductNo%>" data-prodcode="<%=i.strProductCode%>" data-prodname="<%=i.strProductName%>" data-proddesc="<%=i.strDescription%>" data-prodbrand="<%=i.intBrandNo%>" data-prodcateg="<%=i.intSubCategoryNo%>" data-prodpicture="<%=i.strProductPicture%>"
+                    data-status="<%=i.stats%>" >View</button>
                     <% var url = i.intProductNo %>
-                    <a href="/inventory/productInventory?product=<%=url%>"><button type="button" class="btn btn-default btn-sm"  >Inventory</button></a>
-
+                    <a href="/inventory/productInventory?product=<%=url%>"><button type="button" class="large ui teal button"  >Inventory</button></a>
+                  </center>
                     </td>
 
                   </tr>
@@ -194,6 +194,7 @@
                   <div class="col-md-4" style="width: 40%;">
                     <img src="" class="img-responsive" disabled id="pic" name=""  ></div>
                   <div class="col-md-7 ml-auto">
+                    <input type="hidden" class="form-control" required id="view_prodno" name="view_prodno" >
                     <label for="view_pcode">Product Code</label>
                     <input type="text" class="form-control" required id="view_pcode" name="view_pcode" >
                   <div class="form-group">
@@ -208,7 +209,7 @@
                           <% brand.forEach(function(s){ %>
                             <option value="<%=s.intBrandNo%>"><%=s.strBrand%></option>
                           <% }) %>
-      
+
                         <% } %>
                       </select>
                   <div class="form-group">
@@ -223,7 +224,7 @@
                               <% category.forEach(function(s){ %>
                                 <option value="<%=s.intSubCategoryNo%>"><%=s.strSubCategory%></option>
                               <% }) %>
-        
+
                             <% } %>
                       </select>
                   <div class="form-group">
@@ -247,8 +248,8 @@
             </div>
           </div>
   		  <div class="modal-footer">
-  			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-  			<button type="submit" class="btn btn-primary">Save changes</button>
+  			<button type="button" class="large ui button" data-dismiss="modal">Close</button>
+  			<button type="submit" class="large ui blue button">Save changes</button>
   		  </div>
         </form>
   	</div>
@@ -258,44 +259,6 @@
   <!-- /.modal-dialog -->
 </div>
 
-
-<div class="modal fade" id="addImage">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-    	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    	  <span aria-hidden="true">&times;</span></button>
-    	<h4 class="modal-title"></h4>
-      </div>
-      <div class="modal-body">
-    	<!-- Horizontal Form -->
-
-    			<!-- form start -->
-    				<form class="form-horizontal" enctype="multipart/form-data" method="post" action="/inventory/addImage">
-    				  <div class="box-body">
-
-    					<div class="form-group">
-    					  <label for="inputConsignorName" class="col-sm-2 control-label">File</label>
-
-    					  <div class="col-sm-10">
-    						<input type="file" class="form-control" name="filename" id="inputConsignorName" placeholder="">
-    					  </div>
-
-    					</div>
-
-    				  </div>
-    				  <!-- /.box-body -->
-    	  </div>
-    	  <div class="modal-footer">
-    		<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-    		<button type="submit"  class="btn btn-primary">Save changes</button>
-    	  </div>
-        </form>
-    </div>
-    <!-- /.modal-content -->
-  </div>
-  <!-- /.modal-dialog -->
-</div>
 
 <!-- Main Footer -->
 <footer class="main-footer">
@@ -430,8 +393,8 @@
     $('#view_pcode').val($(this).data('prodcode'));
     $('#view_pname').val($(this).data('prodname'));
     $('#view_pdesc').val($(this).data('proddesc'));
-    $('#view_prodpic').val($(this).data('prodpic'));
-    var filename = "/assets/images/products/" + $(this).data('prodpicture');
+    $('#view_pic').val($(this).data('prodpic'));
+    var filename = "/assets/images/products/" + $(this).data('prodno')+'.jpg';
     //alert(filename);
     $('#pic').attr('src',filename);
 
@@ -475,7 +438,7 @@
 
 <script>
 $('#title').html("USG | All Products");
-$(".treeview a:contains('Maintenance')").parent().addClass("active");
+
 $(".treeview a:contains('Inventory')").parent().addClass("active");
 $(".navi a:contains('All Products')").parent().addClass("active");
 </script>
