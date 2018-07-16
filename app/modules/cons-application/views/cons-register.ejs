@@ -471,7 +471,7 @@
 
         $.ajax({
           url: '/consRegistration/register',
-          type: 'post',
+          method: 'post',
           data: $('#msform').serialize(),
           success: function(response,status,http){
             alert("Success");
