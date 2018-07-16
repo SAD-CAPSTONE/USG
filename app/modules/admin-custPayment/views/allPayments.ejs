@@ -1,0 +1,378 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      Customer Payments
+    </h1>
+    <small> </small>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="#">Transactions</a></li>
+      <li class="active">All Payments</li>
+    </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#allPayments" data-toggle="tab"><i class="fa fa-bars"></i> All Payments</a></li>
+            <li><a href="#cashOnDelivery" data-toggle="tab"> Cash on Delivery</a></li>
+            <li><a href="#bankDeposits" data-toggle="tab"> Bank Deposits</a></li>
+            <li><a href="#awaiting" data-toggle="tab"> Awaiting Payments</a></li>
+          </ul>
+          <div class="tab-content">
+            <!-- All payments -->
+            <div class="tab-pane active" id="allPayments">
+
+              </br>
+              <!-- /.box-header -->
+              <div class="box-body table-responsive">
+                <table id="1" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>Order No</th>
+                    <th>Customer Name</th>
+                    <th>Order Date</th>
+                    <th>Payment Due</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <% if(allPayments == null || allPayments == undefined){ %>
+
+                    <% }else if(allPayments.length == 0){ %>
+
+                    <% }else{ %>
+                      <% allPayments.forEach(function(i){ %>
+                        <tr>
+                          <td><%=i.intOrderNo%></td>
+                          <td><%=i.strFname%> <%=i.strLname%></td>
+                          <td><%= moment(i.dateOrdered).format("MM/DD/YYYY")%></td>
+                          <td><%= moment(i.paymentDue).format("MM/DD/YYYY")%></td>
+                          <td>
+                            <% if(i.intPaymentMethod == 1){ %>
+                            Cash On Delivery
+                            <%}else{ %>
+                            Bank Deposit
+                            <%} %>
+                          </td>
+                          <td>
+                            <% if (i.intPaymentStatus == 0){ %>
+                              Not Paid
+                            <% }else if(i.intPaymentStatus == 1){ %>
+                              Paid
+                            <% }else if(i.intPaymentStatus == 2){ %>
+                              Partially Paid
+                            <% }else{ %>
+                              Refunded
+                            <% } %>
+                          </td>
+                          <td>
+                            <a href="/customerPayment/history?orderno=<%=i.intOrderNo%>"><button class="btn btn-primary btn-sm">View History</button></a>
+                            <button class="btn btn-primary btn-sm"><i class="fa fa-caret-down"></i></button>
+
+                          </td>
+                        </tr>
+                      <% }) %>
+                    <% } %>
+
+
+                  </tbody>
+
+                </table>
+              </div>
+              <!-- /.box-body -->
+            </div>
+            <!-- /#fa-icons -->
+
+            <!-- Cash on Delivery -->
+            <div class="tab-pane" id="cashOnDelivery">
+
+              </br>
+              <!-- /.box-header -->
+              <div class="box-body table-responsive">
+                <table id="2" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>Order No</th>
+                    <th>Customer Name</th>
+                    <th>Order Date</th>
+                    <th>Payment Due</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <% if(cashOnDelivery == null || cashOnDelivery == undefined){ %>
+
+                    <% }else if(cashOnDelivery.length == 0){ %>
+
+                    <% }else{ %>
+                      <% cashOnDelivery.forEach(function(i){ %>
+                        <tr>
+                          <td><%=i.intOrderNo%></td>
+                          <td><%=i.strFname%> <%=i.strLname%></td>
+                          <td><%= moment(i.dateOrdered).format("MM/DD/YYYY")%></td>
+                          <td><%= moment(i.paymentDue).format("MM/DD/YYYY")%></td>
+                          <td>
+                            <% if(i.intPaymentMethod == 1){ %>
+                            Cash On Delivery
+                            <%}else{ %>
+                            Bank Deposit
+                            <%} %>
+                          </td>
+                          <td>
+                            <% if (i.intPaymentStatus == 0){ %>
+                              Not Paid
+                            <% }else if(i.intPaymentStatus == 1){ %>
+                              Paid
+                            <% }else if(i.intPaymentStatus == 2){ %>
+                              Partially Paid
+                            <% }else{ %>
+                              Refunded
+                            <% } %>
+                          </td>
+                          <td>
+                            <button class="btn btn-primary btn-sm">View History</button>
+                            <button class="btn btn-primary btn-sm"><i class="fa fa-caret-down"></i></button>
+
+                          </td>
+                        </tr>
+                      <% }) %>
+                    <% } %>
+
+                  </tbody>
+
+                </table>
+              </div>
+              <!-- /.box-body -->
+            </div>
+            <!-- /#fa-icons -->
+
+            <!-- Bank Deposits -->
+            <div class="tab-pane" id="bankDeposits">
+
+              </br>
+              <!-- /.box-header -->
+              <div class="box-body table-responsive">
+                <table id="3" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>Order No</th>
+                    <th>Customer Name</th>
+                    <th>Order Date</th>
+                    <th>Payment Due</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <% if(bankDeposits == null || bankDeposits == undefined){ %>
+
+                    <% }else if(bankDeposits.length == 0){ %>
+
+                    <% }else{ %>
+                      <% bankDeposits.forEach(function(i){ %>
+                        <tr>
+                          <td><%=i.intOrderNo%></td>
+                          <td><%=i.strFname%> <%=i.strLname%></td>
+                          <td><%= moment(i.dateOrdered).format("MM/DD/YYYY")%></td>
+                          <td><%= moment(i.paymentDue).format("MM/DD/YYYY")%></td>
+                          <td>
+                            <% if(i.intPaymentMethod == 1){ %>
+                            Cash On Delivery
+                            <%}else{ %>
+                            Bank Deposit
+                            <%} %>
+                          </td>
+                          <td>
+                            <% if (i.intPaymentStatus == 0){ %>
+                              Not Paid
+                            <% }else if(i.intPaymentStatus == 1){ %>
+                              Paid
+                            <% }else if(i.intPaymentStatus == 2){ %>
+                              Partially Paid
+                            <% }else{ %>
+                              Refunded
+                            <% } %>
+                          </td>
+                          <td>
+                            <button class="btn btn-primary btn-sm">View History</button>
+                            <button class="btn btn-primary btn-sm"><i class="fa fa-caret-down"></i></button>
+
+                          </td>
+                        </tr>
+                      <% }) %>
+                    <% } %>
+
+                  </tbody>
+
+                </table>
+              </div>
+              <!-- /.box-body -->
+            </div>
+            <!-- /#fa-icons -->
+
+            <!-- Awaiting -->
+            <div class="tab-pane" id="awaiting">
+
+              </br>
+              <!-- /.box-header -->
+              <div class="box-body table-responsive">
+                <table id="3" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>Order No</th>
+                    <th>Customer Name</th>
+                    <th>Order Date</th>
+                    <th>Payment Due</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <% if(awaiting == null || awaiting == undefined){ %>
+
+                    <% }else if(awaiting.length == 0){ %>
+
+                    <% }else{ %>
+                      <% awaiting.forEach(function(i){ %>
+                        <tr>
+                          <td><%=i.intOrderNo%></td>
+                          <td><%=i.strFname%> <%=i.strLname%></td>
+                          <td><%= moment(i.dateOrdered).format("MM/DD/YYYY")%></td>
+                          <td><%= moment(i.paymentDue).format("MM/DD/YYYY")%></td>
+                          <td>
+                            <% if(i.intPaymentMethod == 1){ %>
+                            Cash On Delivery
+                            <%}else{ %>
+                            Bank Deposit
+                            <%} %>
+                          </td>
+                          <td>
+                            <% if (i.intPaymentStatus == 0){ %>
+                              Not Paid
+                            <% }else if(i.intPaymentStatus == 1){ %>
+                              Paid
+                            <% }else if(i.intPaymentStatus == 2){ %>
+                              Partially Paid
+                            <% }else{ %>
+                              Refunded
+                            <% } %>
+                          </td>
+                          <td>
+                            <button class="btn btn-primary btn-sm">View History</button>
+                            <button class="btn btn-primary btn-sm"><i class="fa fa-caret-down"></i></button>
+
+                          </td>
+                        </tr>
+                      <% }) %>
+                    <% } %>
+
+                  </tbody>
+
+                </table>
+              </div>
+              <!-- /.box-body -->
+            </div>
+            <!-- /#fa-icons -->
+
+
+          </div>
+          <!-- /.tab-content -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<!-- jQuery 3 -->
+<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- DataTables (new added)	 -->
+<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!-- SlimScroll -->
+<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<!-- sweetalert  -->
+<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
+<!-- Notification  -->
+<script src="/assets/admin/notification.js"></script>
+
+  <!-- page script (new added) -->
+
+  <script>
+    $(function () {
+      $('#1').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+      'select'		: true,
+      'scroll'		: true
+      })
+    })
+
+    $(function () {
+      $('#2').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+      'select'		: true,
+      'scroll'		: true
+      })
+    })
+
+    $(function () {
+      $('#3').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+      'select'		: true,
+      'scroll'		: true
+      })
+    })
+  </script>
+
+
+    <script>
+      $('#title').html("USG | All Products");
+
+      $(".treeview a:contains('Transaction')").parent().addClass("active");
+      $(".navi a:contains('Customer Payment')").parent().addClass("active");
+    </script>
+
+</body>
+</html>

@@ -25,7 +25,7 @@
               <h4 align="center">Supplier Record</h4>
             </div>
             <!-- buttons -->
-      				&nbsp; &nbsp;<a href="/maintenance/supplierForm"><button type="button" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Add New Supplier</button></a>
+      				&nbsp; &nbsp;<a href="/maintenance/supplierForm"><button id="addSupplier_btn" type="button" class="large ui green button"><i class="fa fa-plus"></i> Add New Supplier</button></a>
             <!-- /.box-header -->
             <div class="box-body table-responsive">
               <table id="example2" class="table table-bordered table-hover">
@@ -59,9 +59,10 @@
                     </td>
                     <td>
                       <% if (i.Stats == 1){ %>
-                        <span class="label label-success">Active</span>
+                        <button data-no="<%=i.intUserID%>" class="ui toggle button active inactivate_supplier">Active</button>
+
                       <% }else if(i.Stats == 0){ %>
-                        <span class="label label-danger">Inactive</span></td>
+                        <button data-no="<%=i.intUserID%>" class="ui toggle button inactive activate_supplier">Inactive</button>
 
                       <% }else{ %>
 
@@ -181,23 +182,7 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- REQUIRED JS SCRIPTS -->
-
-<!-- jQuery 3 -->
-<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- DataTables (new added)	 -->
-<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="/assets/admin/dist/js/adminlte.min.js"></script>
-<!-- Notification  -->
-<script src="/assets/admin/notification.js"></script>
+<%- include('../../../templates/admin-footer.ejs') -%>
 
 <!-- page script (new added) -->
 <script>
@@ -219,6 +204,44 @@
 $('#title').html("USG | Suppliers");
 $(".treeview a:contains('Maintenance')").parent().addClass("active");
 $(".navi a:contains('Suppliers')").parent().addClass("active");
+</script>
+
+<script>
+$('.inactivate_supplier').on('click',function(){
+  $(this).removeClass("ui toggle button active inactivate_supplier").addClass("ui toggle button  activate_supplier").html("Inactive");
+
+  $.ajax({
+    url: '/maintenance/inactivateSupplier',
+    method: 'post',
+    datatype: 'json',
+    data: {no: $(this).data('no')},
+    success: function(response,status,http){
+      if (response){
+        swal("Success!", "You have activated Supplier no"+$(this).data('no'), "success");
+      }
+    }
+  })
+})
+
+$('.activate_supplier').on('click',function(){
+  $(this).removeClass("ui toggle button activate_supplier").addClass("ui toggle button active inactivate_supplier").html("Active");
+
+  $.ajax({
+    url: '/maintenance/activateSupplier',
+    method: 'post',
+    datatype: 'json',
+    data: {no: $(this).data('no')},
+    success: function(response,status,http){
+      if (response){
+        swal("Success!", "You have activated Supplier no"+$(this).data('no'), "success");
+      }
+    }
+  })
+})
+</script>
+
+<script>
+  $('#addSupplier_btn').animateCss('bounceIn');
 </script>
 
 

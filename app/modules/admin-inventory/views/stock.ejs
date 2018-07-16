@@ -21,10 +21,11 @@
   <section class="content">
     <div class="alert alert-info alert-dismissible">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      <h4><i class="icon fa fa-info"></i> Note</h4>
+      <h4><i class=" fa fa-info"></i> Note</h4>
         Please monitor stocks regularly</br>
         If the product does not show here, there may be no supplier for that product.
     </div>
+
     <div class="row">
       <div class="col-xs-12">
         <div class="nav-tabs-custom">
@@ -38,6 +39,11 @@
 
             <!-- Inventory -->
             <div class="tab-pane active " id="stock">
+
+              <h4>Legends</h4>
+              <font size="2"><a class="ui green circular label"></a> Stock is above critical limit</font> </br>
+              <a class="ui orange circular label"></a> Stock reached critical limit </br>
+              <a class="ui red circular label"></a> No stock in inventory
 
               </br>
               <!-- /.box-header -->
@@ -66,17 +72,18 @@
                       <td><%=i.strBrand%></td>
                       <td><%=i.quantity%></td>
                       <td>
-                        <% if (i.quantity < i.intCriticalLimit || i.quantity == i.intCriticalLimit) { %>
-                          <span class="label label-danger">Critical Limit</span>
-                        <% }else if(i.quantity == 0){ %>
-                          <span class="label label-warning">No Stocks</span>
+                        <% if(i.quantity == 0){ %>
+                          <a class="ui red circular label"></a>
+                        <% }else if(i.quantity < i.intCriticalLimit || i.quantity == i.intCriticalLimit){ %>
+                          <a class="ui orange circular label"></a>
                         <% }else{ %>
-                          <span class="label label-success">Above Critical Limit</span>
+                          <a class="ui green circular label"></a>
                         <% } %>
+
                       </td>
                       <td>
                       <% var url = i.intProductNo %>
-                        <a href="/inventory/productInventory?product=<%=url%>"><button type="button" class="btn btn-info">Check Inventory</button> </a>
+                        <a href="/inventory/productInventory?product=<%=url%>"><button type="button" class="large ui teal button">Inventory</button> </a>
                       </td>
 
                     </tr>
@@ -93,288 +100,72 @@
 
             <!-- New product Item-->
             <div class="tab-pane" id="addInventory">
+              <br>
+              <br>
+              <!-- form start -->
+              <form role="form" method="post" enctype="multipart/form-data"  action="/inventory/addToStock">
 
-                <!-- form start -->
-                <form role="form" method="post" enctype="multipart/form-data"  action="/inventory/addToStock">
-
-                    <!-- Product -->
-                    <div class="box box-default">
-                        <div class="box-header with-border">
-                        <h3 class="box-title">Product Information</h3>
-
-                        <div class="box-tools pull-right">
-                          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-
-                        </div>
-                      </div>
-                      <!-- /.box-header -->
-                      <div class="box-body">
-                        <div class="form-group">
-                          <div class="row">
-                            <div class="col-sm-6">
-                              <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#selectInventory"><i class="fa fa-search"></i> Select Product </button>
-                            <p> &nbsp;&nbsp;&nbsp;New product? Click <a data-toggle="modal" data-target="#addProduct">here</a></p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <div class="row">
-                            <input type="hidden" class="form-control" required id="ino_name" name="ino_name" >
-                            <div class="col-sm-6">
-                              <label for="add_pname">Product Name</label>
-                              <input type="text" disabled class="form-control" required id="product_name" name="product_name" >
-                            </div>
-                            <div class="col-sm-4">
-                              <label for="add_brand">Brand</label>
-                              <input type="text" disabled class="form-control" required id="brand_name" name="brand_name" >
-                            </div>
-
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <div class="row">
-                            <div class="col-sm-6">
-                              <label for="add_pname">Batch Number</label>
-                              <input type="number" required id="batch" class="form-control" disabled  >
-                            </div>
-                          </div>
-
-                        </div>
-                        <div class="form-group">
-                          <div class="row">
-                            <div class="col-sm-6">
-                              <label for="add_pname">Expiration Date</label>
-                              <input type="date" name="expiration" required class="form-control"   >
-                            </div>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <div class="row">
-                            <div class="col-sm-6">
-                              <label for="add_pname">Quantity</label>
-                              <input type="number" name="quantity" required class="form-control"   >
-                            </div>
-                          </div>
-                        </div>
-
-                      </div>
-                      <!-- /.box-body -->
-                    <!-- /.box -->
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <button type="button" class="large ui green button" data-toggle="modal" data-target="#selectInventory"><i class="fa fa-search"></i> Select Product </button>
+                    <p> &nbsp;&nbsp;&nbsp;New product? Click <a data-toggle="modal" data-target="#addProduct">here</a></p>
                     </div>
+                  </div>
+                </div>
 
-
-
-
-                    <div class="box-footer">
-                      <a href="purchaseOrderList.html"><button type="submit" class="btn btn-default">Back</button></a>
-                      <button type="submit" class="btn btn-info pull-right">Submit</button>
-                      <a href="/inventory/sample">this</a>
+                <div class="form-group">
+                  <div class="row">
+                    <input type="hidden" class="form-control" required id="ino_name" name="ino_name" >
+                    <div class="col-sm-5">
+                      <label for="add_pname">Product Name</label>
+                      <input type="text" disabled class="form-control" required id="product_name" name="product_name" >
                     </div>
-                    <!-- /.box-footer -->
+                    <div class="col-sm-4">
+                      <label for="add_brand">Brand</label>
+                      <input type="text" disabled class="form-control" required id="brand_name" name="brand_name" >
+                    </div>
+                  </div>
+                </div>
 
-              </form>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <label for="add_pname">Batch Number</label>
+                      <input type="number" required id="batch" class="form-control" disabled  >
+                    </div>
+                    <div class="col-sm-4">
+                      <label for="add_brand">Price</label>
+                      <input type="text" disabled class="form-control" required id="price" name="price" >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <label for="add_pname">Expiration Date</label>
+                      <input type="date" name="expiration" required class="form-control"   >
+                    </div>
+                    <div class="col-sm-4">
+                      <label for="add_pname">Quantity</label>
+                      <input type="number" name="quantity" required class="form-control"   >
+                    </div>
+                  </div>
+                </div>
+
+              <div class="box-footer">
+
+                <a href="purchaseOrderList.html"><button type="submit" class="large ui button">Back</button></a>
+                <button type="submit" class="large ui teal button">Submit</button>
+
+              </div>
+              <!-- /.box-footer -->
+
+                </form>
 
             </div>
 
-
-            <!-- New product Item-->
-            <div class="tab-pane" id="addStock">
-
-                <!-- form start -->
-                <form role="form" method="post" enctype="multipart/form-data"     action="/inventory/addStock">
-                      <% var quantity_id = "1000"; %>
-                      <% if (tbl_q == null || tbl_q == undefined || tbl_q.length == 0 ) { %>
-                      <% quantity_id = "1000"; %>
-                      <% }else{ %>
-                        <%  quantity_id = parseInt(tbl_q[0].intProductQuantityNo) + 1 %>
-                      <% } %>
-
-                      <% var ino = "1000" %>
-                      <% if (tbl_i == null || tbl_i == undefined || tbl_i.length == 0) { %>
-                      <% ino = "1000"; %>
-                      <%  }else{ %>
-                      <%  ino = parseInt(tbl_i[0].intInventoryNo) + 1; %>
-                      <%  } %>
-
-                      <% var transaction = "1000" %>
-                      <% if (transact == null || transact == undefined || transact.length == 0) { %>
-                      <% transaction = "1000"; %>
-                      <%  }else{ %>
-                      <%  transaction = parseInt(transact[0].intTransactionID) + 1; %>
-                      <%  } %>
-                      <div class="form-group">
-                          <div class="row">
-                            <div class="col-sm-4">
-                              <input type="hidden" class="form-control" value="<%=quantity_id%>"  id="add_quantityno" name="add_quantityno" >
-                              <input type="hidden" class="form-control" value="<%=ino%>" id="add_ino" name="add_ino" >
-                              <input type="hidden" class="form-control" id="add_sno" name="add_sno" >
-                              <input type="hidden" class="form-control" id="add_pno" name="add_pno" >
-                              <input type="hidden" class="form-control" value="<%=transaction%>" id="add_tno" name="add_tno" >
-                            </div>
-                          </div>
-                      </div>
-                    <!-- Product -->
-                    <div class="box box-default">
-                      <div class="box-header with-border">
-                        <h3 class="box-title">Product Information</h3>
-
-                        <div class="box-tools pull-right">
-                          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-
-                        </div>
-                      </div>
-                      <!-- /.box-header -->
-                      <div class="box-body">
-                        <div class="form-group">
-                          <div class="row">
-                            <div class="col-sm-6">
-                              <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#selectProduct"><i class="fa fa-search"></i> Select Product </button>
-                            <p> &nbsp;&nbsp;&nbsp;New product? Click <a data-toggle="modal" data-target="#addProduct">here</a></p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <div class="row">
-                            <div class="col-sm-4">
-                              <label for="add_pname">Product Name</label>
-                              <input type="text" disabled class="form-control" required id="add_pname" name="add_pname" >
-                            </div>
-                            <div class="col-sm-4">
-                              <label for="add_brand">Brand</label>
-                              <input type="text" disabled class="form-control" required id="add_brand" name="add_brand" >
-                            </div>
-                            <div class="col-sm-4">
-                              <label for="add_pcode">Product Code</label>
-                              <input type="text" disabled class="form-control" required id="add_pcode" name="add_pcode" >
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- /.box-body -->
-                    <!-- /.box -->
-                    </div>
-
-                    <!-- Supplier -->
-                    <div class="box box-default">
-                      <div class="box-header with-border">
-                        <h3 class="box-title">Supplier Information</h3>
-
-                        <div class="box-tools pull-right">
-                          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-
-                        </div>
-                      </div>
-                      <!-- /.box-header -->
-                      <div class="box-body">
-                        <div class="form-group">
-                          <div class="row">
-                            <div class="col-sm-6">
-                              <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier </button>
-                            <p> &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
-                            </div>
-                          </div>
-                        </div>
-
-
-                        <div class="form-group">
-                          <div class="col-sm-4">
-                            <label for="add_sname">Supplier Name</label>
-                            <input type="text" disabled class="form-control" required id="add_sname" name="add_sname" >
-                          </div>
-                          <div class="col-sm-4">
-                            <label for="add_bname">Business Name</label>
-                            <input type="text" disabled class="form-control" required id="add_bname" name="add_bname" >
-                          </div>
-                        </div>
-                      </div>
-                      <!-- /.box-body -->
-                    <!-- /.box -->
-                    </div>
-
-                    <!-- Other Information -->
-                    <div class="box box-default">
-                      <div class="box-header with-border">
-                        <h3 class="box-title">Other information</h3>
-
-                        <div class="box-tools pull-right">
-                          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-
-                        </div>
-                      </div>
-                      <!-- /.box-header -->
-                      <div class="box-body">
-                        <div class="form-group">
-                          <div class="row">
-                            <div class="col-sm-4">
-                              <label for="add_srp">SRP</label>
-                              <input type="number"  class="form-control" required id="add_srp" name="add_srp" >
-                            </div>
-                            <div class="col-sm-4">
-                              <label for="add_price">Product Price</label>
-                              <input type="number"  class="form-control" required id="add_price" name="add_price" >
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <div class="row">
-                            <div class="col-sm-4">
-                              <label for="add_size">Size</label>
-                              <input type="number"class="form-control" required id="add_size" name="add_size" >
-                            </div>
-                            <div class="col-sm-2">
-
-                              <label for="add_uom">   </label>
-                              <select class="form-control" required id="add_uom" name="add_uom"  >
-                                <% if (uom == null || uom == undefined || uom.length == 0){ %>
-                                  <option></option>
-                                <% }else{ %>
-                                  <% uom.forEach(function(s){ %>
-                                    <option value="<%=s.intUomNo%>"><%=s.strUnitName%></option>
-                                  <% }) %>
-
-                                <% } %>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <div class="row">
-                            <div class="col-sm-4">
-                              <label for="add_shelf">Shelf No</label>
-                              <input type="number"class="form-control" id="add_shelf" name="add_shelf" >
-                            </div>
-                            <div class="col-sm-4">
-                              <label for="add_batch">Batch No</label>
-                              <input type="number"  class="form-control" required id="add_batch" name="add_batch" >
-                            </div>
-                            <div class="col-sm-4">
-                              <label for="add_critical">Critical Limit</label>
-                              <input type="number"  class="form-control" required id="add_critical" name="add_critical" >
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- /.box-body -->
-                    <!-- /.box -->
-                    </div>
-
-
-
-                    <div class="box-footer">
-                      <a href="purchaseOrderList.html"><button type="submit" class="btn btn-default">Back</button></a>
-                      <button type="submit" class="btn btn-info pull-right">Submit Order Form</button>
-                      <a href="/inventory/sample">this</a>
-                    </div>
-                    <!-- /.box-footer -->
-
-              </form>
-
-            </div>
 
             <!-- Inventory -->
             <div class="tab-pane" id="expired">
@@ -397,7 +188,7 @@
                   <div class="col-xs-2">
                     </br>
 
-                    <button id="search-expired" class="btn btn-default"><i class="fa fa-search"></i> Search</button>
+                    <button id="search-expired" class="large ui green button"><i class="fa fa-search"></i>  Search</button>
 
                   </div>
                   <div class="col-xs-2">
@@ -644,7 +435,7 @@
               <td><%=i.strProductName%> <%=i.intSize%> <%=i.strUnitName%></td>
               <td><%=i.strBrand%></td>
               <td>₱ <%=i.productPrice.toFixed(2)%></td>
-              <td><button data-dismiss="modal" data-inventory="<%=i.intInventoryNo%>" data-product="<%=i.strProductName%> <%=i.intSize%> <%=i.strUnitName%>"  data-brand="<%=i.strBrand%>" class="inventorysetter btn btn-info btn-sm">Select</button></td>
+              <td><button data-dismiss="modal" data-inventory="<%=i.intInventoryNo%>" data-product="<%=i.strProductName%> <%=i.intSize%> <%=i.strUnitName%>" data-price="₱ <%=i.productPrice.toFixed(2)%>"  data-brand="<%=i.strBrand%>" class="inventorysetter btn btn-info btn-sm">Select</button></td>
 
         </tr>
         <% }) %>
@@ -667,8 +458,6 @@
 </div>
 <!-- /.modal-dialog -->
 </div>
-
-
 
 
 <!-- Main Footer -->
@@ -794,8 +583,21 @@ immediately after the control sidebar -->
     //Date range picker
     $('#reservation').daterangepicker();
     $('#search-expired').on('click',function(){
-      $('#tabl').load('/inventory/searchExpired');
+
+      $.ajax({
+        url: '/inventory/searchExpired',
+        method: 'post',
+        datatype: 'json',
+        data: {o: $('#reservation').val()},
+        success: function(response,status,http){
+          if(response){
+            $('#tabl').load('/inventory/showExpired');
+          }
+        }
+      })
+
     });
+
 
 
   })
@@ -897,6 +699,7 @@ immediately after the control sidebar -->
       $('#ino_name').val($(this).data('inventory'))
       $('#product_name').val($(this).data('product'))
       $('#brand_name').val($(this).data('brand'))
+      $('#price').val($(this).data('price'))
 
       <% num = "1000" %>
       <% if (lastbatch == undefined || lastbatch == null){ %>
@@ -923,9 +726,9 @@ immediately after the control sidebar -->
 
     <script>
       $('#title').html("USG | Stocks");
-      $(".treeview a:contains('Maintenance')").parent().addClass("active");
+
       $(".treeview a:contains('Inventory')").parent().addClass("active");
-      $(".navi a:contains('Stocks')").parent().addClass("active");
+      $(".navi ba").parent().addClass("active");
     </script>
 
 </body>

@@ -47,13 +47,15 @@ router.get('/assessOrder',(req,res)=>{
   var orderno = req.query.order;
 
   // Order list
-  db.query(`Select tblorderdetails.intQuantity as quantity, tblOrder.*, tblorderdetails.*,
+  db.query(`Select tblorderdetails.intQuantity as quantity, tblOrder.*, tblUOM.*, tblorderdetails.*,
     tblproductinventory.*, tblproductlist.* from tblOrder
     join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
     join tblproductinventory on tblproductinventory.intinventoryno = tblorderdetails.intinventoryno
+    join tblUOM on tblProductinventory.intUOMno = tblUom.intUOMno
     join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
     where tblOrder.intOrderno = "${orderno}"`,(err1,results1,fields1)=>{
       if (err1) console.log(err1);
+      console.log(results1);
 
     // customer details
     db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.*
@@ -70,7 +72,21 @@ router.get('/assessOrder',(req,res)=>{
         where tblOrder.intOrderno = "${orderno}"`, (err3,results3,fields3)=>{
           if (err3) console.log(err3);
 
-        res.render('admin-custOrder/views/assessOrder', {orderlist: results1, customer: results2, moment: moment, total: results3[0].totalAll});
+
+          // total payment
+          db.query(`Select sum(amountPaid) as total from tblCustomerpayment
+            where intStatus = 1 and intOrderno = ${orderno}
+            group by intOrderno`,(err4,results4,fields4)=>{
+              if(err4) console.log(err4);
+
+              var this_total = 0;
+              if (results4[0] == null || results4[0] == undefined){} else if(results4[0].total == ""){}
+              else{ this_total = results4[0].total }
+
+              res.render('admin-custOrder/views/assessOrder', {orderlist: results1, customer: results2, moment: moment, total: results3[0].totalAll, payment: this_total});
+
+            });
+
 
       });
 
@@ -88,7 +104,7 @@ router.post('/assessOrder',(req,res)=>{
     }else{
       // Update order status
       db.query(`Update tblOrder set intStatus = ${req.body.orderStatus}, strShippingMethod =
-        "${req.body.shippingMethod}", strCourier = "${req.body.courier}" where intOrderNo = "${req.body.orderNo}" `, (err1,results1,fields1)=>{
+        "${req.body.shippingMethod}", strCourier = "${req.body.courier}", intPaymentStatus = ${req.body.paymentStatus} where intOrderNo = "${req.body.orderNo}" `, (err1,results1,fields1)=>{
           if(err1){
             db.rollback(function(){
               console.log(err1);
@@ -138,16 +154,19 @@ router.post('/assessOrder',(req,res)=>{
                                 console.log(err5);
                               })
                             }else{
+                              var salesno = "";
+                              if(req.body.paymentStatus == 1 || req.body.paymentStatus == 2){
 
-                              if(req.body.paymentStatus == 1){
                                 // select last sales record
-                                var salesno = "1000";
-                                db.query(`Select * from tblSales order by intSalesNo desc limit 1`,(err6,results6,fields6)=>{
+                                salesno = "1000";
+                                db.query(`Select * from tblSales order by intSalesNo desc limit
+                                  1`,(err6,results6,fields6)=>{
                                   if (err6){
                                     db.rollback(function(){
                                       console.log(err6);
                                     })
                                   }else{
+                                    console.log(results6[0]);
                                     if(results6 == null || results6 == undefined){
 
                                     }else if(results6.length == 0){
@@ -155,11 +174,14 @@ router.post('/assessOrder',(req,res)=>{
                                     }else{
                                       salesno = parseInt(results6[0].intSalesNo) +1;
                                     }
+
                                     // Insert to sales
-                                    db.query(`Insert into tblSales (intSalesNo, intOrderNo, amount) values("${salesno}","${req.body.orderNo}",${req.body.total})`,(err7,results7,fields7)=>{
+                                    db.query(`Insert into tblSales (intSalesNo, intOrderNo, amount, intStatus)
+                                      values("${salesno}","${req.body.orderNo}",${req.body.total}, 1)`,(err7,results7,fields7)=>{
                                       if(err7){
                                         db.rollback(function(){
                                           console.log(err7);
+                                          res.send("no");
                                         })
                                       }else{
                                         db.commit(function(e1){
@@ -173,9 +195,56 @@ router.post('/assessOrder',(req,res)=>{
                                         });
                                       }
                                     });
+
                                   }
                                 });
+
+
+                              }else if(req.body.paymentStatus == 4){
+
+                                // select last sales record
+                                salesno = "1000";
+                                db.query(`Select * from tblSales order by intSalesNo desc limit 1`,(err6,results6,fields6)=>{
+                                  if (err6){
+                                    db.rollback(function(){
+                                      console.log(err6);
+                                    })
+                                  }else{
+                                    console.log(results6[0]);
+                                    if(results6 == null || results6 == undefined){
+
+                                    }else if(results6.length == 0){
+
+                                    }else{
+                                      salesno = parseInt(results6[0].intSalesNo) +1;
+                                    }
+
+                                    // Insert to sales
+                                    db.query(`Insert into tblSales (intSalesNo, intOrderNo, amount, intStatus)
+                                      values("${salesno}","${req.body.orderNo}",${req.body.total},0)`,(err8,results8,fields8)=>{
+                                      if(err8){
+                                        db.rollback(function(){
+                                          console.log(err8);
+                                        })
+                                      }else{
+                                        db.commit(function(e1){
+                                          if(e1){
+                                            db.rollback(function(){
+                                              console.log(e1);
+                                            })
+                                          }else{
+                                            res.send("yes");
+                                          }
+                                        })
+                                      }
+                                    });
+
+                                  }
+                                });
+
+
                               }else{
+
                                 db.commit(function(e1){
                                   if(e1){
                                     db.rollback(function(){
@@ -186,8 +255,6 @@ router.post('/assessOrder',(req,res)=>{
                                   }
                                 })
                               }
-
-
                             }
                         })
                       }
@@ -215,25 +282,27 @@ router.get('/invoice', (req,res)=>{
   var orderno = req.query.order;
 
   // Order list
-  db.query(`Select * from tblOrder
+  db.query(`Select tblorderdetails.intQuantity as quantity, tblOrder.*, tblorderdetails.*,
+    tblproductinventory.*, tblproductlist.* from tblOrder
     join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
-    join tblproductlist on tblorderdetails.intproductno = tblproductlist.intproductno
-    where tblOrder.intOrderno = ${orderno}`, (err1,results1,fields1)=>{
+    join tblproductinventory on tblproductinventory.intinventoryno = tblorderdetails.intinventoryno
+    join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
+    where tblOrder.intOrderno = "${orderno}"`, (err1,results1,fields1)=>{
       if (err1) console.log(err1);
 
       // customer
       db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.*
         from tblOrder join tblUser on tblOrder.intUSerID = tblUser.intUserID
         join tblCustomer on tblUser.intUserID = tblCustomer.intUserID
-        where tblOrder.intOrderno = ${orderno}`, (err2,results2,fields2)=>{
+        where tblOrder.intOrderno = "${orderno}"`, (err2,results2,fields2)=>{
           if (err2) console.log(err2);
 
           // total
           db.query(`Select SUM(tblorderdetails.intquantity * tblorderdetails.purchaseprice) as
             totalAll from tblOrder
             join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
-            join tblproductlist on tblorderdetails.intproductno = tblproductlist.intproductno
-            where tblOrder.intOrderno = ${orderno}`, (err3,results3,fields3)=>{
+            join tblproductinventory on tblorderdetails.intinventoryno = tblproductinventory.intinventoryno
+            where tblOrder.intOrderno = "${orderno}"`, (err3,results3,fields3)=>{
               if (err3) console.log(err3);
 
               res.render('admin-custOrder/views/invoice', {orderlist: results1, customer: results2, moment: moment, total: results3[0].totalAll });

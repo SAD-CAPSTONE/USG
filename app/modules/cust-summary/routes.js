@@ -81,7 +81,7 @@ router.post('/checkout/address', checkUser, (req,res)=>{
   db.query(`UPDATE tblcustomer SET strShippingAddress= ?, strBillingAddress= ? WHERE intUserID= ?`,
     [req.body.sa, req.body.ba, req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
-    res.redirect('/summary/order');
+    res.redirect('/summary/checkout');
   });
 })
 
