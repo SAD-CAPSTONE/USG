@@ -3,14 +3,15 @@
   <thead>
   <tr>
 
+    <th style="width: 30px"></th>
     <th>No</th>
     <th>Barcode</th>
     <th>Product Name</th>
+    <th>Quantity</th>
     <th>Brand</th>
     <th>Supplier</th>
     <th>Expiration Date</th>
-    <th>Status</th>
-    <th>Action</th>
+
   </tr>
   </thead>
   <tbody>
@@ -21,16 +22,18 @@
     <% }else{ %>
     <%   re.forEach(function(i){ %>
         <tr>
+          <td>
+            <button data-batch="<%=i.intBatchNo%>" class="pulloutitem large ui red basic button"><i class="glyphicon glyphicon-trash"></i></button>
+          </td>
           <td><%=i.intBatchNo%></td>
           <td><%=i.strBarcode%></td>
           <td><%=i.strProductName%></td>
+          <td><%=i.intQuantity%></td>
           <td><%=i.strBrand%></td>
           <td><%=i.strFName%> <%=i.strLName%></td>
           <td><%= moment(i.expirationDate).format("MM/DD/YYYY")%></td>
-          <td>status here</td>
-          <td>
-            <button data-batch="<%=i.intBatchNo%>" class="pulloutitem btn btn-danger btn-sm">Pull-out</button>
-          </td>
+
+
         </tr>
     <%  }) %>
     <% } %>

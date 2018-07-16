@@ -48,8 +48,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
    <link rel="stylesheet" href="/assets/admin/plugins/iCheck/all.css">
    <!-- animate -->
    <link rel="stylesheet" href="/assets/admin/animate.css">
-
-
+   <!-- Semantic Buttons -->
+   <link rel="stylesheet" href="/assets/admin/UI-Button-master/button.min.css">
+   <!-- Semantic Icons  -->
+   <link rel="stylesheet" href="/assets/admin/UI-Icon-master/icon.min.css">
+   <!-- Semantic Forms -->
+   <link rel="stylesheet" href="/assets/admin/UI-Form-master/form.min.css">
+   <!-- Semantic Label -->
+   <link rel="stylesheet" href="/assets/admin/UI-Label-master/label.min.css">
 
 </head>
 <!--
@@ -173,9 +179,15 @@ desired effect
     <center>
       <div class="btn-group">
 
-        <button type="button" id="dark_theme" class="btn btn-primary btn-xs">Dark</button>
+        <div class="ui buttons">
+          <button id="light_theme" class="small ui button"></button>
+          <div class="or"></div>
+          <button id="dark_theme" class="small ui grey button"></button>
+        </div>
 
-        <button type="button" id="light_theme" class="btn btn-default btn-xs">Light</button>
+        <!-- <button type="button" id="dark_theme" class="btn btn-primary btn-xs">Dark</button>
+
+        <button type="button" id="light_theme" class="btn btn-default btn-xs">Light</button> -->
       </div>
     </center>
 
@@ -196,11 +208,12 @@ desired effect
         <li class="header">Quick Tools</li>
         <li class="navi"><a href="/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard	</span></a></li>
         <li class="navi">
-            <a href="/customerOrder/checkNewOrders"><i class="fa fa-cart-arrow-down"></i> <span>New Orders</span><span class="pull-right-container">
-            <small id="notiforder" class="label pull-right bg-green">new</small>
+            <a href="/customerOrder/checkNewOrders"><i class="fa fa-cart-arrow-down"></i> <span>Orders</span><span class="pull-right-container">
+            <small id="notiforder" class="label pull-right bg-green">New</small>
+
           </span></a>
         </li>
-        <li class="navi"><a href="/sales"> <span>New Sale</span> <small id="notiforder" class="label pull-right bg-red">unavailable</small></a></li>
+        <li class="navi"><a href="/sales"> <span>New Sale</span> <small id="notiforder" class="label pull-right bg-red"> x </small></a></li>
         <li class="navi"><a href="/inventory/allStocks"><i class="fa fa-bar-chart"></i> <span>Stocks</span></a></li>
         <li class="navi"><a href="/receiveDelivery/Form"><i class="fa fa-hand-lizard-o"></i> <span>Receive Delivery</span></a></li>
 
@@ -216,7 +229,8 @@ desired effect
           </a>
           <ul class="treeview-menu">
             <li class="navi"><a href="/inventory/allProducts"><i class="fa fa-circle-o"></i>All Products</a></li>
-            <li class="navi"><a href="/inventory/allStocks"><i class="fa fa-circle-o"></i>Stocks</a></li>
+            <li class="navi ba"><a href="/inventory/allStocks"><i class="fa fa-circle-o"></i>Stocks</a></li>
+            <li class="navi"><a href="/inventory/pulledOutStocks"><i class="fa fa-circle-o"></i>Pulled-out Stocks</a></li>
             <li class="navi"><a href="/inventory/supplierProducts"><i class="fa fa-circle-o"></i>Products per Supplier</a></li>
 
           </ul>

@@ -19,7 +19,6 @@ function contactDetails (req, res, next){
     INNER JOIN tblcustomer ON tbluser.intUserID= tblcustomer.intUserID
     WHERE tbluser.intUserID= ?`,[req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
-    console.log(results)
     req.contactDetails = results[0];
     return next();
   });
@@ -29,7 +28,15 @@ router.get('/dashboard', checkUser, contactDetails, (req,res)=>{
   res.render('cust-account/views/dashboard', {thisUser: req.user, thisUserContact: req.contactDetails});
 });
 router.get('/orders', checkUser, (req,res)=>{
-  res.render('cust-account/views/orders', {thisUser: req.user});
+  db.query(`SELECT tblorder.intStatus as Stats, tbluser.*,tblorder.* FROM
+    tbluser JOIN tblorder on tbluser.intUserID =
+    tblorder.intUserID WHERE tbluser.intuserID = ?`,[req.user.intUserID], (err1, results1)=>{
+    if(err1) console.log(err1);
+    res.render('cust-account/views/orders', {orders: results1,thisUser: req.user});
+    console.log(results1);
+    console.log(req.user.intUserID);  
+
+  })
 });
 router.get('/payment', checkUser, (req,res)=>{
   res.render('cust-account/views/payment', {thisUser: req.user});

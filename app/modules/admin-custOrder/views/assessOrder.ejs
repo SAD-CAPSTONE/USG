@@ -119,7 +119,7 @@
                             <% orderlist.forEach(function(i){ %>
                               <tr>
                                 <td><%= i.strProductCode %></td>
-                                <td><%= i.strProductName %></td>
+                                <td><%= i.strProductName %> <%=i.intSize%> <%=i.strUnitName%></td>
                                 <td><%= i.quantity %></td>
                                 <td>₱ <%= (i.purchasePrice).toFixed(2) %></td>
                                 <td>₱ <%= (i.quantity * i.purchasePrice).toFixed(2) %></td>

@@ -21,6 +21,7 @@ module.exports = app => {
     app.use(cookieSession({
       name: 'session',
       maxAge: 24 * 60 * 60 * 1000,
+      secure: true,
       keys: [keys.session.cookieKey]
     }));
     app.use(passport.initialize());

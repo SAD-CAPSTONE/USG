@@ -16,14 +16,16 @@ $(() => {
   // GET - Load cart
   $('#getSummary').on('click', () => {
     let list = $('#checkout-products');
-    list.html('');
     $.get('/cart/list').then((res) => {
+      list.html('');
       res.cart.forEach((data) => {
         list.append(`
           <div class="product-div pos-relative px-3">
             <div class="inline-block va-t">
               <input class="inventory-id" value="${data.inv}" hidden/>
-              <img src="${data.img}" height="100" width="100" alt="product">
+              <a href="/item/${data.id}" class="img-link">
+                <img src="${data.img}" height="100" width="100" alt="product">
+              </a>
               <div class="px-2">
                 <p class="m-0 fs-08em fw-400 lh-p3em">${data.name}</p>
                 <p class="fs-08em fw-400 text-muted">${data.curSize}</p>
@@ -59,6 +61,7 @@ $(() => {
       }
       $('#total-btn').click();
     }).catch((error) => {
+      list.html('');
       list.append(`
         <div class="product-div pos-relative px-3">
           <p class="fs-09em"> Cart currently empty </p>

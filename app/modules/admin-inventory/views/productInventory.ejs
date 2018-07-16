@@ -28,13 +28,14 @@
             <!-- Inventory -->
             <div class="tab-pane active" id="inventory">
 
-            <p class="text-light-blue">Note:
-              <span class="label label-danger">Critical Limit</span> means that the stock quantity is below critical limit, you need to restock.
+            <p class="text-light-blue">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <a class="ui red circular label"></a> No stock in inventory
             </br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <span class="label label-warning">Critical Limit</span> means that the stock has reached its critical limit
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <a class="ui orange circular label"></a> Reached critical limit
           </br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check the inventory transaction to see changes happened per inventory
-          </p>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <a class="ui green circular label"></a> Enough stock in inventory
+        </br>
+
 
               </br>
               <!-- /.box-header -->
@@ -49,8 +50,8 @@
                     <th>SRP</th>
                     <th>Price</th>
                     <th>Quantity</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th style="width: 10px">Status</th>
+                    <th ></th>
                   </tr>
                   </thead>
                   <tbody>
@@ -69,28 +70,30 @@
                       <td><%=i.intQuantity%></td>
                       <td>
                         <% if (i.intStatus == 1){ %>
-                          <span class="label label-success">Active</span>
+
                         <% }else{ %>
-                          <span class="label label-danger">Inactive</span>
+
                         <% } %>
 
-                        <% if (i.intQuantity < i.intCriticalLimit){ %>
-                          <span class="label label-danger">Critical Limit</span>
+                        <% if (i.intQuantity == 0){ %>
+                          <a class="ui red circular label"></a>
+                        <% }else if(i.intQuantity < i.intCriticalLimit || i.intQuantity == i.intCriticalLimit){ %>
+                          <a class="ui orange circular label"></a>
+                        <% }else{ %>
+                          <a class="ui green circular label"></a>
                         <% } %>
-                        <% if (i.intQuantity == i.intCriticalLimit){ %>
-                          <span class="label label-warning">Critical Limit</span>
-                        <% } %>
+
 
 
                       </td>
                       <form>
                       <td>
+                        <center>
+                          <button type="button" data-number="<%=i.intInventoryNo%>" data-toggle="modal" data-target="#addStock" class="addStock large ui teal button"><i class="fa fa-plus"></i></button>
+                          <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>" data-promotype="<%=i.intPromoType%>" data-toggle="modal" data-target="#editInventory" class="editbutton large ui blue button" ><i class="fa fa-edit"></i></button>
 
-                      <button  type="button" data-number="<%=i.intInventoryNo%>" data-toggle="modal" data-target="#addStock" class="addStock btn btn-info btn-sm"><i class="fa fa-plus"></i></button>
-                      <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>" data-promotype="<%=i.intPromoType%>" data-toggle="modal" data-target="#editInventory" class="editbutton btn btn-primary btn-sm" ><i class="fa fa-edit"></i></button>
-
-                      <a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="btn btn-default btn-sm" >Transactions</button></a>
-                      <!-- <a href="/inventory/viewStock?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="btn btn-default btn-sm" >View Stocks</button></a> -->
+                          <a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="large ui button" >Transactions</button></a>
+                        </center>
 
                       </td>
                     </form>
@@ -143,7 +146,7 @@
                           </div>
                           <div class="col-sm-6">
                           </br>
-                            &nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
+                            &nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
                           <p>  &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
                           </div>
                         </div>
@@ -207,8 +210,9 @@
 
 
                       <div class="box-footer">
-                                 <a href="/inventory/sample"><button type="reset" class="btn btn-default">Clear Fields</button></a>
-                                 <a href=""><button type="submit" class="btn btn-info pull-right">Submit Order Form</button></a>
+                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                         <button type="reset" class="large ui button">Clear Fields</button>
+                         <a href=""><button type="submit" class="large ui teal button">Submit</button></a>
                       </div>
                   </div>
                 </form>

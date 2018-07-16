@@ -26,7 +26,7 @@
          </div>
          <!-- /.box-header -->
        </br>
-         &nbsp;&nbsp;<button data-toggle="modal" data-target="#certificationmodal" class="btn btn-primary btn-sm">Add Certification</button>
+         &nbsp;&nbsp;<button data-toggle="modal" data-target="#certificationmodal" class="large ui green button">Add Certification</button>
          <div class="box-body table-responsive">
            <table id="category" class="table table-bordered table-hover">
            <thead>
@@ -49,9 +49,11 @@
                  <td><%=i.strCertification%></td>
                  <td>
                    <% if (i.intStatus == 1) { %>
-                     <span class="label label-success">Active</span>
+                     <button data-no="<%=i.intCertificationNo%>" class="ui toggle button active inactivate_certification">Active</button>
+
                    <% }else{ %>
-                     <span class="label label-danger">Inactive</span>
+                     <button data-no="<%=i.intCertificationNo%>" class="ui toggle button inactive activate_certification">Inactive</button>
+
                    <% } %>
                  </td>
                  <td><button disabled class="btn btn-default btn-sm">Edit</button></td>
@@ -105,8 +107,8 @@
 
      </div>
        <div class="modal-footer">
-       <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-       <button type="submit" class="btn btn-primary">Save</button>
+       <button type="button" class="large ui button" data-dismiss="modal">Close</button>
+       <button type="submit" class="large ui teal button">Save</button>
        </div>
      </form>
    </div>
@@ -207,23 +209,7 @@
 
 <!-- REQUIRED JS SCRIPTS -->
 
-<!-- jQuery 3 -->
-<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- DataTables (new added)	 -->
-<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="/assets/admin/dist/js/adminlte.min.js"></script>
-<!-- sweetalert  -->
-<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
-<!-- Notification  -->
-<script src="/assets/admin/notification.js"></script>
+<%- include('../../../templates/admin-footer.ejs') -%>
 
 <!-- page script (new added) -->
 
@@ -260,7 +246,7 @@
 <script>
 $('#title').html("USG | Product Certifications");
 $(".treeview a:contains('Maintenance')").parent().addClass("active");
-$(".navi a:contains('Product Certifications')").parent().addClass("active");
+$(".navi a:contains('Product Certification')").parent().addClass("active");
 </script>
 
 <script>
@@ -281,6 +267,40 @@ $(".navi a:contains('Product Certifications')").parent().addClass("active");
       }
     });
   })
+</script>
+
+<script>
+$('.inactivate_certification').on('click',function(){
+  $(this).removeClass("ui toggle button active inactivate_certification").addClass("ui toggle button  activate_certification").html("Inactive");
+
+  $.ajax({
+    url: '/maintenance/inactivateCertification',
+    method: 'post',
+    datatype: 'json',
+    data: {no: $(this).data('no')},
+    success: function(response,status,http){
+      if (response){
+        swal("Success!", "You have activated Certification no"+$(this).data('no'), "success");
+      }
+    }
+  })
+})
+
+$('.activate_certification').on('click',function(){
+  $(this).removeClass("ui toggle button activate_certification").addClass("ui toggle button active inactivate_certification").html("Active");
+
+  $.ajax({
+    url: '/maintenance/activateCertification',
+    method: 'post',
+    datatype: 'json',
+    data: {no: $(this).data('no')},
+    success: function(response,status,http){
+      if (response){
+        swal("Success!", "You have activated Certification no"+$(this).data('no'), "success");
+      }
+    }
+  })
+})
 </script>
 
 

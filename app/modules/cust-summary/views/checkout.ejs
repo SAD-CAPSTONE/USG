@@ -80,10 +80,29 @@
           </label>
         </div>
         <% if(thisUserContact.strShippingAddress && thisUserContact.strBillingAddress){ %>
-          <button id="place-order" type="submit" class="btn btn-custom-primary btn-sm btn-block sb-1">Place Order</button>
+          <button id="place-order" type="button" class="btn btn-custom-primary btn-sm btn-block sb-1"
+          data-toggle="modal" data-target="#OrderConfirmation" >Place Order</button>
         <% }else{ %>
-          <button id="place-order" type="submit" class="btn btn-custom-primary btn-sm btn-block sb-0">Place Order</button>
+          <button id="place-order" type="button" class="btn btn-custom-primary btn-sm btn-block sb-0">Place Order</button>
         <% } %>
+        <div id="OrderConfirmation" tabindex="-1" role="dialog" aria-labelledby="OrderConfirmationTitle" aria-hidden="true" class="modal fade">
+          <div role="document" class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 id="OrderConfirmationTitle" class="modal-title"><b>Order Confirmation</b></h5>
+                <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+              </div>
+              <div class="modal-body">
+                <p>Do you wish to continue placing order?</p>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-custom-primary">Yes</button>
+                <button type="button" data-dismiss="modal" class="btn btn-secondary">No</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </form>
     </div>
   </div>
@@ -115,6 +134,7 @@
     </div>
   </div>
 </div>
+
 
 
 <%- include('../../../templates/footer.ejs') -%>

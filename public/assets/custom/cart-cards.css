@@ -65,7 +65,7 @@
   bottom: 3px;
   margin: 0px;
   font-size: 1.1em !important;
-  color: #00AF66 !important;
+  color: var(--price-color) !important;
 }
 
 .cart-product-container .product-remove {

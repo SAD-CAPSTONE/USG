@@ -25,7 +25,7 @@
               <h4 align="center">Measurements</h4>
             </div>
 			<!-- buttons -->
-				&nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addMeasurement"><i class="fa fa-plus"></i> Add New Measurement</button>
+				&nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#addMeasurement"><i class="fa fa-plus"></i> Add New Measurement</button>
             <!-- /.box-header -->
             <div class="box-body table-responsive">
               <table id="example2" class="table table-bordered table-hover">
@@ -47,9 +47,9 @@
                     <td><%=i.strUnitName%></td>
                     <td>
                     <% if (i.intStatus == 1){ %>
-                      <span class="label label-success">Active</span>
+                      <button data-no="<%=i.intUomNo%>" class="ui toggle button active inactivate_uom">Active</button>
                     <% }else{ %>
-                      <span class="label label-danger">Inactive</span>
+                      <button data-no="<%=i.intUomNo%>" class="ui toggle button inactive activate_uom">Inactive</button>
                     <% } %>
                     </td>
                     <td><a href=""><button class="btn btn-default btn-sm">View Details</button></a></td>
@@ -202,19 +202,7 @@
 
 <!-- REQUIRED JS SCRIPTS -->
 
-<!-- jQuery 3 -->
-<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- DataTables (new added)	 -->
-<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<%- include('../../../templates/admin-footer.ejs') -%>
 
 <!-- page script (new added) -->
 <script>
@@ -236,6 +224,40 @@
 $('#title').html("USG | Measurements");
 $(".treeview a:contains('Maintenance')").parent().addClass("active");
 $(".navi a:contains('Measurements')").parent().addClass("active");
+</script>
+
+<script>
+$('.inactivate_uom').on('click',function(){
+  $(this).removeClass("ui toggle button active inactivate_uom").addClass("ui toggle button  activate_uom").html("Inactive");
+
+  $.ajax({
+    url: '/maintenance/inactivateUom',
+    method: 'post',
+    datatype: 'json',
+    data: {no: $(this).data('no')},
+    success: function(response,status,http){
+      if (response){
+        swal("Success!", "You have activated Measurement no"+$(this).data('no'), "success");
+      }
+    }
+  })
+})
+
+$('.activate_uom').on('click',function(){
+  $(this).removeClass("ui toggle button activate_uom").addClass("ui toggle button active inactivate_uom").html("Active");
+
+  $.ajax({
+    url: '/maintenance/activateUom',
+    method: 'post',
+    datatype: 'json',
+    data: {no: $(this).data('no')},
+    success: function(response,status,http){
+      if (response){
+        swal("Success!", "You have activated Measurement no"+$(this).data('no'), "success");
+      }
+    }
+  })
+})
 </script>
 
 
