@@ -126,7 +126,9 @@ $(() => {
         action: 'plus'
       }),
       success: (res) => {
-        $(this).closest('.product-card').find('.quantity-input').val(res.cart.curQty);
+        res.cart != null ?
+          $(this).closest('.product-card').find('.quantity-input').val(res.cart.curQty) :
+          $(this).closest('.product-card').remove()
         $('#subtotal-btn').click();
       }
     });
@@ -145,7 +147,9 @@ $(() => {
         action: 'minus'
       }),
       success: (res) => {
-        $(this).closest('.product-card').find('.quantity-input').val(res.cart.curQty);
+        res.cart != null ?
+          $(this).closest('.product-card').find('.quantity-input').val(res.cart.curQty) :
+          $(this).closest('.product-card').remove()
         $('#subtotal-btn').click();
       }
     });

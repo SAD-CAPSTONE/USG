@@ -4,7 +4,7 @@
 <div id="store-container" class="container">
   <div class="row">
     <div id="store-sidebar" class="p-0">
-      <div class="subcategories-div">
+      <div class="subcategories-div subcategories-div-main">
         <p class="m-0"><b>All Products</b></p>
       </div>
       <div class="categories-div">
@@ -66,11 +66,10 @@
           </div>
           <small class="mr-1">Filtered By: </small>
           <div id="filters" class="inline">
-            <!-- <small class="filter-tag">Price: 200 - 300<i class="fa fa-times ml-1"></i></small>
-            <small class="filter-tag">Rating: 2 & Up<i class="fa fa-times ml-1"></i></small> -->
-          </div>
-          <div class="inline-block">
 
+          </div>
+          <div id='filterClearDiv' class="inline-block">
+            <!-- ///////////////////////////////////////////////////// -->
           </div>
 
       </div>
@@ -168,16 +167,93 @@
 <script src="/assets/scripts/store.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(() => {
+  const thisUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+  let newUrl;
+
+  function getParams(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+    results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+
+  function pushParams(cat,sub,sort,min,max,rating){
+    cat != null ? 0 : cat = getParams('cat');
+    sub ? 0 : sub = getParams('sub');
+    sort ? 0 : sort = getParams('sort');
+    min != null ? 0 : min = getParams('min');
+    max != null ? 0 : max = getParams('max');
+    rating ? 0 : rating = getParams('rating');
+    newUrl = `${thisUrl}`;
+
+    newUrl = cat ? `${newUrl}?cat=${cat}` : `${newUrl}?cat=0`
+    newUrl = sub && sub != 'none' ? `${newUrl}&sub=${sub}` : newUrl
+    newUrl = sort ? `${newUrl}&sort=${sort}` : newUrl
+    newUrl = min != null && min != 'none' ? `${newUrl}&min=${min}` : newUrl
+    newUrl = max != null && max != 'none' ? `${newUrl}&max=${max}` : newUrl
+    newUrl = rating && rating != 'none' ? `${newUrl}&rating=${rating}` : newUrl
+
+    window.history.pushState({path:newUrl},'',newUrl);
+  }
 
   $('#getStore').on('click', () => {
-    let list = $('#store-products'), catList = $('.categories-div'),
-    subList = $('.subcategories-div'), filters = $('#filters');
-    $.get('/storeRequest/load').then((res) => {
+    let cat = getParams('cat'), sub = getParams('sub'), sort = getParams('sort'),
+    min = getParams('min'), max = getParams('max'), rating = getParams('rating');
+
+    if(!cat){
+      newUrl = `${thisUrl}?cat=0`;
+      window.history.pushState({path:newUrl},'',newUrl);
+      cat = '0';
+    }
+    min = min == 0 && min != '' ? 'zero' : min ;
+    max = max == 0 && max != '' ? 'zero' : max ;
+
+    cat ? cat = cat.indexOf("'") == -1 ? cat : 0 : 0
+    sub ? sub = sub.indexOf("'") == -1 ? sub : 'all' : 0
+    sort ? sort = sort.indexOf("'") == -1 ? sort : '1' : 0
+    min ? min = min.indexOf("'") == -1 ? min : null : 0
+    max ? max = max.indexOf("'") == -1 ? max : null : 0
+    rating ? rating = rating.indexOf("'") == -1 ? rating : 0 : 0
+
+    pushParams(cat,sub,sort,min,max,rating);
+
+    $.post('/storeRequest/load', {
+      cat: cat, sub: sub, sort: sort, min: min, max: max, rating: rating
+    }).then((res) => {
+      // Url Update
+      cat = res.store.catNo
+      res.store.subcategories.length ? sub = res.store.subcategories.join(",") : 0
+      res.store.sort ? sort = res.store.sort : 0
+      res.store.price.min ?
+        res.store.price.min == 'zero' ?
+          min = 0
+          : min = res.store.price.min
+        : 0
+      res.store.price.max ?
+        res.store.price.max == 'zero' ?
+          max = 0
+          : max = res.store.price.max
+        : 0
+      res.store.rating ? rating = res.store.rating : 0
+      pushParams(cat,sub,sort,min,max,rating);
+
+      // DOM Update
+      let list = $('#store-products'), catList = $('.categories-div'),
+      subList = $('.subcategories-div'), filters = $('#filters');
+
       list.html('');
       $('#store-main > div:first-child > p:first-of-type').text(`${res.count} items found`);
+
+      // sort
       $('.sortBy').val(res.store.sort);
+
+      // price
       $('.min-range').val(res.store.price.min);
       $('.max-range').val(res.store.price.max);
+
       // filters
       filters.html('');
       res.store.rating ?
@@ -240,12 +316,12 @@ $(() => {
       res.store.category != 'All Products' ?
         catList.append(`
           <small class="block">
-            <a href='#' class="categoryLink">All Products</a>
+            <a href='#' value='0' class="categoryLink">All Products</a>
           </small>`) : 0
       res.categories.forEach((data)=>{
         catList.append(`
           <small class="block">
-            <a href='#' class="categoryLink">${data.strCategory}</a>
+            <a href='#' value='${data.intCategoryNo}' class="categoryLink">${data.strCategory}</a>
           </small>
           `);
       })
@@ -304,88 +380,77 @@ $(() => {
 
   $('.categories-div').on('click', '.categoryLink', function(){
     event.preventDefault();
-    $.post('/storeRequest/category',{
-      cat: $(this).text()
-    }).then((res) => {
-      console.log(res)
-      $('#getStore').click();
-    }).catch((error) => {
-      console.log(error)
-    });
+    pushParams($(this).attr('value'),'all');
+    $('#getStore').click();
   });
 
   $('.subcategories-div').on('click', 'input', function(){
-    event.preventDefault();
-    let thisval;
-    if($(this).attr('checked')){
-      thisval = 'checked';
+    let status = $(this).attr('checked') ? 'checked' : 'unchecked',
+    sub = getParams('sub'), element = $(this).attr('id');
+
+    let values = [];
+    $.each($(".subcategories-div-main input[type='checkbox']"), function(){
+      $(this).attr('id') != 'allSub' ? values.push($(this).attr('id')) : 0
+    });
+
+    if (element == 'allSub'){
+      sub = status == 'unchecked' ? 'all' : null
+    }
+    else if (status == 'unchecked'){ // to Check
+      sub ?
+        sub = `${sub},${element}`
+        : sub = element
     }
     else{
-      thisval = 'unchecked'
+      sub == 'all' ? sub = values.join(',') : 0
+
+      let array = sub.split(','), index = array.indexOf(element);
+      index !== -1 ? array.splice(index, 1) : 0
+      sub = array.join(',');
     }
 
-    $.post('/storeRequest/subcategory',{
-      id: $(this).attr('id'),
-      val: thisval
-    }).then((res) => {
-      console.log(res);
-      $('#getStore').click();
-    }).catch((error) => {
-      console.log(error);
-    });
+    sub ? 0 : sub = 'none'
+    pushParams(null,sub)
+
+    $('#getStore').click();
   })
 
   $('.sortBy').on('change', function(){
-    event.preventDefault();
-    $.post(`/storeRequest/sort`, {
-      sort: this.value
-    }).then((res) => {
-      console.log(res);
-      $('#getStore').click();
-    }).catch((error) => {
-      console.log(error);
-    });
+    pushParams(null,null,this.value);
+    $('#getStore').click();
   });
 
   $('.priceRangeBtn').on('click', function(){
-    event.preventDefault();
-    $.post(`/storeRequest/price`,{
-      min: $('.min-range').val(),
-      max: $('.max-range').val()
-    }).then((res) => {
-      console.log(res);
-      $('#getStore').click();
-    }).catch((error) => {
-      console.log(error);
-    });
+    pushParams(null,null,null,$('.min-range').val(),$('.max-range').val());
+    $('#getStore').click();
   });
 
   $('.stars').on('click', function(){
     event.preventDefault();
-    let rating = $(this).attr('id');
-    $.post('/storeRequest/rating', {
-      rating: rating
-    }).then((res)=>{
-      console.log(res);
-      $('#getStore').click();
-    }).catch((error)=>{
-      console.log(error);
-    });
+    pushParams(null,null,null,null,null,$(this).attr('id'));
+    $('#getStore').click();
   });
 
   $('#filters').on('click', 'i', function(){
-    $.post(`/storeRequest/filters`, {
-      id: $(this).attr('id')
-    }).then((res) => {
-      console.log(res);
-      $('#getStore').click();
-    }).catch((error) => {
-      console.log(error);
-    });
+    switch($(this).attr('id')){
+      case 'rating':
+        pushParams(null,null,null,null,null,'none');
+        break;
+      case 'price':
+        pushParams(null,null,null,'none','none');
+        break;
+    }
+    $('#getStore').click();
+  });
 
-  })
+  $('#filterClearDiv').on('click', 'a', function(){
+    event.preventDefault();
+    pushParams(null,null,null,'none','none','none');
+    $('#getStore').click();
+  });
 
   $('#getStore').click();
+  $('#clearAll').click();
 
 });
 

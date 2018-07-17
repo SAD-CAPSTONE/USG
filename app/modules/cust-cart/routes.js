@@ -132,16 +132,21 @@ router.put('/list', (req, res)=>{
   let index =
     req.session.cart.reduce((temp, obj, i)=>{
       return obj.inv == req.body.inv ? i : temp
-    }, 0),
-  curQty = req.session.cart[index].curQty;
-  // Limit
-  req.body.action == 'plus' ?
-    curQty < req.session.cart[index].limit ?
-      ++curQty : 0
-    : curQty > 1 ?
-      --curQty : 0
-  req.session.cart[index].curQty = curQty;
-  res.send({cart: req.session.cart[index]});
+    }, null);
+  if (index != null){
+    let curQty = req.session.cart[index].curQty;
+    // Limit
+    req.body.action == 'plus' ?
+      curQty < req.session.cart[index].limit ?
+        ++curQty : 0
+      : curQty > 1 ?
+        --curQty : 0
+    req.session.cart[index].curQty = curQty;
+    res.send({cart: req.session.cart[index]});
+  }
+  else{
+    res.send({cart: null});
+  }
 });
 router.delete('/list', (req, res)=>{
   req.session.cart ? 0 : req.session.cart = [];
