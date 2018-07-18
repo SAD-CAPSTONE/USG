@@ -2,18 +2,18 @@
 
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 :root {
-  --primary-color: #12BBAD;
-  --primary-hover: #0d877d;
-  --primary-focus: rgba(18, 187, 173, .5);
-  --price-color: #00AF66;
-  --info-color: #17AACB;
-  --search-focus: #0bdc8f;
   /* --primary-color: #B53471;
   --primary-hover: #833471;
   --primary-focus: rgba(181, 52, 113, .5);
   --price-color: #ED4C67;
   --info-color: #6F1E51;
   --search-focus: #ED4C67; */
+  --primary-color: #12BBAD;
+  --primary-hover: #0d877d;
+  --primary-focus: rgba(18, 187, 173, .5);
+  --price-color: #00AF66;
+  --info-color: #17AACB;
+  --search-focus: #0bdc8f;
 
   --sub-color: #ccc;
 }
@@ -108,6 +108,12 @@ a:hover {
 .page-link, .page-link:focus, .page-link:hover {
   color: var(--primary-color);
   border-radius: 0px !important;
+}
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 /* button + form */

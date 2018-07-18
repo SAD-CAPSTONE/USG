@@ -55,49 +55,11 @@ function categories(req,res,next){
   });
 }
 
-// func to check subcats
-
 router.post('/load', thisCategory, subcategories, categories, (req,res)=>{
-  // req.session.store = {
-  //   page: 1,
-  //   category: req.session.category,
-  //   all_subcategories: req.subcategories,
-  //   subcategories: req.subcategories,
-  //   price: { min: 100, max: 300 },
-  //   rating: 0,
-  //   sort: 5,
-  //   search: ''
-  // }
-
-  // if (req.session.store.category == req.session.category){
-  //   req.session.store.page = 1;
-  // }
-  // else{
-  //   req.session.store.page = 1;
-  //   req.session.store.category = req.session.category;
-  //   req.session.store.all_subcategories = req.subcategories;
-  //   req.session.store.subcategories = req.subcategories.reduce((arr, data)=>{
-  //     arr.push(data[0]); return arr;
-  //   }, []);
-  // }
-  // console.log(req.session.store)
-
-  // store = {
-  //   page: 1,
-  //   category: req.body.cat,
-  //   all_subcategories: req.subcategories,
-  //   subcategories: req.subcategories.reduce((arr, data)=>{
-  //       arr.push(data[0]); return arr;
-  //     }, []),
-  //   price: { min: 100, max: 300 },
-  //   rating: 1,
-  //   sort: 5,
-  //   search: ''
-  // };
-
   let filterQuery = productQuery,
   store = {
     page: 1,
+    total_pages: 1,
     catNo: req.thisCategoryNo,
     category: req.thisCategory,
     all_subcategories: req.subcategories,
@@ -107,12 +69,6 @@ router.post('/load', thisCategory, subcategories, categories, (req,res)=>{
     sort: '1',
     search: ''
   };
-  // req.body.sub ? store.subcategories =
-  //   req.body.sub.split(',').reduce((arr, data)=>{
-  //     Number(data) ? arr.push(data) : 0
-  //     return arr;
-  //   }, [])
-  //   : 0 ;
   req.body.sub ?
     store.subcategories = req.body.sub.split(',').reduce((arr, data1)=>{
       store.all_subcategories.reduce((result, data2)=>{
@@ -140,6 +96,12 @@ router.post('/load', thisCategory, subcategories, categories, (req,res)=>{
     Number(req.body.rating) && Number(req.body.rating) <= 5 ?
       store.rating = Number(req.body.rating) : 0
     : 0
+  store.page = req.body.page ?
+    Number(req.body.page) ?
+      parseInt(req.body.page)
+      : 1
+    : 1
+
   // category
   store.category != 'All Products' ?
     filterQuery = filterQuery.concat(`WHERE strCategory= '${store.category}' `) :
@@ -160,9 +122,6 @@ router.post('/load', thisCategory, subcategories, categories, (req,res)=>{
       })
       : filterQuery = filterQuery.concat(`AND intSubCategoryNo= 0 `)
     : 0
-
-  // subcategory ALL
-
 
   // price
   let price = store.price;
@@ -192,87 +151,46 @@ router.post('/load', thisCategory, subcategories, categories, (req,res)=>{
     default : filterQuery = filterQuery.concat(`ORDER BY OrderCNT DESC `); store.sort = 1 ; break;
   }
 
-  // limit
-  let start = 0;
-  for(let i=0; i<store.page-1; i++){
-    start += pageLimit;
-  }
-  limitQuery = filterQuery.concat(`LIMIT ${start},${pageLimit} `);
   // console.log(limitQuery)
-  console.log(store)
 
   db.beginTransaction(function(err) {
     if (err) console.log(err);
-    db.query(limitQuery, function (err,  results, fields) {
+    db.query(`SELECT COUNT(C.intProductNo)cnt FROM(${filterQuery})C`, function (err,  results, fields) {
       if (err) console.log(err);
-      results[0] ? results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) ) : 0
-      db.query(`SELECT COUNT(C.intProductNo)cnt FROM(${filterQuery})C`, (err,results1,fields)=>{
+      if(results[0]){
+        store.total_pages =
+          results[0].cnt >= pageLimit ?
+            results[0].cnt % pageLimit ?
+              Math.floor(results[0].cnt / pageLimit) + 1 :
+            Math.floor(results[0].cnt / pageLimit)
+          : 1
+        store.page =
+          store.page > store.total_pages ?
+            store.total_pages :
+            store.page < 1 ? 1 : store.page
+        store.page =
+          store.page > store.total_pages ?
+            store.total_pages :
+            store.page < 1 ?
+              1 : store.page
+      }
+      // limit
+      let start = 0;
+      for(let i=0; i<store.page-1; i++){
+        start += pageLimit;
+      }
+      limitQuery = filterQuery.concat(`LIMIT ${start},${pageLimit} `);
+      db.query(limitQuery, (err,results1,fields)=>{
         if (err) console.log(err);
+        results1[0] ? results1.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) ) : 0
         db.commit(function(err) {
           if (err) console.log(err);
-          res.send({store: store, products: results, count: results1[0].cnt, categories: req.categories})
+          console.log(store)
+          res.send({store: store, products: results1, count: results[0].cnt, categories: req.categories})
         });
       });
     });
   });
 });
-
-// router.post('/category', (req,res)=>{
-//   req.session.category = req.body.cat;
-//   res.send('Store Category Updated');
-// });
-
-// router.post('/subcategory', subcategories, storeCheck, (req,res)=>{
-//   if(req.body.id == 'allSub'){
-//     req.body.val == 'unchecked' ?
-//       req.session.store.subcategories = req.subcategories.reduce((arr, data)=>{
-//         arr.push(data[0]); return arr;
-//       }, []) :
-//       req.session.store.subcategories = [];
-//   }
-//   else{
-//     let index = req.session.store.subcategories.indexOf(req.body.id);
-//     req.body.val == 'unchecked' ?
-//       req.session.store.subcategories.push(req.body.id) :
-//       index !== -1 ?
-//         req.session.store.subcategories.splice(index, 1) : 0
-//   }
-//   res.send('Store Subcategory Updated');
-//
-// });
-//
-// router.post('/sort', subcategories, storeCheck, (req,res)=>{
-//   req.session.store.sort = parseInt(req.body.sort);
-//   res.send('Store Sort Updated');
-// });
-//
-// router.post('/price', subcategories, storeCheck, (req,res)=>{
-//   req.session.store.price.min = parseInt(req.body.min);
-//   req.session.store.price.max = parseInt(req.body.max);
-//   res.send('Store Price Range Updated');
-// });
-//
-// router.post('/rating', subcategories, storeCheck, (req,res)=>{
-//   req.session.store.rating = parseInt(req.body.rating);
-//   res.send('Store Rating Updated');
-// });
-//
-// router.post('/rating', subcategories, storeCheck, (req,res)=>{
-//   req.session.store.rating = parseInt(req.body.rating);
-//   res.send('Store Rating Updated');
-// });
-//
-// router.post('/filters', subcategories, storeCheck, (req,res)=>{
-//   switch(req.body.id){
-//     case 'rating':
-//       req.session.store.rating = 0
-//       break;
-//     case 'price':
-//       req.session.store.price.min = null;
-//       req.session.store.price.max = null;
-//       break;
-//   }
-//   res.send('Store Filters Updated');
-// });
 
 exports.storeRequest = router;
