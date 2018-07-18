@@ -10,7 +10,7 @@
       <div class="categories-div">
         <p class="m-0"><b>Other Categories</b></p>
       </div>
-      <div>
+      <div class="price-range-div">
         <p class="m-0 mb-1"><b>Price Range</b></p>
         <input type="number" class="inline-block material min-range" placeholder="min"/> -
         <input type="number" class="inline-block material max-range" placeholder="max"/>
@@ -69,12 +69,11 @@
 
           </div>
           <div id='filterClearDiv' class="inline-block">
-            <!-- ///////////////////////////////////////////////////// -->
-          </div>
 
+          </div>
       </div>
       <div id="products-div" class="products-container">
-        <div id="store-products">
+        <div id="store-products" class="mb-3">
           <!-- products -->
           <div class="align-center">
             <p> Loading Products ... </p>
@@ -82,13 +81,8 @@
           </div>
         </div>
         <!-- pagination -->
-        <div class="row">
-          <div class="col"> </div>
-          <div class="col pt-3">
-            <ul class="pagination" id="pagination"></ul>
-          </div>
-          <div class="col"> </div>
-        </div>
+        <ul class="pagination pull-right mb-2" id="pagination"></ul>
+        <div style="clear: both"></div>
 
       </div>
       <div id="filters-div" class="pos-relative">
@@ -134,7 +128,7 @@
 
           </div>
           <div class="col">
-            <div class="mb-3">
+            <div class="mb-3 price-range-div">
               <p class="m-0"><b>Price Range</b></p>
               <input type="number" class="inline-block min-range" placeholder="min"/> -
               <input type="number" class="inline-block max-range" placeholder="max"/>
@@ -258,14 +252,21 @@ $(() => {
           <i id="category" class="fa fa-times ml-1"></i></small>`)
         : 0 ;
 
-      res.store.subcategories.forEach((data)=>{
-        subCatName = res.store.all_subcategories.reduce((str, all)=>{
-          return all[0] == data ? all[1] : str ;
-        }, '')
-        filters.append(`
-          <small class="filter-tag">Sub: ${subCatName}
-          <i id="${data}" class="fa fa-times ml-1"></i></small>`)
-      })
+
+      res.store.subcategories.length ?
+        res.store.subcategories.forEach((data)=>{
+          subCatName = res.store.all_subcategories.reduce((str, all)=>{
+            return all[0] == data ? all[1] : str ;
+          }, '')
+          filters.append(`
+            <small class="filter-tag">Sub: ${subCatName}
+            <i id="${data}" class="fa fa-times ml-1"></i></small>`)
+        }) :
+        res.store.category != 'All Products' ?
+          filters.append(`
+            <small class="filter-tag">Sub: None`)
+          : 0
+
 
       let priceRange, price = res.store.price
       priceRange = price.min ?
@@ -455,7 +456,9 @@ $(() => {
   });
 
   $('.priceRangeBtn').on('click', function(){
-    pushParams(null,null,null,$('.min-range').val(),$('.max-range').val(),null,1);
+    let min = $(this).closest($('.price-range-div')).find($('.min-range')).val(),
+    max = $(this).closest($('.price-range-div')).find($('.max-range')).val()
+    pushParams(null,null,null,min,max,null,1);
     $('#getStore').click();
   });
 
@@ -497,7 +500,6 @@ $(() => {
   $('#getStore').click();
 
 });
-
 </script>
 
 <%- include('../../../templates/closer.ejs') -%>

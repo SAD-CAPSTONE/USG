@@ -17,7 +17,6 @@ const productQuery = `
 function thisCategory(req,res,next){
   /*Check current category, Match(body);
   *(tblcategory)*/
-
   db.query(`SELECT * FROM tblcategory WHERE intCategoryNo= ? AND intStatus= 1`, [req.body.cat], function (err,  results, fields) {
     if (err) console.log(err);
     if(results[0]){
@@ -125,7 +124,6 @@ router.post('/load', thisCategory, subcategories, categories, (req,res)=>{
 
   // price
   let price = store.price;
-
   price.min != null ?
     price.max != null ?
       filterQuery = filterQuery.concat(`AND productPrice BETWEEN ${price.min} AND ${price.max} `) :
@@ -150,8 +148,6 @@ router.post('/load', thisCategory, subcategories, categories, (req,res)=>{
     case '5' : filterQuery = filterQuery.concat(`ORDER BY strBrand, strProductName `); break; // a-z
     default : filterQuery = filterQuery.concat(`ORDER BY OrderCNT DESC `); store.sort = 1 ; break;
   }
-
-  // console.log(limitQuery)
 
   db.beginTransaction(function(err) {
     if (err) console.log(err);
@@ -180,6 +176,7 @@ router.post('/load', thisCategory, subcategories, categories, (req,res)=>{
         start += pageLimit;
       }
       limitQuery = filterQuery.concat(`LIMIT ${start},${pageLimit} `);
+      // console.log(limitQuery)
       db.query(limitQuery, (err,results1,fields)=>{
         if (err) console.log(err);
         results1[0] ? results1.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) ) : 0

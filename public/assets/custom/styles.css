@@ -110,10 +110,8 @@ a:hover {
   border-radius: 0px !important;
 }
 .page-item.active .page-link {
-    z-index: 1;
-    color: #fff;
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 /* button + form */

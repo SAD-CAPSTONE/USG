@@ -38,6 +38,13 @@ function contactDetails (req, res, next){
     return next();
   });
 }
+// function checkOrder (req, res, next){
+//   db.query(``,[req.params.orderNo], (err, results, fields) => {
+//     if (err) console.log(err);
+//     req.checkOrder = results[0];
+//     return next();
+//   });
+// }
 
 router.get('/checkout', checkUser, contactDetails, (req,res)=>{
   res.render('cust-summary/views/checkout', {thisUser: req.user, thisUserContact: req.contactDetails});
@@ -48,17 +55,21 @@ router.get('/order', (req,res)=>{
 router.get('/previous', (req,res)=>{
   res.render('cust-summary/views/previous', {thisUser: req.user});
 });
+router.get('/success/:orderNo', (req,res)=>{
+  res.render('cust-summary/views/orderSuccess', {thisUser: req.user, OrderNumber: req.params.orderNo});
+});
 
 router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsNo, (req,res)=>{
   db.beginTransaction(function(err) {
     if (err) console.log(err);
+    let thisOrderNo = req.newOrderNo;
     db.query(`INSERT INTO tblorder (intOrderNo, intUserID, intStatus, intPaymentMethod, strShippingAddress, strBillingAddress)
-      VALUES (?,?,?,?,?,?)`,[req.newOrderNo, req.user.intUserID, 0, req.body.paymentMethod, req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress], (err, results, fields) => {
+      VALUES (?,?,?,?,?,?)`,[thisOrderNo, req.user.intUserID, 0, req.body.paymentMethod, req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress], (err, results, fields) => {
       if (err) console.log(err);
       function multiInsert(i){
         let cart = req.session.cart;
         db.query(`INSERT INTO tblorderdetails (intOrderDetailsNo, intOrderNo, intInventoryNo, intStatus, purchasePrice, intQuantity)
-          VALUES (?,?,?,?,?,?)`,[req.newOrderDetailsNo + i, req.newOrderNo, cart[i].inv, 1, cart[i].curPrice, cart[i].curQty], (err, results, fields) => {
+          VALUES (?,?,?,?,?,?)`,[req.newOrderDetailsNo + i, thisOrderNo, cart[i].inv, 1, cart[i].curPrice, cart[i].curQty], (err, results, fields) => {
           if (err) console.log(err);
           ++i;
           if (cart.length > i){
@@ -68,7 +79,7 @@ router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsN
             db.commit(function(err) {
               if (err) console.log(err);
               req.session.cart = null;
-              res.redirect('/home');
+              res.redirect(`/summary/success/${thisOrderNo}`);
             });
           }
         });
