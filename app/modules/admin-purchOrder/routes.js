@@ -256,15 +256,11 @@ router.post('/addSupplier', (req,res)=>{
 
 });
 
-router.post('/findProducts',(req,res)=>{
+router.get('/findProducts/:pid',(req,res)=>{
 
-  db.query(`Select * from tblproductownership where intUserID = ${req.body.o} and intstatus = 1`,(err1,results1,fields1)=>{
+  db.query(`Select * from tblproductownership where intUserID = "${req.params.pid}" and intstatus = 1`,(err1,results1,fields1)=>{
     if (err1) console.log(err1);
-    if (results1 == null || results1 == undefined || results1.length ==0 ){
-      res.send("some");
-    }else{
-      res.send(results1[0].strProduct);
-    }
+    if (!err1) res.render('admin-purchOrder/views/productLoader', {re: results1});
   });
 });
 

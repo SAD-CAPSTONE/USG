@@ -68,7 +68,7 @@
 
        </div>
        <div class="row">
-         &nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
+         &nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
        <p>  &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
        </div>
      </br>
@@ -125,7 +125,7 @@
            <!-- buttons -->
 
 
-           &nbsp; &nbsp;<button type="button" id="addButton" disabled class="addRow btn btn-success btn-xs" ><i class="fa fa-plus"></i> Add Product</button>
+           &nbsp; &nbsp;<button type="button" id="addButton" disabled class="addRow small ui green button" ><i class="fa fa-plus"></i> Add Product</button>
            &nbsp; &nbsp; <a href="" data-toggle="modal" id="searchProduct"  data-target="#selectProduct" hidden>Click here to view products of supplier</a>
 
            <!-- /.box-header -->
@@ -165,8 +165,8 @@
      </div>
 
      <div class="box-footer">
-                <a href="purchaseOrderList.html"><button type="button" class="btn btn-default">Back</button></a>
-                <a href=""><button type="submit" id="sub" class="btn btn-info pull-right">Submit Order Form</button></a>
+                <a href="/purchaseOrder"><button type="button" class="large ui button">Back</button></a>
+                <a href=""><button type="submit" id="sub" class="btn large ui teal button">Submit Order Form</button></a>
             </div>
               <!-- /.box-footer -->
 
@@ -320,24 +320,7 @@
 
 
    <!-- /.box-header -->
-   <div class="box-body table-responsive">
-     <table id="productTable" class="table table-bordered table-hover">
-       <thead>
-         <tr>
-           <th>Product No</th>
-           <th>Product Name</th>
-           <th></th>
-         </tr>
-       </thead>
-       <tbody>
-         <tr>
-           <td></td>
-           <td></td>
-           <td><button data-dismiss="modal"  class="addRow btn btn-info btn-sm"  data-target="#addProduct">Select</button></td>
-         </tr>
-       </tbody>
-
-     </table>
+   <div id="productLoader" class="box-body table-responsive">
    </div>
    <!-- /.box-body -->
 
@@ -442,23 +425,8 @@
 
 <!-- REQUIRED JS SCRIPTS -->
 
-<!-- jQuery 3 -->
-<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- DataTables (new added)	 -->
-<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="/assets/admin/dist/js/adminlte.min.js"></script>
-<!-- sweetalert  -->
-<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
-<!-- Notification  -->
-<script src="/assets/admin/notification.js"></script>
+<%- include('../../../templates/admin-footer.ejs') -%>
+
 
 <!-- page script (new added) -->
 
@@ -496,21 +464,7 @@
   })
 </script>
 
-<script>
-  $(function () {
-    $('#productTable').DataTable({
-      'paging'      : true,
-      'lengthChange': true,
-      'searching'   : true,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : true,
-    'select'		: true,
-    'scroll'		: true,
-    'searching' : true
-    })
-  })
-</script>
+
 
 
 <script>
@@ -533,32 +487,7 @@ $('.setter').on('click', function(){
   var productRes = "";
   var prodTable = $('#productTable').DataTable();
 
-  $.ajax({
-    url: '/purchaseOrder/findProducts',
-    method: 'POST',
-    datatype: "json",
-    data: {o: text},
-    success: function(response, status, http) {
-            if (response) {
-              if (response == "some"){
-
-              }else{
-                productRes = response.split(",");
-
-                for(var x = 0; x<productRes.length; x++){
-                  prodTable.row.add( [
-                      x+1,
-                      productRes[x],
-                      ""
-                  ] ).draw( false );
-                } // for loop end
-
-              }
-
-
-            } // end of response
-        }
-  });
+  $('#productLoader').load(`/purchaseOrder/findProducts/${1004}`);
 
   $('#addButton').attr('disabled', false);
 })
@@ -566,35 +495,7 @@ $('.setter').on('click', function(){
 
 $(document).ready(function() {
 
-  var count = 1;
-    $('.addRow').on( 'click', function () {
-      var t = $('#example').DataTable();
-      var table = document.getElementById("example");
-      var row = table.getElementsByTagName("tr");
 
-      var rows = t.rows( '.selected' );
-      var filter = $(this).data('productid');
-
-      var tr = table.getElementsByTagName("tr");
-      var validity = 1;
-
-
-
-      if (validity){
-        t.row.add( [
-            count,
-            '<input style="width: 200px" required type="text" name="product[]" value="" class="form-control">',
-            '<input style="width: 80px" required type="number" name="quantity[]" value="0" class="form-control">',
-            '<input style="width: 80px" type="number" name="price[]" value="2" class="price form-control">',
-            '<input style="width: 80px" disabled type="number" name="total[]" value="2" class="total form-control">'
-
-        ] ).draw( false );
-        //validity = 0;
-
-        count++;
-      }
-
-    } );
 
 
 
