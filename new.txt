@@ -1,1 +1,43 @@
-samp
+router.post('/assessOrder',(req,res)=>{
+
+  db.beginTransaction((e1)=>{
+    if(e1) db.rollback(()=>{console.log(e1); res.send("failed")})
+    else{
+
+      // Select all orderlist
+      db.query(`Select * from tblorderdetails where intOrderNo = "${req.body.orderNo}"`,(err1,orders,fields1)=>{
+        if(err1) db.rollback(()=>{console.log(err1); res.send("failed")})
+        else{
+
+          // Loop through all orderlist
+          async.eachSeries(orders,function(data,callback){
+
+            // Check if stock is in Quantity
+            db.query(`Select * from tblProductinventory where intInventoryNo = "${orders[0].intInventoryNo}" and intQuantity >= ${orders[0].intQuantity}`,(err2,resu2,fiel2)=>{
+              if(err2) db.rollback(()=>{console.log(err2); res.send("failed")})
+              else{
+
+                if(resu2==undefined||resu2==null){res.send("no");} else if(resu.length==0){res.send("no");} // if not in stock
+
+                else{
+
+                  // Update batch FIFO
+                  db.query(`Select * from tblBatch where intinventoryno = "${orders[0].intInventoryNo}" and intStatus = 1 order by created_at`,(err3,batch,fiel3)=>{
+                    if(err3) db.rollback(()=>{console.log(err3); res.send("failed")})
+
+                    async.eachSeries(batch, function(data,callback){
+                      if(batch[0].intQuantity < )
+                    }) // ----------------- End of Looping through batch ASYNC
+
+                  }); // -------------- End of Batch FIFO
+
+                }
+              }
+            }); // -------------- End of checking stock is in quantity
+
+          }) // ----------- End of looping through all orderlist ASYNC
+        }
+      }) // ------------- End of Select all orderlist
+    }
+  }) // --------- End of transaction
+});

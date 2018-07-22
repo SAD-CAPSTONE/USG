@@ -7,10 +7,10 @@
 html {
 	height: auto;
 	/*Image only BG fallback*/
-	
+
 	/*background = gradient + image pattern combo*/
 
-	background-image: url("herbs4.jpg");
+	background-image: url("/assets/images/static/herbs4.jpg");
 	background-size: 130% 100%;
 }
 
@@ -33,7 +33,7 @@ body {
 	box-sizing: border-box;
 	width: 80%;
 	margin: auto;
-	
+
 	/*stacking fieldsets above each other*/
 	position: relative;
 }
@@ -47,7 +47,7 @@ body {
 	border: 1px solid #ccc;
 	border-radius: 3px;
 	margin-bottom: 10px;
-	
+
 	box-sizing: border-box;
 	font-family: montserrat;
 	color: #2C3E50;
@@ -137,7 +137,7 @@ body {
 }
 #progressbar li:first-child:after {
 	/*connector not needed before the first step*/
-	content: none; 
+	content: none;
 }
 /*marking active/completed steps green*/
 /*The number of the step and the connector before it = green*/
