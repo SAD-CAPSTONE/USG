@@ -1,6 +1,7 @@
 var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
+var async = require('async');
 
 
 router.get('/', (req,res)=>{
@@ -55,7 +56,7 @@ router.get('/assessOrder',(req,res)=>{
     join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
     where tblOrder.intOrderno = "${orderno}"`,(err1,results1,fields1)=>{
       if (err1) console.log(err1);
-      console.log(results1);
+
 
     // customer details
     db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.*
@@ -98,165 +99,85 @@ router.get('/assessOrder',(req,res)=>{
 
 router.post('/assessOrder',(req,res)=>{
 
+
   db.beginTransaction(function(err){
-    if(err){
-      console.log(err);
-    }else{
+    if(err){ console.log(err);}
+    else{
       // Update order status
       db.query(`Update tblOrder set intStatus = ${req.body.orderStatus}, strShippingMethod =
         "${req.body.shippingMethod}", strCourier = "${req.body.courier}", intPaymentStatus = ${req.body.paymentStatus} where intOrderNo = "${req.body.orderNo}" `, (err1,results1,fields1)=>{
-          if(err1){
-            db.rollback(function(){
-              console.log(err1);
-            })
-          }else{
-            var historynum = 1000;
-            var messagenum = 1000;
+          if(err1){db.rollback(function(){console.log(err1);})}
+          else{
+            var historynum = 1000, messagenum = 0;
             // Select last orderhistory no
             db.query(`Select * from tblOrderHistory order by intOrderHistoryNo desc limit 1`,
               (err2,results2,fields2)=>{
-                if(err2){
-                  db.rollback(function(){
-                    console.log(err2);
-                  });
-                }else{
-                  if (results2 == null || results2 == undefined){
-
-                  }else if(results2.length == 0){
-
-                  }else{
+                if(err2){db.rollback(function(){console.log(err2)})}
+                else{
+                  if (results2 == null || results2 == undefined){}else if(results2.length == 0){}
+                  else{
                     historynum = parseInt(results2[0].intOrderHistoryNo) + 1;
                   }
                   // Select last message no
                   db.query(`Select * from tblMessages order by intMessageNo desc limit 1`,
                     (err3,results3, fields3)=>{
-                      if(err3){
-                        db.rollback(function(){
-                          console.log(err3);
-                        })
-                      }else{
+                      if(err3){db.rollback(function(){console.log(err3)})}
+                      else{
                         if (req.body.notify == 1){
+
+                          if(results3==null||results3==undefined){messagenum = "1000"}else if(results3.length==0){messagenum = "1000"}
+                          else{messagenum = parseInt(results3[0].intMessageNo)+1}
                           // insert to message
                           db.query(`Insert into tblMessages (intMessageNo, intOrderHistoryNo, strMessage,
                             intAdminID) values ("${messagenum}", "${historynum}","${req.body.message}", "1000" )`,(err4,results4,fields4)=>{
-                            if (err4){
-                              db.rollback(function(){
-                                console.log(err4)
-                              })
-                            }
+                            if (err4){db.rollback(function(){console.log(err4)})}
                           });
                         }
                         // Insert into order history
                         db.query(`Insert into tblOrderHistory (intOrderHistoryNo, intOrderNo,
                           strShippingMethod, strCourier, intStatus, intAdminID, intMessageNo) values ("${historynum}", "${req.body.orderNo}", "${req.body.shippingMethod}","${req.body.courier}", ${req.body.orderStatus}, "1000", "${messagenum}")`, (err5,results5,fields5)=>{
-                            if(err5){
-                              db.rollback(function(){
-                                console.log(err5);
-                              })
-                            }else{
-                              var salesno = "";
-                              if(req.body.paymentStatus == 1 || req.body.paymentStatus == 2){
+                            if(err5){db.rollback(function(){console.log(err5)})}
+                            else{
 
-                                // select last sales record
-                                salesno = "1000";
-                                db.query(`Select * from tblSales order by intSalesNo desc limit
-                                  1`,(err6,results6,fields6)=>{
-                                  if (err6){
-                                    db.rollback(function(){
-                                      console.log(err6);
-                                    })
-                                  }else{
-                                    console.log(results6[0]);
-                                    if(results6 == null || results6 == undefined){
-
-                                    }else if(results6.length == 0){
-
-                                    }else{
-                                      salesno = parseInt(results6[0].intSalesNo) +1;
-                                    }
-
-                                    // Insert to sales
-                                    db.query(`Insert into tblSales (intSalesNo, intOrderNo, amount, intStatus)
-                                      values("${salesno}","${req.body.orderNo}",${req.body.total}, 1)`,(err7,results7,fields7)=>{
-                                      if(err7){
-                                        db.rollback(function(){
-                                          console.log(err7);
-                                          res.send("no");
-                                        })
-                                      }else{
-                                        db.commit(function(e1){
-                                          if(e1){
-                                            db.rollback(function(){
-                                              console.log(e1);
-                                            })
-                                          }else{
-                                            res.send("yes");
-                                          }
-                                        });
+                              //update product inventory
+                              db.query(`Select * from tblorderdetails where intOrderNo = "${req.body.orderNo}"`,(errz,orders,fieldsz)=>{
+                                if(errz){db.rollback(function(){console.log(errz)})}
+                                else{
+                                  async.eachSeries(orders,function(data,callback){
+                                    // check if stock is in Quantity
+                                    db.query(`Select * from tblProductinventory where intInventoryNo = "${orders[0].intInventoryNo}" and intQuantity >= ${orders[0].intQuantity}`,(errw,resw,fieldsw)=>{
+                                      if(errw){db.rollback(function(){console.log(errw); res.send("no")})}
+                                      else{
+                                        if(resw==undefined||resw==null){res.send("false")}
+                                        else if(resw.length==0){res.send("false")}
+                                        else{
+                                          db.query(`Update tblproductinventory set intQuantity = intQuantity - ${orders[0].intQuantity}
+                                            where tblproductinventory.intInventoryNo = "${orders[0].intInventoryNo}" and intQuantity >= ${orders[0].intQuantity}`,(errx,resultsx,fieldsx)=>{
+                                              if(errx){db.rollback(function(){console.log(errx); res.send("no");})}
+                                              callback();
+                                            });
+                                        }
                                       }
                                     });
 
-                                  }
-                                });
 
-
-                              }else if(req.body.paymentStatus == 4){
-
-                                // select last sales record
-                                salesno = "1000";
-                                db.query(`Select * from tblSales order by intSalesNo desc limit 1`,(err6,results6,fields6)=>{
-                                  if (err6){
-                                    db.rollback(function(){
-                                      console.log(err6);
-                                    })
-                                  }else{
-                                    console.log(results6[0]);
-                                    if(results6 == null || results6 == undefined){
-
-                                    }else if(results6.length == 0){
-
-                                    }else{
-                                      salesno = parseInt(results6[0].intSalesNo) +1;
+                                  },function(erry,resultsy){
+                                    if(erry){db.rollback(function(){console.log(erry)})}
+                                    else{
+                                      db.commit(function(erri){
+                                        if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
+                                        else{console.log("Done updating inventory!"); res.send("yes")}
+                                      })
                                     }
 
-                                    // Insert to sales
-                                    db.query(`Insert into tblSales (intSalesNo, intOrderNo, amount, intStatus)
-                                      values("${salesno}","${req.body.orderNo}",${req.body.total},0)`,(err8,results8,fields8)=>{
-                                      if(err8){
-                                        db.rollback(function(){
-                                          console.log(err8);
-                                        })
-                                      }else{
-                                        db.commit(function(e1){
-                                          if(e1){
-                                            db.rollback(function(){
-                                              console.log(e1);
-                                            })
-                                          }else{
-                                            res.send("yes");
-                                          }
-                                        })
-                                      }
-                                    });
-
-                                  }
-                                });
+                                  })
+                                }
+                              });
 
 
-                              }else{
 
-                                db.commit(function(e1){
-                                  if(e1){
-                                    db.rollback(function(){
-                                      console.log(e1);
-                                    })
-                                  }else{
-                                    res.send("yes");
-                                  }
-                                })
-                              }
                             }
-                        })
+                        }) // End of Order History -------
                       }
                   });
                 }
