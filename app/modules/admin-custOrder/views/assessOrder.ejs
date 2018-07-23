@@ -141,17 +141,17 @@
                       <div class="box-body">
                         <table class="table table-bordered">
                           <tr>
-                            <th></th>
-                            <th></th>
+                            <th style="width: 50%"></th>
+                            <th style="width: 100px"></th>
                           </tr>
                           <tr>
                             <td>Discount:</td>
-                            <td align="right"> 0%</td>
+                            <td  align="right"> 0%</td>
 
                           </tr>
                           <tr>
                             <td>Total: </td>
-                            <td align="right">₱ <%= (total).toFixed(2) %></td>
+                            <td  align="right">₱ <%= (total).toFixed(2) %></td>
                           </tr>
 
                           <tr>
@@ -221,7 +221,7 @@
                     <label for="stats">Order Status:</label>
                     <select class="form-control" id="orderstatus">
                       <option value="0">Pending</option>
-                      <option value="1">Processing</option>
+                      <option id="order_processing" value="1">Processing</option>
                       <option value="2">Shipped</option>
                       <option value="3">Delivered</option>
                       <option value="4">Will not Deliver</option>
@@ -423,6 +423,8 @@ $(document).ready(function(){
 
 $('#submit').on('click',function(){
 
+
+
   var notifyCustomer = "";
 
   if (document.getElementById('notify').checked == true){
@@ -449,10 +451,13 @@ $('#submit').on('click',function(){
       if (response){
         if (response == "yes"){
           swal("Success!","","success");
-          location.reload();
+
+        }else if(response == "false"){
+          swal("Error!","False","error");
+
         }else{
           swal("Error!","","error");
-          location.reload();
+
         }
       }
     }

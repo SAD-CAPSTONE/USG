@@ -539,6 +539,44 @@ router.post('/inactivateCertification',(req,res)=>{
     if(!err1) res.send("yes");
   });
 });
+
+// Brand ---------------
+router.get('/brand',(req,res)=>{
+  db.query(`Select * from tblProductBrand`,(err1,results1,fields1)=>{
+    if(err1) console.log(err1);
+    if(!err1) res.render('admin-maintain/views/brand',{re: results1});
+  });
+});
+
+router.post('/addBrand',(req,res)=>{
+  var no = "1000";
+  db.query(`Select * from tblProductBrand order by intBrandNo desc limit 1`,(err1,results1,fields1)=>{
+    if(err1) console.log(err1);
+    if(!err1){
+      if(results1 == null || results1 == undefined){} else if (results1.length == 0 ){}
+      else{ no = parseInt(results1[0].intBrandNo) + 1; }
+
+      db.query(`Insert into tblProductBrand (intBrandNo, strBrand) values ("${no}", "${req.body.brand}")`,(err2,results2,fields2)=>{
+        if(err2)console.log(err2);
+        if (!err2) res.send("yes");
+      });
+    }
+  });
+});
+
+router.post('/activateBrand',(req,res)=>{
+  db.query(`Update tblProductBrand set intStatus = 1 where intBrandNo = "${req.body.no}"`,(err1,results1,fields1)=>{
+    if(err1) console.log(err1);
+    if(!err1) res.send("yes");
+  });
+});
+
+router.post('/inactivateBrand',(req,res)=>{
+  db.query(`Update tblProductBrand set intStatus = 0 where intBrandNo = "${req.body.no}"`,(err1,results1,fields1)=>{
+    if(err1) console.log(err1);
+    if(!err1) res.send("yes");
+  });
+});
 // <%- include('../../../templates/admin-navbar.ejs') -%>
 
 exports.maintenance = router;

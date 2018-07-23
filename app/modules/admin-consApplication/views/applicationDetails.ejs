@@ -26,7 +26,7 @@
 
 	<div class="alert alert-info alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                <h4><i class="icon fa fa-info"></i>Notice!</h4>
+                <h4><i class="fa fa-info"></i> Notice!</h4>
                 There are attached files in this application form. Once you approved the application of the consignor, please fill out the details for product sampling and/or demo activity to test the market and get instant feedback from customers.
 
 				</br>
@@ -296,17 +296,17 @@
 
 
 			<div class="box-footer">
-      <a href="consApplication.html"><button class="btn btn-default" >Back</button></a>
+      <a href="/consApplication"><button class="btn btn-default" >Back</button></a>
 
-      <button type="button" id="sendInvite" data-toggle="modal" data-target="#sendInvitation" class="invite btn btn-success pull-right"><i class="fa fa-envelope"></i> Send Invitation for Product Sampling
+      <button type="button" id="sendInvite" data-toggle="modal" data-target="#sendInvitation" class="invite large ui green button pull-right"><i class="fa fa-envelope"></i> Send Invitation for Product Sampling
 				</button>
-				<button type="button" onclick="accept(<%=contract[0].intContractNo%>)" class="accept btn btn-primary pull-right" id="accept" style="margin-right: 5px;">
+				<button type="button" onclick="accept(<%=contract[0].intContractNo%>)" class="accept large ui blue button pull-right" id="accept" style="margin-right: 5px;">
 				<i id="checkIcon" class="checkIcon fa fa-check"></i> Accept Consignor
 				</button>
-        <button type="button" id="reject" onclick="reject(<%=contract[0].intContractNo%>)"  class="reject btn btn-danger pull-right"  style="margin-right: 5px;">
+        <button type="button" id="reject" onclick="reject(<%=contract[0].intContractNo%>)"  class="reject large ui button red pull-right"  style="margin-right: 5px;">
 				<i  class=" fa fa-close"></i> Reject Consignor
 				</button>
-        <button type="button" data-toggle="modal" data-target="#addProduct" class=" btn bg-orange pull-right" id="add"  style="margin-right: 5px;">
+        <button type="button" data-toggle="modal" data-target="#addProduct" class="large ui orange button pull-right" id="add"  style="margin-right: 5px;">
 				 Add Products
 				</button>
 			</div>
@@ -513,23 +513,8 @@
 
 <!-- REQUIRED JS SCRIPTS -->
 
-<!-- jQuery 3 -->
-<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- DataTables (new added)	 -->
-<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="/assets/admin/dist/js/adminlte.min.js"></script>
-<!-- sweetalert  -->
-<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
-<!-- Notification  -->
-<script src="/assets/admin/notification.js"></script>
+<%- include('../../../templates/admin-footer.ejs') -%>
+
 
 <!-- page script (new added) -->
 <script>
@@ -557,8 +542,7 @@
   <script>
   // for product sampling
     $('.invite').attr('disabled','disabled');
-
-   </script>
+  </script>
 <% } %>
 
 <% if (contract[0].intContractStatus == 0 ){ %>
@@ -571,7 +555,7 @@
 <% if ( contract[0].intContractStatus == 1){ %>
   <script>
   // for accepted
-    $('.accept').attr('class', 'terminate btn btn-danger pull-right');
+    $('.accept').attr('class', 'terminate large ui red button pull-right');
     $('#accept').html("Terminate Contract");
     $('.checkIcon').attr('class','fa fa-close');
     $('.invite').attr('disabled','disabled');
@@ -583,7 +567,7 @@
 <% if ( contract[0].intContractStatus == 4){ %>
   <script>
   // for terminated
-    $('.accept').attr('class', 'terminate btn btn-danger pull-right');
+    $('.accept').attr('class', 'terminate large ui red button pull-right');
     $('#accept').html("Terminated");
     $('.terminate').attr('disabled','disabled');
     $('.checkIcon').attr('class','fa fa-close');
@@ -596,7 +580,7 @@
 <% if ( contract[0].intContractStatus == 2){ %>
   <script>
   // for rejected
-    $('.accept').attr('class', 'terminate btn btn-danger pull-right');
+    $('.accept').attr('class', 'terminate large ui red button pull-right');
     $('#accept').html("Rejected");
     $('.terminate').attr('disabled','disabled');
     $('.checkIcon').attr('class','fa fa-close');
@@ -645,7 +629,7 @@
             if (response == "yes"){
               swal("Rejected!", "You rejected this consignor", "success");
               $('.invite').attr('disabled','disabled');
-              $('.accept').attr('class', 'terminate btn btn-danger pull-right');
+              $('.accept').attr('class', 'terminate large ui red button pull-right');
               $('.terminate').attr('disabled','disabled');
               $('#accept').html('Rejected');
               $('#checkIcon').attr('class','fa fa-close');
@@ -664,7 +648,7 @@
     var idClass = document.getElementById('accept');
 
 
-    if(idClass.className == "accept btn btn-primary pull-right"){ // if pending
+    if(idClass.className == "accept large ui blue button pull-right"){ // if pending
       swal({
         title: "Are you sure?",
         text: "Please check carefully the documents attached in this application",
@@ -687,7 +671,7 @@
               if (response == "yes"){
                 swal("Accepted!", "Please add products to the inventory.", "success");
                 $('.invite').attr('disabled','disabled');
-                $('.accept').attr('class', 'terminate btn btn-danger pull-right');
+                $('.accept').attr('class', 'terminate large ui red button pull-right');
                 $('#accept').html('Terminate Contract');
 
                 $('#checkIcon').attr('class','fa fa-close');
@@ -702,7 +686,7 @@
         }
       });
 
-    }else if(idClass.className == "terminate btn btn-danger pull-right"){ // if accepted
+    }else if(idClass.className == "terminate large ui red button pull-right"){ // if accepted
       swal({
         title: "Are you sure?",
         text: "You need to pull out stocks if you terminate consignor's contract",
@@ -725,7 +709,7 @@
               if (response == "yes"){
                 swal("Terminated!", "Please pull out products from the inventory.", "success");
                 $('.invite').attr('disabled','disabled');
-                $('.accept').attr('class', 'terminate btn btn-danger pull-right');
+                $('.accept').attr('class', 'terminate large ui red button pull-right');
                 $('.terminate').attr('disabled','disabled');
                 $('#accept').html('Terminated');
                 $('#checkIcon').attr('class','fa fa-close');

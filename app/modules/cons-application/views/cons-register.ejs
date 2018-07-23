@@ -90,7 +90,7 @@
       <div role="alert" class="alert alert-info text-primary"><i>All fields are required in order to successfully register</i></div>
       <!-- Text input-->
       <div class="form-group">
-        <label class="control-label" for="textinput">Business Tin</label>
+        <label class="control-label" for="textinput">Business TIN</label>
         <div class="">
         <input id="textinput" name="businesstin" placeholder="Your Answer" class="form-control input-md"  type="text">
 
@@ -235,8 +235,8 @@
 
               <% }else{ %>
                 <% category.forEach(function(i){ %>
-                  <input name="category" id="checkboxes-18" value="<%=i.intSubCategoryNo%>" type="checkbox">
-                  <%=i.strCategory%>-<%=i.strSubCategory%> </br>
+                  <input name="category" id="checkboxes-18" value="<%=i.strCategory%> - <%=i.strSubCategory%>" type="checkbox">
+                  <%=i.strCategory%> - <%=i.strSubCategory%> </br>
                 <% }) %>
               <% } %>
 
@@ -281,7 +281,7 @@
 
               <% }else{ %>
                 <% certification.forEach(function(i){ %>
-                  <input name="certification" id="checkboxes-0" value="<%=i.intCertificationNo%>" type="checkbox">
+                  <input name="certification" id="checkboxes-0" value="<%=i.strCertification%>" type="checkbox">
                   <%= i.strCertification %> </br>
                 <% }) %>
               <% } %>
@@ -374,7 +374,7 @@
 
           <p>If everything goes well, we would proceed with our partnership and we can start carrying your brand. </p>
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
-      <input type="submit" name="submit" class="submit action-button" value="Submit" />
+      <button type="submit"  class="submit action-button"  >Submit</button>
     </fieldset>
   </form>
 
@@ -465,25 +465,31 @@
       });
     });
     </script>
-    <script>
-      $('#msform').submit(function(e){
-        e.preventDefault();
 
-        $.ajax({
-          url: '/consRegistration/register',
-          method: 'post',
-          data: $('#msform').serialize(),
-          success: function(response,status,http){
-            alert("Success");
-            location.reload();
-          },
-          error: function(response){
-            alert(response);
+<script>
+  $('#msform').submit(function(e){
+    e.preventDefault();
 
-          }
-        });
-      })
-    </script>
+    $.ajax({
+      url: '/consRegistration/register',
+      method: 'post',
+      data: $('#msform').serialize(),
+      success: function(response,status,http){
+        if(response =="yes"){
+          alert("Success");
+
+        }else{
+          alert("Error","","error");
+
+        }
+
+      },
+      error: function(){
+        alert("");
+      }
+    });
+  })
+</script>
 
 
 </body>
