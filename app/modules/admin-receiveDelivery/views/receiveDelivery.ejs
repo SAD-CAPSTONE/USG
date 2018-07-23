@@ -23,10 +23,10 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Receive Delivery From Customers</h3>
+              <h3 class="box-title">Receive Delivery From Suppliers</h3>
             </div>
 			  <!-- buttons -->
-        &nbsp; &nbsp;<a href="/receiveDelivery/Form"><button type="button"  class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Receive New Delivery</button></a>
+        &nbsp; &nbsp;<a href="/receiveDelivery/Form"><button type="button"  class="large ui green button"><i class="fa fa-plus"></i> Receive New Delivery</button></a>
             <!-- /.box-header -->
             <div class="box-body table-responsive">
               <table id="example2" class="table table-bordered table-hover">
@@ -53,7 +53,7 @@
                         <td><%=i.strBusinessName%></td>
                         <td><%= moment(i.dateOrderReceived).format("MM/DD/YYYY") %></td>
 
-                        <td><a href="delivery.html"><button disabled class="btn btn-default btn-sm">View Details</button></a></td>
+                        <td><a href="/receiveDelivery/deliveryDetails?delivery=<%=i.intReceiveOrderNo%>"><button  class="large ui button">View Details</button></a></td>
                       </tr>
                     <% }) %>
                   <% } %>
@@ -80,61 +80,6 @@
 
 	<!-- Modals -->
 
-	<div class="modal fade" id="addProduct">
-	  <div class="modal-dialog">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title">Product Information Form</h4>
-		  </div>
-		  <div class="modal-body">
-			<!-- Horizontal Form -->
-
-					<!-- form start -->
-						<form class="form-horizontal">
-						  <div class="box-body">
-							<div class="form-group">
-							  <label for="inputProductCode" class="col-sm-2 control-label">Product Code</label>
-
-							  <div class="col-sm-10">
-								<input type="text" class="form-control" id="inputProductCode" placeholder="">
-							  </div>
-							</div>
-
-							<div class="form-group">
-							  <label for="inputProductName" class="col-sm-2 control-label">Product Name</label>
-
-							  <div class="col-sm-10">
-								<input type="text" class="form-control" id="inputProductName" placeholder="">
-							  </div>
-
-							</div>
-
-							<div class="form-group">
-							  <label for="inputConsignorName" class="col-sm-2 control-label">Consignor Name</label>
-
-							  <div class="col-sm-10">
-								<input type="text" class="form-control" id="inputConsignorName" placeholder="">
-							  </div>
-
-							</div>
-
-						  </div>
-						  <!-- /.box-body -->
-
-						</form>
-
-			  </div>
-			  <div class="modal-footer">
-				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Save changes</button>
-			  </div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-  <!-- /.modal-dialog -->
-</div>
 
   <!-- Main Footer -->
   <footer class="main-footer">
@@ -227,19 +172,8 @@
 
 <!-- REQUIRED JS SCRIPTS -->
 
-<!-- jQuery 3 -->
-<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- DataTables (new added)	 -->
-<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="/assets/admin/dist/js/adminlte.min.js"></script>
+<%- include('../../../templates/admin-footer.ejs') -%>
+
 
 <!-- page script (new added) -->
 <script>
