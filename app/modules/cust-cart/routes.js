@@ -17,7 +17,7 @@ function thisSizes(req, res, next){
     req.session.item = {
       id: results[0].intProductNo,
       name: `${results[0].strBrand} ${results[0].strProductName}`,
-      img: `/assets/images/products/${results[0].strProductPicture}`,
+      img: `/customer-assets/images/products/${results[0].strProductPicture}`,
       curSize: `${results[0].intSize.toString()} ${results[0].strUnitName}`,
       curPrice: priceFormat(results[0].productPrice.toFixed(2)),
       curQty: req.session.item_qty
@@ -49,7 +49,7 @@ router.get('/modal/:pid', (req, res)=>{
       req.session.modal_cart = {
         id: results[0].intProductNo,
         name: `${results[0].strBrand} ${results[0].strProductName}`,
-        img: `/assets/images/products/${results[0].strProductPicture}`,
+        img: `/customer-assets/images/products/${results[0].strProductPicture}`,
         sizes: sizes,
         curSize: sizes[0][0],
         curPrice: sizes[0][1],

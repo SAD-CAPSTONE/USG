@@ -15,4 +15,82 @@
 </div>
 
 <%- include('../../../templates/scripts.ejs') -%>
+<script src="/customer-assets/scripts/jspdf-customfonts/dist/jspdf.min.js"></script>
+<script src="/customer-assets/scripts/jspdf-customfonts/dist/jspdf.customfonts.min.js"></script>
+<script src="/customer-assets/scripts/jspdf-customfonts/dist/default_vfs.js"></script>
+<script type="text/javascript">
+$(() => {
+  let doc = new jsPDF();
+
+  doc.addFont('Poppins-Regular.ttf', 'Poppins-Regular', 'normal');
+  doc.addFont('Poppins-Light.ttf', 'Poppins-Light', 'normal');
+  doc.addFont('Poppins-ExtraLight.ttf', 'Poppins-ExtraLight', 'normal');
+
+  // BANK
+  // Borders
+  doc.setDrawColor(112, 112, 112);
+  doc.rect(18, 15, 174, 72.5); // main box
+  doc.rect(110, 22, 77, 25); // summary box
+  doc.line(22, 50, 187, 50); // horizontal line top
+  doc.line(22, 74, 187, 74); // horizontal line bottom
+  doc.setDrawColor(18, 187, 173);
+  doc.setFillColor(18, 187, 173);
+  doc.rect(18, 15, 174, 3, 'FD'); // topbar
+
+  // Brand Title
+  doc.setFont('Poppins-Regular');
+  doc.setFontSize('18');
+  doc.text(22, 27, `ULTRA SUPER GREEN`);
+  // Brand Subtitle
+  doc.setFont('Poppins-ExtraLight');
+  doc.setFontSize('9');
+  doc.text(22, 31.3, `Katipunan Ave. Quezon City`);
+  doc.text(22, 35.8, `0955 9044744  |  (02)738 1202`);
+
+  // Summary
+  // Labels
+  doc.setFont('Poppins-Light');
+  doc.setFontSize('9');
+  doc.text(112, 28.5, `Order Number:`);
+  doc.text(112, 35.5, `Total Amount Due:`);
+  doc.text(112, 42.5, `Bank Service Fee:`);
+  // Values
+  doc.setFont('Poppins-Regular');
+  doc.setFontSize('12');
+  doc.text(185, 28.8, '#2745', 'right' );
+  doc.text(185, 35.8, 'PHP 1,000.00', 'right' );
+  doc.text(185, 42.8, '25.00', 'right' );
+
+  // Title
+  doc.setFont('Poppins-Regular');
+  doc.setFontSize('18');
+  doc.text(22, 46, `BANK'S COPY`);
+
+  // Content
+  doc.setFont('Poppins-Light');
+  doc.setFontSize('10');
+  doc.text(22, 56, `Name:`);
+  doc.text(22, 63, `Account Number:`);
+  doc.text(22, 70, `Clearing Account No:`);
+
+  doc.setFont('Poppins-Regular');
+  doc.setFontSize('12');
+  doc.text(70, 56.2, `BALMACEDA, JON ERVIN B.`);
+  doc.text(70, 63.2, `#1743`);
+  doc.text(70, 70.2, `0682-2220-14`);
+
+  // Foot Note
+  doc.setFont('Poppins-ExtraLight');
+  doc.setFontSize('9');
+  doc.text(22, 79, `This is the Bank’s copy. Detach this part and present to the Bank Teller (together with the Bank’s fully-`);
+  doc.text(22, 83, `accomplished Deposit Slip). This document is valid until`);
+  doc.setFont('Poppins-Regular');
+  doc.text(109, 83, `NOVEMBER 22, 2016.`);
+
+
+  doc.save('UltraSuperGreen Deposit Slip.pdf');
+  console.log('PDF Downloaded!');
+});
+</script>
+
 <%- include('../../../templates/closer.ejs') -%>
