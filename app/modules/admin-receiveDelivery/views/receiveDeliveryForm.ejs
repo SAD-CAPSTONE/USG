@@ -69,7 +69,7 @@
         <div class="row">
           <div id="formgroup" class="col-sm-4">
             <label for="POno">Enter purchase order number:</label>
-            <input type="number"  required class="form-control" name="POno" required id="POno" >
+            <input type="number"  required class="pono form-control" name="POno" required id="POno" >
             <span id="errorhelpBlock" class="help-block">No purchase order record found!</span>
             <span id="starthelpBlock" class="help-block">Press enter to check number</span>
             <span id="successhelpBlock" class="help-block">Purchase Order number found!</span>
@@ -418,8 +418,26 @@ $(document).ready(function(){
         data: $('#receiveForm').serialize(),
         success: function(response,status,http){
           if (response){
-            swal("Success!","You have created a delivery record", "success");
-            window.location.href = "/receiveDelivery";
+            swal({
+              title: "Do you have bad orders?",
+              text: "You can return bad orders",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonClass: "btn-warning",
+              confirmButtonText: "No bad orders",
+              cancelButtonText: "There are bad orders!",
+              closeOnConfirm: false,
+              closeOnCancel: false
+              },
+              function(isConfirm) {
+                if (isConfirm) {
+                  swal({title:"Success!", text:"You just created a delivery record", type:"success"},function(){
+                    location.reload();
+                  });
+                } else {
+                  alert();
+                }
+            });
           }
         },
         error: function(re){
@@ -454,9 +472,12 @@ $(".navi a:contains('Receive Delivery')").parent().addClass("active");
     if($(this).prop('checked')==true){
       $('#addButton').attr('disabled', false);
       $('#sub').attr('disabled', false);
+      $('.pono').attr('disabled', true);
     }else{
       $('#addButton').attr('disabled',true);
       $('#sub').attr('disabled', true);
+      $('.pono').attr('disabled', false);
+
     }
   })
 </script>
