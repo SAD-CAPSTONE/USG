@@ -94,6 +94,9 @@ router.get('/supplierForm',(req,res)=>{
 
 router.post('/addSupplier',(req,res)=>{
   var no = "1000";
+  var cont_no = "1000";
+
+
   db.beginTransaction(function(err){
     if(err){db.rollback(function(){console.log(err)})}
     else{
@@ -104,26 +107,56 @@ router.post('/addSupplier',(req,res)=>{
           else{
             no = parseInt(results1[0].intUserID) +1;
           }
-          db.query(`Insert into tblUser (intUserID, intUserTypeNo, strFName, strMName, strLName, strEmail) values ("${no}",2,"${req.body.fname}","${req.body.mname}","${req.body.lname}","${req.body.email}")`,(err2,results2,fields2)=>{
+          db.query(`Insert into tblUser (intUserID, intUserTypeNo, strFName, strMName, strLName,
+            strEmail) values ("${no}",2,"${req.body.fname}","${req.body.mname}","${req.body.lname}","${req.body.email}")`,(err2,results2,fields2)=>{
             if(err2) {db.rollback(function(){console.log(err2)})}
             else{
-              db.query(`Insert into tblSupplier (intUserID, intBusinessTypeNo, strBrands, strBusinessName, strBusinessEmail,strBusinessAddress,strSupplierPhone,strSupplierMobile,strBusinessTIN, intInvoiceAvailable, intSupplierType) values ("${no}","${req.body.busstype}","${req.body.brands}","${req.body.bname}","${req.body.email}","${req.body.address}","${req.body.phone}","${req.body.mobile}","${req.body.tin}","${req.body.inv}",${req.body.supptype})`,(err3,results3,fields3)=>{
+              db.query(`Insert into tblSupplier (intUserID, intBusinessTypeNo, strBrands,
+                strBusinessName, strBusinessEmail,strBusinessAddress,strSupplierPhone,strSupplierMobile,strBusinessTIN, intInvoiceAvailable, intSupplierType) values ("${no}","${req.body.busstype}","${req.body.brands}","${req.body.bname}","${req.body.email}","${req.body.address}","${req.body.phone}","${req.body.mobile}","${req.body.tin}","${req.body.inv}",${req.body.supptype})`,(err3,results3,fields3)=>{
                 if (err3) {db.rollback(function(){console.log(err3)})}
                 else{
-                  db.commit(function(erra){
-                    if (erra) {db.rollback(function(){console.log(erra)})}
-                    else{
-                      res.send("yes");
-                    }
-                  })
+
+                  // for Outright suppliers
+                  if(req.body.supptype == 2){
+                    db.commit(function(erra){
+                      if (erra) {db.rollback(function(){console.log(erra)})}
+                      else{
+                        res.send("yes");
+                      }
+                    });
+
+                  // for Consignor suppliers
+                  }else{
+                    db.query(`Select * from tblContract order by intContractNo desc limit
+                      1`,(err4,contract,fields4)=>{
+                      if(err4) {db.rollback(function(){console.log(err4)})}
+                      if(!err4){
+                        console.log(err4);
+                        if(contract==undefined||contract==null){} else if(contract.length==0){}
+                        else{ cont_no = parseInt(contract[0].intContractNo) + 1;}
+
+                        db.query(`Insert into tblContract (intContractNo, intConsignorID, intAdminID, startingDate, endingDate, consignmentPrice, deliverySchedule, strFrequencyOfDelivery, remittanceSchedule, intCompanyProfile, intProductInfoSheet, intDTIStat, intBIRStat, intDeliveryReceipt, intFDAStat, strProductCertifications, intContractStatus, strCategories, strFDAID, replacementAgreement, marketingAgreement) values ("${cont_no}", "${no}", "${1000}", "${req.body.startDate}","${req.body.endDate}",${req.body.commission},"${req.body.deliverySchedule}","${req.body.frequencyDelivery}", "${req.body.remittanceSched}", ${req.body.companyProfile}, ${req.body.productInfoSheet}, ${req.body.dti},${1},${req.body.deliveryReceipt},${req.body.fdaStat}, "${req.body.certifications}", ${1}, "${req.body.categories}", "${req.body.fdaID}", ${req.body.replacement},${req.body.marketing})`,(err5,results5,fields5)=>{
+                          if(err5) {db.rollback(function(){console.log(err5)})}
+                          if(!err5){
+                            db.commit(function(errb){
+                              if (errb) {db.rollback(function(){console.log(errb)})}
+                              else{
+                                res.send("yes");
+                              }
+                            });
+                          }
+                        }); // End of insert to contract -----------------
+                      }
+                    }); // Select * contract --------------
+                  }
                 }
-              });
+              }); // End of insert to tblSupplier  ---------------
             }
-          })
+          }) // End of Insert to tblUser ----------------
         }
-      });
+      }); // End of Select * tblUser -------------
     }
-  });
+  }); // End of transaction ------------------
 
 });
 
