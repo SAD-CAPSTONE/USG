@@ -25,6 +25,29 @@
              <h4 align="center">Delivery Transmittal Receipt</h4>
            </div>
 
+           <div class="row">
+             <div class="col-sm-2">
+             </div>
+             <div class="col-sm-4">
+               <h5>Received From:</h5>
+               <h5>Business Name</h5>
+               <h5>Address</h5>
+               <h5>Email</h5>
+               <h5>Mobile No.</h5>
+             </div>
+             <div class="col-sm-2">
+             </div>
+             <div class="col-sm-4">
+               <h5>Received By:</h5>
+               <h5>Gustle Agulto - Operations Manager</h5>
+               <h5>Ultra Super Green Trading Corp.</h5>
+               <h5>Katipunan Ave., Quezon City</h5>
+               <h5>info.ultrasupergreen@gmail.com</h5>
+             </div>
+             <div class="col-sm-2">
+             </div>
+           </div>
+
 
            <h5>&nbsp;&nbsp;&nbsp;Good Orders:</h5>
            <!-- /.box-header -->
@@ -41,12 +64,51 @@
                </tr>
                </thead>
                <tbody>
-                 <% if (re == null || re == undefined){ %>
+                 <% if (re_good == null || re_good == undefined){ %>
 
-                 <% }else if (re.length == 0){ %>
+                 <% }else if (re_good.length == 0){ %>
 
                  <% }else{ %>
-                   <% re.forEach(function(i){ %>
+                   <% re_good.forEach(function(i){ %>
+                     <tr>
+                       <td><%=i.strProduct%></td>
+                       <td><%=i.strSize%></td>
+                       <td><%=i.strVariant%></td>
+                       <td><%=i.intQuantity%></td>
+                       <td><%= moment(i.dateExpiration).format("MM/DD/YYYY") %></td>
+
+                     </tr>
+                   <% }) %>
+                 <% } %>
+
+
+
+               </tbody>
+
+             </table>
+           </div>
+
+           <h5>&nbsp;&nbsp;&nbsp;Bad Orders:</h5>
+           <!-- /.box-header -->
+           <div class="box-body table-responsive">
+             <table id="example3" class="table table-bordered table-hover">
+               <thead>
+               <tr>
+                 <th>Product Name</th>
+                 <th>Size</th>
+                 <th>Variant</th>
+                 <th>Quantity</th>
+                 <th>Date Expiration</th>
+
+               </tr>
+               </thead>
+               <tbody>
+                 <% if (re_bad == null || re_bad == undefined){ %>
+
+                 <% }else if (re_bad.length == 0){ %>
+
+                 <% }else{ %>
+                   <% re_bad.forEach(function(i){ %>
                      <tr>
                        <td><%=i.strProduct%></td>
                        <td><%=i.strSize%></td>
@@ -176,11 +238,26 @@
 <script>
   $(function () {
     $('#example2').DataTable({
-      'paging'      : true,
-      'lengthChange': true,
-      'searching'   : true,
-      'ordering'    : true,
-      'info'        : true,
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : false,
+      'ordering'    : false,
+      'info'        : false,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $(function () {
+    $('#example3').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : false,
+      'ordering'    : false,
+      'info'        : false,
       'autoWidth'   : true,
 	  'select'		: true,
 	  'scroll'		: true

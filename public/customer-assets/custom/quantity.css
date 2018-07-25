@@ -1,0 +1,50 @@
+/* Quantity */
+
+.quantity {
+  width: 75px;
+  height: 20px;
+}
+.addon {
+  height: 100%;
+}
+.quantity-buttons {
+  width: 19px;
+  border-radius: 0px;
+  background: var(--primary-color);
+  border: var(--primary-color);
+  height: 100%;
+  padding: 0px;
+  position: relative;
+}
+.quantity-buttons:hover {
+  background: var(--primary-hover);
+}
+.quantity-buttons:focus {
+  box-shadow: 0 0 0 0rem var(--primary-focus);
+  background: var(--primary-hover);
+}
+.quantity-buttons:active {
+  background: var(--primary-hover) !important;
+  box-shadow: 0 0 0 0.1rem var(--primary-focus) !important;
+}
+.quantity-text {
+  position: absolute;
+  top: .8px;
+}
+.quantity-text-minus {
+  left: 7.4px;
+}
+.quantity-text-plus {
+  left: 5.6px;
+}
+
+.quantity-input {
+  padding: 5px;
+  text-align: center;
+  border: 1px solid var(--primary-color);
+  background: white !important;
+}
+.quantity-input:focus {
+  box-shadow: 0 0 0 0rem var(--primary-focus);
+  border: 1px solid var(--primary-color);
+}

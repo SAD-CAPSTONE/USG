@@ -58,12 +58,15 @@ passport.use(
             db.query(`INSERT INTO tbluser (intUserID, intUserTypeNo, strFname, strLname, strEmail, intFacebook) VALUES (?,3,?,?,?,?)`,
             [newID, profile.name.givenName, profile.name.familyName, profile.emails[0].value, profile.id], (err, results, fields) => {
               if (err) console.log(err);
-              console.log('>>>>>>> RECORD ADDED');
-              db.query(`SELECT * FROM tbluser WHERE intFacebook= ?`, [profile.id], function(err, results, fields) {
+              db.query(`INSERT INTO tblcustomer (intUserID) VALUES (?)`,[newID], (err, results, fields) => {
                 if (err) console.log(err);
-                db.commit(function(err) {
+                console.log('>>>>>>> RECORD ADDED');
+                db.query(`SELECT * FROM tbluser WHERE intFacebook= ?`, [profile.id], function(err, results, fields) {
                   if (err) console.log(err);
-                  done(null, results[0]);
+                  db.commit(function(err) {
+                    if (err) console.log(err);
+                    done(null, results[0]);
+                  });
                 });
               });
             });
@@ -99,12 +102,15 @@ passport.use(
             db.query(`INSERT INTO tbluser (intUserID, intUserTypeNo, strFname, strLname, strEmail, intGoogle) VALUES (?,3,?,?,?,?)`,
             [newID, profile.name.givenName, profile.name.familyName, profile.emails[0].value, profile.id], (err, results, fields) => {
               if (err) console.log(err);
-              console.log('>>>>>>> RECORD ADDED');
-              db.query(`SELECT * FROM tbluser WHERE intGoogle= ?`, [profile.id], function(err, results, fields) {
+              db.query(`INSERT INTO tblcustomer (intUserID) VALUES (?)`,[newID], (err, results, fields) => {
                 if (err) console.log(err);
-                db.commit(function(err) {
+                console.log('>>>>>>> RECORD ADDED');
+                db.query(`SELECT * FROM tbluser WHERE intGoogle= ?`, [profile.id], function(err, results, fields) {
                   if (err) console.log(err);
-                  done(null, results[0]);
+                  db.commit(function(err) {
+                    if (err) console.log(err);
+                    done(null, results[0]);
+                  });
                 });
               });
             });

@@ -19,6 +19,7 @@
     "express-fileupload": "^0.4.0",
     "express-flash": "0.0.2",
     "express-session": "^1.15.6",
+    "jspdf-customfonts": "0.0.4-rc.4",
     "method-override": "^2.3.10",
     "moment": "^2.22.1",
     "morgan": "^1.9.0",
@@ -36,6 +37,7 @@
     "serve-static": "^1.13.2",
     "sweetalert": "^2.1.0",
     "url": "^0.11.0",
+    "voucher-code-generator": "^1.1.1",
     "winston": "^2.3.1",
     "xoauth2": "^1.2.0"
   }

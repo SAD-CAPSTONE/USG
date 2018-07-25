@@ -502,8 +502,10 @@ $(document).ready(function() {
        data: $('#purchaseForm').serialize(),
        success: function(response,status,http){
          if (response == "yes"){
-           swal("Success","You successfully ordered", "success");
-           location.reload();
+           swal({title: "Success!", text: "You have created an purchase order record", type: "success"},
+            function(){
+              location.reload();
+            })
          }
        },
        error: function(response){

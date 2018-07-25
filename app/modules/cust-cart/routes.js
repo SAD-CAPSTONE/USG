@@ -17,7 +17,7 @@ function thisSizes(req, res, next){
     req.session.item = {
       id: results[0].intProductNo,
       name: `${results[0].strBrand} ${results[0].strProductName}`,
-      img: `/assets/images/products/${results[0].strProductPicture}`,
+      img: `/customer-assets/images/products/${results[0].strProductPicture}`,
       curSize: `${results[0].intSize.toString()} ${results[0].strUnitName}`,
       curPrice: priceFormat(results[0].productPrice.toFixed(2)),
       curQty: req.session.item_qty
@@ -49,7 +49,7 @@ router.get('/modal/:pid', (req, res)=>{
       req.session.modal_cart = {
         id: results[0].intProductNo,
         name: `${results[0].strBrand} ${results[0].strProductName}`,
-        img: `/assets/images/products/${results[0].strProductPicture}`,
+        img: `/customer-assets/images/products/${results[0].strProductPicture}`,
         sizes: sizes,
         curSize: sizes[0][0],
         curPrice: sizes[0][1],
@@ -132,16 +132,21 @@ router.put('/list', (req, res)=>{
   let index =
     req.session.cart.reduce((temp, obj, i)=>{
       return obj.inv == req.body.inv ? i : temp
-    }, 0),
-  curQty = req.session.cart[index].curQty;
-  // Limit
-  req.body.action == 'plus' ?
-    curQty < req.session.cart[index].limit ?
-      ++curQty : 0
-    : curQty > 1 ?
-      --curQty : 0
-  req.session.cart[index].curQty = curQty;
-  res.send({cart: req.session.cart[index]});
+    }, null);
+  if (index != null){
+    let curQty = req.session.cart[index].curQty;
+    // Limit
+    req.body.action == 'plus' ?
+      curQty < req.session.cart[index].limit ?
+        ++curQty : 0
+      : curQty > 1 ?
+        --curQty : 0
+    req.session.cart[index].curQty = curQty;
+    res.send({cart: req.session.cart[index]});
+  }
+  else{
+    res.send({cart: null});
+  }
 });
 router.delete('/list', (req, res)=>{
   req.session.cart ? 0 : req.session.cart = [];

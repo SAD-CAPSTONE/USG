@@ -58,9 +58,14 @@ router.get('/loadOrderList',(req,res)=>{
 });
 
 router.get('/deliveryDetails',(req,res)=>{
-  db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.delivery}"`,(err1,results1,fields1)=>{
+  db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.delivery}" and tblReceiveOrderlist.intOrderStatus = "Good"`,(err1,good,fields1)=>{
     if(err1) console.log(err1);
-    if (!err1) res.render('admin-receiveDelivery/views/deliveryDetails',{re: results1, delivery_no: req.query.delivery, moment:moment});
+
+    db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.delivery}" and tblReceiveOrderlist.intOrderStatus = "Bad"`,(err2,bad,fields2)=>{
+      if(err2) console.log(err2);
+      if (!err2) res.render('admin-receiveDelivery/views/deliveryDetails',{re_good: good, re_bad: bad, delivery_no: req.query.delivery, moment:moment});
+    });
+
   });
 });
 
