@@ -24,13 +24,13 @@
 				<h3 class="box-title">Supplier Information Form</h3>
 			</div>
 
-			<!-- purchase order body -->
+			<!--  body -->
 			<div class="box-body">
 
 
-				</div>
-				<div class="row">
-					<form class="form-horizontal" id="supplierForm">
+        <form class="form-horizontal" id="supplierForm">
+				<div id="suppForm" class="row">
+
 						<div class="form-group">
 
 							<label for="FName" class="col-sm-2 control-label">Name</label>
@@ -112,24 +112,6 @@
             </div>
 
             <div class="form-group">
-							<label for="" class="col-sm-2 control-label">Supplier Type</label>
-							<div class="col-sm-4">
-                <select id="type" name="supptype" class="input-sm form-control">
-
-                  <option  value="2">Outright</option>
-                  <option value="1">Consignor</option>
-                </select>
-
-
-							</div>
-              <div class="col-sm-4">
-                <button id="addContract_btn" data-toggle="modal" data-target="#contract_modal" class="large ui green basic button">Add Contract</button>
-              </div>
-						</div>
-
-
-
-            <div class="form-group">
 							<label for="" class="col-sm-2 control-label">Business Type</label>
 							<div class="col-sm-4">
                 <select id="businesstype" name="busstype" class="input-sm form-control">
@@ -145,7 +127,180 @@
                 </select>
 							</div>
 						</div>
+
+            <div class="form-group">
+							<label for="" class="col-sm-2 control-label">Supplier Type</label>
+							<div class="col-sm-4">
+                <select id="type" name="supptype" class="input-sm form-control">
+
+                  <option  value="2">Outright</option>
+                  <option value="1">Consignor</option>
+                </select>
+
+
+							</div>
+              <div class="col-sm-4">
+                <button id="addContract_btn" class="large ui primary basic button">Click to add Contract</button>
+              </div>
+						</div>
+
+
 				</div>
+
+        <div id="contract_form" class="row">
+          <hr />
+          <h4>&emsp;&emsp;&emsp;Consignor Contract Form </h4> </br>
+
+          <div class="form-group">
+            <label for="startDate" class="col-sm-2 control-label">Start Date</label>
+            <div class="col-sm-2">
+              <input type="date"  class="input-sm form-control" name="startDate" id="startDate" >
+            </div>
+
+            <label for="endDate" class="col-sm-2 control-label">End Date</label>
+            <div class="col-sm-2">
+              <input type="date" class="input-sm form-control" id="endDate" name="endDate">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="commission" class="col-sm-2 control-label">Commission Rate</label>
+            <div class="col-sm-2">
+              <input type="number" class="input-sm form-control" placeholder="change to input mask" name="commission" id="commission" >
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="deliverySchedule" class="col-sm-2 control-label">Delivery Schedule</label>
+            <div class="col-sm-6">
+              <input type="text" placeholder="eg. Every Saturday or Sunday" class="input-sm form-control"  name="deliverySchedule" id="deliverySchedule" >
+            </div>
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="frequencyDelivery" class="col-sm-2 control-label">Frequency of Delivery</label>
+            <div class="col-sm-6">
+              <input type="text" class="input-sm form-control"  name="frequencyDelivery" id="frequencyDelivery" >
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="remittanceSched" class="col-sm-2 control-label">Remittance Schedule</label>
+            <div class="col-sm-6">
+              <input type="text" class="input-sm form-control"  name="remittanceSched" id="remittanceSched" >
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="fdaStat" class="col-sm-2 control-label">FDA Regitration Status</label>
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" id="fdaStat" value="1"  name="fdaStat" class="flat-red">
+                Registered
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="fdaID" class="col-sm-2 control-label">FDA Regitration ID</label>
+            <div class="col-sm-2">
+              <input type="text" class="input-sm form-control"  name="fdaID" id="fdaID" >
+            </div>
+          </div>
+
+
+
+          <div class="form-group">
+
+            <label for="categories" class="col-sm-2 control-label">Product Categories</label>
+            <div class="col-sm-6">
+              <input type="text" placeholder="Separated by comma" class="input-sm form-control"  name="categories" id="categories" >
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="certifications" class="col-sm-2 control-label">Product Certifications</label>
+            <div class="col-sm-6">
+              <input type="text" class="input-sm form-control" placeholder="Separated by comma" name="certifications" id="certifications" >
+            </div>
+          </div>
+
+          </br>
+          <h4>&emsp;&emsp;&emsp; Other Requirements </h4> </br>
+          <div class="form-group">
+
+            <label for="companyProfile" class="col-sm-2 control-label">Company Profile</label>
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" id="companyProfile" value="1"  name="companyProfile" class="flat-red">
+                Available
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+
+            <label for="dti" class="col-sm-2 control-label">DTI Registered</label>
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" id="dti" value="1"  name="dti" class="flat-red">
+                Yes
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="deliveryReceipt" class="col-sm-2 control-label">Delivery Receipt</label>
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" id="deliveryReceipt" value="1"  name="deliveryReceipt" class="flat-red">
+                Available
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="productInfoSheet" class="col-sm-2 control-label">Product Information Sheet</label>
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" id="productInfoSheet" value="1" name="productInfoSheet" class="flat-red">
+                Available
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="replacement" class="col-sm-2 control-label">Replacement Agreement</label>
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" id="replacement" value="1" name="replacement" class="flat-red">
+                Yes
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="marketing" class="col-sm-2 control-label">Marketing Agreement</label>
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" id="marketing" value="1"  name="marketing" class="flat-red">
+                Yes
+              </label>
+            </div>
+          </div>
+
+
+        </div>
 
         <div class="box-footer">
         &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
@@ -164,57 +319,6 @@
 </div>
 
   <!-- /.content-wrapper -->
-
-  <div class="modal fade" id="contract_modal">
-    <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title">Contract</h4>
-      </div>
-      <div class="modal-body">
-
-        <div class="ui big form">
-          <div class="two fields">
-            <div class="field">
-              <label>Application Date</label>
-              <input type="date">
-            </div>
-          </div>
-        </div>
-        <div class="ui big form">
-          <div class="two fields">
-            <div class="field">
-              <label>Start Date</label>
-              <input type="date">
-            </div>
-            <div class="field">
-              <label>End Date</label>
-              <input type="date">
-            </div>
-          </div>
-        </div>
-        <div class="ui big form">
-          <div class="field">
-            <label>Best time and day to reach</label>
-            <input type="text">
-          </div>
-        </div>
-
-        <!-- End of body -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="big ui button" data-dismiss="modal">Close</button>
-        <button type="submit" class="big ui teal button">Save</button>
-      </div>
-
-    </div>
-    <!-- /.modal-content -->
-  </div>
-  <!-- /.modal-dialog -->
-</div>
-
 
 
 
@@ -335,37 +439,57 @@ $(document).ready(function(){
       checkboxClass: 'icheckbox_flat-green',
       radioClass   : 'iradio_flat-green'
     })
-
     $('#response').hide();
-
-
-
 })
+</script>
+
+<script>
+
 </script>
 
 <script>
   $('#supplierForm').submit(function(e){
     e.preventDefault();
 
-    $.ajax({
-      url: '/maintenance/addSupplier',
-      method: 'post',
-      data: $('#supplierForm').serialize(),
-      success: function(response,status,http){
-        if(response){
-          swal("Success!","You've added a supplier","success");
+    swal({
+      title: "Are you sure?",
+      text: "Please review all the data you've entered",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonClass: "btn-info",
+      confirmButtonText: "Submit!",
+      closeOnConfirm: false
+    },
+    function(){
+      $.ajax({
+        url: '/maintenance/addSupplier',
+        method: 'post',
+        data: $('#supplierForm').serialize(),
+        success: function(response,status,http){
+          if(response){
+            swal({title:"Success!",text:"You've added a supplier",type:"success"}, function(){
+              window.location.href = '/maintenance/supplier';
+            });
+          }
         }
-      }
-    })
+      })
+    });
+
+
   })
 </script>
 
 
 <script>
-$('#addContract_btn').show();
+$('#addContract_btn').hide();
+$('#contract_form').hide();
 $('#type').on('change',function(){
-  if($(this).val() == 1){$('#addContract_btn').show()}else {$('#addContract_btn').hide()}
+  if($(this).val() == 1){$('#addContract_btn').show(); }else {$('#addContract_btn').hide(); $('#contract_form').hide();}
 });
+
+$('#addContract_btn').on('click',function(){
+  $('#contract_form').show();
+})
 </script>
 
 

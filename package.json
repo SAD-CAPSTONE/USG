@@ -25,16 +25,20 @@
     "morgan": "^1.9.0",
     "mysql": "^2.13.0",
     "node-mysql-transaction": "^0.2.1",
+    "nodemailer": "^4.6.7",
     "nodemon": "^1.17.5",
     "npm": "^6.0.0",
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",
     "passport-google-oauth20": "^1.0.0",
     "passport-local": "^1.0.0",
+    "password-generator": "^2.2.0",
     "pug": "^2.0.0-rc.2",
     "serve-static": "^1.13.2",
     "sweetalert": "^2.1.0",
     "url": "^0.11.0",
-    "winston": "^2.3.1"
+    "voucher-code-generator": "^1.1.1",
+    "winston": "^2.3.1",
+    "xoauth2": "^1.2.0"
   }
 }

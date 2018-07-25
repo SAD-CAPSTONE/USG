@@ -1,0 +1,79 @@
+<div >
+  <table id="productTable" class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th >Product Name</th>
+        <th ></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (re == null || re == undefined){ %>
+
+      <% }else if(re.length == 0){ %>
+
+      <% }else{ %>
+
+        <% re.forEach(function(i){ %>
+          <tr>
+            <td><%=i.strProduct%></td>
+            <td><button data-product="<%=i.strProduct%>" class="addProdRow large ui teal button btn-sm">Select</button></td>
+          </tr>
+        <% }) %>
+
+      <% } %>
+
+    </tbody>
+
+  </table>
+</div>
+
+<script>
+  $(function () {
+    $('#productTable').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+    'selecting'		: true,
+    'scroll'		: true,
+    'searching' : true
+    })
+  })
+</script>
+
+<script>
+
+var t = $('#example').DataTable();
+var table = document.getElementById("example");
+var row = table.getElementsByTagName("tr");
+var rows = t.rows( '.selected' );
+var filter = $(this).data('productid');
+var tr = table.getElementsByTagName("tr");
+var count = 1;
+
+$('.addProdRow').on('click',function(){
+
+  t.row.add( [
+      count,
+      `<input style="width: 200px" required type="text" name="product[]" value="${$(this).data('product')}" class="form-control">`,
+      `<input style="width: 80px" required type="number" name="quantity[]" value="0" class="form-control">`,
+      `<input style="width: 80px" type="text" name="variant[]"  class="form-control">`,
+      `<input style="width: 80px" type="text" name="size[]"  class="form-control">`
+
+  ] ).draw( false );
+  count++;
+});
+
+$('.addRow').on( 'click', function () {
+    t.row.add( [
+        count,
+        '<input style="width: 200px" required type="text" name="product[]" value="" class="form-control">',
+        '<input style="width: 80px" required type="number" name="quantity[]" value="0" class="form-control">',
+        '<input style="width: 80px" type="text" name="variant[]" class="form-control">',
+        '<input style="width: 80px" type="text" name="size[]" value="2" class="form-control">'
+
+    ] ).draw( false );
+    count++;
+} );
+</script>

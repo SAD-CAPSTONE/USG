@@ -1,0 +1,52 @@
+
+<table id="example" class="table table-bordered table-hover">
+  <thead>
+
+    <th style="width: 10px">#</th>
+    <th>Product Name</th>
+    <th>Variant (if any)</th>
+    <th>Size</th>
+    <th>Quantity</th>
+    <th>Expiration Date</th>
+    <th>Status</th>
+    <th>SRP</th>
+    <th>Total Amount</th>
+
+  </thead>
+  <tbody>
+    <% if (re==null||re==undefined){ %>
+
+    <% }else if(re.length == 0){ %>
+
+    <% }else{ %>
+    <%  re.forEach(function(i){ %>
+        <tr>
+          <td></td>
+          <td><input style="width: 200px" required type="text" required name="product[]" value="<%=i.strProduct%>" class="form-control"></td>
+          <td><input style="width: 80px" required type="text" name="variant[]" value="<%=i.strVariant%>" class="form-control"></td>
+          <td><input style="width: 80px" type="text" name="size[]" value="<%=i.strSize%>" class="form-control"></td>
+          <td><input style="width: 80px" type="number" required name="quantity[]" value="<%=i.intQuantity%>" class=" form-control"></td>
+          <td><input style="width: 180px" type="date" required name="expiration[]"  class=" form-control"></td>
+          <td><select class="form-control" name="status[]"><option value="Good">Good</option><option option="Bad">Bad</option></select></td>
+          <td><input style="width: 80px" type="text" name="srp[]" value="" class=" form-control"></td>
+          <td><input style="width: 80px" type="text" name="total[]" value="" class=" form-control"></td>
+        </tr>
+    <%  }) %>
+    <% } %>
+  </tbody>
+
+</table>
+
+<script>
+  $(function () {
+    $('#example').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'info'        : false,
+      'autoWidth'   : true,
+      'searching'   : false,
+      'ordering'    : false
+
+    })
+  })
+</script>
