@@ -106,6 +106,7 @@ router.get('/voucher/:orderNo', orderTotal, (req,res)=>{
       if (err) console.log(err);
       console.log(results);
       if (results[0]){
+        results.map( obj => obj.dateOrdered = obj.dateOrdered.toDateString("en-US").slice(4, 15) );
         results.map( obj => obj.paymentDue = obj.paymentDue.toDateString("en-US").slice(4, 15) );
         res.send({order: results[0], orderTotal: req.orderTotal.totalPrice})
       }
@@ -121,7 +122,7 @@ router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsN
     if (err) console.log(err);
     let thisOrderNo = req.newOrderNo;
     db.query(`INSERT INTO tblorder (intOrderNo, intUserID, intPaymentMethod, strShippingAddress, strBillingAddress, paymentDue)
-      VALUES (?,?,?,?,?,CURDATE() + INTERVAL 7 DAY)`,[thisOrderNo, req.user.intUserID, req.body.paymentMethod, req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress, ], (err, results, fields) => {
+      VALUES (?,?,?,?,?,CURDATE() + INTERVAL 7 DAY)`,[thisOrderNo, req.user.intUserID, req.body.paymentMethod, req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress ], (err, results, fields) => {
       if (err) console.log(err);
       function multiInsert(i){
         let cart = req.session.cart;
