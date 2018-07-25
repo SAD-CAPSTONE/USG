@@ -275,6 +275,22 @@ router.get('/invoice',(req,res)=>{
         res.render('admin-purchOrder/views/invoice', {order: orderno, orderdetails: results1, orderlist: results2, moment: moment});
       });
     });
+});
+
+router.get('/invoice-print',(req,res)=>{
+  var orderno = req.query.order;
+
+  db.query(`Select * from tblPurchaseOrder join tblUser on tblPurchaseOrder.intSupplierID = tblUser.intUserID
+    join tblSupplier on tblUser.intUserID = tblSupplier.intUserID
+    where intPurchaseOrderNo = "${orderno}"`,(err1,results1,fields1)=>{
+      if (err1) console.log(err1);
+
+      db.query(`Select * from tblPurchaseOrderList where intPurchaseOrderNo = ${orderno}`,(err2,results2,fields2)=>{
+        if (err2) console.log(err2);
+
+        res.render('admin-purchOrder/views/invoice-print', {order: orderno, orderdetails: results1, orderlist: results2, moment: moment});
+      });
+    });
 })
 // <%- include('../../../templates/admin-navbar.ejs') -%>
 
