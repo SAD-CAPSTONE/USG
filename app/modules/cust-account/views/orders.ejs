@@ -15,27 +15,35 @@
       <tr>
         <th scope="col">Order</th>
         <th scope="col">Status</th>
-        <th scope="col">Date</th>
-        <th scope="col">Price</th>
+        <th scope="col">Date of Order</th>
+        <th scope="col">Total Price</th>
       </tr>
     </thead>
     <tbody>
       <% if (orders == null || orders == undefined){ %>
 
       <% } else if (orders.length == 0) { %>
-      
+
       <% } else{ %>
         <% orders.forEach(function(i){ %>
           <tr>
-            <td><%= i.intOrderNo %></td>
-            <td><%= i.intStatus %></td>
+            <td><a href="/summary/order/<%= i.intOrderNo %>">#<%= i.intOrderNo %></a></td>
+            <% let status;
+            switch(i.intStatus){
+              case 0: status = 'Pending'; break;
+              case 1: status = 'Processing'; break;
+              case 2: status = 'Shipped'; break;
+              case 3: status = 'Delivered'; break;
+              case 4: status = 'Will not Deliver'; break;
+              case 5: status = 'Returned'; break;
+              case 6: status = 'Cancelled'; break;
+            } %>
+            <td><%= status %></td>
             <td><%= i.dateOrdered %></td>
+            <td><span class="price-symbol"><%= i.totalPrice %></span></td>
           </tr>
         <% }) %>
         <% } %>
-          
-  
-     
     </tbody>
   </table>
 </div>

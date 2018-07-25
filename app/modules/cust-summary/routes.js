@@ -82,11 +82,8 @@ function orderTotal (req, res, next){
 router.get('/checkout', checkUser, contactDetails, (req,res)=>{
   res.render('cust-summary/views/checkout', {thisUser: req.user, thisUserContact: req.contactDetails});
 });
-router.get('/order', (req,res)=>{
+router.get('/order/:orderNo', (req,res)=>{
   res.render('cust-summary/views/order', {thisUser: req.user});
-});
-router.get('/previous', (req,res)=>{
-  res.render('cust-summary/views/previous', {thisUser: req.user});
 });
 router.get('/success/:orderNo', checkOrder, (req,res)=>{
   res.render('cust-summary/views/orderSuccess', {
@@ -104,7 +101,6 @@ router.get('/voucher/:orderNo', orderTotal, (req,res)=>{
       INNER JOIN tbluser ON tblorder.intUserID= tbluser.intUserID
       WHERE intOrderNo= ? AND tbluser.intUserID= ? AND (intStatus= 0 OR intStatus= 1 OR intStatus= 2)`,[req.params.orderNo, req.user.intUserID],(err,results,fields)=>{
       if (err) console.log(err);
-      console.log(results);
       if (results[0]){
         results.map( obj => obj.dateOrdered = obj.dateOrdered.toDateString("en-US").slice(4, 15) );
         results.map( obj => obj.paymentDue = obj.paymentDue.toDateString("en-US").slice(4, 15) );

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../lib/database')();
+const priceFormat = require('../cust-0extras/priceFormat');
 
 function checkUser(req, res, next){
   if(!req.user){
@@ -13,7 +14,6 @@ function checkUser(req, res, next){
     return next();
   }
 }
-
 function contactDetails (req, res, next){
   db.query(`SELECT * FROM tbluser
     INNER JOIN tblcustomer ON tbluser.intUserID= tblcustomer.intUserID
@@ -28,18 +28,18 @@ router.get('/dashboard', checkUser, contactDetails, (req,res)=>{
   res.render('cust-account/views/dashboard', {thisUser: req.user, thisUserContact: req.contactDetails});
 });
 router.get('/orders', checkUser, (req,res)=>{
-  db.query(`SELECT tblorder.intStatus as Stats, tbluser.*,tblorder.* FROM
-    tbluser JOIN tblorder on tbluser.intUserID =
-    tblorder.intUserID WHERE tbluser.intuserID = ?`,[req.user.intUserID], (err1, results1)=>{
+  db.query(`SELECT tblorder.intStatus AS Stats, tbluser.*, tblorder.*, Price.totalPrice FROM tbluser
+    INNER JOIN tblorder ON tbluser.intUserID= tblorder.intUserID
+    INNER JOIN (
+    	SELECT SUM(purchasePrice*intQuantity)totalPrice, tblorder.intOrderNo FROM tblorder
+    	INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
+      GROUP BY tblorder.intOrderNo )Price ON tblorder.intOrderNo= Price.intOrderNo
+    WHERE tbluser.intuserID = '1002'`,[req.user.intUserID], (err1, results)=>{
     if(err1) console.log(err1);
-    res.render('cust-account/views/orders', {orders: results1,thisUser: req.user});
-    console.log(results1);
-    console.log(req.user.intUserID);  
-
+    results[0] ? results.map( obj => obj.dateOrdered = obj.dateOrdered.toDateString("en-US").slice(4, 15) ) : 0;
+    results[0] ? results.map( obj => obj.totalPrice = priceFormat(obj.totalPrice.toFixed(2)) ) : 0
+    res.render('cust-account/views/orders', {thisUser: req.user, orders: results});
   })
-});
-router.get('/payment', checkUser, (req,res)=>{
-  res.render('cust-account/views/payment', {thisUser: req.user});
 });
 router.get('/cancellations', checkUser, (req,res)=>{
   res.render('cust-account/views/cancellations', {thisUser: req.user});
