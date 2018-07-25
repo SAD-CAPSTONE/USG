@@ -174,6 +174,29 @@ router.post('/activateSupplier',(req,res)=>{
   });
 })
 
+router.get('/supplierDetails',(req,res)=>{
+  db.query(`Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID where tblUser.intUserID = "${req.query.supplier}"`,(err1,supplier,fields1)=>{
+    if(err1){
+      console.log(err1); res.send("error");
+    }else{
+      console.log(err1);
+      if(supplier[0].intSupplierType == 2){
+        res.render('admin-maintain/views/outrightDetail',{re: supplier});
+      }
+      else{
+        db.query(`Select * from tblContract where intConsignorID = "${req.query.supplier}"`,(err2,contract,fields2)=>{
+          if(err2){
+            console.log(err2); res.send("error");
+          }
+          else{
+            res.render('admin-maintain/views/consignorDetail',{re: supplier, co: contract});
+          }
+        });
+      }
+    }
+  });
+});
+
 // Product Category --------------------------
 router.get('/productCategory', (req,res)=>{
   db.query(`Select * from tblcategory`, (err1,results1,fields1)=>{
