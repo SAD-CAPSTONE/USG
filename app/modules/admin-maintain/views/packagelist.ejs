@@ -1,7 +1,5 @@
 <%- include('../../../templates/admin-navbar.ejs') -%>
 
-<%- include('../../../templates/admin-navbar.ejs') -%>
-
 
 <!-- Content Wrapper. Contains page content -->
 
@@ -29,7 +27,7 @@
          </div>
        </br>
 		<!-- buttons -->
-			&nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addProduct"><i class="fa fa-plus"></i> Add Product</button>
+			&nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addList"><i class="fa fa-plus"></i> Add Product</button>
          <!-- /.box-header -->
          <div class="box-body table-responsive">
            <table id="example2" class="table table-bordered table-hover">
@@ -80,7 +78,99 @@
 
 <!-- /.content-wrapper -->
 
+<!-- Modals -->
 
+<div class="modal fade" id="addList">
+  <div class="modal-dialog"  >
+  <div class="modal-content">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title"></h4>
+    </div>
+    <div class="modal-body">
+    <!-- Horizontal Form -->
+
+    <form class="form-horizontal" id="form_add">
+    <div class="row">
+      <div id="form-group" class="form-group">
+        <label for="" class="col-sm-3 control-label">Enter Barcode or Scan:</label>
+        <div class="col-sm-4">
+          <input type="text" id="barcode" class="form-control" required>
+          <span id="errorhelpBlock" class="help-block">No product record found!</span>
+          <span id="starthelpBlock" class="help-block">Search Barcode</span>
+          <span id="successhelpBlock" class="help-block"></span>
+        </div>
+      </div>
+      <div id="form-group2" class="form-group">
+        <label for="" class="col-sm-3 control-label">Quantity:</label>
+        <div class="col-sm-4">
+          <input type="number" id="quantity" name="quantity" class="form-control" required>
+          <span id="starthelpBlock2" class="help-block"></span>
+          <span id="errorhelpBlock2" class="help-block">No available stocks!</span>
+          <span id="successhelpBlock2" class="help-block"></span>
+        </div>
+      </div>
+      </div>
+
+    <hr>
+
+      <div class="form-group">
+        <label for="" class="col-sm-3 control-label">Product Name:</label>
+        <div class="col-sm-4">
+        <h4 id="prod_name"></h4>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="" class="col-sm-3 control-label">Available Stock:</label>
+        <div class="col-sm-4">
+        <h4 id="prod_stock"></h4>
+      </div>
+      </div>
+
+      <div class="form-group">
+        <input type="number" id="prod_stock2" hidden>
+        <input type="number" name="package" value="<%=package%>" hidden>
+        <input type="number" name="inventory" id="inventory"  hidden>
+
+      </div>
+
+      <div class="form-group">
+        <label for="" class="col-sm-3 control-label">Product Size:</label>
+        <div class="col-sm-4">
+        <h4 id="prod_size"></h4>
+      </div>
+      </div>
+
+      <div class="form-group">
+        <label for="" class="col-sm-3 control-label">Brand:</label>
+        <div class="col-sm-4">
+        <h4 id="prod_brand"></h4>
+      </div>
+      </div>
+
+      <div class="form-group">
+        <label for="" class="col-sm-3 control-label">Category:</label>
+        <div class="col-sm-4">
+        <h4 id="prod_category"></h4>
+      </div>
+      </div>
+
+
+
+
+      </div>
+      <div class="modal-footer">
+      <button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
+      <button type="submit" id="save" class="large ui teal button">Save changes</button>
+      </div>
+    </form>
+  </div>
+  <!-- /.modal-content -->
+</div>
+ <!-- /.modal-dialog -->
+</div>
 
 
 <!-- Main Footer -->
@@ -172,25 +262,8 @@ immediately after the control sidebar -->
 </div>
 <!-- ./wrapper -->
 
-<!-- REQUIRED JS SCRIPTS -->
+<%- include('../../../templates/admin-footer.ejs') -%>
 
-<!-- jQuery 3 -->
-<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- DataTables (new added)	 -->
-<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="/assets/admin/dist/js/adminlte.min.js"></script>
-<!-- sweetalert  -->
-<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
-<!-- Notification  -->
-<script src="/assets/admin/notification.js"></script>
 
 <!-- page script (new added) -->
 
@@ -254,6 +327,81 @@ $(document).ready(function(){
   $(".treeview a:contains('Maintenance')").parent().addClass("active");
   $(".navi a:contains('Package Discounts')").parent().addClass("active");
 </script>
+
+<script>
+$('#starthelpBlock').show();
+$('#successhelpBlock').hide();
+$('#errorhelpBlock').hide();
+
+$('#successhelpBlock2').hide();
+$('#errorhelpBlock2').hide();
+$('#starthelpBlock2').show();
+
+$('#quantity').on('keyup',function(){
+  if($(this).val() > $('#prod_stock2').val()){
+
+    $('#form-group2').attr('class', 'form-group2 has-error');
+    $('#errorhelpBlock2').show();
+    $('#starthelpBlock2').hide();
+    $('#successhelpBlock2').hide();
+
+  }else{
+    $('#form-group2').attr('class', 'form-group2 has-success');
+    $('#successhelpBlock2').show();
+    $('#errorhelpBlock2').hide();
+    $('#starthelpBlock2').hide();
+
+  }
+});
+  $('#barcode').on('keyup',function(){
+    $.post('/maintenance/getBarcode',{o: $('#barcode').val()},function(response,status){
+
+      if(response=="error"){
+        $('#form-group').attr('class', 'form-group has-error');
+        $('#errorhelpBlock').show();
+        $('#starthelpBlock').hide();
+        $('#successhelpBlock').hide();
+
+        $('#prod_name').html("");
+        $('#prod_stock').html("");
+        $('#prod_size').html("");
+        $('#prod_brand').html("");
+        $('#prod_category').html("");
+
+      }else{
+        $('#form-group').attr('class', 'form-group has-success');
+        $('#starthelpBlock').hide();
+        $('#successhelpBlock').show();
+        $('#errorhelpBlock').hide();
+
+        $('#prod_name').html(response[0].strProductName);
+        $('#prod_stock').html(response[0].intQuantity);
+        $('#prod_stock2').val(response[0].intQuantity);
+        $('#prod_size').html(response[0].intSize);
+        $('#prod_brand').html(response[0].strBrand);
+        $('#prod_category').html(response[0].strSubCategory);
+        $('#inventory').val(response[0].intInventoryNo);
+
+      }
+    })
+  });
+</script>
+
+<script>
+  $('#form_add').submit(function(e){
+    e.preventDefault();
+    $.post('/maintenance/addPackageList',$('#form_add').serialize(),function(response,status){
+      if(response == "success"){
+        swal({title:"Success",text:"You added a product!", type:"success"},function(){
+          location.reload();
+        })
+      }else{
+        swal("Error!","","error")
+      }
+    })
+  })
+</script>
+
 
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.

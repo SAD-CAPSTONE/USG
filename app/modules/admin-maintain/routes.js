@@ -450,6 +450,23 @@ router.get('/package', (req,res)=>{
   });
 });
 
+router.post('/getBarcode',(req,res)=>{
+  db.query(`Select * from tblproductInventory join tblproductlist on tblproductinventory.intproductno = tblproductlist.intproductno
+  join tblsubcategory on tblsubcategory.intsubcategoryno = tblproductlist.intsubCategoryNo
+  join tblcategory on tblcategory.intCategoryNo = tblSubCategory.intCategoryno
+  join tbluom on tbluom.intUomNo = tblproductInventory.intUomNo
+  join tblProductBrand on tblProductList.intBrandno = tblProductBrand.intBrandNo where strBarcode = "${req.body.o}"`,(err1,inventory,fields1)=>{
+    if(err1){
+      console.log(err1); res.send("error");
+    }
+    if(!err1){
+      if(inventory == null|| inventory == undefined){res.send("error")}
+      else if(inventory.length == 0){res.send("error")}
+      else{ res.send(inventory)}
+    }
+  });
+});
+
 router.post('/addPackage',(req,res)=>{
   db.query(`Select * from tblpackage order by intPackageNo desc limit 1`,(err1,results1,fields1)=>{
     if (err1) console.log(err1);
@@ -483,6 +500,24 @@ router.get('/packageList',(req,res)=>{
 
       res.render('admin-maintain/views/packagelist',{re:results1, moment: moment, package: pack});
     });
+});
+
+router.post('/addPackageList',(req,res)=>{
+  var no = "1000";
+  db.query(`Select * from tblPackageList order by intpackagelistno desc limit 1`,(err1,results1,fields1)=>{
+    if(err1){console.log(err1); res.send("error");}
+    if(!err1){
+      if(results1==null||results1==undefined){} else if(results1.length==0){}
+      else{
+        no = parseInt(results1[0].intPackageListNo) + 1;
+      }
+
+      db.query(`Insert into tblPackageList (intPackageListNo, intInventoryNo, intPackageNo, intProductQuantity) values ("${no}","${req.body.inventory}","${req.body.package}","${req.body.quantity}")`,(err2,results2,fields2)=>{
+        if(err2){console.log(err2); res.send("error")}
+        if(!err2){res.send("success")}
+      });
+    }
+  });
 });
 
 router.post('/inactivatePackage',(req,res)=>{
