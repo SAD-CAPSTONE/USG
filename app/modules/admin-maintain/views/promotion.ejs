@@ -32,7 +32,7 @@
                <table id="example2" class="table table-bordered table-hover">
                  <thead>
                  <tr>
-                   <th>Promo No</th>
+
                    <th>Product Code</th>
                    <th>Discount</th>
                    <th>Promo Date Due</th>
@@ -48,7 +48,7 @@
                   <% }else{ %>
                     <% re.forEach(function(i){ %>
                       <tr>
-                        <td><%=i.intPromoNo%></td>
+                      
                         <td><%=i.strProductCode%></td>
                         <td><%=i.discount%></td>
                         <td><%= moment(i.date_end).format("MM/DD/YYYY")%></td>
@@ -245,7 +245,7 @@
  <!-- ./wrapper -->
 
  <!-- REQUIRED JS SCRIPTS -->
- 
+
 <%- include('../../../templates/admin-footer.ejs') -%>
 
  <!-- page script (new added) -->

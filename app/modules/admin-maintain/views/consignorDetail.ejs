@@ -18,7 +18,220 @@
 
     <!-- Main content -->
     <section class="content">
-      <h4>Consignor</h4>
+      <!-- Profile Image -->
+
+        <div class="row">
+          <div class="col-sm-2">
+          </div>
+          <div class="col-sm-8">
+            <div class="box box-primary">
+              <div class="box-body box-profile">
+                <img class="profile-user-img img-responsive img-circle" src="/assets/images/static/profile.png" alt="User profile picture">
+
+                <h3 class="profile-username text-center"><%=re[0].strFname%> <%=re[0].strMname%> <%=re[0].strLname%></h3>
+
+                <p class="text-muted text-center">Consignor</p>
+
+                <center>
+                <ul class="list-group list-group-unbordered">
+                  <li class="list-group-item">
+                    <b>Brands:</b> &emsp;  <%= re[0].strBrands%>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Location:</b>&emsp; <%= re[0].strBusinessAddress %>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Email:</b>&emsp; <%= re[0].strBusinessEmail %>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Phone:</b>&emsp; <%= re[0].strSupplierPhone %>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Mobile:</b> &emsp;<%= re[0].strSupplierMobile %>
+                  </li>
+                </ul>
+              </center>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <a id="details" class="large ui teal button btn-block"><b>Show Details <i class="fa fa-chevron-down"></i></b></a>
+                </div>
+                <div class="col-sm-6">
+                  <a id="contract" class="large ui blue button btn-block"><b>Show Contract <i class="fa fa-chevron-down"></i></b></a>
+
+                </div>
+              </div>
+              </div>
+              <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+          </div>
+          <div class="col-sm-2">
+          </div>
+        </div>
+
+        <div id="row_details" class="row supplierShow">
+          <div class="col-sm-2">
+          </div>
+          <div class="col-sm-8">
+            <div class="box box-primary">
+              <div class="box-body ">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Consignor Details</h3>
+                </div>
+                <br>
+                <form class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Business Name:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    Janelle's Bakery
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Available Days:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    Monday, Tuesday
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>DTI Registered:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    Yes
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>FDA Registered:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    Yes
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>FDA ID:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    123456
+                  </div>
+                </div>
+
+              </form>
+              <a href="#" class="large ui green button btn-block"><b>Download Excel <i class="fa fa-download"></i></b></a>
+              </div>
+              <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+          </div>
+          <div class="col-sm-2">
+          </div>
+        </div>
+
+        <div id="row_contract" class="row supplierShow">
+          <div class="col-sm-2">
+          </div>
+          <div class="col-sm-8">
+            <div class="box box-primary">
+              <div class="box-body ">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Consignor Contract</h3>
+                </div>
+                <br>
+                <form class="form-group">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Contract validity:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    Jan. 22, 2019 - Feb. 22, 2019
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Application Date:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    Jan. 22, 2019
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Commission Rate:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    40%
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Business TIN:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    1234456
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Remittance Schedule:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    Every month
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Delivery Schedule:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    Every weekends
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Frequency of Delivery:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    Every weekends
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Frequency of Delivery:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    Every weekends
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label>Documents available:</label>
+                  </div>
+                  <div class="col-sm-4">
+                    Product Information Sheet, Company profile
+                  </div>
+                </div>
+              </form>
+              <a href="#" class="large ui orange button btn-block"><b>Download PDF <i class="fa fa-download"></i></b></a>
+              </div>
+              <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+          </div>
+          <div class="col-sm-2">
+          </div>
+        </div>
+
+
     </section>
     <!-- /.content -->
 </div>
@@ -122,6 +335,21 @@
 <%- include('../../../templates/admin-footer.ejs') -%>
 
 <!-- page script (new added) -->
+
+<script>
+$('.supplierShow').animateCss('fadeInDown');
+$('#row_details').hide();
+$('#row_contract').hide();
+
+$('#details').on('click',function(){
+  $('#row_details').show();
+ })
+ $('#contract').on('click',function(){
+   $('#row_contract').show();
+  })
+
+</script>
+
 <script>
   $(function () {
     $('#example2').DataTable({

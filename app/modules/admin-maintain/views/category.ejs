@@ -30,7 +30,7 @@
 					  <table id="category" class="table table-bordered table-hover">
             <thead>
   						<tr>
-  						  <th style="width: 10px">No</th>
+
   						  <th>Category</th>
   						  <th>Status</th>
   						  <th style="width: 40px">Actions</th>
@@ -42,7 +42,7 @@
             <% }else{ %>
             <%  category.forEach(function(i){ %>
                 <tr>
-                  <td><%=i.intCategoryNo%></td>
+                  
                   <td><%=i.strCategory%></td>
                   <td>
                     <% if (i.intStatus == 1) { %>

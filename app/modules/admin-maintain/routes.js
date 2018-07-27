@@ -2,6 +2,7 @@ var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
 
+
 // Voucher -----------------------
 router.get('/voucher', (req,res)=>{
   db.query(`Select * from tblvoucher`, (err1,results1,fields1)=>{
@@ -172,7 +173,9 @@ router.post('/activateSupplier',(req,res)=>{
     if (err1) console.log(err1);
     if(!err1) res.send("yes");
   });
-})
+});
+
+
 
 router.get('/supplierDetails',(req,res)=>{
   db.query(`Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID where tblUser.intUserID = "${req.query.supplier}"`,(err1,supplier,fields1)=>{

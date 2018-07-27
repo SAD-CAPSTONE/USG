@@ -31,7 +31,7 @@
               <table id="example2" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                  <th>No</th>
+
                   <th>Business Type</th>
                   <th>Date Created</th>
 				          <th>Status</th>
@@ -46,7 +46,7 @@
                   <% }else{ %>
                   <%  re.forEach(function(i){ %>
                       <tr>
-                        <td><%=i.intBusinessTypeNo %></td>
+
                         <td><%=i.strBusinessType%></td>
                         <td><%= moment(i.dateCreated).format("MM/DD/YYYY")%></td>
                         <td>
@@ -251,8 +251,10 @@
         success: function(response,status,http){
           if (response){
             if (response == "yes"){
-              swal("Success","Business type added!", "success");
-              window.location.reload();
+              swal({title:"Success",text:"Business type added!", type:"success"}, function(){
+                  window.location.reload();
+              });
+
             }
           }
         }
