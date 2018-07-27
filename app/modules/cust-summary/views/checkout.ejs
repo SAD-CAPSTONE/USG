@@ -81,7 +81,7 @@
         </div>
         <% if(thisUserContact.strShippingAddress && thisUserContact.strBillingAddress){ %>
           <button id="place-order" type="button" class="btn btn-custom-primary btn-sm btn-block sb-1"
-          data-toggle="modal" data-target="#OrderConfirmation" >Place Order</button>
+          data-toggle="modal" data-target="#OrderConfirmation">Place Order</button>
         <% }else{ %>
           <button id="place-order" type="button" class="btn btn-custom-primary btn-sm btn-block sb-0">Place Order</button>
         <% } %>
@@ -135,10 +135,8 @@
   </div>
 </div>
 
-
-
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
-<script src="/assets/scripts/cart-summary.js" charset="utf-8"></script>
+<script src="/customer-assets/scripts/cart-summary.js" charset="utf-8"></script>
 <%- include('../../../templates/closer.ejs') -%>
