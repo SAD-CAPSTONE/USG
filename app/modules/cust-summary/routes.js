@@ -39,7 +39,7 @@ function contactDetails (req, res, next){
     return next();
   });
 }
-function checkOrder (req, res, next){
+function checkUpdateOrder (req, res, next){
   if (!req.user){
     res.redirect('/home');
   }
@@ -49,7 +49,7 @@ function checkOrder (req, res, next){
       db.query(`SELECT * FROM tblorder WHERE intOrderNo= ? AND intStatus IS NULL AND intUserID= ?`,[req.params.orderNo, req.user.intUserID], (err,results,fields)=> {
         if (err) console.log(err);
         if (results[0]){
-          req.checkOrder = results[0].intPaymentMethod;
+          req.checkUpdateOrder = results[0].intPaymentMethod;
           db.query(`UPDATE tblorder SET intStatus= 0 WHERE intOrderNo= ?`,[req.params.orderNo], (err,results,fields)=>{
             if (err) console.log(err);
             db.commit(function(err) {
@@ -73,7 +73,7 @@ function orderTotal (req, res, next){
   INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
   WHERE tblorder.intOrderNo= ?`,[req.params.orderNo], (err, results, fields) => {
     if (err) console.log(err);
-    results[0] ? results.map( obj => obj.totalPrice = priceFormat(obj.totalPrice.toFixed(2)) ) : 0
+    results[0].totalPrice ? results.map( obj => obj.totalPrice = priceFormat(obj.totalPrice.toFixed(2)) ) : 0
     req.orderTotal = results[0];
     return next();
   });
@@ -82,14 +82,34 @@ function orderTotal (req, res, next){
 router.get('/checkout', checkUser, contactDetails, (req,res)=>{
   res.render('cust-summary/views/checkout', {thisUser: req.user, thisUserContact: req.contactDetails});
 });
-router.get('/order/:orderNo', (req,res)=>{
-  res.render('cust-summary/views/order', {thisUser: req.user});
+router.get('/order/:orderNo', orderTotal, (req,res)=>{
+  db.query(`SELECT *, (tblorder.intStatus)orderStatus FROM tblorder
+    INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
+    INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
+    INNER JOIN tblproductlist ON tblproductinventory.intProductNo= tblproductlist.intProductNo
+    INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
+    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUomNo
+    WHERE tblorder.intOrderNo= ? AND tblorder.intUserID= ?`,[req.params.orderNo, req.user.intUserID], (err, results, fields) => {
+    if (err) console.log(err);
+    if (results[0]){
+      results.map( obj => obj.dateOrdered = obj.dateOrdered.toDateString("en-US").slice(4, 15) );
+      res.render('cust-summary/views/order', {
+        thisUser: req.user,
+        order: results,
+        orderOne: results[0],
+        orderTotal: req.orderTotal.totalPrice
+      });
+    }
+    else{
+      res.redirect('/summary')
+    }
+  });
 });
-router.get('/success/:orderNo', checkOrder, (req,res)=>{
+router.get('/success/:orderNo', checkUpdateOrder, (req,res)=>{
   res.render('cust-summary/views/orderSuccess', {
     thisUser: req.user,
     OrderNumber: req.params.orderNo,
-    checkOrder: req.checkOrder
+    checkUpdateOrder: req.checkUpdateOrder
   });
 });
 router.get('/voucher/:orderNo', orderTotal, (req,res)=>{
