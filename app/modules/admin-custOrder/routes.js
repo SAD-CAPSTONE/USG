@@ -97,8 +97,118 @@ router.get('/assessOrder',(req,res)=>{
   });
 });
 
-router.post('/assessOrder',(req,res)=>{
+function pending(req){
+  db.commit((e)=>{
+    if(e){db.rollback(function(){console.log(e); res.send("no")})}
+  });
+}
 
+function processing(req){
+  db.commit((e)=>{
+    if(e){db.rollback(function(){console.log(e); res.send("no")})}
+  });
+}
+
+function shipped(req,res){
+
+  // update product inventory
+  db.query(`Select * from tblorderdetails where intOrderNo = "${req.body.orderNo}"`,(errz,orders,fieldsz)=>{
+    if(errz){db.rollback(function(){console.log(errz)})}
+    else{
+      async.eachSeries(orders,function(data,callback){
+        // check if stock is in Quantity
+        db.query(`Select * from tblProductinventory where intInventoryNo = "${orders[0].intInventoryNo}" and (intQuantity - intReservedItems) >= ${orders[0].intQuantity}`,(errw,resw,fieldsw)=>{
+          if(errw){db.rollback(function(){console.log(errw); res.send("no")})}
+          else{
+            if(resw==undefined||resw==null){res.send("false")}
+            else if(resw.length==0){res.send("false")}
+            else{
+              db.query(`Update tblproductinventory set intQuantity = intQuantity - ${orders[0].intQuantity}, intReservedItems = intReservedItems - ${orders[0].intQuantity}
+                where tblproductinventory.intInventoryNo = "${orders[0].intInventoryNo}" and (intQuantity - intReservedItems) >= ${orders[0].intQuantity}`,(errx,resultsx,fieldsx)=>{
+                  if(errx){db.rollback(function(){console.log(errx); res.send("no");})}
+                  callback();
+                });
+            }
+          }
+        });
+
+
+      },function(erry,resultsy){
+        if(erry){db.rollback(function(){console.log(erry)})}
+        else{
+          if (req.body.paymentStatus == 0){
+            db.commit(function(erri){
+              if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
+              else{
+                res.send("yes")
+
+              }
+            });
+          }else if(req.body.paymentStatus == 1){
+            paid(req,res);
+          }
+
+        }
+
+      })
+    }
+  });
+
+}
+
+function delivered(){
+  db.commit((e)=>{
+    if(e){db.rollback(function(){console.log(e); res.send("no");})}
+  });
+}
+
+function notDeliver(){
+
+}
+
+function returned(){
+
+}
+
+function cancelled(){
+
+}
+
+function paid(req,res){
+    var salesno = "1000";
+  db.query(`Select * from tblSales order by intSalesNo desc limit 1`,(e1,r1,f1)=>{
+    if(e1){db.rollback(function(){console.log(e1); res.send("no")})}
+    if(!e1){
+      if(r1==null||r1==undefined){} else if(r1.length==0){}
+      else{ salesno = parseInt(r1[0].intSalesNo) + 1}
+
+      db.query(`Insert into tblSales (intSalesNo, intOrderNo, amount, intStatus) values("${salesno}", "${req.body.orderNo}",${req.body.total},1)`,(e2,r2,f2)=>{
+        if(e2){db.rollback(function(){console.log(e2); res.send("no");})}
+        else{
+          db.commit(function(e3){
+            if(e3) {db.rollback(function(){console.log(e3); res.send("no");})}
+            else{
+              res.send("yes");
+            }
+          })
+        }
+      });
+    }
+  });
+}
+
+function awaitingPayment(){
+  db.commit(function(e1){
+    if(e1){db.rollback(function(){console.log(e1); res.send("no");})}
+    else{
+      res.send("yes");
+    }
+  })
+}
+
+
+
+router.post('/assessOrder',(req,res)=>{
 
   db.beginTransaction(function(err){
     if(err){ console.log(err);}
@@ -139,54 +249,49 @@ router.post('/assessOrder',(req,res)=>{
                             if(err5){db.rollback(function(){console.log(err5)})}
                             else{
 
-                              //update product inventory
-                              db.query(`Select * from tblorderdetails where intOrderNo = "${req.body.orderNo}"`,(errz,orders,fieldsz)=>{
-                                if(errz){db.rollback(function(){console.log(errz)})}
-                                else{
-                                  async.eachSeries(orders,function(data,callback){
-                                    // check if stock is in Quantity
-                                    db.query(`Select * from tblProductinventory where intInventoryNo = "${orders[0].intInventoryNo}" and intQuantity >= ${orders[0].intQuantity}`,(errw,resw,fieldsw)=>{
-                                      if(errw){db.rollback(function(){console.log(errw); res.send("no")})}
-                                      else{
-                                        if(resw==undefined||resw==null){res.send("false")}
-                                        else if(resw.length==0){res.send("false")}
-                                        else{
-                                          db.query(`Update tblproductinventory set intQuantity = intQuantity - ${orders[0].intQuantity}
-                                            where tblproductinventory.intInventoryNo = "${orders[0].intInventoryNo}" and intQuantity >= ${orders[0].intQuantity}`,(errx,resultsx,fieldsx)=>{
-                                              if(errx){db.rollback(function(){console.log(errx); res.send("no");})}
-                                              callback();
-                                            });
-                                        }
-                                      }
-                                    });
-
-
-                                  },function(erry,resultsy){
-                                    if(erry){db.rollback(function(){console.log(erry)})}
-                                    else{
-                                      db.commit(function(erri){
-                                        if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
-                                        else{console.log("Done updating inventory!"); res.send("yes")}
-                                      })
-                                    }
-
-                                  })
-                                }
-                              });
+                              if(req.body.orderStatus == 0){
+                                // execute pending function
+                                pending(req);
+                              }
+                              else if(req.body.orderStatus == 1){
+                                // execute processing function
+                                processing();
+                              }
+                              else if(req.body.orderStatus == 2){
+                                // execute shipped function
+                                shipped(req,res);
+                              }
+                              else if(req.body.orderStatus == 3){
+                                // execute delivered function
+                                delivered();
+                              }
+                              else if(req.body.orderStatus == 4){
+                                // execute will not deliver function
+                              }
+                              else if(req.body.orderStatus == 5){
+                                // execute returned function
+                              }
+                              else{
+                                // execute cancelled function
+                              }
 
 
 
                             }
                         }) // End of Order History -------
+                        // End of insert to order history
                       }
                   });
+                  // End of last message no ----------------------
                 }
             });
+            // End of last ordhist no -------------------------
           }
       });
+      // End of order status update -----------------------------
     }
-  })
-
+  });
+  // END OF TRANSACTION ----------------
 });
 
 router.get('/orderHistory',(req,res)=>{
