@@ -153,6 +153,81 @@ router.post('/newDeliveryRecord', (req,res)=>{
 
 });
 
+router.get('/print',(req,res)=>{
+  res.render('admin-receiveDelivery/views/deliveryPrint');
+});
+
+router.get('/returnBadOrders',(req,res)=>{
+  db.query(`Select * from tblReceiveOrder join tblReceiveOrderList on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderList.intReceiveOrderNo where tblReceiveOrder.intReceiveOrderNo = "${req.query.ro}" and tblReceiveOrderList.intOrderStatus = "Bad"`,(e1,bad,f1)=>{
+    if(e1) console.log(e1);
+    if(!e1){
+      res.render('admin-receiveDelivery/views/returnBadOrdersForm',{bad: bad, delivery_no: req.query.ro, moment: moment});
+    }
+  });
+});
+
+router.post('/returnBadOrders',(req,res)=>{
+  var rb_no = "1000";
+  var rblist_no = "1000";
+  var loop = req.body.product;
+  var count = 0;
+  db.beginTransaction(function(e1){
+    if(e1){db.rollback(function(){console.log(e1); res.send("no");})}
+    if(!e1){
+      db.query(`Select * from tblreturnbadorders order by intbadordersno desc limit 1`,(e2,r2,f2)=>{
+        if(e2) {db.rollback(function(){console.log(e2); res.send("no");})}
+        if(!e2){
+          if(r2==null||r2==undefined){} else if(r2.length==0){}
+          else{rb_no = parseInt(r2[0].intBadOrdersNo) + 1}
+
+          db.query(`Select * from tblbadorderslist order by intbadorderslistno desc limit 1`,(e3,r3,f3)=>{
+            if(e3){db.rollback(function(){console.log(e2); res.send("no");})}
+            if(!e3){
+              if(r3==null||r3==undefined){} else if(r3.length==0){}
+              else{ rblist_no = parseInt(r3[0].intBadOrdersListNo) + 1}
+
+              db.query(`Insert into tblreturnbadorders (intBadOrdersNo, intReceiveOrderNo, strReason) values("${rb_no}","${req.body.rno}","${req.body.reason}")`,(e4,r4,f4)=>{
+                if(e4) {db.rollback(function(){console.log(e4); res.send("no");})}
+                if(!e4){
+
+                  async.eachSeries(loop, function(data,callback){
+                    db.query(`Insert into tblbadorderslist (intBadOrdersListNo, intBadOrdersNo, strProduct, strVariant, strSize, intQuantity) values("${rblist_no}","${rb_no}","${req.body.product[count]}", "${req.body.variant[count]}","${req.body.size[count]}",${req.body.quantity[count]})`,(e5,r5,f5)=>{
+                      if(e5) {db.rollback(function(){console.log(e5); res.send("no");})}
+                      else{
+                        count++;
+                        rblist_no++;
+                        callback();
+                      }
+                    });
+                  },function(error,results){
+                    if(error) {db.rollback(function(){console.log(error); res.send("no");})}
+                    else{
+
+                      db.query(`Update tblPurchaseOrder set tblPurchaseOrder.intStatus = 2 where tblPurchaseOrder.intPurchaseOrderNo = (Select intPurchaseOrderNo from tblReceiveOrder join tblReturnBadOrders on tblReceiveOrder.intReceiveOrderNo = tblReturnBadOrders.intReceiveOrderNo where intBadOrdersNo = "${rb_no}")`,(e7,r7,f7)=>{
+                        if(e7)  {db.rollback(function(){console.log(e7); res.send("no");})}
+                        else{
+                          db.commit(function(e6){
+                            if(e6){db.rollback(function(){console.log(e6); res.send("no");})}
+                            else{
+                              res.send("yes");
+                            }
+                          })
+                        }
+                      });
+
+                    }
+                  });
+
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+  })
+});
+
 // <%- include('../../../templates/admin-navbar.ejs') -%>
 
 exports.receiveDelivery = router;
