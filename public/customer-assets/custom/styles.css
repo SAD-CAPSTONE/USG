@@ -1,6 +1,8 @@
 /*initial---------------------------------------------------------------------*/
 
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+/* @import "/assets/customer-assets/custom/fonts/Poppins-Regular.ttf"; */
+
 :root {
   /* 1: #B53471;
   2: #833471;
@@ -136,6 +138,16 @@ a:hover {
 .modal-content {
   border-radius: 0px;
 }
+.modal-header {
+  background: #12BBAD;
+  border-radius: 0px;
+  color: white;
+}
+.modal-footer {
+  border-top: none;
+  background: #F7F7F7;
+  padding: 12px;
+}
 
 /* icons */
 .fa-star, .fa-star-o, .fa-star-half-o {
@@ -146,6 +158,9 @@ a:hover {
 
 .price-symbol::before {
   content: '₱ ';
+}
+.price-color {
+  color: var(--price-color);
 }
 
 /* Font */
@@ -423,13 +438,10 @@ nav .dropdown-item:hover {
   margin-top: 3.6rem;
 }
 #sidebar>.row>.col:first-of-type {
-  position: fixed;
-  height: 100vh;
   min-width: 270px;
   max-width: 270px;
-  padding: 20px 15px 20px 20px;
+  padding: 15px 15px 20px 20px;
   z-index: 5;
-  visibility: hidden;
 }
 #sidebar>.row>.col:first-of-type h5 {
   padding: 3px 10px;
@@ -446,7 +458,8 @@ nav .dropdown-item:hover {
   border-left: 4px solid var(--primary-color);
 }
 #sidebar>.row>.col:last-of-type {
-  margin-top: 20px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 #sidebar #main-content .card-body {
   height: 175px;
@@ -672,7 +685,7 @@ li.nav-item > a{
   top: 3.5px;
   right: 0px;
 }
-#item-main-pane > div:first-child img {
+#item-main-pane > div:nth-child(2) img {
   position: absolute;
   width: var(--item-img-width);
   height: 300px;
@@ -770,7 +783,10 @@ li.nav-item > a{
   left: 10px;
 }
 
-#item-main-pane > div:nth-child(2) {
+#item-main-pane > div:nth-child(3) {
+  height: 355px;
+}
+#item-main-pane > div:nth-child(4) {
   height: 355px;
 }
 
@@ -779,7 +795,7 @@ li.nav-item > a{
   padding-left: 10px;
 }
 #item-review-pane > div {
-  min-height: 695px;
+  min-height: 1124.5px;
 }
 #item-review-pane #rating {
   height: 70px;
@@ -993,10 +1009,7 @@ li.nav-item > a{
 
 @media (max-width: 991px) {
   #sidebar>.row>.col:first-of-type {
-    visibility: hidden !important;
-  }
-  #sidebar>.row>.col:last-of-type {
-    margin-left: 0px !important;
+    display: none !important;
   }
   #main-content {
     margin-top: 37px !important;
@@ -1023,10 +1036,7 @@ li.nav-item > a{
 }
 @media (min-width: 992px) {
   #sidebar>.row>.col:first-of-type {
-    visibility: visible !important;
-  }
-  #sidebar>.row>.col:last-of-type {
-    margin-left: 270px !important;
+    display: block !important;
   }
   #main-content {
     margin-top: 0px !important;
@@ -1197,7 +1207,7 @@ li.nav-item > a{
     margin-left: 0px !important;
   }
 
-  #item-main-pane > div:first-child img {
+  #item-main-pane > div:nth-child(2) img {
     position: relative;
     width: 100%;
     height: 380;
@@ -1231,7 +1241,7 @@ li.nav-item > a{
     display: block;
   }
 
-  #item-main-pane > div:first-child img {
+  #item-main-pane > div:nth-child(2) img {
     width: 100%;
     height: 380;
     padding: 0px;

@@ -83,6 +83,7 @@
       <div class="pos-relative mb-3">
         <small class="text-muted price vat block">VAT applied</small>
       </div>
+      <input id="orderNo" type="number" value="<%= orderNumber%>" hidden />
       <% if(orderOne.intPaymentMethod == 2 && (orderOne.orderStatus == 0 || orderOne.orderStatus == 1 || orderOne.orderStatus == 2)){ %>
         <button type="button" id="print-btn" class="btn btn-custom-primary btn-sm fl-r">Print Slip</button>
       <% }else{ %>
@@ -100,4 +101,10 @@
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
+<%- include('../../../templates/scripts-pdf.ejs') -%>
+<script type="text/javascript">
+  $('#print-btn').on('click', ()=>{
+    download_voucher();
+  })
+</script>
 <%- include('../../../templates/closer.ejs') -%>

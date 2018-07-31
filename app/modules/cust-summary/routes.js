@@ -97,6 +97,7 @@ router.get('/order/:orderNo', orderTotal, (req,res)=>{
         thisUser: req.user,
         order: results,
         orderOne: results[0],
+        orderNumber: req.params.orderNo,
         orderTotal: req.orderTotal.totalPrice
       });
     }
@@ -108,7 +109,7 @@ router.get('/order/:orderNo', orderTotal, (req,res)=>{
 router.get('/success/:orderNo', checkUpdateOrder, (req,res)=>{
   res.render('cust-summary/views/orderSuccess', {
     thisUser: req.user,
-    OrderNumber: req.params.orderNo,
+    orderNumber: req.params.orderNo,
     checkUpdateOrder: req.checkUpdateOrder
   });
 });

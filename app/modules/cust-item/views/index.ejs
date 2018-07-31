@@ -19,15 +19,18 @@
 </style>
 
 <div id="item-container" class="container">
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb p-0 mb-2">
-      <li class="breadcrumb-item"><a href="/store"><%= thisProduct.strCategory%></a></li>
-      <li class="breadcrumb-item"><a href="/store"><%= thisProduct.strSubCategory%></a></li>
-      <li class="breadcrumb-item active" aria-current="page"><%= thisProduct.strBrand%> <%= thisProduct.strProductName%></li>
-    </ol>
-  </nav>
   <div class="row">
     <div id="item-main-pane" class="">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb p-0 mb-0">
+            <li class="breadcrumb-item"><a href="/store?cat=<%= thisProduct.intCategoryNo%>&sub=all&sort=1&page=1"><%= thisProduct.strCategory%></a></li>
+            <li class="breadcrumb-item"><a href="/store?cat=<%= thisProduct.intCategoryNo%>&sub=<%= thisProduct.intSubCategoryNo%>&sort=1&page=1"><%= thisProduct.strSubCategory%></a></li>
+            <li class="breadcrumb-item active" aria-current="page"><%= thisProduct.strBrand%> <%= thisProduct.strProductName%></li>
+          </ol>
+        </nav>
+      </div>
+
       <div>
         <img src="/customer-assets/images/products/<%= thisProduct.strProductPicture%>" alt="image">
         <!-- rating,title,desc -->
@@ -115,7 +118,7 @@
         <p class="mb-1"><b>Related Products</b></p>
         <div class="container x-scrolling-div products-container p-0" data-simplebar="">
           <% relatedProducts.forEach((prod)=>{ %>
-            <div class="custom-card this-product my-1" style="margin-right: 22px !important; margin-left: 1px">
+            <div class="custom-card card-list adjust this-product my-1">
               <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/customer-assets/images/products/<%= prod.strProductPicture%>"></a></div>
               <div class="cart-button-div">
                 <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
@@ -151,6 +154,48 @@
             <%})%>
         </div>
       </div>
+
+      <div class="pb-1">
+        <p class="mb-1"><b>Popular Products</b></p>
+        <div class="container x-scrolling-div products-container p-0" data-simplebar="">
+          <% popularProducts.forEach((prod)=>{ %>
+            <div class="custom-card card-list adjust this-product my-1">
+              <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/customer-assets/images/products/<%= prod.strProductPicture%>"></a></div>
+              <div class="cart-button-div">
+                <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
+                <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
+                data-target="#modal-product-to-cart">
+                Add to Cart</button>
+              </div>
+
+              <div class="card-desc">
+                <p class="card-title"><%= prod.strBrand%> <%= prod.strProductName%></p>
+                <p class="card-price price-symbol"><%= prod.productPrice%></p>
+                <small class="card-oldprice text-muted">
+                  <span><s class="price-symbol">0</s></span> (-0%)<br>
+                </small>
+                <small class="card-rating">
+                  <%
+                  rating = prod.aveRating;
+                  for(i=0; i<5; i++){
+                    if (rating < 1 && rating >= 0.5) {
+                    %> <i class="fa fa-star-half-o"></i> <%
+                    } else if (rating < 0.5) {
+                    %> <i class="fa fa-star-o"></i> <%
+                    } else {
+                    %> <i class="fa fa-star"></i> <%
+                    }
+                    --rating;
+                  }%>
+                  <span class="fs-08em fw-400">(<%= prod.cntRating%>)</span>
+                </small>
+                <small class="card-reviews"><%= prod.cntReview%> reviews</small>
+              </div>
+            </div>
+            <%})%>
+        </div>
+      </div>
+
     </div>
 
     <div id="item-review-pane" class="">
