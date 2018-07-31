@@ -17,7 +17,7 @@ router.get('/form', (req,res)=>{
   db.query(`Select * from tblreceiveOrder order by intreceiveorderno desc limit 1`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
     // select from purchase order lists
-    db.query(`Select * from tblPurchaseOrder join tblSupplier on tblPurchaseOrder.intSupplierID = tblSupplier.intUserID where tblPurchaseOrder.intStatus = 0`,(err2,results2,fields2)=>{
+    db.query(`Select * from tblPurchaseOrder join tblSupplier on tblPurchaseOrder.intSupplierID = tblSupplier.intUserID where tblPurchaseOrder.intStatus = 0 or tblPurchaseOrder.intStatus = 2`,(err2,results2,fields2)=>{
       if (err2) console.log(err2);
       res.render('admin-receiveDelivery/views/receiveDeliveryForm', {re:results1,pu:results2, moment: moment});
     });
@@ -34,7 +34,7 @@ router.post('/findNo', (req,res)=>{
     purch_no = req.body.o;
   }
 
-  db.query(`Select * from tblPurchaseOrder where tblPurchaseOrder.intPurchaseOrderNo = "${purch_no}" and intStatus = 0`, (err1,results1,fields1)=>{
+  db.query(`Select * from tblPurchaseOrder where tblPurchaseOrder.intPurchaseOrderNo = "${purch_no}" and (intStatus = 0 or intStatus = 2)`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
 
     if (results1 == undefined || results1 == null){
@@ -63,7 +63,12 @@ router.get('/deliveryDetails',(req,res)=>{
 
     db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.delivery}" and tblReceiveOrderlist.intOrderStatus = "Bad"`,(err2,bad,fields2)=>{
       if(err2) console.log(err2);
-      if (!err2) res.render('admin-receiveDelivery/views/deliveryDetails',{re_good: good, re_bad: bad, delivery_no: req.query.delivery, moment:moment});
+
+      db.query(`Select * from tblReceiveOrder join tblPurchaseOrder on tblReceiveOrder.intPurchaseOrderNo = tblPurchaseOrder.intPurchaseOrderNo join tblSupplier on tblSupplier.intUserID = tblPurchaseOrder.intSupplierID join tblUser on tblSupplier.intUserID = tblUser.intUserID where intReceiveOrderNo = "${req.query.delivery}"`,(err3,r3,f3)=>{
+        if(err3) console.log(err3);
+        if (!err3) res.render('admin-receiveDelivery/views/deliveryDetails',{re_good: good, re_bad: bad, delivery_no: req.query.delivery, moment:moment, from: r3});
+      });
+
     });
 
   });
@@ -154,7 +159,21 @@ router.post('/newDeliveryRecord', (req,res)=>{
 });
 
 router.get('/print',(req,res)=>{
-  res.render('admin-receiveDelivery/views/deliveryPrint');
+  db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.ro}" and tblReceiveOrderlist.intOrderStatus = "Good"`,(err1,good,fields1)=>{
+    if(err1) console.log(err1);
+
+    db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.ro}" and tblReceiveOrderlist.intOrderStatus = "Bad"`,(err2,bad,fields2)=>{
+      if(err2) console.log(err2);
+
+      db.query(`Select * from tblReceiveOrder join tblPurchaseOrder on tblReceiveOrder.intPurchaseOrderNo = tblPurchaseOrder.intPurchaseOrderNo join tblSupplier on tblSupplier.intUserID = tblPurchaseOrder.intSupplierID join tblUser on tblSupplier.intUserID = tblUser.intUserID where intReceiveOrderNo = "${req.query.ro}"`,(err3,r3,f3)=>{
+        if(err3) console.log(err3);
+        if (!err3) res.render('admin-receiveDelivery/views/deliveryPrint',{re_good: good, re_bad: bad, delivery_no: req.query.ro, moment:moment, from: r3});
+      });
+
+    });
+
+  });
+
 });
 
 router.get('/returnBadOrders',(req,res)=>{

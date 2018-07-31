@@ -54,8 +54,11 @@
                         <td>
                           <% if (i.Stat == 1){ %>
                             <span class="label label-success">Received</span>
+                          <% }else if(i.Stat == 2){ %>
+                            <span class="label label-warning">Waiting</span>
+
                           <% }else{ %>
-                            <span class="label label-warning">On process</span>
+                            <span class="label label-info">On process</span>
                           <% } %>
                         </td>
                         <td><a href="/purchaseOrder/invoice?order=<%=i.intPurchaseOrderNo%>"><button  class="btn btn-default btn-sm">View Order</button></a></td>

@@ -41,33 +41,32 @@
   <!-- info row -->
   <div class="row invoice-info">
     <div class="col-sm-4 invoice-col">
-      From
+      Received From
       <address>
-        <strong>Admin, Inc.</strong><br>
-        795 Folsom Ave, Suite 600<br>
-        San Francisco, CA 94107<br>
-        Phone: (804) 123-5432<br>
-        Email: info@almasaeedstudio.com
+        <strong><%=from[0].strBusinessName%></strong><br>
+        <%=from[0].strBusinessAddress%><br>
+        <%=from[0].strBusinessEmail%><br>
+        Email: <%=from[0].strSupplierMobile%><br>
+
       </address>
     </div>
     <!-- /.col -->
     <div class="col-sm-4 invoice-col">
-      To
+      Received By
       <address>
-        <strong></strong><br>
-        156 M.H Delpilar St., Pamplona 1,<br>
-        Las Piñas City, Metro Manila 94107<br>
-        Phone: (555) 539-1037<br>
-        Email: janelle.alag@example.com
+        <strong>Guslte Agulto</strong><br>
+        Operations Manager<br>
+        Ultra Super Green Trading Corp.<br>
+        Katipunan Ave., Quezon City<br>
+        Email: info.ultrasupergreen@gmail.com
       </address>
     </div>
     <!-- /.col -->
     <div class="col-sm-4 invoice-col">
-      <b>Invoice #007612</b><br>
-      <br>
-      <b>Order No:</b><br>
-      <b>Payment Due:</b> --<br>
-      <b>Account:</b> --
+      <b>Delivery No. <%=delivery_no%></b><br>
+      <b>Date Delivered 01/01/2018</b><br>
+
+
     </div>
     <!-- /.col -->
   </div>
@@ -75,69 +74,90 @@
 
   <!-- Table row -->
   <div class="row">
-    <div class="col-xs-12 table-responsive">
-      <table class="table table-striped">
+    <h4 align="center"><strong>&nbsp;&nbsp;&nbsp;Good Orders</strong></h4>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+      <table id="example2" class="table table-bordered table-hover">
         <thead>
         <tr>
-          <th>Qty</th>
-          <th>Product</th>
-          <th>Product Code</th>
-          <th>Description</th>
-          <th>Product Price</th>
-          <th>Subtotal</th>
+          <th>Product Name</th>
+          <th>Size</th>
+          <th>Variant</th>
+          <th>Quantity</th>
+          <th>Date Expiration</th>
+
         </tr>
         </thead>
         <tbody>
+          <% if (re_good == null || re_good == undefined){ %>
 
+          <% }else if (re_good.length == 0){ %>
+
+          <% }else{ %>
+            <% re_good.forEach(function(i){ %>
+              <tr>
+                <td><%=i.strProduct%></td>
+                <td><%=i.strSize%></td>
+                <td><%=i.strVariant%></td>
+                <td><%=i.intQuantity%></td>
+                <td><%= moment(i.dateExpiration).format("MM/DD/YYYY") %></td>
+
+              </tr>
+            <% }) %>
+          <% } %>
 
 
 
         </tbody>
+
       </table>
     </div>
-    <!-- /.col -->
   </div>
   <!-- /.row -->
 
   <div class="row">
-    <!-- accepted payments column -->
-    <div class="col-xs-6">
-      <p class="lead">Payment Methods:</p>
+    <h4 align="center"><strong>&nbsp;&nbsp;&nbsp;Bad Orders</strong></h4>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+      <table id="example3" class="table table-bordered table-hover">
+        <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>Size</th>
+          <th>Variant</th>
+          <th>Quantity</th>
+          <th>Date Expiration</th>
+
+        </tr>
+        </thead>
+        <tbody>
+          <% if (re_bad == null || re_bad == undefined){ %>
+
+          <% }else if (re_bad.length == 0){ %>
+
+          <% }else{ %>
+            <% re_bad.forEach(function(i){ %>
+              <tr>
+                <td><%=i.strProduct%></td>
+                <td><%=i.strSize%></td>
+                <td><%=i.strVariant%></td>
+                <td><%=i.intQuantity%></td>
+                <td><%= moment(i.dateExpiration).format("MM/DD/YYYY") %></td>
+
+              </tr>
+            <% }) %>
+          <% } %>
 
 
-      <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
-        Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem plugg dopplr
-        jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
-      </p>
+
+        </tbody>
+
+      </table>
     </div>
-    <!-- /.col -->
-    <div class="col-xs-6">
-      <p class="lead">Amount Due --</p>
-
-      <div class="table-responsive">
-        <table class="table">
-          <tr>
-            <th style="width:50%">Subtotal:</th>
-            <td></td>
-          </tr>
-          <tr>
-            <th>Tax</th>
-            <td>--</td>
-          </tr>
-          <tr>
-            <th>Shipping:</th>
-            <td>--</td>
-          </tr>
-          <tr>
-            <th>Total:</th>
-            <td></td>
-          </tr>
-        </table>
-      </div>
-    </div>
-    <!-- /.col -->
   </div>
   <!-- /.row -->
+
+
 </section>
 <!-- /.content -->
 </div>

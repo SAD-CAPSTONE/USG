@@ -26,24 +26,27 @@
 
            </div>
 
-           <a href="/receiveDelivery/print?ro=<%=delivery_no%>" target="_blank" class="big ui button"> <i class="fa fa-print"></i> Print</a>
-           <a href="/receiveDelivery/returnBadOrders?ro=<%=delivery_no%>" class="big ui teal button">Return Bad Orders</a>
+           <center>
+           <a href="/receiveDelivery/print?ro=<%=delivery_no%>" target="_blank" class="large ui button"> <i class="fa fa-print"></i> Print</a>
+           <a href="/receiveDelivery/returnBadOrders?ro=<%=delivery_no%>" class="large ui teal button">Return Bad Orders</a>
+         </center>
 
-
+           <br>
+           <br>
            <div class="row">
              <div class="col-sm-2">
              </div>
              <div class="col-sm-4">
-               <h5>Received From:</h5>
-               <h5>Business Name</h5>
-               <h5>Address</h5>
-               <h5>Email</h5>
-               <h5>Mobile No.</h5>
+               <h5><strong>Received From:</strong></h5>
+               <h5><%=from[0].strBusinessName%></h5>
+               <h5><%=from[0].strBusinessAddress%></h5>
+               <h5><%=from[0].strBusinessEmail%></h5>
+               <h5><%=from[0].strSupplierMobile%></h5>
              </div>
              <div class="col-sm-2">
              </div>
              <div class="col-sm-4">
-               <h5>Received By:</h5>
+               <h5><strong>Received By:</strong></h5>
                <h5>Gustle Agulto - Operations Manager</h5>
                <h5>Ultra Super Green Trading Corp.</h5>
                <h5>Katipunan Ave., Quezon City</h5>
@@ -53,8 +56,9 @@
              </div>
            </div>
 
-
-           <h5>&nbsp;&nbsp;&nbsp;Good Orders:</h5>
+           <br>
+           <br>
+           <h4 align="center"><strong>&nbsp;&nbsp;&nbsp;Good Orders</strong></h4>
            <!-- /.box-header -->
            <div class="box-body table-responsive">
              <table id="example2" class="table table-bordered table-hover">
@@ -92,8 +96,8 @@
 
              </table>
            </div>
-
-           <h5>&nbsp;&nbsp;&nbsp;Bad Orders:</h5>
+           <hr>
+           <h4 align="center"><strong>&nbsp;&nbsp;&nbsp;Bad Orders</strong></h4>
            <!-- /.box-header -->
            <div class="box-body table-responsive">
              <table id="example3" class="table table-bordered table-hover">

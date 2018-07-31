@@ -35,7 +35,7 @@
 
        <form class="form-horizontal" id="purchaseForm" >
        <div class="row">
-         <div class="col-md-2">
+         <div class="col-sm-4">
            <div class="form-group">
              <label for="purcNo">P.O Number:</label>
              <% var P = "1000"; %>
@@ -44,15 +44,15 @@
              <% }else{ %>
              <%  P = parseInt(POno[0].intPurchaseOrderNo) + 1 %>
              <% } %>
-               &nbsp;<input type="text" value="<%=P%>" name="POnum" id="purcNo" class="form-control">
+               &nbsp;<input type="text" disabled value="<%=P%>" name="POnum" id="purcNo" class="form-control">
 
            </div>
          </div>
 
-         <div class="col-md-2">
+         <div class="col-sm-2">
          </div>
 
-         <div class="col-md-2">
+         <div class="col-sm-4">
            <div class="form-group">
              <label for="purcNo">P.O Date:</label>
              <input type="date" disabled id="today" value="<%= moment().format("YYYY-MM-DD")%>" name="date" class="form-control">
@@ -114,7 +114,7 @@
        </div>
 
        <div class="row">
-         <div class="col-sm-8">
+         <div class="col-sm-12">
          <div class="box">
            <div class="box-header">
              <h3 class="box-title">Order List</h3>
@@ -453,12 +453,12 @@
       'paging'      : true,
       'lengthChange': true,
       'searching'   : true,
-      'ordering'    : true,
-      'info'        : true,
+      'ordering'    : false,
+      'info'        : false,
       'autoWidth'   : true,
     'select'		: true,
     'scroll'		: true,
-    'searching' : true
+    'searching' : false
     })
   })
 </script>
