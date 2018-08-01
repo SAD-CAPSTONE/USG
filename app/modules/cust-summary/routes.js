@@ -30,6 +30,17 @@ function checkUser (req, res, next){
     return next();
   }
 }
+function checkUserOrder (req, res, next){
+  if(!req.user){
+    req.session.pendRoute = 3;
+    req.flash('regSuccess', 'Login to proceed to View Order');
+    res.redirect('/login');
+  }
+  else{
+    req.session.pendRoute = 0;
+    return next();
+  }
+}
 function contactDetails (req, res, next){
   db.query(`SELECT * FROM tbluser
     INNER JOIN tblcustomer ON tbluser.intUserID= tblcustomer.intUserID
@@ -168,6 +179,15 @@ router.post('/checkout/address', checkUser, (req,res)=>{
     [req.body.sa, req.body.ba, req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
     res.redirect('/summary/checkout');
+  });
+})
+router.post('/order/cancel', checkUserOrder, (req,res)=>{
+  let reason = req.body.cancelreason == 'other' ? req.body.canceldesc : req.body.cancelreason
+  db.query(`UPDATE tblorder SET intStatus= 6, strCancellationReason= ? WHERE intOrderNo= ?`,
+    [reason, req.body.orderNo], (err, results, fields) => {
+    if (err) console.log(err);
+    console.log(reason)
+    res.redirect('/account/orders');
   });
 })
 
