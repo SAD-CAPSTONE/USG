@@ -94,7 +94,7 @@ router.get('/checkout', checkUser, contactDetails, (req,res)=>{
   res.render('cust-summary/views/checkout', {thisUser: req.user, thisUserContact: req.contactDetails});
 });
 router.get('/order/:orderNo', orderTotal, (req,res)=>{
-  db.query(`SELECT *, (tblorder.intStatus)orderStatus FROM tblorder
+  db.query(`SELECT *, (tblorder.intStatus)orderStatus, (tblorderdetails.intQuantity)orderQty FROM tblorder
     INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
     INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
     INNER JOIN tblproductlist ON tblproductinventory.intProductNo= tblproductlist.intProductNo
@@ -104,6 +104,7 @@ router.get('/order/:orderNo', orderTotal, (req,res)=>{
     if (err) console.log(err);
     if (results[0]){
       results.map( obj => obj.dateOrdered = obj.dateOrdered.toDateString("en-US").slice(4, 15) );
+      results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) );
       res.render('cust-summary/views/order', {
         thisUser: req.user,
         order: results,
@@ -186,7 +187,6 @@ router.post('/order/cancel', checkUserOrder, (req,res)=>{
   db.query(`UPDATE tblorder SET intStatus= 6, strCancellationReason= ? WHERE intOrderNo= ?`,
     [reason, req.body.orderNo], (err, results, fields) => {
     if (err) console.log(err);
-    console.log(reason)
     res.redirect('/account/orders');
   });
 })

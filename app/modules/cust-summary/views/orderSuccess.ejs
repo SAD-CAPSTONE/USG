@@ -8,7 +8,7 @@
         <h1>Order Success</h1>
         <input id="orderNo" type="number" value="<%= orderNumber%>" hidden />
         <input id="download-file" type="number" value="<%= checkUpdateOrder%>" hidden />
-        <a href="/home" role="button" aria-pressed="true" class="btn btn-secondary btn-md" style="width: 110px">View Order</a>
+        <a href="/summary/order/<%= orderNumber%>" role="button" aria-pressed="true" class="btn btn-secondary btn-md" style="width: 110px">View Order</a>
         <a href="/home" role="button" aria-pressed="true" class="btn btn-secondary btn-md" style="width: 110px">Home</a>
         <br>
       </div>

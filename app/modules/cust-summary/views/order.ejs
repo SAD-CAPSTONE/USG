@@ -46,7 +46,8 @@
             <p class="mb-1 fs-09em lh-p3em text-muted">0% off</p>
           </div>
           <div class="inline-block va-t mt-2">
-            <p class="m-0 fs-09em fw-400 lh-p3em"><%= data.intQuantity%></p>
+            <p class="m-0 fs-09em fw-400 lh-p3em"><%= data.orderQty%></p>
+            <% console.log(data.orderQty) %>
             <!-- <% if (orderOne.orderStatus == 0 || orderOne.orderStatus == 1){ %>
               <a class="fw-400 no-decoration" href=""><i class="fa fa-minus-circle mt-2"></i></a>
             <% } %> -->
@@ -73,7 +74,7 @@
       <small class="price price-symbol"><%= orderTotal%></small>
       <br>
       <small class="label">Shipping Fee</small>
-      <small class="price price-symbol">100.00</small>
+      <small class="price price-symbol">0.00</small>
       <br>
       <small class="label label-total">Total</small>
       <% if(orderOne.intPaymentMethod == 1){ %>
@@ -102,7 +103,7 @@
 <div id="CancelModal" tabindex="-1" role="dialog" aria-labelledby="CancelModalTitle" aria-hidden="true" class="modal fade">
   <div role="document" class="modal-dialog">
     <div class="modal-content">
-      <form action="/summary/order/cancel" method="POST">
+      <form action="/summary/order/cancel" method="POST" class="m-0">
         <div class="modal-header">
           <h5 id="CancelModalTitle" class="modal-title">Cancel Order</h5>
           <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
