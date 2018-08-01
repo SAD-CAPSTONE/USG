@@ -100,7 +100,7 @@
 					<!-- form start -->
           <form role="form">
               <div class="box-body">
-                <div class="form-group">
+                <div id="formgroup" class="form-group">
                   <% num = "1000" %>
                   <% if (lasttype == null || lasttype == undefined){ %>
 
@@ -112,6 +112,7 @@
                   <input type="hidden" id="bno" value="<%=num%>">
                   <label for="bType">Business Type:</label>
                   <input type="text" class="form-control" id="bType" placeholder="">
+                  <span id="errorhelpBlock" class="help-block">You already have the same record!</span>
                 </div>
 
               </div>
@@ -295,6 +296,26 @@ $('.activate_type').on('click',function(){
     }
   })
 })
+</script>
+
+<script>
+  $('#errorhelpBlock').hide();
+  $('#save').attr('disabled',true);
+  $('#bType').on('keyup',function(){
+
+    $.post('/validate/businessType',{data: $(this).val()},function(data,status){
+      if(data == "yes"){
+        $('#errorhelpBlock').show();
+        $('#formgroup').attr('class', 'form-group has-error');
+        $('#save').attr('disabled',true);
+
+      }else{
+        $('#errorhelpBlock').hide();
+        $('#formgroup').attr('class', 'form-group has-success');
+        $('#save').attr('disabled',false);
+      }
+    });
+  })
 </script>
 
 <script>

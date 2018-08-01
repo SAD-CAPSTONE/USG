@@ -175,14 +175,12 @@ router.post('/activateSupplier',(req,res)=>{
   });
 });
 
-
-
 router.get('/supplierDetails',(req,res)=>{
   db.query(`Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID where tblUser.intUserID = "${req.query.supplier}"`,(err1,supplier,fields1)=>{
     if(err1){
       console.log(err1); res.send("error");
     }else{
-      console.log(err1);
+
       if(supplier[0].intSupplierType == 2){
         res.render('admin-maintain/views/outrightDetail',{re: supplier});
       }
@@ -200,6 +198,15 @@ router.get('/supplierDetails',(req,res)=>{
   });
 });
 
+router.get('/contract',(req,res)=>{
+  db.query(`Select * from tblContract where intConsignorID = "${req.query.c}" order by applicationDate desc`,(err1,results1,fields1)=>{
+    if(err1) console.log(err1);
+    if(!err1){
+      res.render('admin-maintain/views/contracts',{re: results1, moment: moment})
+    }
+  });
+});
+
 // Product Category --------------------------
 router.get('/productCategory', (req,res)=>{
   db.query(`Select * from tblcategory`, (err1,results1,fields1)=>{
@@ -210,6 +217,15 @@ router.get('/productCategory', (req,res)=>{
 
     });
 
+  });
+});
+
+router.post('/editCategory',(req,res)=>{
+  db.query(`Update tblCategory set strCategory = "${req.body.category}" where intCategoryNo = "${req.body.no}"`,(err,results,fieldds)=>{
+    if(err) console.log(err);
+    else{
+      res.send("yes")
+    }
   });
 });
 
@@ -562,6 +578,15 @@ router.post('/addMeasurement', (req,res)=>{
 
       res.redirect('/maintenance/measurements');
     });
+  });
+});
+
+router.post('/editMeasurement',(req,res)=>{
+  db.query(`Update tblUom set strUnitName = "${req.body.measure}" where intUomNo = "${req.body.no}"`,(err,results,fields)=>{
+    if(err) console.log(err);
+    else{
+      res.send("yes");
+    }
   });
 });
 
