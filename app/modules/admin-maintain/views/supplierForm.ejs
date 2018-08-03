@@ -24,127 +24,97 @@
 				<h3 class="box-title">Supplier Information Form</h3>
 			</div>
 
-			<!-- purchase order body -->
+			<!--  body -->
 			<div class="box-body">
 
 
-				</div>
-				<div class="row">
-					<form class="form-horizontal">
+        <form class="form-horizontal" id="supplierForm">
+				<div id="suppForm" class="row">
+
 						<div class="form-group">
-              <input type="text" id="sno" value="<%=lastsupplier%>">
-							<label for="FName" class="col-sm-2 control-label">First Name</label>
+
+							<label for="FName" class="col-sm-2 control-label">Name</label>
 							<div class="col-sm-2">
-								<input type="text" class="input-sm form-control" id="FName" placeholder="">
+								<input type="text" required class="input-sm form-control" name="fname" id="FName" placeholder="First Name">
 							</div>
 
-              <label for="MName" class="col-sm-2 control-label">Middle Name</label>
+
 							<div class="col-sm-2">
-								<input type="text" class="input-sm form-control" id="MName" placeholder="">
+								<input type="text" class="input-sm form-control" id="MName" name="mname" placeholder="Middle Name">
 							</div>
 
-              <label for="FName" class="col-sm-2 control-label">Last Name</label>
+
 							<div class="col-sm-2">
-								<input type="text" class="input-sm form-control" id="LName" placeholder="">
+								<input type="text" required class="input-sm form-control" id="LName" name="lname" placeholder="Last Name">
 							</div>
 						</div>
 
 						<div class="form-group">
-
 							<label for="BName" class="col-sm-2 control-label">Business Name</label>
-
 							<div class="col-sm-4">
-								<input type="text" class="input-sm form-control" id="BName" placeholder="">
+								<input type="text" required class="input-sm form-control" id="BName" name="bname" placeholder="">
 							</div>
 						</div>
 
 						<div class="form-group">
-
 							<label for="address" class="col-sm-2 control-label">Business Address</label>
-
 							<div class="col-sm-4">
-								<input type="text" class="input-sm form-control" id="address" placeholder="">
+								<input type="text" required class="input-sm form-control" name="address" id="address" placeholder="">
 							</div>
 						</div>
 
             <div class="form-group">
-
 							<label for="email" class="col-sm-2 control-label">Business Email</label>
-
 							<div class="col-sm-4">
-								<input type="email" class="input-sm form-control" id="email" placeholder="">
+								<input type="email" class="input-sm form-control" id="email" name="email" placeholder="">
 							</div>
 						</div>
 
             <div class="form-group">
-
 							<label for="brands" class="col-sm-2 control-label">Brands</label>
-
 							<div class="col-sm-4">
-								<input type="text" class="input-sm form-control" id="brands" placeholder="Separate with commas">
+								<input type="text" required class="input-sm form-control" name="brands" id="brands" placeholder="Separate with commas">
 							</div>
 						</div>
 
             <div class="form-group">
-
-							<label for="phone" class="col-sm-2 control-label">Phone No</label>
-
+							<label for="phone" class="col-sm-2 control-label">Contact numbers</label>
 							<div class="col-sm-2">
-								<input type="text" class="input-sm form-control" id="phone" placeholder="">
+								<input type="text" class="input-sm form-control" name="phone" id="phone" placeholder="Phone">
 							</div>
 
-              <label for="mobile" class="col-sm-2 control-label">Mobile No</label>
 
 							<div class="col-sm-2">
-								<input type="text" class="input-sm form-control" id="mobile" placeholder="">
+								<input type="text" class="input-sm form-control" name="mobile" id="mobile" placeholder="Mobile">
 							</div>
 						</div>
 
             <div class="form-group">
-
 							<label for="tin" class="col-sm-2 control-label">Business TIN</label>
-
 							<div class="col-sm-4">
-								<input type="text" class="input-sm form-control" id="tin" placeholder="">
+								<input type="text" class="input-sm form-control" name="tin" id="tin" placeholder="">
 							</div>
 						</div>
 
             <div class="form-group">
-
               <label for="invoice" class="col-sm-2 control-label">Invoice Available?</label>
-
               <div class="col-sm-4">
                 <label>
-                  <input type="radio" id="invoice" value="yes" name="r3" class="flat-red" checked>
+                  <input type="radio" id="invoice" value="1" name="inv" class="flat-red" checked>
                   Yes
                 </label>
 
                 <label>
-                  <input type="radio" name="r3" class="flat-red">
+                  <input type="radio" name="inv" value="0" class="flat-red">
                   No
                 </label>
               </div>
             </div>
 
             <div class="form-group">
-
-							<label for="" class="col-sm-2 control-label">Supplier Type</label>
-
-							<div class="col-sm-4">
-                <select id="type" class="input-sm form-control">
-                  <option value="1">Consignor</option>
-                  <option value="2">Outright</option>
-                </select>
-
-							</div>
-						</div>
-
-            <div class="form-group">
-
 							<label for="" class="col-sm-2 control-label">Business Type</label>
-
 							<div class="col-sm-4">
-                <select id="businesstype" class="input-sm form-control">
+                <select id="businesstype" name="busstype" class="input-sm form-control">
                   <% if (businesstype == null || businesstype == undefined){ %>
 
                   <% }else if (businesstype.length == 0){ %>
@@ -154,34 +124,192 @@
                       <option value="<%=i.intBusinessTypeNo%>"><%= i.strBusinessType%></option>
                   <%  }) %>
                   <% } %>
-
-
                 </select>
-
 							</div>
 						</div>
 
+            <div class="form-group">
+							<label for="" class="col-sm-2 control-label">Supplier Type</label>
+							<div class="col-sm-4">
+                <select id="type" name="supptype" class="input-sm form-control">
+
+                  <option  value="2">Outright</option>
+                  <option value="1">Consignor</option>
+                </select>
 
 
-
-
-					</form>
+							</div>
+              <div class="col-sm-4">
+                <button id="addContract_btn" class="large ui primary basic button">Click to add Contract</button>
+              </div>
+						</div>
 
 
 				</div>
 
+        <div id="contract_form" class="row">
+          <hr />
+          <h4>&emsp;&emsp;&emsp;Consignor Contract Form </h4> </br>
+
+          <div class="form-group">
+            <label for="startDate" class="col-sm-2 control-label">Start Date</label>
+            <div class="col-sm-2">
+              <input type="date"  class="input-sm form-control" name="startDate" id="startDate" >
+            </div>
+
+            <label for="endDate" class="col-sm-2 control-label">End Date</label>
+            <div class="col-sm-2">
+              <input type="date" class="input-sm form-control" id="endDate" name="endDate">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="commission" class="col-sm-2 control-label">Commission Rate</label>
+            <div class="col-sm-2">
+              <input type="number" class="input-sm form-control" placeholder="change to input mask" name="commission" id="commission" >
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="deliverySchedule" class="col-sm-2 control-label">Delivery Schedule</label>
+            <div class="col-sm-6">
+              <input type="text" placeholder="eg. Every Saturday or Sunday" class="input-sm form-control"  name="deliverySchedule" id="deliverySchedule" >
+            </div>
+          </div>
 
 
+          <div class="form-group">
+
+            <label for="frequencyDelivery" class="col-sm-2 control-label">Frequency of Delivery</label>
+            <div class="col-sm-6">
+              <input type="text" class="input-sm form-control"  name="frequencyDelivery" id="frequencyDelivery" >
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="remittanceSched" class="col-sm-2 control-label">Remittance Schedule</label>
+            <div class="col-sm-6">
+              <input type="text" class="input-sm form-control"  name="remittanceSched" id="remittanceSched" >
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="fdaStat" class="col-sm-2 control-label">FDA Regitration Status</label>
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" id="fdaStat" value="1"  name="fdaStat" class="flat-red">
+                Registered
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="fdaID" class="col-sm-2 control-label">FDA Regitration ID</label>
+            <div class="col-sm-2">
+              <input type="text" class="input-sm form-control"  name="fdaID" id="fdaID" >
+            </div>
+          </div>
+
+
+
+          <div class="form-group">
+
+            <label for="categories" class="col-sm-2 control-label">Product Categories</label>
+            <div class="col-sm-6">
+              <input type="text" placeholder="Separated by comma" class="input-sm form-control"  name="categories" id="categories" >
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="certifications" class="col-sm-2 control-label">Product Certifications</label>
+            <div class="col-sm-6">
+              <input type="text" class="input-sm form-control" placeholder="Separated by comma" name="certifications" id="certifications" >
+            </div>
+          </div>
+
+          </br>
+          <h4>&emsp;&emsp;&emsp; Other Requirements </h4> </br>
+          <div class="form-group">
+
+            <label for="companyProfile" class="col-sm-2 control-label">Company Profile</label>
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" id="companyProfile" value="1"  name="companyProfile" class="flat-red">
+                Available
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+
+            <label for="dti" class="col-sm-2 control-label">DTI Registered</label>
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" id="dti" value="1"  name="dti" class="flat-red">
+                Yes
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="deliveryReceipt" class="col-sm-2 control-label">Delivery Receipt</label>
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" id="deliveryReceipt" value="1"  name="deliveryReceipt" class="flat-red">
+                Available
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="productInfoSheet" class="col-sm-2 control-label">Product Information Sheet</label>
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" id="productInfoSheet" value="1" name="productInfoSheet" class="flat-red">
+                Available
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="replacement" class="col-sm-2 control-label">Replacement Agreement</label>
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" id="replacement" value="1" name="replacement" class="flat-red">
+                Yes
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label for="marketing" class="col-sm-2 control-label">Marketing Agreement</label>
+            <div class="col-sm-2">
+              <label>
+                <input type="checkbox" id="marketing" value="1"  name="marketing" class="flat-red">
+                Yes
+              </label>
+            </div>
+          </div>
+
+
+        </div>
 
         <div class="box-footer">
-                  <a href="suppliers.html"><button type="button" class="btn btn-default">Back</button></a>
-                  <button type="button" id="sub" class="btn btn-info pull-right">Submit</button>
-                  <a href="/maintenance/supplier"><button type="button" id="response" class="btn btn-default">Back</button></a>
-
-              </div>
+        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+          <a href="/maintenance/supplier"><button type="button" class="big ui button">Back</button></a>
+          <button type="submit" class="big ui teal  button">Submit</button>
+        </div>
                 <!-- /.box-footer -->
+      </form>
 			</div>
-
 
 
 		</div>
@@ -285,25 +413,7 @@
 
 <!-- REQUIRED JS SCRIPTS -->
 
-<!-- jQuery 3 -->
-<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- DataTables (new added)	 -->
-<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="/assets/admin/dist/js/adminlte.min.js"></script>
-<!-- iCheck 1.0.1 -->
-<script src="/assets/admin/plugins/iCheck/icheck.min.js"></script>
-<!-- sweetalert  -->
-<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
-<!-- Notification  -->
-<script src="/assets/admin/notification.js"></script>
+<%- include('../../../templates/admin-footer.ejs') -%>
 
 <!-- page script (new added) -->
 <script>
@@ -329,58 +439,56 @@ $(document).ready(function(){
       checkboxClass: 'icheckbox_flat-green',
       radioClass   : 'iradio_flat-green'
     })
-
     $('#response').hide();
+})
+</script>
 
-    $('#sub').on('click',function(){
+<script>
 
-      var inv = 0;
-      var cont = 0;
-      if ($('#invoice').prop('checked')== true){
-        inv = 1;
-      }
-      if ($('#contractavailable').prop('checked') == true){
-        cont = 1;
-      }
+</script>
 
+<script>
+  $('#supplierForm').submit(function(e){
+    e.preventDefault();
+
+    swal({
+      title: "Are you sure?",
+      text: "Please review all the data you've entered",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonClass: "btn-info",
+      confirmButtonText: "Submit!",
+      closeOnConfirm: false
+    },
+    function(){
       $.ajax({
         url: '/maintenance/addSupplier',
-        method: 'POST',
-        datatype: "json",
-        data: {
-          userid: $('#sno').val(),
-          fname: $('#FName').val(),
-          mname: $('#MName').val(),
-          lname: $('#LName').val(),
-          bname: $('#BName').val(),
-          address: $('#address').val(),
-          email: $('#email').val(),
-          brands: $('#brands').val(),
-          phone: $('#phone').val(),
-          mobile: $('#mobile').val(),
-          tin: $('#tin').val(),
-          invoice: inv,
-          type: $('#type').val(),
-          businesstype: $('#businesstype').val()
-
-        },
+        method: 'post',
+        data: $('#supplierForm').serialize(),
         success: function(response,status,http){
-            if (response == "yes"){
-
-              swal("Success","Supplier Added", "success");
-              $('#response').click();
-            }else{
-              swal("Error!","There's a problem inserting supplier record, try again.", "error");
-            }
-
+          if(response){
+            swal({title:"Success!",text:"You've added a supplier",type:"success"}, function(){
+              window.location.href = '/maintenance/supplier';
+            });
+          }
         }
       })
-
-
     });
 
 
+  })
+</script>
 
+
+<script>
+$('#addContract_btn').hide();
+$('#contract_form').hide();
+$('#type').on('change',function(){
+  if($(this).val() == 1){$('#addContract_btn').show(); }else {$('#addContract_btn').hide(); $('#contract_form').hide();}
+});
+
+$('#addContract_btn').on('click',function(){
+  $('#contract_form').show();
 })
 </script>
 

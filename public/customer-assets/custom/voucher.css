@@ -1,0 +1,69 @@
+* { margin: 0; padding: 0; }
+body { font: 14px/1.4 Georgia, serif; background: white;}
+#page-wrap { width: 800px; margin: 0 auto; }
+
+text { border: 0; font: 14px Georgia, Serif; overflow: hidden; resize: none; }
+table { border-collapse: collapse; }
+table td, table th { border: 1px solid black; padding: 5px; }
+
+label {
+  height: 30px;
+  width: 30%; margin: 0px; background: #222;
+  text-align: center;
+  color: white;
+  font: bold 15px Helvetica, Sans-Serif;
+  text-decoration: uppercase;
+  letter-spacing: 20px;
+  padding: 8px 0px; }
+.align-left{
+  text-align: left !important;
+}
+
+#inv { width: 33%; margin-bottom: 15px;  display: inline; float: left;}
+#inv td { text-align: right;  }
+#inv td.meta-head { text-align: left; background: #eee; }
+#inv td text { width: 100%; height: 20px; text-align: right; }
+
+#date { width: 33%; margin-bottom: 15px; display: inline; float: right;}
+
+#lower { margin-top: 80px;}
+
+#cashier { width: 33%; height: 150px; float: left; font-size: 15px; }
+#customer { width: 33%; height: 150px; float: left; font-size: 15px; }
+#address { width: 33%; height: 150px; float: left; font-size: 15px; }
+
+#items { clear: both; width: 100%; margin: 30px 0 0 0; border: 1px solid black; }
+#items th { background: #eee; }
+#items text { width: 80px; height: 50px; }
+#items tr.item-row td { border: 0; vertical-align: top; }
+#items td.description { width: 300px; }
+#items td.item-name { width: 175px; }
+#items td.description text, #items td.item-name text { width: 100%; }
+#items td.total-line { border-right: 0; text-align: right; }
+#items td.total-value { border-left: 0; padding: 10px; }
+#items td.total-value text { height: 20px; background: none; }
+#items td.balance { background: #eee; }
+#items td.blank { border: 0; }
+
+#summary { clear: both; width: 100%; margin: 10px 0 0 0; border: 1px solid black; }
+#summary tr.item-row td { border: 0; vertical-align: top; }
+
+#terms { text-align: center; margin: 20px 0 0 0; }
+#terms h5 { text-transform: uppercase; font: 13px Helvetica, Sans-Serif; letter-spacing: 10px; border-bottom: 1px solid black; padding: 0 0 8px 0; margin: 0 0 8px 0; }
+#terms text { width: 100%; text-align: center;}
+
+text:hover, text:focus, #items td.total-value text:hover, #items td.total-value text:focus, .delete:hover { background-color:#EEFF88; }
+
+.delete-wpr { position: relative; }
+.delete { display: block; color: #000; text-decoration: none; position: absolute; background: #EEEEEE; font-weight: bold; padding: 0px 3px; border: 1px solid; top: -6px; left: -22px; font-family: Verdana; font-size: 12px; }
+
+
+
+h8{
+  text-decoration: overline;
+  float: left;
+}
+h9{
+  text-decoration: overline;
+  float: right;
+}

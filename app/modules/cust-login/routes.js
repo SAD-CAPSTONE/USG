@@ -31,7 +31,11 @@ router.get('/auth', (req,res)=>{
       res.redirect('/consignor');
       break;
     case 3:
-      res.redirect('/home');
+      req.session.pendRoute == 1 ?
+        res.redirect('/account/dashboard'):
+        req.session.pendRoute == 2 ?
+          res.redirect('/summary/checkout'):
+          res.redirect('/home');
       break;
   }
 });

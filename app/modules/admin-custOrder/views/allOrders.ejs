@@ -66,13 +66,14 @@
                       <% } %>
                     </td>
                     <td>
+                      <center>
                       <% orderno = i.intOrderNo %>
-                      <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="btn btn-default btn-sm">View Invoice</button></a>
+                      <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="large ui button">View Invoice</button></a>
 
-                        <a href="/customerOrder/assessOrder?order=<%=orderno%>"><button class="btn btn-primary btn-sm">Assess</button></a>
+                        <a href="/customerOrder/assessOrder?order=<%=orderno%>"><button class="large ui blue button">Assess</button></a>
 
-                      <a href="/customerOrder/orderHistory?order=<%=orderno%>"><button class="btn btn-info btn-sm">View History</button></a>
-
+                      <a href="/customerOrder/orderHistory?order=<%=orderno%>"><button class="large ui teal button">View History</button></a>
+                    </center>
                     </td>
                   </tr>
                 <% }) %>
@@ -260,7 +261,7 @@
 <!-- AdminLTE App -->
 <script src="/assets/admin/dist/js/adminlte.min.js"></script>
 <!-- sweetalert  -->
-<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>  
+<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
 <!-- Notification  -->
 <script src="/assets/admin/notification.js"></script>
 

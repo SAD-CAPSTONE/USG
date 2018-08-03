@@ -4,197 +4,97 @@
 <div id="store-container" class="container">
   <div class="row">
     <div id="store-sidebar" class="p-0">
-      <div>
-        <p class="m-0"><b>Food & Beverages</b></p>
-
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">All Subcategories</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Fruits & Vegetables</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Grains</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Legumes</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Nuts and Seeds</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Dairy Products and Eggs</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Livestock Feed</small>
-        </div>
-        <div>
-          <input type="checkbox"/><small class="ml-3 mb-0">Meats and Poultry</small>
-        </div>
-
+      <div class="subcategories-div subcategories-div-main">
+        <p class="m-0"><b>All Products</b></p>
       </div>
-      <div>
+      <div class="categories-div">
         <p class="m-0"><b>Other Categories</b></p>
-        <small class="block">All Products</small>
-        <small class="block">Supplemments</small>
-        <small class="block">Hygiene</small>
-        <small class="block">Cosmetics</small>
-        <small class="block">Stationary</small>
       </div>
-      <div>
+      <div class="price-range-div">
         <p class="m-0 mb-1"><b>Price Range</b></p>
-        <input type="number" class="inline-block material" placeholder="min"/> -
-        <input type="number" class="inline-block material" placeholder="max"/>
+        <input type="number" class="inline-block material min-range" placeholder="min"/> -
+        <input type="number" class="inline-block material max-range" placeholder="max"/>
         <div class="align-right">
-          <button class="btn btn-custom-primary btn-sm mt-3">Apply</button>
+          <button class="btn btn-custom-primary btn-sm mt-3 priceRangeBtn">Apply</button>
         </div>
       </div>
       <div>
         <p class="m-0"><b>Rating</b></p>
-
-          <%for(i=5; i>0; i--){%>
-            <div class="stars">
-              <ul class="list-unstyled inline m-0 cursor-pointer">
-            <%for(j=0; j<5; j++){
-              if (i > j){ %>
-                <li class="inline"><i class="fa fa-star"></i></li>
-            <% }else{ %>
-                <li class="inline"><i class="fa fa-star-o"></i></li>
-            <% }
-            }
-            if (i !== 5){ %>
-              <li class="inline">
-                <small class="ml-1 inline">And Up</small>
-              </li>
-              </ul>
-              </div>
-            <% }else{ %>
-              </ul>
-              </div>
-            <% }
-          } %>
+        <%for(i=5; i>0; i--){%>
+          <div id="<%= i%>" class="stars">
+            <ul class="list-unstyled inline m-0 cursor-pointer">
+          <%for(j=0; j<5; j++){
+            if (i > j){ %>
+              <li class="inline"><i class="fa fa-star"></i></li>
+          <% }else{ %>
+              <li class="inline"><i class="fa fa-star-o"></i></li>
+          <% }
+          }
+          if (i !== 5){ %>
+            <li class="inline">
+              <small class="ml-1 inline">And Up</small>
+            </li>
+            </ul>
+            </div>
+          <% }else{ %>
+            </ul>
+            </div>
+          <% }
+        } %>
 
       </div>
 
     </div>
     <div id="store-main" class="col pos-relative p-0">
       <div>
-          <p class="m-0">8 items found</p>
+          <p class="m-0">0 items found</p>
           <div class="sort">
             <p class="m-0 inline">Sort By: </p>
-            <select class="inline" name="">
-              <option value="" selected>Popularity</option>
-              <option value="">Lowest to Highest Price</option>
-              <option value="">Highest to Lowest Price</option>
+            <select class="inline sortBy" name="">
+              <option value="1" selected>Popularity</option>
+              <option value="2">Rating</option>
+              <option value="3">Lowest to Highest Price</option>
+              <option value="4">Highest to Lowest Price</option>
+              <option value="5">A - Z</option>
             </select>
           </div>
           <hr>
-          <div id="filters">
+          <div id="filters-link">
             <a href="#">
               <p id="filters-btn" class="m-0"><i class="fa fa-filter mr-1"></i>Filters and Categories</p>
             </a>
           </div>
-          <small>Filtered By: </small>
-          <small class="filter-tag">Price: 200 - 300<i class="fa fa-times ml-1"></i></small>
-          <small class="filter-tag">Rating: 2 & Up<i class="fa fa-times ml-1"></i></small>
-          <a href="" class="ml-1"><small>Clear All</small></a>
+          <small class="mr-1">Filtered By: </small>
+          <div id="filters" class="inline">
+
+          </div>
+          <div id='filterClearDiv' class="inline-block">
+
+          </div>
       </div>
       <div id="products-div" class="products-container">
-        <% allProducts.forEach((prod)=>{ %>
-          <div class="custom-card my-2">
-            <div class="card-img"><a href="/item"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
-            <div class="cart-button-div">
-              <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
-              <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
-              data-target="#modal-product-to-cart">
-              Add to Cart</button>
-            </div>
-
-            <div class="card-desc">
-              <p class="card-title"><%= prod.strBrand%> <%= prod.strProductName%></p>
-              <p class="card-price price-symbol"><%= prod.productPrice%></p>
-              <small class="card-oldprice text-muted">
-                <span><s class="price-symbol">0</s></span> (-0%)<br>
-              </small>
-              <small class="card-rating">
-                <%
-                rating = prod.aveRating;
-                for(i=0; i<5; i++){
-                  if (rating < 1 && rating >= 0.5) {
-                  %> <i class="fa fa-star-half-o"></i> <%
-                  } else if (rating < 0.5) {
-                  %> <i class="fa fa-star-o"></i> <%
-                  } else {
-                  %> <i class="fa fa-star"></i> <%
-                  }
-                  --rating;
-                }%>
-                <span class="fs-08em fw-400">(<%= prod.cntRating%>)</span>
-              </small>
-              <small class="card-reviews"><%= prod.cntReview%> reviews</small>
-            </div>
+        <div id="store-products" class="mb-3">
+          <!-- products -->
+          <div class="align-center">
+            <p> Loading Products ... </p>
+            <div class="loader"></div>
           </div>
-          <%})%>
-
-        <!-- pagination -->
-        <div class="row">
-          <div class="col"> </div>
-          <div class="col pt-3">
-            <ul class="pagination">
-              <li class="page-item"><a href="#" aria-label="Previous" class="page-link"><span aria-hidden="true">«</span><span class="sr-only">Previous</span></a></li>
-              <li class="page-item"><a href="#" class="page-link">1</a></li>
-              <li class="page-item"><a href="#" class="page-link">2</a></li>
-              <li class="page-item"><a href="#" class="page-link">3</a></li>
-              <li class="page-item"><a href="#" class="page-link">4</a></li>
-              <li class="page-item"><a href="#" class="page-link">5</a></li>
-              <li class="page-item"><a href="#" class="page-link">6</a></li>
-              <li class="page-item"><a href="#" aria-label="Next" class="page-link"><span aria-hidden="true">»</span><span class="sr-only">Next</span></a></li>
-            </ul>
-          </div>
-          <div class="col"> </div>
         </div>
+        <!-- pagination -->
+        <ul class="pagination pull-right mb-2" id="pagination"></ul>
+        <div style="clear: both"></div>
 
       </div>
       <div id="filters-div" class="pos-relative">
         <div class="row">
           <div class="col">
-            <div class="mb-3">
-              <p class="m-0"><b>Food & Beverages</b></p>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">All Subcategories</small>
-              </div>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">Fruits & Vegetables</small>
-              </div>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">Grains</small>
-              </div>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">Legumes</small>
-              </div>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">Nuts and Seeds</small>
-              </div>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">Dairy Products and Eggs</small>
-              </div>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">Livestock Feed</small>
-              </div>
-              <div>
-                <input type="checkbox"/><small class="ml-3 mb-0">Meats and Poultry</small>
-              </div>
-
+            <div class="mb-3 subcategories-div">
+              <p class="m-0"><b>All Products</b></p>
             </div>
           </div>
           <div class="col">
-            <div class="mb-3">
+            <div class="mb-3 categories-div">
               <p class="m-0"><b>Other Categories</b></p>
-              <small class="block">All Products</small>
-              <small class="block">Supplemments</small>
-              <small class="block">Hygiene</small>
-              <small class="block">Cosmetics</small>
-              <small class="block">Stationary</small>
             </div>
           </div>
         </div>
@@ -203,38 +103,37 @@
           <div class="col">
             <div class="mb-3">
               <p class="m-0"><b>Rating</b></p>
-
-                <%for(i=5; i>0; i--){%>
-                  <div class="stars">
-                    <ul class="list-unstyled inline m-0 cursor-pointer">
-                  <%for(j=0; j<5; j++){
-                    if (i > j){ %>
-                      <li class="inline"><i class="fa fa-star"></i></li>
-                  <% }else{ %>
-                      <li class="inline"><i class="fa fa-star-o"></i></li>
-                  <% }
-                  }
-                  if (i !== 5){ %>
-                    <li class="inline">
-                      <small class="ml-1 inline">And Up</small>
-                    </li>
-                    </ul>
-                    </div>
-                  <% }else{ %>
-                    </ul>
-                    </div>
-                  <% }
-                } %>
+              <%for(i=5; i>0; i--){%>
+                <div id="<%= i%>" class="stars">
+                  <ul class="list-unstyled inline m-0 cursor-pointer">
+                <%for(j=0; j<5; j++){
+                  if (i > j){ %>
+                    <li class="inline"><i class="fa fa-star"></i></li>
+                <% }else{ %>
+                    <li class="inline"><i class="fa fa-star-o"></i></li>
+                <% }
+                }
+                if (i !== 5){ %>
+                  <li class="inline">
+                    <small class="ml-1 inline">And Up</small>
+                  </li>
+                  </ul>
+                  </div>
+                <% }else{ %>
+                  </ul>
+                  </div>
+                <% }
+              } %>
             </div>
 
           </div>
           <div class="col">
-            <div class="mb-3">
+            <div class="mb-3 price-range-div">
               <p class="m-0"><b>Price Range</b></p>
-              <input type="number" class="inline-block" placeholder="min"/> -
-              <input type="number" class="inline-block" placeholder="max"/>
+              <input type="number" class="inline-block min-range" placeholder="min"/> -
+              <input type="number" class="inline-block max-range" placeholder="max"/>
               <div class="align-right">
-                <button class="btn btn-custom-primary btn-sm mt-3">Apply</button>
+                <button class="btn btn-custom-primary btn-sm mt-3 priceRangeBtn">Apply</button>
               </div>
             </div>
 
@@ -245,9 +144,362 @@
     </div>
   </div>
 </div>
+<button id="getStore" type="button" hidden></button>
 
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
-<script src="/assets/scripts/store.js" type="text/javascript"></script>
+<script src="/customer-assets/scripts/pagination/jquery.twbsPagination.js" type="text/javascript"></script>
+<script src="/customer-assets/scripts/store.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(() => {
+  const thisUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+  let newUrl, $pagination = $('#pagination'), defaultOpts = { totalPages: 1 };
+  $pagination.twbsPagination(defaultOpts);
+
+  function getParams(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+    results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+  function pushParams(cat,sub,sort,min,max,rating,page){
+    cat != null ? 0 : cat = getParams('cat');
+    sub ? 0 : sub = getParams('sub');
+    sort ? 0 : sort = getParams('sort');
+    min != null ? 0 : min = getParams('min');
+    max != null ? 0 : max = getParams('max');
+    rating ? 0 : rating = getParams('rating');
+    page ? 0 : page = getParams('page');
+    newUrl = `${thisUrl}`;
+
+    newUrl = cat ? `${newUrl}?cat=${cat}` : `${newUrl}?cat=0`
+    newUrl = sub && sub != 'none' ? `${newUrl}&sub=${sub}` : newUrl
+    newUrl = sort ? `${newUrl}&sort=${sort}` : newUrl
+    newUrl = min != null && min != 'none' ? `${newUrl}&min=${min}` : newUrl
+    newUrl = max != null && max != 'none' ? `${newUrl}&max=${max}` : newUrl
+    newUrl = rating && rating != 'none' ? `${newUrl}&rating=${rating}` : newUrl
+    newUrl = page ? `${newUrl}&page=${page}` : `${newUrl}&page=1`
+
+    window.history.pushState({path:newUrl},'',newUrl);
+  }
+
+  $('#getStore').on('click', () => {
+    let cat = getParams('cat'), sub = getParams('sub'), sort = getParams('sort'),
+    min = getParams('min'), max = getParams('max'), rating = getParams('rating'),
+    page = getParams('page');
+
+    if(!cat){
+      newUrl = `${thisUrl}?cat=0`;
+      window.history.pushState({path:newUrl},'',newUrl);
+      cat = '0';
+    }
+    min = min == 0 && min != '' ? 'zero' : min ;
+    max = max == 0 && max != '' ? 'zero' : max ;
+
+    cat ? cat = cat.indexOf("'") == -1 ? cat : 0 : 0
+    sub ? sub = sub.indexOf("'") == -1 ? sub : 'all' : 0
+    sort ? sort = sort.indexOf("'") == -1 ? sort : '1' : 0
+    min ? min = min.indexOf("'") == -1 ? min : null : 0
+    max ? max = max.indexOf("'") == -1 ? max : null : 0
+    rating ? rating = rating.indexOf("'") == -1 ? rating : 0 : 0
+    page ? page = page.indexOf("'") == -1 ? page : '1' : 0
+
+    $.post('/storeRequest/load', {
+      cat: cat, sub: sub, sort: sort, min: min, max: max, rating: rating, page: page
+    }).then((res) => {
+      // Url Update
+      cat = res.store.catNo
+      res.store.subcategories.length ? sub = res.store.subcategories.join(",") : 0
+      res.store.sort ? sort = res.store.sort : 0
+      res.store.price.min ?
+        res.store.price.min == 'zero' ?
+          min = 0
+          : min = res.store.price.min
+        : 0
+      res.store.price.max ?
+        res.store.price.max == 'zero' ?
+          max = 0
+          : max = res.store.price.max
+        : 0
+      res.store.rating ? rating = res.store.rating : 0
+      page = res.store.page
+      pushParams(cat,sub,sort,min,max,rating,page);
+
+      // DOM Update
+      let list = $('#store-products'), catList = $('.categories-div'),
+      subList = $('.subcategories-div'), filters = $('#filters');
+
+      list.html('');
+      $('#store-main > div:first-child > p:first-of-type').text(`${res.count} items found`);
+
+      // sort
+      $('.sortBy').val(res.store.sort);
+
+      // price
+      $('.min-range').val(res.store.price.min);
+      $('.max-range').val(res.store.price.max);
+
+      // filters
+      filters.html('');
+
+      res.store.category != 'All Products' ?
+        filters.append(`
+          <small class="filter-tag">Category: ${res.store.category}
+          <i id="category" class="fa fa-times ml-1"></i></small>`)
+        : 0 ;
+
+
+      res.store.subcategories.length ?
+        res.store.subcategories.forEach((data)=>{
+          subCatName = res.store.all_subcategories.reduce((str, all)=>{
+            return all[0] == data ? all[1] : str ;
+          }, '')
+          filters.append(`
+            <small class="filter-tag">Sub: ${subCatName}
+            <i id="${data}" class="fa fa-times ml-1"></i></small>`)
+        }) :
+        res.store.category != 'All Products' ?
+          filters.append(`
+            <small class="filter-tag">Sub: None`)
+          : 0
+
+
+      let priceRange, price = res.store.price
+      priceRange = price.min ?
+        price.max != null ?
+          `${price.min} - ${price.max}` :
+          `${price.min} And Up`
+        :
+        price.max != null ?
+          `0 - ${price.max}` : null
+      priceRange ?
+        filters.append(`
+          <small class="filter-tag">Price: ${priceRange}
+          <i id="price" class="fa fa-times ml-1"></i></small>`)
+        : 0 ;
+
+      res.store.rating ?
+        filters.append(`
+          <small class="filter-tag">Rating: ${res.store.rating} And Up
+          <i id="rating" class="fa fa-times ml-1"></i></small>`)
+        : 0 ;
+
+      filters.children().length ?
+        filters.next().html(`<a href="#"><small>Clear All</small></a>`) :
+        filters.next().html(`<em><small class="text-muted">No Filters</small></em>`);
+
+      // subcategories
+      subList.html(`<p class="m-0"><b>${res.store.category}</b></p>`);
+      res.store.category != 'All Products' && res.store.all_subcategories.length ?
+        subList.append(`
+          <div>
+            <input id="allSub" class="cursor-pointer allSub" type="checkbox"/>
+            <small class="ml-3 mb-0">
+              <label class="form-check-label cursor-pointer" for="allSub">
+                All Subcategories
+              </label>
+            </small>
+          </div>`) : 0
+      res.store.all_subcategories.forEach((data)=>{
+        subList.append(`
+          <div>
+            <input id="${data[0]}" class="cursor-pointer ${data[0]}" type="checkbox"/>
+            <small class="ml-3 mb-0">
+              <label class="form-check-label cursor-pointer" for="${data[0]}">
+                ${data[1]}
+              </label>
+            </small>
+          </div>`);
+      })
+      res.store.subcategories.length == res.store.all_subcategories.reduce((arr, data)=>{
+        arr.push(data[0]); return arr;
+      }, []).length ?
+        $(`.subcategories-div input.allSub`).attr('checked','checked'): 0
+      res.store.subcategories.forEach((data)=>{
+        $(`.subcategories-div input.${data}`).attr('checked','checked');
+      })
+
+      // categories
+      catList.html(`<p class="m-0"><b>Other Categories</b></p>`);
+      res.store.category != 'All Products' ?
+        catList.append(`
+          <small class="block">
+            <a href='#' value='0' class="categoryLink">All Products</a>
+          </small>`) : 0
+      res.categories.forEach((data)=>{
+        catList.append(`
+          <small class="block">
+            <a href='#' value='${data.intCategoryNo}' class="categoryLink">${data.strCategory}</a>
+          </small>
+          `);
+      })
+
+      // products
+      res.products.forEach((data) => {
+        list.append(`
+          <div class="custom-card this-product my-2">
+            <div class="card-img"><a href="/item/${data.intProductNo}"><img src="/customer-assets/images/products/${data.strProductPicture}"></a></div>
+            <div class="cart-button-div">
+              <input type="number" class="product-id" value="${data.intProductNo}" hidden />
+              <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
+              data-target="#modal-product-to-cart">
+              Add to Cart</button>
+            </div>
+
+            <div class="card-desc">
+              <p class="card-title">${data.strBrand} ${data.strProductName}</p>
+              <p class="card-price price-symbol">${data.productPrice}</p>
+              <small class="card-oldprice text-muted">
+                <span><s class="price-symbol">0</s></span> (-0%)<br>
+              </small>
+              <small class="card-rating">
+
+              </small>
+              <small class="card-reviews">${data.cntReview} reviews</small>
+            </div>
+          </div>`);
+        let rating = data.aveRating, result = '';
+        for(i=0; i<5; i++){
+          if (rating < 1 && rating >= 0.5) {
+            result = result.concat('<i class="fa fa-star-half-o"></i> ');
+          } else if (rating < 0.5) {
+            result = result.concat('<i class="fa fa-star-o"></i> ');
+          } else {
+            result = result.concat('<i class="fa fa-star"></i> ');
+          }
+          --rating;
+        }
+        $('#store-products > .custom-card:last-of-type .card-rating').append(`
+          ${result} <span class="fs-08em fw-400">(${data.cntRating})</span>`)
+      });
+      if(!res.products.length){
+        list.append(`
+          <div class="align-center">
+            <p><em> No Products Found </em></p>
+          </div>`);
+      }
+
+      let defaultOpts = {
+        totalPages: 1
+      }
+
+      // pagination
+      let totalPages = res.store.total_pages;
+      let currentPage = res.store.page;
+      $pagination.twbsPagination('destroy');
+      $pagination.twbsPagination($.extend({}, defaultOpts, {
+        startPage: currentPage,
+        totalPages: totalPages,
+        visiblePages: 5,
+        first: '<<',
+        prev: '<',
+        next: '>',
+        last: '>>'
+      })).on('page', function (event, page) {
+        pushParams(null,null,null,null,null,null,page);
+        $("html, body").scrollTop(0);
+        // $("html, body").animate({ scrollTop: 0 }, "slow");
+        $('#getStore').click();
+      });
+    }).catch((error) => {
+      list.html(`
+        <div class="align-center">
+          <p><em> No Products Found </em></p>
+        </div>`);
+    });
+  });
+
+  $('.categories-div').on('click', '.categoryLink', function(){
+    event.preventDefault();
+    pushParams($(this).attr('value'),'all',null,null,null,null,1);
+    $('#getStore').click();
+  });
+
+  $('.subcategories-div').on('click', 'input', function(){
+    let status = $(this).attr('checked') ? 'checked' : 'unchecked',
+    sub = getParams('sub'), element = $(this).attr('id');
+
+    let values = [];
+    $.each($(".subcategories-div-main input[type='checkbox']"), function(){
+      $(this).attr('id') != 'allSub' ? values.push($(this).attr('id')) : 0
+    });
+
+    if (element == 'allSub'){
+      sub = status == 'unchecked' ? 'all' : null
+    }
+    else if (status == 'unchecked'){ // to Check
+      sub ?
+        sub = `${sub},${element}`
+        : sub = element
+    }
+    else{
+      sub == 'all' ? sub = values.join(',') : 0
+
+      let array = sub.split(','), index = array.indexOf(element);
+      index !== -1 ? array.splice(index, 1) : 0
+      sub = array.join(',');
+    }
+
+    sub ? 0 : sub = 'none'
+    pushParams(null,sub,null,null,null,null,1)
+
+    $('#getStore').click();
+  })
+
+  $('.sortBy').on('change', function(){
+    pushParams(null,null,this.value,null,null,null,1);
+    $('#getStore').click();
+  });
+
+  $('.priceRangeBtn').on('click', function(){
+    let min = $(this).closest($('.price-range-div')).find($('.min-range')).val(),
+    max = $(this).closest($('.price-range-div')).find($('.max-range')).val()
+    pushParams(null,null,null,min,max,null,1);
+    $('#getStore').click();
+  });
+
+  $('.stars').on('click', function(){
+    event.preventDefault();
+    pushParams(null,null,null,null,null,$(this).attr('id'),1);
+    $('#getStore').click();
+  });
+
+  $('#filters').on('click', 'i', function(){
+    switch($(this).attr('id')){
+      case 'category':
+        pushParams(0,'none',null,null,null,null,1);
+        break;
+      case 'price':
+        pushParams(null,null,null,'none','none',null,1);
+        break;
+      case 'rating':
+        pushParams(null,null,null,null,null,'none',1);
+        break;
+      default:
+        let sub = getParams('sub'), array = sub.split(','), index = array.indexOf($(this).attr('id'));
+        index !== -1 ? array.splice(index, 1) : 0
+        sub = array.join(',');
+
+        sub ? 0 : sub = 'none'
+        pushParams(null,sub,null,null,null,null,1);
+        break;
+    }
+    $('#getStore').click();
+  });
+
+  $('#filterClearDiv').on('click', 'a', function(){
+    event.preventDefault();
+    pushParams(0,'none',null,'none','none','none',1);
+    $('#getStore').click();
+  });
+
+  $('#getStore').click();
+
+});
+</script>
+
 <%- include('../../../templates/closer.ejs') -%>

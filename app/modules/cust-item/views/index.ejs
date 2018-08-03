@@ -21,100 +21,102 @@
 <div id="item-container" class="container">
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb p-0 mb-2">
-      <li class="breadcrumb-item"><a href="#">Supplements</a></li>
-      <li class="breadcrumb-item"><a href="#">Subcategory</a></li>
-      <li class="breadcrumb-item active" aria-current="page">The Healthy Grocery Raw Cordyceps</li>
+      <li class="breadcrumb-item"><a href="/store"><%= thisProduct.strCategory%></a></li>
+      <li class="breadcrumb-item"><a href="/store"><%= thisProduct.strSubCategory%></a></li>
+      <li class="breadcrumb-item active" aria-current="page"><%= thisProduct.strBrand%> <%= thisProduct.strProductName%></li>
     </ol>
   </nav>
   <div class="row">
     <div id="item-main-pane" class="">
       <div>
-        <img src="/assets/images/products/img3.jpg" alt="image">
+        <img src="/customer-assets/images/products/<%= thisProduct.strProductPicture%>" alt="image">
         <!-- rating,title,desc -->
-        <div id="main-desc">
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star-half-o"></i>&nbsp
-          <small class="text-muted">1,173 ratings</small>
+        <div id="main-desc" class="products-container">
+          <%
+          rating = thisProduct.aveRating;
+          for(i=0; i<5; i++){
+            if (rating < 1 && rating >= 0.5) {
+            %> <i class="fa fa-star-half-o"></i> <%
+            } else if (rating < 0.5) {
+            %> <i class="fa fa-star-o"></i> <%
+            } else {
+            %> <i class="fa fa-star"></i> <%
+            }
+            --rating;
+          }%>
+          <small class="text-muted ml-1"><%= thisProduct.cntRating%> ratings</small>
           <a href="#"><i class="fa fa-share-alt"></i></a>
-          <p class="mb-2">The Healthy Grocery Raw Cordyceps</p>
+          <p class="mb-2"><%= thisProduct.strBrand%> <%= thisProduct.strProductName%></p>
           <div id="main-desc-text" data-simplebar="">
-            <small class="block indent">
-              Cordyceps is a genus of ascomycete fungi (sac fungi) that includes about 400 species.
-              Most Cordyceps species are endoparasitoids, parasitic mainly on insects and other
-              arthropods (they are thus entomopathogenic fungi); a few are parasitic on other fungi.
-              The generic name Cordyceps is derived from the Greek word κορδύλη kordýlē, meaning
-              "club", and the Latin stem -ceps, meaning "head".
-            </small><br>
-            <small class="block indent">
-              The genus has a worldwide distribution and most of the approximately 400 species[1]
-              have been described from Asia (notably Nepal, China, Japan, Bhutan, Korea, Vietnam,
-              and Thailand). Cordyceps species are particularly abundant and diverse in humid
-              temperate and tropical forests.
+            <small>
+              <%= thisProduct.strDescription%>
             </small>
+            <br><br><br>
           </div>
-          <button type="button" class="btn btn-custom-primary btn-block mt-3" data-toggle="modal" data-target="#modal-product-to-cart">Add to Cart</button>
+
+          <div class="this-product h-auto">
+            <input type="text" class="product-id" value="<%= thisProduct.intProductNo%>" hidden />
+            <div id="cart-modal-btn">
+              <button type="button" class="btn btn-custom-primary btn-block cart-btn" data-toggle="modal" data-target="#modal-product-to-cart">Add to Cart</button>
+            </div>
+          </div>
+
+          <div id="options-container">
+            <div id="item-options">
+              <div>
+                <div class="input-group quantity mb-2">
+                  <div class="input-group-prepend addon">
+                    <button class="btn btn-primary quantity-buttons minus-btn" type="button">
+                      <small class="quantity-text quantity-text-minus">-</small>
+                    </button>
+                  </div>
+                  <input class="form-control quantity-input" type="text" readonly="" value="1">
+                  <div class="input-group-append addon">
+                    <button class="btn btn-primary quantity-buttons plus-btn" type="button">
+                      <small class="quantity-text quantity-text-plus">+</small>
+                    </button>
+                  </div>
+                </div>
+                <button id="thisItemBtn" class="btn btn-custom-primary radius-0">Add to Cart</button>
+                <input type="text" value="<%= thisProduct.intProductNo%>" hidden />
+              </div>
+              <div>
+                <div id="radio-container" class="fl-l">
+                  <% thisInventory.forEach((inv, i)=>{ %>
+                    <div class="form-check radio-div">
+                      <input class="prod-price" type="radio" value="<%= inv.productPrice%>" hidden />
+                      <% if(i==0){ %>
+                        <input id="<%= inv.intInventoryNo%>" class="form-check-input sizes-radio" type="radio" name="invSizes" value="<%= inv.intInventoryNo%>" checked>
+                      <% }else{ %>
+                        <input id="<%= inv.intInventoryNo%>" class="form-check-input sizes-radio" type="radio" name="invSizes" value="<%= inv.intInventoryNo%>">
+                      <% } %>
+                      <label class="form-check-label" for="<%= inv.intInventoryNo%>">
+                        <%= inv.intSize%><%= inv.strUnitName%>
+                      </label>
+                    </div>
+                  <% }) %>
+                </div>
+                <% thisInventory.forEach((inv, i)=>{
+                  if(i==0){ %>
+                  <div id="item-price" class="fl-r pos-relative">
+                    <p class="m-0 price-symbol"><%= inv.productPrice%></p>
+                    <small class="text-muted"><s class="price-symbol">0</s></small>
+                  </div>
+                <% }
+                }) %>
+              </div>
+            </div>
+          </div>
         </div>
 
-
-        <div id="item-options">
-          <!-- size,price -->
-          <div>
-            <div class="fl-l">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-                <label class="form-check-label" for="exampleRadios1">
-                  &nbsp5ml
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-                <label class="form-check-label" for="exampleRadios2">
-                  10ml
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option2">
-                <label class="form-check-label" for="exampleRadios3">
-                  15ml
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios4" value="option1">
-                <label class="form-check-label" for="exampleRadios4">
-                  20ml
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios5" value="option1">
-                <label class="form-check-label" for="exampleRadios5">
-                  25ml
-                </label>
-              </div>
-            </div>
-            <div id="item-price" class="fl-r pos-relative">
-              <p class="m-0 price-symbol">2,350.95</p>
-              <small class="text-muted"><s class="price-symbol">2,350.95</s></small>
-            </div>
-          </div>
-          <!-- quantity,add-to-cart -->
-          <div>
-            <div class="input-group quantity mb-2">
-              <div class="input-group-prepend addon"><button class="btn btn-primary quantity-buttons" type="button"><small class="quantity-text quantity-text-minus">-</small></button></div><input class="form-control quantity-input" type="text" readonly="" value="1">
-              <div class="input-group-append addon"><button class="btn btn-primary quantity-buttons" type="button"><small class="quantity-text quantity-text-plus">+</small></button></div>
-            </div>
-            <button class="btn btn-custom-primary radius-0">Add to Cart</button>
-          </div>
-        </div>
       </div>
-      <div>
-        <p><b>Related Products</b></p>
-        <div class="container x-scrolling-div products-container" data-simplebar="">
+
+      <div class="pb-1">
+        <p class="mb-1"><b>Related Products</b></p>
+        <div class="container x-scrolling-div products-container p-0" data-simplebar="">
           <% relatedProducts.forEach((prod)=>{ %>
-            <div class="custom-card my-1" style="margin-right: 22px !important; margin-left: 1px">
-              <div class="card-img"><a href="/item"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
+            <div class="custom-card this-product my-1" style="margin-right: 22px !important; margin-left: 1px">
+              <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/customer-assets/images/products/<%= prod.strProductPicture%>"></a></div>
               <div class="cart-button-div">
                 <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
                 <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
@@ -156,13 +158,20 @@
         <p><b>Ratings & Review</b></p>
         <div id="rating">
           <div class="fl-l">
-            <h2 class="m-0 pt-1">4.5</h2>
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star-half-o"></i>
-            <small class="text-muted block">1,173 ratings</small>
+            <h2 class="m-0 pt-1"><%= thisProduct.aveRating? thisProduct.aveRating: 0%></h2>
+            <%
+            rating = thisProduct.aveRating;
+            for(i=0; i<5; i++){
+              if (rating < 1 && rating >= 0.5) {
+              %> <i class="fa fa-star-half-o"></i> <%
+              } else if (rating < 0.5) {
+              %> <i class="fa fa-star-o"></i> <%
+              } else {
+              %> <i class="fa fa-star"></i> <%
+              }
+              --rating;
+            }%>
+            <small class="text-muted block"><%= thisProduct.cntRating%> ratings</small>
           </div>
           <div class="fl-r">
             <%for(i=5; i>0; i--){%>
@@ -177,15 +186,15 @@
               } %>
                 <li class="inline">
                   <% switch(i){
-                    case 5:%> <small class="ml-1 inline">1,120</small>
+                    case 5:%> <small class="ml-1 inline"><%= thisProduct.FiveS%></small>
                       <% break;
-                    case 4:%> <small class="ml-1 inline">40</small>
+                    case 4:%> <small class="ml-1 inline"><%= thisProduct.FourS%></small>
                       <% break;
-                    case 3:%> <small class="ml-1 inline">10</small>
+                    case 3:%> <small class="ml-1 inline"><%= thisProduct.ThreeS%></small>
                       <% break;
-                    case 2:%> <small class="ml-1 inline">2</small>
+                    case 2:%> <small class="ml-1 inline"><%= thisProduct.TwoS%></small>
                       <% break;
-                    case 1:%> <small class="ml-1 inline">1</small>
+                    case 1:%> <small class="ml-1 inline"><%= thisProduct.OneS%></small>
                       <% break;
                   }
                   %>
@@ -197,44 +206,30 @@
         </div>
         <br>
         <hr>
-        <small class="text-muted mb-2">45 reviews</small>
+        <small class="text-muted mb-2"><%= thisProduct.cntReview%> reviews</small>
         <a href=""><small class="card-reviews fl-r"><i class="fa fa-plus-square mr-1"></i>Add Review</small></a>
-        <div class="review-block mb-4">
-          <small class="review-name block">John S. Doe <i class="fa fa-check-circle"></i></small>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star-half-o"></i>
-          <small class="text-muted">10/24/17</small>
-          <small class="review-desc block">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in
-          </small>
-        </div>
-        <div class="review-block mb-4">
-          <small class="review-name block">Jocelyn Flores <i class="fa fa-check-circle"></i></small>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star-half-o"></i>
-          <small class="text-muted">10/24/17</small>
-          <small class="review-desc block">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in
-          </small>
-        </div>
-        <div class="review-block mb-4">
-          <small class="review-name block">John Wick <i class="fa fa-check-circle"></i></small>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star-half-o"></i>
-          <small class="text-muted">10/24/17</small>
-          <small class="review-desc block">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in
-          </small>
-        </div>
+        <% if(!productReviews[0]){ %>
+          <p class="fs-09em fw-400 text-muted mt-1"><em>No reviews found</em></p>
+        <% } %>
+        <% productReviews.forEach((rev)=>{ %>
+          <div class="review-block mb-4">
+            <small class="review-name block">
+              <%= rev.strFname%> <%= rev.strMname%> <%= rev.strLname%>
+              <i class="fa fa-check-circle"></i>
+            </small>
+            <% for(let i=1; i<=5; i++){
+              if(i <= rev.intStars){ %>
+                <i class="fa fa-star"></i>
+              <% }else{ %>
+                <i class="fa fa-star-o"></i>
+              <% }
+            } %>
+            <small class="text-muted"><%= rev.created_at %></small>
+            <small class="review-desc block">
+              <%= rev.strReview %>
+            </small>
+          </div>
+        <% }) %>
 
       </div>
     </div>
@@ -244,4 +239,48 @@
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
+<script type="text/javascript">
+  // GET - InvNo + Display Price
+  $('#radio-container').on('click', '.sizes-radio', function() {
+    $('#item-price p').text($(this).prev().val());
+    $.get(`/cart/item-inv/${this.value}`).then((res) => {
+
+    }).catch((error) => {
+      console.log(error);
+    });
+  })
+  // GET - Plus Button
+  $('#item-options').on('click', '.plus-btn', ()=>{
+    $.get(`/cart/item-qty/plus`).then((res) => {
+      $('#item-options').find('.quantity-input').val(`${res.qty}`);
+    }).catch((error) => {
+      console.log(error);
+    });
+  });
+  // GET - Minus Button
+  $('#item-options').on('click', '.minus-btn', ()=>{
+    $.get(`/cart/item-qty/minus`).then((res) => {
+      $('#item-options').find('.quantity-input').val(`${res.qty}`);
+    }).catch((error) => {
+      console.log(error);
+    });
+  });
+  // GET & POST to Cart
+  $('#item-options').on('click', '#thisItemBtn', function(){
+    let pid = $(this).next().val();
+    console.log(pid);
+    $('#item-options').find('.quantity-input').val(1);
+    $.get(`/cart/item-post/${pid}`).then((res) => {
+      return $.post(`/cart/modal/item`);
+    })
+    .then((res) => {
+      let modal = $('#modal-product-to-cart'), data = res.cart;
+
+      postToCart(modal, data, res, 0);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  });
+</script>
 <%- include('../../../templates/closer.ejs') -%>

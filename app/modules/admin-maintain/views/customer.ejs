@@ -39,9 +39,29 @@
                 </tr>
                 </thead>
                 <tbody>
+                  <% if (re == null || re == undefined){ %>
 
-
-
+                  <% }else if (re.length == 0){ %>
+    
+                  <% }else{ %>
+                   <%  re.forEach(function(i){ %>
+                      <tr>
+                        <td><%= i.intUserID %></td>
+                        <td><%= i.strFname%> <%=i.strMname %> <%=i.strLname %></td>
+                        <td><%= i.strUsername %></td>
+                        <td>
+                          <% if (i.Stats == 1){ %>
+                            <span class="label label-success">Active</span>
+                          <% }else if(i.Stats == 0){ %>
+                            <span class="label label-danger">Inactive</span></td>
+                          <% }else{ %>
+                          <% } %>
+                          </td>
+                        <td><button type="button" data-toggle="modal" data-target="#viewDetails" class="viewDetailsButton btn btn-default btn-sm" data-custno="<%=i.intUserID%>" data-custsaddress="<%=i.strShippingAddress%>" data-custbaddress="<%=i.strBillingAddress%>" data-custphoneno="<%=i.strCusPhoneNo%>" data-custmobileno="<%=i.strCusMobileNo%>" data-custemail="<%=i.strEmail%>">View Details</button></a>
+                        <button type="button" data-toggle="modal" data-target="#" class="viewDetailsButton btn btn-default btn-sm" data-custno="<%=i.intUserID%>" data-custsaddress="<%=i.strShippingAddress%>" data-custbaddress="<%=i.strBillingAddress%>" data-custphoneno="<%=i.strCusPhoneNo%>" data-custmobileno="<%=i.strCusMobileNo%>" data-custemail="<%=i.strEmail%>">Edit Info</button></a></td>
+                      </tr>
+                    <%  }) %>
+                    <% } %>
                 </tbody>
 
               </table>
@@ -62,6 +82,47 @@
 
   <!-- Modals -->
 
+  <div class="modal fade" id="viewDetails">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Customer Details</h4>
+        </div>
+        <div class="modal-body">
+            <table id="classTable" class="table table-striped">
+                <thead>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Shipping Address</td>
+                    <td>Billing Address</td>
+                    <td>Phone Number</td>
+                    <td>Mobile Number</td>
+                    <td>Email Address</td>
+                  </tr>
+                  <tr>
+                    <td id="view_custsaddress"></td>
+                    <td id="view_custbaddress"></td>
+                    <td id="view_custphoneno"></td>
+                    <td id="view_custmobileno"></td>
+                    <td id="view_custemail"></td> 
+
+
+
+
+
+
+                  </tr>
+                </tbody>
+              </table>
+            
+
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 <!-- Main Footer -->
@@ -190,11 +251,20 @@
 </script>
 
 <script>
-$('#title').html("USG | Voucher");
+$('#title').html("USG | Customers");
 $(".treeview a:contains('Maintenance')").parent().addClass("active");
 $(".navi a:contains('Customer')").parent().addClass("active");
 </script>
-
+<script>
+  $('.viewDetailsButton').on('click', function(){
+      $('#view_custno').html($(this).data('custno'));
+      $('#view_custsaddress').html($(this).data('custsaddress'));
+      $('#view_custbaddress').html($(this).data('custbaddress'));
+      $('#view_custphoneno').html($(this).data('custphoneno'));
+      $('#view_custmobileno').html($(this).data('custmobileno'));
+      $('#view_custemail').html($(this).data('custemail'));
+  });
+</script>
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the

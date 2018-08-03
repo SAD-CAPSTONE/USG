@@ -1,0 +1,105 @@
+<div>
+<table id="expired-table" class="table table-bordered table-hover">
+  <thead>
+  <tr>
+
+    <th style="width: 30px"></th>
+    <th>No</th>
+    <th>Barcode</th>
+    <th>Product Name</th>
+    <th>Quantity</th>
+    <th>Brand</th>
+    <th>Supplier</th>
+    <th>Expiration Date</th>
+
+  </tr>
+  </thead>
+  <tbody>
+    <% if(re == null || re == undefined){ %>
+
+    <% }else if(re.length == 0){ %>
+
+    <% }else{ %>
+    <%   re.forEach(function(i){ %>
+        <tr>
+          <td>
+            <button data-batch="<%=i.intBatchNo%>" class="pulloutitem large ui red basic button"><i class="glyphicon glyphicon-trash"></i></button>
+          </td>
+          <td><%=i.intBatchNo%></td>
+          <td><%=i.strBarcode%></td>
+          <td><%=i.strProductName%></td>
+          <td><%=i.intQuantity%></td>
+          <td><%=i.strBrand%></td>
+          <td><%=i.strFName%> <%=i.strLName%></td>
+          <td><%= moment(i.expirationDate).format("MM/DD/YYYY")%></td>
+
+
+        </tr>
+    <%  }) %>
+    <% } %>
+
+
+
+
+  </tbody>
+
+</table>
+</div>
+
+<script>
+  $(function () {
+    $('#expired-table').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+    'select'		: true,
+    'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+
+  $('.pulloutitem').on('click',function(){
+
+    var data = $(this).data('batch');
+    swal({
+      title: "Are you sure?",
+      text: "You cannot undo pullout stock from inventory",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonClass: "btn-danger",
+      confirmButtonText: "Pull-out List from Inventory",
+      cancelButtonText: "Back",
+      closeOnConfirm: false,
+      showLoaderOnConfirm: true
+    }, function(isConfirm){
+      $.ajax({
+        url: '/inventory/pullOutItem',
+        method: 'post',
+        datatype: "json",
+        data: {o: data},
+        success: function(response, status, http){
+          if(response == "yes"){
+            setTimeout(function(){
+              swal("Success!", response, "success");
+              location.reload();
+            }, 2000);
+          }else{
+            setTimeout(function(){
+              swal("Error", "There's an error", "error");
+            }, 2000);
+          }
+        }
+
+      })
+    })
+
+
+  });
+
+
+</script>

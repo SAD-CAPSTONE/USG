@@ -1,6 +1,7 @@
 var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
+var async = require('async');
 
 
 router.get('/', (req,res)=>{
@@ -9,8 +10,8 @@ router.get('/', (req,res)=>{
 
 router.post('/checkNewOrders',(req,res)=>{
     db.query(`Select CURDATE() - INTERVAL 2 DAY as DatesFrom, tblOrder.intStatus as Stat,
-      tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
-      join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where dateOrdered >= CURDATE() - INTERVAL 2 DAY and tblOrder.intStatus = 0 LIMIT 1`, (err1,results1,fields1)=>{
+    tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where dateOrdered >= CURDATE() - INTERVAL 2 DAY and tblOrder.intStatus = 0`, (err1,results1,fields1)=>{
         if (err1) console.log(err1);
 
         if (results1 == null || results1 == undefined){
@@ -26,10 +27,10 @@ router.post('/checkNewOrders',(req,res)=>{
 router.get('/checkNewOrders',(req,res)=>{
   db.query(`Select CURDATE() - INTERVAL 2 DAY as DatesFrom, tblOrder.intStatus as Stat,
     tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
-    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where dateOrdered >= CURDATE() - INTERVAL 2 DAY and tblOrder.intStatus = 0 LIMIT 1`,(err1,results1,fields1)=>{
+    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where dateOrdered >= CURDATE() - INTERVAL 2 DAY and tblOrder.intStatus = 0`,(err1,results1,fields1)=>{
       if (err1) console.log(err1);
 
-      res.render('admin-custOrder/views/newOrders', {re: results1})
+      res.render('admin-custOrder/views/newOrders', {re: results1, moment: moment})
     });
 });
 
@@ -47,28 +48,46 @@ router.get('/assessOrder',(req,res)=>{
   var orderno = req.query.order;
 
   // Order list
-  db.query(`Select * from tblOrder
+  db.query(`Select tblorderdetails.intQuantity as quantity, tblOrder.*, tblUOM.*, tblorderdetails.*,
+    tblproductinventory.*, tblproductlist.* from tblOrder
     join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
-    join tblproductlist on tblorderdetails.intproductno = tblproductlist.intproductno
-    where tblOrder.intOrderno = ${orderno}`,(err1,results1,fields1)=>{
+    join tblproductinventory on tblproductinventory.intinventoryno = tblorderdetails.intinventoryno
+    join tblUOM on tblProductinventory.intUOMno = tblUom.intUOMno
+    join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
+    where tblOrder.intOrderno = "${orderno}"`,(err1,results1,fields1)=>{
       if (err1) console.log(err1);
+
 
     // customer details
     db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.*
       from tblOrder join tblUser on tblOrder.intUSerID = tblUser.intUserID
       join tblCustomer on tblUser.intUserID = tblCustomer.intUserID
-      where tblOrder.intOrderno = ${orderno}`,(err2,results2,fields2)=>{
+      where tblOrder.intOrderno = "${orderno}"`,(err2,results2,fields2)=>{
         if (err2) console.log(err2);
 
       // total
       db.query(`Select SUM(tblorderdetails.intquantity * tblorderdetails.purchaseprice) as
         totalAll from tblOrder
         join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
-        join tblproductlist on tblorderdetails.intproductno = tblproductlist.intproductno
-        where tblOrder.intOrderno = ${orderno}`, (err3,results3,fields3)=>{
+        join tblproductinventory on tblorderdetails.intinventoryno = tblproductinventory.intinventoryno
+        where tblOrder.intOrderno = "${orderno}"`, (err3,results3,fields3)=>{
           if (err3) console.log(err3);
 
-        res.render('admin-custOrder/views/assessOrder', {orderlist: results1, customer: results2, moment: moment, total: results3[0].totalAll});
+
+          // total payment
+          db.query(`Select sum(amountPaid) as total from tblCustomerpayment
+            where intStatus = 1 and intOrderno = ${orderno}
+            group by intOrderno`,(err4,results4,fields4)=>{
+              if(err4) console.log(err4);
+
+              var this_total = 0;
+              if (results4[0] == null || results4[0] == undefined){} else if(results4[0].total == ""){}
+              else{ this_total = results4[0].total }
+
+              res.render('admin-custOrder/views/assessOrder', {orderlist: results1, customer: results2, moment: moment, total: results3[0].totalAll, payment: this_total});
+
+            });
+
 
       });
 
@@ -79,54 +98,95 @@ router.get('/assessOrder',(req,res)=>{
 });
 
 router.post('/assessOrder',(req,res)=>{
-  // change to transaction
 
-  db.query(`Update tblOrder set intStatus = ${req.body.orderStatus}, strShippingMethod =
-    "${req.body.shippingMethod}", strCourier = "${req.body.courier}" where intOrderNo = "${req.body.orderNo}" `, (err1,results1,fields1)=>{
-    if (err1) console.log(err1);
 
-    var historynum = 1000;
-    var messagenum = 1000;
-    db.query(`Select * from tblOrderHistory order by intOrderHistoryNo desc limit 1`,
-      (err2,results2,fields2)=>{
-      if (err2) console.log(err2);
+  db.beginTransaction(function(err){
+    if(err){ console.log(err);}
+    else{
+      // Update order status
+      db.query(`Update tblOrder set intStatus = ${req.body.orderStatus}, strShippingMethod =
+        "${req.body.shippingMethod}", strCourier = "${req.body.courier}", intPaymentStatus = ${req.body.paymentStatus} where intOrderNo = "${req.body.orderNo}" `, (err1,results1,fields1)=>{
+          if(err1){db.rollback(function(){console.log(err1);})}
+          else{
+            var historynum = 1000, messagenum = 0;
+            // Select last orderhistory no
+            db.query(`Select * from tblOrderHistory order by intOrderHistoryNo desc limit 1`,
+              (err2,results2,fields2)=>{
+                if(err2){db.rollback(function(){console.log(err2)})}
+                else{
+                  if (results2 == null || results2 == undefined){}else if(results2.length == 0){}
+                  else{
+                    historynum = parseInt(results2[0].intOrderHistoryNo) + 1;
+                  }
+                  // Select last message no
+                  db.query(`Select * from tblMessages order by intMessageNo desc limit 1`,
+                    (err3,results3, fields3)=>{
+                      if(err3){db.rollback(function(){console.log(err3)})}
+                      else{
+                        if (req.body.notify == 1){
 
-      if (results2 == null || results2 == undefined || results2.length == 0){
+                          if(results3==null||results3==undefined){messagenum = "1000"}else if(results3.length==0){messagenum = "1000"}
+                          else{messagenum = parseInt(results3[0].intMessageNo)+1}
+                          // insert to message
+                          db.query(`Insert into tblMessages (intMessageNo, intOrderHistoryNo, strMessage,
+                            intAdminID) values ("${messagenum}", "${historynum}","${req.body.message}", "1000" )`,(err4,results4,fields4)=>{
+                            if (err4){db.rollback(function(){console.log(err4)})}
+                          });
+                        }
+                        // Insert into order history
+                        db.query(`Insert into tblOrderHistory (intOrderHistoryNo, intOrderNo,
+                          strShippingMethod, strCourier, intStatus, intAdminID, intMessageNo) values ("${historynum}", "${req.body.orderNo}", "${req.body.shippingMethod}","${req.body.courier}", ${req.body.orderStatus}, "1000", "${messagenum}")`, (err5,results5,fields5)=>{
+                            if(err5){db.rollback(function(){console.log(err5)})}
+                            else{
 
-      }else{
-        historynum = parseInt(results2[0].intOrderHistoryNo) + 1;
-      }
+                              //update product inventory
+                              db.query(`Select * from tblorderdetails where intOrderNo = "${req.body.orderNo}"`,(errz,orders,fieldsz)=>{
+                                if(errz){db.rollback(function(){console.log(errz)})}
+                                else{
+                                  async.eachSeries(orders,function(data,callback){
+                                    // check if stock is in Quantity
+                                    db.query(`Select * from tblProductinventory where intInventoryNo = "${orders[0].intInventoryNo}" and intQuantity >= ${orders[0].intQuantity}`,(errw,resw,fieldsw)=>{
+                                      if(errw){db.rollback(function(){console.log(errw); res.send("no")})}
+                                      else{
+                                        if(resw==undefined||resw==null){res.send("false")}
+                                        else if(resw.length==0){res.send("false")}
+                                        else{
+                                          db.query(`Update tblproductinventory set intQuantity = intQuantity - ${orders[0].intQuantity}
+                                            where tblproductinventory.intInventoryNo = "${orders[0].intInventoryNo}" and intQuantity >= ${orders[0].intQuantity}`,(errx,resultsx,fieldsx)=>{
+                                              if(errx){db.rollback(function(){console.log(errx); res.send("no");})}
+                                              callback();
+                                            });
+                                        }
+                                      }
+                                    });
 
-      db.query(`Select * from tblMessages order by intMessageNo desc limit 1`,
-        (err3,results3, fields3)=>{
-        if (err3) console.log(err3);
 
-        if (results3 == null || results3 == undefined || results3.length == 0){
+                                  },function(erry,resultsy){
+                                    if(erry){db.rollback(function(){console.log(erry)})}
+                                    else{
+                                      db.commit(function(erri){
+                                        if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
+                                        else{console.log("Done updating inventory!"); res.send("yes")}
+                                      })
+                                    }
 
-        }else{
-          messagenum = parseInt(results3[0].intMessageNo) + 1;
-        }
+                                  })
+                                }
+                              });
 
-        if (req.body.notify == 1){
-          // insert to message
-          db.query(`Insert into tblMessages (intMessageNo, intOrderHistoryNo, strMessage,
-            intAdminID) values ("${messagenum}", "${historynum}","${req.body.message}", "1000" )`,(err4,results4,fields4)=>{
-            if (err4) console.log(err4);
-          });
-        }
 
-        db.query(`Insert into tblOrderHistory (intOrderHistoryNo, intOrderNo,
-          strShippingMethod, strCourier, intStatus, intAdminID, intMessageNo) values ("${historynum}", "${req.body.orderNo}", "${req.body.shippingMethod}","${req.body.courier}", ${req.body.orderStatus}, "1000", "${messagenum}")`, (err5,results5,fields5)=>{
-          if (err5) console.log(err5);
-          res.send("yes");
 
-        });
+                            }
+                        }) // End of Order History -------
+                      }
+                  });
+                }
+            });
+          }
       });
+    }
+  })
 
-    });
-
-
-  });
 });
 
 router.get('/orderHistory',(req,res)=>{
@@ -143,25 +203,27 @@ router.get('/invoice', (req,res)=>{
   var orderno = req.query.order;
 
   // Order list
-  db.query(`Select * from tblOrder
+  db.query(`Select tblorderdetails.intQuantity as quantity, tblOrder.*, tblorderdetails.*,
+    tblproductinventory.*, tblproductlist.* from tblOrder
     join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
-    join tblproductlist on tblorderdetails.intproductno = tblproductlist.intproductno
-    where tblOrder.intOrderno = ${orderno}`, (err1,results1,fields1)=>{
+    join tblproductinventory on tblproductinventory.intinventoryno = tblorderdetails.intinventoryno
+    join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
+    where tblOrder.intOrderno = "${orderno}"`, (err1,results1,fields1)=>{
       if (err1) console.log(err1);
 
       // customer
       db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.*
         from tblOrder join tblUser on tblOrder.intUSerID = tblUser.intUserID
         join tblCustomer on tblUser.intUserID = tblCustomer.intUserID
-        where tblOrder.intOrderno = ${orderno}`, (err2,results2,fields2)=>{
+        where tblOrder.intOrderno = "${orderno}"`, (err2,results2,fields2)=>{
           if (err2) console.log(err2);
 
           // total
           db.query(`Select SUM(tblorderdetails.intquantity * tblorderdetails.purchaseprice) as
             totalAll from tblOrder
             join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
-            join tblproductlist on tblorderdetails.intproductno = tblproductlist.intproductno
-            where tblOrder.intOrderno = ${orderno}`, (err3,results3,fields3)=>{
+            join tblproductinventory on tblorderdetails.intinventoryno = tblproductinventory.intinventoryno
+            where tblOrder.intOrderno = "${orderno}"`, (err3,results3,fields3)=>{
               if (err3) console.log(err3);
 
               res.render('admin-custOrder/views/invoice', {orderlist: results1, customer: results2, moment: moment, total: results3[0].totalAll });

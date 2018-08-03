@@ -119,10 +119,10 @@
                             <% orderlist.forEach(function(i){ %>
                               <tr>
                                 <td><%= i.strProductCode %></td>
-                                <td><%= i.strProductName %></td>
-                                <td><%= i.intQuantity %></td>
-                                <td>Php <%= i.purchasePrice %></td>
-                                <td>Php <%= i.intQuantity * i.purchasePrice %></td>
+                                <td><%= i.strProductName %> <%=i.intSize%> <%=i.strUnitName%></td>
+                                <td><%= i.quantity %></td>
+                                <td>₱ <%= (i.purchasePrice).toFixed(2) %></td>
+                                <td>₱ <%= (i.quantity * i.purchasePrice).toFixed(2) %></td>
 
                               </tr>
                             <% }) %>
@@ -141,14 +141,22 @@
                       <div class="box-body">
                         <table class="table table-bordered">
                           <tr>
-                            <th></th>
+                            <th style="width: 50%"></th>
+                            <th style="width: 100px"></th>
                           </tr>
                           <tr>
-                            <td>Discount: 0%</td>
+                            <td>Discount:</td>
+                            <td  align="right"> 0%</td>
 
                           </tr>
                           <tr>
-                            <td>Total: PHP <%= total %></td>
+                            <td>Total: </td>
+                            <td  align="right">₱ <%= (total).toFixed(2) %></td>
+                          </tr>
+
+                          <tr>
+                            <td>Amount Due: </td>
+                            <td align="right">₱ <%= (total - payment).toFixed(2) %></td>
                           </tr>
 
                         </table>
@@ -213,7 +221,7 @@
                     <label for="stats">Order Status:</label>
                     <select class="form-control" id="orderstatus">
                       <option value="0">Pending</option>
-                      <option value="1">Processing</option>
+                      <option id="order_processing" value="1">Processing</option>
                       <option value="2">Shipped</option>
                       <option value="3">Delivered</option>
                       <option value="4">Will not Deliver</option>
@@ -415,6 +423,8 @@ $(document).ready(function(){
 
 $('#submit').on('click',function(){
 
+
+
   var notifyCustomer = "";
 
   if (document.getElementById('notify').checked == true){
@@ -433,16 +443,21 @@ $('#submit').on('click',function(){
           orderStatus: $('#orderstatus').val(),
           paymentStatus: $('#paymentstatus').val(),
           notify: notifyCustomer,
-          message: $('#message').val()
+          message: $('#message').val(),
+          total: '<%=total%>'
 
           },
     success: function(response,status,http){
       if (response){
         if (response == "yes"){
           swal("Success!","","success");
-          window.location.reload();
+
+        }else if(response == "false"){
+          swal("Error!","False","error");
+
         }else{
           swal("Error!","","error");
+
         }
       }
     }
