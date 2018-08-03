@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../../lib/database')();
 const firstID = 1000;
 const priceFormat = require('../cust-0extras/priceFormat');
+const moment = require('moment');
 
 function newOrderNo (req, res, next){
   db.query(`SELECT * FROM tblorder ORDER BY intOrderNo DESC LIMIT 1`, (err, results, fields) => {
@@ -113,7 +114,7 @@ router.get('/order/:orderNo', orderTotal, (req,res)=>{
     WHERE tblorder.intOrderNo= ? AND tblorder.intUserID= ?`,[req.params.orderNo, req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
     if (results[0]){
-      results.map( obj => obj.dateOrdered = obj.dateOrdered.toDateString("en-US").slice(4, 15) );
+      results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('ll') );
       results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) );
       res.render('cust-summary/views/order', {
         thisUser: req.user,
@@ -145,8 +146,8 @@ router.get('/voucher/:orderNo', orderTotal, (req,res)=>{
       WHERE intOrderNo= ? AND tbluser.intUserID= ? AND (intStatus= 0 OR intStatus= 1 OR intStatus= 2)`,[req.params.orderNo, req.user.intUserID],(err,results,fields)=>{
       if (err) console.log(err);
       if (results[0]){
-        results.map( obj => obj.dateOrdered = obj.dateOrdered.toDateString("en-US").slice(4, 15) );
-        results.map( obj => obj.paymentDue = obj.paymentDue.toDateString("en-US").slice(4, 15) );
+        results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('LL') );
+        results.map( obj => obj.paymentDue = moment(obj.paymentDue).format('LL') );
         res.send({order: results[0], orderTotal: req.orderTotal.totalPrice})
       }
       else{

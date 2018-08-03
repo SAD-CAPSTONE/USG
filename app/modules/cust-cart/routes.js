@@ -16,7 +16,8 @@ function thisSizes(req, res, next){
     req.session.item_qty ? 0 : req.session.item_qty = 1;
     req.session.item = {
       id: results[0].intProductNo,
-      name: `${results[0].strBrand} ${results[0].strProductName}`,
+      brand: results[0].strBrand,
+      name: results[0].strProductName,
       img: `/customer-assets/images/products/${results[0].strProductPicture}`,
       curSize: `${results[0].intSize.toString()} ${results[0].strUnitName}`,
       curPrice: priceFormat(results[0].productPrice.toFixed(2)),
@@ -48,7 +49,8 @@ router.get('/modal/:pid', (req, res)=>{
       },[]);
       req.session.modal_cart = {
         id: results[0].intProductNo,
-        name: `${results[0].strBrand} ${results[0].strProductName}`,
+        brand: results[0].strBrand,
+        name: results[0].strProductName,
         img: `/customer-assets/images/products/${results[0].strProductPicture}`,
         sizes: sizes,
         curSize: sizes[0][0],
@@ -130,7 +132,6 @@ router.get('/list', (req, res)=>{
     req.session.modal_cart.curQty = 1;
     req.session.item_qty = 1;
   }
-  console.log(req.session.cart)
   function cartLimitLoop(i){
     let cart = req.session.cart;
     db.query(`SELECT (SUM(intQuantity) - SUM(intReservedItems))stock FROM tblbatch WHERE intInventoryNo= ?`

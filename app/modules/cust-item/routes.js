@@ -1,10 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../lib/database')();
+const firstID = 1000;
 const priceFormat = require('../cust-0extras/priceFormat');
-const dateFormat = require('../cust-0extras/dateFormat');
-const timeDerived = require('../cust-0extras/timeDerived');
+const moment = require('moment');
 
+function newReviewID(req,res,next) {
+  db.query(`SELECT * FROM tblproductreview ORDER BY intProductReviewNo DESC LIMIT 1`, (err, results, fields) => {
+    if (err) console.log(err);
+    req.newReviewID = results[0] ? parseInt(results[0].intProductReviewNo)+1 : firstID;
+    return next();
+  });
+};
+
+function checkUser (req, res, next){
+  if(!req.user){
+    res.redirect('/login');
+  }
+  else{
+    return next();
+  }
+}
 function thisProduct(req,res,next){
   /*Currently Viewed Product, Match(params);
   *(tblproductlist)*(tblproductbrand)*(tblproductinventory)*(tblproductreview)*/
@@ -94,13 +110,56 @@ function productReviews(req,res,next){
     WHERE tblproductlist.intProductNo= ? AND tblproductreview.strReview IS NOT NULL`,
     [req.params.prodid], function (err,  results, fields) {
     if (err) console.log(err);
-    results.map( obj => obj.created_at = [dateFormat(obj.created_at), timeDerived(obj.created_at)].join(' - ') );
+    results.map( obj => obj.r_created_at = moment(obj.r_created_at).format('L - LT') );
     req.productReviews= results;
     return next();
   });
 }
+function thisUserReview(req,res,next){
+  if (!req.user){
+    req.thisUserReviewStatus= 0;
+    return next();
+  }
+  else{
+    db.beginTransaction(function(err) {
+      if (err) console.log(err);
+      db.query(`SELECT * FROM tblproductlist
+      	INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
+      	INNER JOIN tblorderdetails ON tblproductinventory.intInventoryNo= tblorderdetails.intInventoryNo
+        INNER JOIN tblorder ON tblorderdetails.intOrderNo= tblorder.intOrderNo
+        INNER JOIN tbluser ON tblorder.intUserID= tbluser.intUserID
+        WHERE tblproductlist.intProductNo= ? AND tblorder.intUserID= ? LIMIT 1`,
+        [req.params.prodid, req.user.intUserID], (err,results,fields)=> {
+        if (err) console.log(err);
+        req.thisUserReview= null;
+        req.thisUserReviewStatus= 0;
+        if (results[0]){
+          db.query(`SELECT * FROM tblproductlist
+            INNER JOIN tblproductreview ON tblproductlist.intProductNo= tblproductreview.intProductNo
+            INNER JOIN tbluser ON tblproductreview.intUserID= tbluser.intUserID
+            WHERE tblproductlist.intProductNo= ? AND tblproductreview.intUserID= ? LIMIT 1`,
+            [req.params.prodid, req.user.intUserID], (err,results,fields)=>{
+            if (err) console.log(err);
+            req.thisUserReview = results[0];
+            req.thisUserReviewStatus = results[0] ? 2 : 1;
+            db.commit(function(err) {
+              if (err) console.log(err);
+              return next();
+            });
+          });
+        }
+        else {
+          db.commit(function(err) {
+            if (err) console.log(err);
+            return next();
+          });
+        }
+      });
+    });
+  }
+}
 
-router.get('/:prodid', thisProduct, thisInventory, relatedProducts, popularProducts, productReviews, (req,res)=>{
+router.get('/:prodid', thisProduct, thisInventory, relatedProducts, popularProducts, productReviews, thisUserReview, (req,res)=>{
   req.session.item_qty = 1;
   req.session.item_inv = req.thisInventory[0].intInventoryNo;
   res.render('cust-item/views/index', {
@@ -109,7 +168,36 @@ router.get('/:prodid', thisProduct, thisInventory, relatedProducts, popularProdu
     thisInventory: req.thisInventory,
     relatedProducts: req.relatedProducts,
     popularProducts: req.popularProducts,
-    productReviews: req.productReviews
+    productReviews: req.productReviews,
+    thisUserReviewStatus: req.thisUserReviewStatus,
+    thisUserReview: req.thisUserReview
+  });
+});
+router.post('/:prodid/add-review', checkUser, newReviewID, (req,res)=>{
+  let stringquery1 = req.body.review ?
+    `INSERT INTO tblproductreview (intProductReviewNo, intProductNo, intUserID, strReview, intStars) VALUES (?,?,?,?,?)` :
+    `INSERT INTO tblproductreview (intProductReviewNo, intProductNo, intUserID, intStars) VALUES (?,?,?,?)`
+  let bodyarray1 = req.body.review ?
+    [req.newReviewID, req.params.prodid, req.user.intUserID, req.body.review, req.body.rating] :
+    [req.newReviewID, req.params.prodid, req.user.intUserID, req.body.rating]
+
+  db.query(stringquery1, bodyarray1, (err, results, fields) => {
+    if (err) console.log(err);
+    res.redirect(`/item/${req.params.prodid}`);
+  });
+});
+router.post('/:prodid/edit-review', checkUser, newReviewID, (req,res)=>{
+  let stringquery1 = req.body.review ?
+    `UPDATE tblproductreview SET strReview= ?, intStars= ? WHERE intProductReviewNo= ?` :
+    `UPDATE tblproductreview SET intStars= ? WHERE intProductReviewNo= ?`
+  let bodyarray1 = req.body.review ?
+    [req.body.review, req.body.rating, req.body.reviewNo] :
+    [req.body.rating, req.body.reviewNo]
+    console.log(bodyarray1);
+
+  db.query(stringquery1, bodyarray1, (err, results, fields) => {
+    if (err) console.log(err);
+    res.redirect(`/item/${req.params.prodid}`);
   });
 });
 
