@@ -4,6 +4,10 @@ function postToCart(modal, data, res, tog){
   clearTimeout(t1);
   clearTimeout(t2);
 
+  modal.next().on('click', ()=>{
+    $('#cartSidebarCollapse').click();
+  })
+
   tog == 1 ? modal.modal('toggle'): 0;
   modal.next().css({
     "max-width": "100%",
