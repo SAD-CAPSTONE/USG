@@ -124,7 +124,13 @@
       </div>
 
       <div class="pb-1">
-        <p class="mb-1"><b>Related Products</b></p>
+        <p class="mb-1">
+          <% if (catProducts){ %>
+          <b>Related Products</b>
+          <% }else{ %>
+          <b>More Products</b>
+          <% } %>
+        </p>
         <div class="container x-scrolling-div products-container p-0" data-simplebar="">
           <% relatedProducts.forEach((prod)=>{ %>
             <div class="custom-card card-list adjust this-product my-1">

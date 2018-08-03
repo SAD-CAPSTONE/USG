@@ -73,12 +73,33 @@ function relatedProducts(req,res,next){
     INNER JOIN (SELECT * FROM tblsubcategory)Cat ON tblproductlist.intSubCategoryNo= Cat.intSubCategoryNo
 		WHERE Brand.intStatus= 1 AND Inv.intQuantity > 0)A LEFT JOIN (SELECT * FROM tblorderdetails)Orders ON A.intInventoryNo= Orders.intInventoryNo
   	GROUP BY A.intProductNo)B LEFT JOIN (SELECT * FROM tblproductreview)Review ON B.intProductNo = Review.intProductNo
-    WHERE B.intCategoryNo= ? GROUP BY B.intProductNo ORDER BY intSubCategoryNo!= ?, OrderCNT DESC LIMIT 10`
-    , [req.thisProduct.intCategoryNo, req.thisProduct.intSubCategoryNo], function (err,  results, fields) {
+    WHERE B.intCategoryNo= ? AND B.intProductNo != ? GROUP BY B.intProductNo ORDER BY intSubCategoryNo!= ?, OrderCNT DESC LIMIT 10`
+    , [req.thisProduct.intCategoryNo, req.params.prodid, req.thisProduct.intSubCategoryNo], function (err,  results, fields) {
     if (err) console.log(err);
     results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) );
-    req.relatedProducts= results;
-    return next();
+    if (!results[0]){
+      db.query(`SELECT A.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating, COUNT(Review.strReview)AS cntReview FROM(
+        SELECT tblproductlist.*, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.productPrice, Inv.intQuantity, Brand.strBrand FROM tblproductlist
+        INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
+        INNER JOIN (SELECT * FROM tblproductinventory)Inv ON tblproductlist.intProductNo= Inv.intProductNo
+        WHERE Brand.intStatus= 1 AND Inv.intQuantity > 0 GROUP BY tblproductlist.intProductNo)A
+        LEFT JOIN (SELECT * FROM tblproductreview)Review ON A.intProductNo = Review.intProductNo
+        WHERE A.intProductNo != ?
+        GROUP BY A.intProductNo LIMIT 10`
+        , [req.params.prodid], function (err,  results, fields) {
+        if (err) console.log(err);
+        results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) );
+
+        req.catProducts= 0;
+        req.relatedProducts= results;
+        return next();
+      });
+    }
+    else{
+      req.catProducts= 1;
+      req.relatedProducts= results;
+      return next();
+    }
   });
 }
 function popularProducts(req,res,next){
@@ -166,6 +187,7 @@ router.get('/:prodid', thisProduct, thisInventory, relatedProducts, popularProdu
     thisUser: req.user,
     thisProduct: req.thisProduct,
     thisInventory: req.thisInventory,
+    catProducts: req.catProducts,
     relatedProducts: req.relatedProducts,
     popularProducts: req.popularProducts,
     productReviews: req.productReviews,
