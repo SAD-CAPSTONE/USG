@@ -10,8 +10,10 @@ html {
 	
 	/*background = gradient + image pattern combo*/
 
-	background-image: url("herbs4.jpg");
-	background-size: 130% 100%;
+	background-image: url("/assets/images/static2/herbs4.jpg");
+    background-size:     cover;
+    background-repeat:   no-repeat;
+    background-position: center center;  
 }
 
 body {
