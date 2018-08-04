@@ -19,158 +19,174 @@
 
     <!-- Main content -->
     <section class="content">
-   <div class="box box-success">
-     <div class="box-header with-border">
-       <h3 class="box-title">Purchase Order Form</h3>
-     </div>
 
-     <!-- purchase order body -->
-     <div class="box-body">
-
-       <small><b>Business Address:</b> 0002 G/F Elizabeth Hall BLDG. 371 Katipunan Ave., Loyola Heights </br>
-       Quezon City 1108</small> </br>
-       <small><b>Phone Number:</b> (02) 738-1202</small> </br>
-       <small><b>Mobile Number:</b> (0955) 904-4744</small> </br>
-       </br>
-
-       <form class="form-horizontal" id="purchaseForm" >
-       <div class="row">
-         <div class="col-sm-4">
-           <div class="form-group">
-             <label for="purcNo">P.O Number:</label>
-             <% var P = "1000"; %>
-             <% if( POno == null || POno == undefined || POno.length == 0){ %>
-
-             <% }else{ %>
-             <%  P = parseInt(POno[0].intPurchaseOrderNo) + 1 %>
-             <% } %>
-               &nbsp;<input type="text" disabled value="<%=P%>" name="POnum" id="purcNo" class="form-control">
-
-           </div>
+    <div class="row">
+      <div class="col-sm-1">
+      </div>
+      <div class="col-sm-10">
+        <div class="box box-success">
+         <div class="box-header with-border">
+           <h3 class="box-title">Purchase Order Form</h3>
          </div>
 
-         <div class="col-sm-2">
-         </div>
+         <!-- purchase order body -->
+         <div class="box-body">
 
-         <div class="col-sm-4">
-           <div class="form-group">
-             <label for="purcNo">P.O Date:</label>
-             <input type="date" disabled id="today" value="<%= moment().format("YYYY-MM-DD")%>" name="date" class="form-control">
+           <small><b>Business Address:</b> 0002 G/F Elizabeth Hall BLDG. 371 Katipunan Ave., Loyola Heights </br>
+           Quezon City 1108</small> </br>
+           <small><b>Phone Number:</b> (02) 738-1202</small> </br>
+           <small><b>Mobile Number:</b> (0955) 904-4744</small> </br>
+           </br>
 
-           </div>
-         </div>
-       </div>
+           <form class="form-horizontal" id="purchaseForm" >
+           <div align="center" class="row">
+             <div class="col-sm-1">
+             </div>
+             <div class="col-sm-4">
+               <div class="form-group">
+                 <label for="purcNo">P.O Number:</label>
+                 <% var P = "1000"; %>
+                 <% if( POno == null || POno == undefined || POno.length == 0){ %>
 
-       <div class="row">
-         <div class="col-sm-3">
-           <h4> &nbsp; Supplier </h4>
-         </div>
+                 <% }else{ %>
+                 <%  P = parseInt(POno[0].intPurchaseOrderNo) + 1 %>
+                 <% } %>
+                   <input type="text" disabled value="<%=P%>" name="POnum" id="purcNo" class="form-control">
 
-       </div>
-       <div class="row">
-         &nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
-       <p>  &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
-       </div>
-     </br>
-       <div>
+               </div>
+             </div>
 
-           <div class="form-group">
-             <input type="hidden" class="input-sm form-control" name="supplier" id="suppid" placeholder="">
-             <label for="businessName" class="col-sm-2 control-label"> Company Name</label>
+             <div class="col-sm-2">
+             </div>
 
              <div class="col-sm-4">
-               <input type="text" disabled class="input-sm form-control" id="businessName" placeholder="">
+               <div class="form-group">
+                 <label for="purcNo">P.O Date:</label>
+                 <input type="date" disabled id="today" value="<%= moment().format("YYYY-MM-DD")%>" name="date" class="form-control">
+
+               </div>
+             </div>
+             <div class="col-sm-1">
              </div>
            </div>
 
-           <div class="form-group">
+           <div class="row">
+             <div class="col-sm-3">
+               <h4> &nbsp; Supplier </h4>
+             </div>
+
+           </div>
+           <div class="row">
+             &nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
+           <p>  &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
+           </div>
+         </br>
+           <div>
+
+               <div class="form-group">
+                 <input type="hidden" class="input-sm form-control" name="supplier" id="suppid" placeholder="">
+                 <label for="businessName" class="col-sm-2 control-label"> Company Name</label>
+
+                 <div class="col-sm-4">
+                   <input type="text" disabled class="input-sm form-control" id="businessName" placeholder="">
+                 </div>
+               </div>
+
+               <div class="form-group">
 
 
-             <label for="contract" class="col-sm-2 control-label"> Contract No.</label>
+                 <label for="contract" class="col-sm-2 control-label"> Contract No.</label>
 
-             <div class="col-sm-4">
+                 <div class="col-sm-4">
 
-               <input type="text" disabled class="input-sm form-control" id="contract" placeholder="">
+                   <input type="text" disabled class="input-sm form-control" id="contract" placeholder="">
+                 </div>
+               </div>
+
+               <div class="form-group">
+
+                 <label for="address" class="col-sm-2 control-label">Address</label>
+
+                 <div class="col-sm-4">
+                   <input type="text" disabled class="input-sm form-control" id="address" placeholder="">
+                 </div>
+               </div>
+
+
+
+           </div>
+
+           <div class="row">
+             <div class="col-sm-3">
+               <h4> &nbsp;  </h4>
              </div>
            </div>
 
-           <div class="form-group">
+           <div class="row">
+             <div class="col-sm-12">
+             <div class="box">
+               <div class="box-header">
+                 <h3 class="box-title">Order List</h3>
 
-             <label for="address" class="col-sm-2 control-label"> Street Address</label>
 
-             <div class="col-sm-4">
-               <input type="text" disabled class="input-sm form-control" id="address" placeholder="">
+               </div>
+
+               <!-- buttons -->
+
+
+               &nbsp; &nbsp;<button type="button" id="addButton" disabled class="addRow small ui green button" ><i class="fa fa-plus"></i> Add Product</button>
+               &nbsp; &nbsp; <a href="" data-toggle="modal" id="searchProduct"  data-target="#selectProduct" hidden>Click here to view products of supplier</a>
+
+               <!-- /.box-header -->
+
+               <div class="box-body table-responsive">
+                 <table id="example" class="table table-bordered table-hover">
+                 <thead>
+                   <th style="width: 10px">#</th>
+                   <th>Product Name</th>
+                   <th>Quantity</th>
+                   <th>Variant</th>
+                   <th>Size</th>
+                 </thead>
+
+                 <tbody>
+
+               </tbody>
+
+                 </table>
+               </div>
+               <!-- /.box-body -->
+
+             </div>
+               <!-- /.box -->
              </div>
            </div>
 
+           <div class="row">
+             <div class="col-sm-8">
+               <label for="note">Special Note:</label>
+               <textarea class="form-control" name="specialnote" id="note"></textarea>
+            </div>
+          </div>
 
-
-       </div>
-
-       <div class="row">
-         <div class="col-sm-3">
-           <h4> &nbsp;  </h4>
-         </div>
-       </div>
-
-       <div class="row">
-         <div class="col-sm-12">
-         <div class="box">
-           <div class="box-header">
-             <h3 class="box-title">Order List</h3>
-
-
-           </div>
-
-           <!-- buttons -->
-
-
-           &nbsp; &nbsp;<button type="button" id="addButton" disabled class="addRow small ui green button" ><i class="fa fa-plus"></i> Add Product</button>
-           &nbsp; &nbsp; <a href="" data-toggle="modal" id="searchProduct"  data-target="#selectProduct" hidden>Click here to view products of supplier</a>
-
-           <!-- /.box-header -->
-
-           <div class="box-body table-responsive">
-             <table id="example" class="table table-bordered table-hover">
-             <thead>
-               <th style="width: 10px">#</th>
-               <th>Product Name</th>
-               <th>Quantity</th>
-               <th>Variant</th>
-               <th>Size</th>
-             </thead>
-
-             <tbody>
-
-           </tbody>
-
-             </table>
-           </div>
-           <!-- /.box-body -->
 
          </div>
-           <!-- /.box -->
-         </div>
-       </div>
 
-       <div class="row">
-         <div class="col-sm-8">
-           <label for="note">Special Note:</label>
-           <textarea class="form-control" name="specialnote" id="note"></textarea>
-        </div>
+         <div class="box-footer">
+              <a href="/purchaseOrder"><button type="button" class="large ui button">Back</button></a>
+              <a href=""><button type="submit" id="sub" class="btn large ui teal button">Submit Order Form</button></a>
+          </div>
+            <!-- /.box-footer -->
+          </form>
+       </div>
       </div>
 
+      <div class="col-sm-1">
+      </div>
+    </div>
 
-     </div>
 
-     <div class="box-footer">
-                <a href="/purchaseOrder"><button type="button" class="large ui button">Back</button></a>
-                <a href=""><button type="submit" id="sub" class="btn large ui teal button">Submit Order Form</button></a>
-            </div>
-              <!-- /.box-footer -->
 
-   </div>
- </form>
 
  </section>
 
@@ -333,94 +349,7 @@
 
 
 
-<!-- Main Footer -->
-<footer class="main-footer">
- <!-- To the right -->
- <div class="pull-right hidden-xs">
-   Ultra Super Green
- </div>
- <!-- Default to the left -->
- <strong>Copyright &copy; 2016 <a href="#">AdminLTE template</a>.</strong> All rights reserved.
-</footer>
-
-  <!-- Control Sidebar -->
-<aside class="control-sidebar control-sidebar-dark">
-    <!-- Create the tabs -->
-    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-      <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-      <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-    </ul>
-    <!-- Tab panes -->
-    <div class="tab-content">
-      <!-- Home tab content -->
-      <div class="tab-pane active" id="control-sidebar-home-tab">
-        <h3 class="control-sidebar-heading">Recent Activity</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript:;">
-              <i class="menu-icon fa fa-birthday-cake bg-red"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
-
-                <p>Will be 23 on April 24th</p>
-              </div>
-            </a>
-          </li>
-        </ul>
-        <!-- /.control-sidebar-menu -->
-
-        <h3 class="control-sidebar-heading">Tasks Progress</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript:;">
-              <h4 class="control-sidebar-subheading">
-                Custom Template Design
-                <span class="pull-right-container">
-                    <span class="label label-danger pull-right">70%</span>
-                  </span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-              </div>
-            </a>
-          </li>
-        </ul>
-        <!-- /.control-sidebar-menu -->
-
-      </div>
-      <!-- /.tab-pane -->
-      <!-- Stats tab content -->
-      <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-      <!-- /.tab-pane -->
-      <!-- Settings tab content -->
-      <div class="tab-pane" id="control-sidebar-settings-tab">
-        <form method="post">
-          <h3 class="control-sidebar-heading">General Settings</h3>
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Report panel usage
-              <input type="checkbox" class="pull-right" checked>
-            </label>
-
-            <p>
-              Some information about this general settings option
-            </p>
-          </div>
-          <!-- /.form-group -->
-        </form>
-      </div>
-      <!-- /.tab-pane -->
-    </div>
-  </aside>
-  <!-- /.control-sidebar -->
-  <!-- Add the sidebar's background. This div must be placed
-  immediately after the control sidebar -->
-  <div class="control-sidebar-bg"></div>
-</div>
-<!-- ./wrapper -->
+<%- include('../../../templates/admin-aside.ejs') -%>
 
 <!-- REQUIRED JS SCRIPTS -->
 
@@ -502,10 +431,9 @@ $(document).ready(function() {
        data: $('#purchaseForm').serialize(),
        success: function(response,status,http){
          if (response == "yes"){
-           swal({title: "Success!", text: "You have created an purchase order record", type: "success"},
-            function(){
-              location.reload();
-            })
+           swal({title: "Success!", text: "You have created an purchase order record", type: "success"}).then(()=>{
+             window.location.href = '/purchaseOrder'
+           })
          }
        },
        error: function(response){

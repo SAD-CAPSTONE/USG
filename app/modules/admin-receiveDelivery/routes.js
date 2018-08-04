@@ -50,7 +50,8 @@ router.post('/findNo', (req,res)=>{
 });
 
 router.get('/loadOrderList',(req,res)=>{
-  db.query(`Select * from tblPurchaseOrder join tblPurchaseOrderList on tblPurchaseOrder.intPurchaseOrderNo = tblPurchaseOrderList.intPurchaseOrderNo where tblPurchaseOrder.intPurchaseOrderNo = "${purch_no}" and intStatus = 0`,(err1,results1,fields1)=>{
+  // dapat kapag bad orders, yung bad lang lalabas
+  db.query(`Select * from tblPurchaseOrder join tblPurchaseOrderList on tblPurchaseOrder.intPurchaseOrderNo = tblPurchaseOrderList.intPurchaseOrderNo where tblPurchaseOrder.intPurchaseOrderNo = "${purch_no}" and (intStatus = 0)`,(err1,results1,fields1)=>{
     if(err1) console.log(err1);
     if (!err1) res.render('admin-receiveDelivery/views/productLoader', {re: results1});
 

@@ -63,7 +63,7 @@ router.get('/batch', (req,res)=>{
 router.get('/supplier', (req,res)=>{
   db.query(`Select tblSupplier.intStatus as Stats, tblUser.*,tblSupplier.* from
     tblUser join tblSupplier on tblUser.intUserID =
-    tblSupplier.intUserID`,(err1,results1,fields1)=>{
+    tblSupplier.intUserID where tblSupplier.intStatus <> 3`,(err1,results1,fields1)=>{
       if (err1) console.log(err1);
       res.render('admin-maintain/views/supplier', {re: results1});
 
@@ -207,6 +207,8 @@ router.get('/contract',(req,res)=>{
   });
 });
 
+
+
 // Product Category --------------------------
 router.get('/productCategory', (req,res)=>{
   db.query(`Select * from tblcategory`, (err1,results1,fields1)=>{
@@ -222,6 +224,15 @@ router.get('/productCategory', (req,res)=>{
 
 router.post('/editCategory',(req,res)=>{
   db.query(`Update tblCategory set strCategory = "${req.body.category}" where intCategoryNo = "${req.body.no}"`,(err,results,fieldds)=>{
+    if(err) console.log(err);
+    else{
+      res.send("yes")
+    }
+  });
+});
+
+router.post('/editSubCategory',(req,res)=>{
+  db.query(`Update tblSubCategory set strSubCategory = "${req.body.subcategory_e}", intCategoryNo = "${req.body.categ_e}" where intSubCategoryNo = "${req.body.no_e}"`,(err,results,fieldds)=>{
     if(err) console.log(err);
     else{
       res.send("yes")
@@ -319,6 +330,15 @@ router.post('/addBusinessType',(req,res)=>{
   });
 });
 
+router.post('/editBusinessType',(req,res)=>{
+  db.query(`Update tblBusinessType set strBusinessType = "${req.body.type_edit}" where intBusinessTypeNo = "${req.body.no_edit}"`,(err,resu,fie)=>{
+    if(err) console.log(err);
+    else{
+      res.send("yes");
+    }
+  });
+})
+
 router.post('/inactivateType',(req,res)=>{
   db.query(`Update tblBusinessType set intStatus = 0 where intBusinessTypeNo = "${req.body.no}"`,(err1,results1,fields1)=>{
     if(err1) console.log(err1);
@@ -392,7 +412,7 @@ router.get('/promotion', (req,res)=>{
 });
 
 router.post('/addPromotion',(req,res)=>{
-  db.query(`Insert into tblPromo (intPromoNo, intAdminID, strProductCode, strPromoName, discount, date_end, strPromoDescription) values ("${req.body.pno}","1000","${req.body.pcode}","${req.body.pname}","${req.body.pdiscount}","${req.body.pdue}","${req.body.pdesc}")`,(err1,results1,fields1)=>{
+  db.query(`Insert into tblPromo (intPromoNo, intAdminID,  strPromoName, discount, date_end, strPromoDescription) values ("${req.body.pno}","1000","${req.body.pname}","${req.body.pdiscount}","${req.body.pdue}","${req.body.pdesc}")`,(err1,results1,fields1)=>{
     if (err1) console.log(err1);
     if (!err1) res.send("yes");
   });
@@ -642,6 +662,15 @@ router.post('/addCertification',(req,res)=>{
       if (err2) console.log(err2);
       res.send("yes");
     })
+  });
+});
+
+router.post('/editCertification',(req,res)=>{
+  db.query(`Update tblProductCertification set strCertification = "${req.body.certification_e}" where intCertificationNo = "${req.body.no_e}"`,(err,resu,fie)=>{
+    if(err) console.log(err);
+    else{
+      res.send("yes");
+    }
   });
 });
 

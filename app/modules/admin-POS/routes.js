@@ -1,12 +1,11 @@
 var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
-'use strict';
 const nodemailer = require('nodemailer');
 const xoauth2 = require('xoauth2');
 const generatePassword = require('password-generator');
 var mailAccountUse = "imjanellealag@gmail.com"
-var mailAccountPassword = "jan2299Aa!"
+
 function me(){
   console.log(generatePassword(7, false));
 }
@@ -16,18 +15,7 @@ function run(){
 
     const email_to = 'imjanellealag@gmail.com';
 
-   //  let transporter = nodemailer.createTransport({
-   //     service: 'gmail',
-   //
-   //     auth: {
-   //        xoauth2: xoauth2.createXOAuth2Generator({
-   //          user: user_name,
-   //          client_id: '992501111737-qhi235s1dma1cksa1n2r14m9uul6b33j.apps.googleusercontent.com',
-   //          client_secret: '0DgRehIAZWKBg3rIjuTbaW0h',
-   //          refresh_token: '1/gRa-PZ-HiOcUHF1T7O2gfkwA7-rWIMXnm2nlSWKDqJw'
-   //        })
-   //     }
-   // });
+
 
    let transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',

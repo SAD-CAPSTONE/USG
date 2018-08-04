@@ -1,6 +1,13 @@
 var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
+const generatePassword = require('password-generator');
+
+
+router.post('/createAccount',(req,res)=>{
+  var password = generatePassword(7, false);
+  res.send({password: password, username: req.body.name});
+});
 
 router.post('/brand',(req,res)=>{
   db.query(`Select * from tblProductBrand where strBrand = "${req.body.data}"`,(err,results,fields)=>{
@@ -42,7 +49,7 @@ router.post('/category',(req,res)=>{
 });
 
 router.post('/subCategory',(req,res)=>{
-  db.query(`Select * from tblsubcategory where strsubCategory = "${req.body.data}"`,(err,results,fields)=>{
+  db.query(`Select * from tblsubcategory where strsubCategory = "${req.body.data}" and intCategoryno = ${req.body.data2}`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
       if(results.length == 0){

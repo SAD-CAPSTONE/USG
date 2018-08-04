@@ -71,32 +71,37 @@
       text: "You cannot undo pullout stock from inventory",
       type: "warning",
       showCancelButton: true,
-      confirmButtonClass: "btn-danger",
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
       confirmButtonText: "Pull-out List from Inventory",
-      cancelButtonText: "Back",
-      closeOnConfirm: false,
-      showLoaderOnConfirm: true
-    }, function(isConfirm){
-      $.ajax({
-        url: '/inventory/pullOutItem',
-        method: 'post',
-        datatype: "json",
-        data: {o: data},
-        success: function(response, status, http){
-          if(response == "yes"){
-            setTimeout(function(){
-              swal("Success!", response, "success");
-              location.reload();
-            }, 2000);
-          }else{
-            setTimeout(function(){
-              swal("Error", "There's an error", "error");
-            }, 2000);
-          }
-        }
+      cancelButtonText: "Back"
+    }).then((result)=>{
+      if(result.value){
 
-      })
+         $.ajax({
+           url: '/inventory/pullOutItem',
+           method: 'post',
+           datatype: "json",
+           data: {o: data},
+           success: function(response, status, http){
+             if(response == "yes"){
+               swal({title: 'Success', text: 'You pulled out items from inventory', type: 'success'}).then(() => {
+                 location.reload();
+               })
+
+             }else{
+               swal({title: 'Error', text: 'You have an error', type: 'error'}, function(){
+
+               })
+             }
+           }
+
+         })
+
+      }
     })
+
+
 
 
   });

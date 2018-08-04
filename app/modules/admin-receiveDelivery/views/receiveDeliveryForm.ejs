@@ -20,140 +20,154 @@
     <!-- Main content -->
     <section class="content">
 
-    <form id="receiveForm">
-
-    <div class="box box-success">
-			<div class="box-header with-border">
-				<h3 class="box-title">Receive Delivery Form</h3>
-			</div>
-
-			<!-- purchase order body -->
-			<div class="box-body">
-
-				<small><b>Business Address:</b> 0002 G/F Elizabeth Hall BLDG. 371 Katipunan Ave., Loyola Heights </br>
-				Quezon City 1108</small> </br>
-				<small><b>Phone Number:</b> (02) 738-1202</small> </br>
-				<small><b>Mobile Number:</b> (0955) 904-4744</small> </br>
-				</br>
-
-				<div class="row">
-					<div class="col-sm-4">
-						<div class="form-group">
-							<label for="purcNo">Receive Order Number:</label>
-              <% var number = "1000"; %>
-              <% if (re == null || re == undefined){ %>
-
-              <% }else if(re.length == 0){ %>
-              <% }else{ %>
-                <%  number = parseInt(re[0].intReceiveOrderNo) + 1 %>
-              <% } %>
-              <input type="text" value="<%= number %>" name="rno" class="form-control">
-						</div>
-					</div>
-
-					<div class="col-sm-2">
-					</div>
-
-					<div class="col-sm-4">
-
-						<div class="form-group">
-							<label for="purcNo">Receive Order Date:</label>
-
-							<input type="date" disabled value="<%= moment().format("YYYY-MM-DD") %>" class="form-control">
-						</div>
-					</div>
-				</div>
-
-      </br>
-
-        <div class="row">
-          <div id="formgroup" class="col-sm-4">
-            <label for="POno">Enter purchase order number:</label>
-            <input type="number"  required class="pono form-control" name="POno" required id="POno" >
-            <span id="errorhelpBlock" class="help-block">No purchase order record found!</span>
-            <span id="starthelpBlock" class="help-block">Press enter to check number</span>
-            <span id="successhelpBlock" class="help-block">Purchase Order number found!</span>
-
-            <input type="checkbox" name="active"  id="active" class="">
-              No purchase order record
-
-          </div>
-          <div class="col-sm-4">
-          </br>
-        </br>
-            <a data-target="#orderList" data-toggle="modal">Select purchase number here</a>
-          </div>
-        </div>
-
-
-
-				<div class="row">
-					<div class="col-sm-3">
-						<h4> &nbsp;  </h4>
-					</div>
-				</div>
-
-				<div class="row">
-					<div class="col-sm-12">
-					<div class="box">
-						<div class="box-header">
-						  <h3 class="box-title">Delivery List</h3>
-						</div>
-
-						<!-- buttons -->
-						&nbsp; &nbsp;<button type="button" id="addButton" disabled class="addRow small ui green button" ><i class="fa fa-plus"></i> Add Product</button>
-
-						<!-- /.box-header -->
-						<div id="deliveryList" class="box-body table-responsive">
-              <table id="example2" class="table table-bordered table-hover">
-                <thead>
-
-                  <th style="width: 10px">#</th>
-                  <th>Product Name</th>
-                  <th>Variant (if any)</th>
-                  <th>Size</th>
-                  <th>Quantity</th>
-                  <th>Expiration Date</th>
-                  <th>Status</th>
-                  <th>SRP</th>
-                  <th>Total Amount</th>
-
-                </thead>
-                <tbody>
-
-                </tbody>
-
-              </table>
-						</div>
-						<!-- /.box-body -->
-
-					</div>
-					  <!-- /.box -->
-					</div>
-				</div>
-
-
-
-      </br>
-    </br>
-        <div class="row">
-          <div class="col-sm-10">
-            <label for="note">Additional Notes:</label>
-            <textarea class="form-control" id="note" name="note"></textarea>
-          </div>
-        </div>
-
-			</div>
-
-			<div class="box-footer">
-          <a href="/receiveDelivery"><button type="button" class="large ui button">Back</button></a>
-          <button disabled id="sub" type="submit" class="large ui teal button">Submit Form</button>
+    <div class="row">
+      <div class="col-sm-1">
       </div>
-              <!-- /.box-footer -->
+      <div class="col-sm-10">
 
-		</div>
+            <div class="box box-success">
+          			<div class="box-header with-border">
+          				<h3 class="box-title">Receive Delivery Form</h3>
+          			</div>
 
-  </form>
+          			<!-- purchase order body -->
+          			<div class="box-body">
+                  <form id="receiveForm">
+          				<small><b>Business Address:</b> 0002 G/F Elizabeth Hall BLDG. 371 Katipunan Ave., Loyola Heights </br>
+          				Quezon City 1108</small> </br>
+          				<small><b>Phone Number:</b> (02) 738-1202</small> </br>
+          				<small><b>Mobile Number:</b> (0955) 904-4744</small> </br>
+          				</br>
+
+          				<div align="center" class="row">
+                    <div class="col-sm-1">
+                    </div>
+          					<div class="col-sm-4">
+          						<div class="form-group">
+          							<label for="purcNo">Receive Order Number:</label>
+                        <% var number = "1000"; %>
+                        <% if (re == null || re == undefined){ %>
+
+                        <% }else if(re.length == 0){ %>
+                        <% }else{ %>
+                          <%  number = parseInt(re[0].intReceiveOrderNo) + 1 %>
+                        <% } %>
+                        <input type="text" value="<%= number %>" name="rno" class="form-control">
+          						</div>
+          					</div>
+
+          					<div class="col-sm-2">
+          					</div>
+
+          					<div class="col-sm-4">
+
+          						<div class="form-group">
+          							<label for="purcNo">Receive Order Date:</label>
+
+          							<input type="date" disabled value="<%= moment().format("YYYY-MM-DD") %>" class="form-control">
+          						</div>
+          					</div>
+
+                    <div class="col-sm-1">
+                    </div>
+
+          				</div>
+
+                </br>
+
+                  <div class="row">
+                    <div id="formgroup" class="col-sm-4">
+                      <label for="POno">Enter purchase order number:</label>
+                      <input type="number"  required class="pono form-control" name="POno" required id="POno" >
+                      <span id="errorhelpBlock" class="help-block">No purchase order record found!</span>
+                      <span id="starthelpBlock" class="help-block">Press enter to check number</span>
+                      <span id="successhelpBlock" class="help-block">Purchase Order number found!</span>
+
+                      <input type="checkbox" name="active"  id="active" class="">
+                        No purchase order record
+
+                    </div>
+                    <div class="col-sm-4">
+                    </br>
+                  </br>
+                      <a data-target="#orderList" data-toggle="modal">Select purchase number here</a>
+                    </div>
+                  </div>
+
+
+
+          				<div class="row">
+          					<div class="col-sm-3">
+          						<h4> &nbsp;  </h4>
+          					</div>
+          				</div>
+
+          				<div class="row">
+          					<div class="col-sm-12">
+          					<div class="box">
+          						<div class="box-header">
+          						  <h3 class="box-title">Delivery List</h3>
+          						</div>
+
+          						<!-- buttons -->
+          						&nbsp; &nbsp;<button type="button" id="addButton" disabled class="addRow small ui green button" ><i class="fa fa-plus"></i> Add Product</button>
+
+          						<!-- /.box-header -->
+          						<div id="deliveryList" class="box-body table-responsive">
+                        <table id="example2" class="table table-bordered table-hover">
+                          <thead>
+
+                            <th style="width: 10px">#</th>
+                            <th>Product Name</th>
+                            <th>Variant (if any)</th>
+                            <th>Size</th>
+                            <th>Quantity</th>
+                            <th>Expiration Date</th>
+                            <th>Status</th>
+                            <th>SRP</th>
+                            <th>Total Amount</th>
+
+                          </thead>
+                          <tbody>
+
+                          </tbody>
+
+                        </table>
+          						</div>
+          						<!-- /.box-body -->
+
+          					</div>
+          					  <!-- /.box -->
+          					</div>
+          				</div>
+
+
+
+                </br>
+              </br>
+                  <div class="row">
+                    <div class="col-sm-10">
+                      <label for="note">Additional Notes:</label>
+                      <textarea class="form-control" id="note" name="note"></textarea>
+                    </div>
+                  </div>
+
+          			</div>
+
+          			<div class="box-footer">
+                    <a href="/receiveDelivery"><button type="button" class="large ui button">Back</button></a>
+                    <button disabled id="sub" type="submit" class="large ui teal button">Submit Form</button>
+                </div>
+                        <!-- /.box-footer -->
+                </form>
+        		</div>
+
+      </div>
+      <div class="col-sm-1">
+      </div>
+    </div>
+
+
 
 	</section>
 
@@ -216,94 +230,8 @@
   <!-- /.modal-dialog -->
   </div>
 
+  <%- include('../../../templates/admin-aside.ejs') -%>
 
-  <!-- Main Footer -->
-  <footer class="main-footer">
-    <!-- To the right -->
-    <div class="pull-right hidden-xs">
-      Anything you want
-    </div>
-    <!-- Default to the left -->
-    <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
-  </footer>
-
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Create the tabs -->
-    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-      <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-      <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-    </ul>
-    <!-- Tab panes -->
-    <div class="tab-content">
-      <!-- Home tab content -->
-      <div class="tab-pane active" id="control-sidebar-home-tab">
-        <h3 class="control-sidebar-heading">Recent Activity</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript:;">
-              <i class="menu-icon fa fa-birthday-cake bg-red"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
-
-                <p>Will be 23 on April 24th</p>
-              </div>
-            </a>
-          </li>
-        </ul>
-        <!-- /.control-sidebar-menu -->
-
-        <h3 class="control-sidebar-heading">Tasks Progress</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript:;">
-              <h4 class="control-sidebar-subheading">
-                Custom Template Design
-                <span class="pull-right-container">
-                    <span class="label label-danger pull-right">70%</span>
-                  </span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-              </div>
-            </a>
-          </li>
-        </ul>
-        <!-- /.control-sidebar-menu -->
-
-      </div>
-      <!-- /.tab-pane -->
-      <!-- Stats tab content -->
-      <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-      <!-- /.tab-pane -->
-      <!-- Settings tab content -->
-      <div class="tab-pane" id="control-sidebar-settings-tab">
-        <form method="post">
-          <h3 class="control-sidebar-heading">General Settings</h3>
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Report panel usage
-              <input type="checkbox" class="pull-right" checked>
-            </label>
-
-            <p>
-              Some information about this general settings option
-            </p>
-          </div>
-          <!-- /.form-group -->
-        </form>
-      </div>
-      <!-- /.tab-pane -->
-    </div>
-  </aside>
-  <!-- /.control-sidebar -->
-  <!-- Add the sidebar's background. This div must be placed
-  immediately after the control sidebar -->
-  <div class="control-sidebar-bg"></div>
-</div>
 <!-- ./wrapper -->
 
 <!-- REQUIRED JS SCRIPTS -->
@@ -348,7 +276,7 @@ $(document).ready(function(){
   $('#errorhelpBlock').hide();
   $('#successhelpBlock').hide();
 
-  $('#POno').on('change', function(){
+  $('#POno').on('keyup', function(){
     var text = $('#POno').val();
     $.ajax({
       url: '/receiveDelivery/findNo',
@@ -418,26 +346,9 @@ $(document).ready(function(){
         data: $('#receiveForm').serialize(),
         success: function(response,status,http){
           if (response){
-            swal({
-              title: "Do you have bad orders?",
-              text: "You can return bad orders",
-              type: "warning",
-              showCancelButton: true,
-              confirmButtonClass: "btn-warning",
-              confirmButtonText: "No bad orders",
-              cancelButtonText: "There are bad orders!",
-              closeOnConfirm: false,
-              closeOnCancel: false
-              },
-              function(isConfirm) {
-                if (isConfirm) {
-                  swal({title:"Success!", text:"You just created a delivery record", type:"success"},function(){
-                    location.reload();
-                  });
-                } else {
-                  alert();
-                }
-            });
+            swal({title:"Success!", text:"You just created a delivery record", type:"success"}).then(()=>{
+              window.location.href = '/receiveDelivery';
+            })
           }
         },
         error: function(re){

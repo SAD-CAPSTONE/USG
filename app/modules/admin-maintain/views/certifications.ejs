@@ -45,7 +45,7 @@
            <% }else{ %>
            <%  certification.forEach(function(i){ %>
                <tr>
-                 
+
                  <td><%=i.strCertification%></td>
                  <td>
                    <% if (i.intStatus == 1) { %>
@@ -56,7 +56,7 @@
 
                    <% } %>
                  </td>
-                 <td><button disabled class="btn btn-default btn-sm">Edit</button></td>
+                 <td><button data-toggle="modal" data-target="#editCertification" data-no="<%=i.intCertificationNo%>" data-name="<%=i.strCertification%>"  class="editCertificate large ui teal button"><i class="glyphicon glyphicon-edit"></i></button></td>
                </tr>
              <% }) %>
            <% } %>
@@ -118,93 +118,45 @@
 </div>
 
 
- <!-- Main Footer -->
- <footer class="main-footer">
-   <!-- To the right -->
-   <div class="pull-right hidden-xs">
-     Anything you want
-   </div>
-   <!-- Default to the left -->
-   <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
- </footer>
-
- <!-- Control Sidebar -->
- <aside class="control-sidebar control-sidebar-dark">
-   <!-- Create the tabs -->
-   <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-     <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-     <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-   </ul>
-   <!-- Tab panes -->
-   <div class="tab-content">
-     <!-- Home tab content -->
-     <div class="tab-pane active" id="control-sidebar-home-tab">
-       <h3 class="control-sidebar-heading">Recent Activity</h3>
-       <ul class="control-sidebar-menu">
-         <li>
-           <a href="javascript:;">
-             <i class="menu-icon fa fa-birthday-cake bg-red"></i>
-
-             <div class="menu-info">
-               <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
-
-               <p>Will be 23 on April 24th</p>
-             </div>
-           </a>
-         </li>
-       </ul>
-       <!-- /.control-sidebar-menu -->
-
-       <h3 class="control-sidebar-heading">Tasks Progress</h3>
-       <ul class="control-sidebar-menu">
-         <li>
-           <a href="javascript:;">
-             <h4 class="control-sidebar-subheading">
-               Custom Template Design
-               <span class="pull-right-container">
-                   <span class="label label-danger pull-right">70%</span>
-                 </span>
-             </h4>
-
-             <div class="progress progress-xxs">
-               <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-             </div>
-           </a>
-         </li>
-       </ul>
-       <!-- /.control-sidebar-menu -->
-
+ <div class="modal fade" id="editCertification">
+   <div class="modal-dialog">
+   <div class="modal-content">
+     <div class="modal-header">
+     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+       <span aria-hidden="true">&times;</span></button>
+     <h4 class="modal-title"></h4>
      </div>
-     <!-- /.tab-pane -->
-     <!-- Stats tab content -->
-     <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-     <!-- /.tab-pane -->
-     <!-- Settings tab content -->
-     <div class="tab-pane" id="control-sidebar-settings-tab">
-       <form method="post">
-         <h3 class="control-sidebar-heading">General Settings</h3>
+     <div class="modal-body">
+     <!-- Horizontal Form -->
 
-         <div class="form-group">
-           <label class="control-sidebar-subheading">
-             Report panel usage
-             <input type="checkbox" class="pull-right" checked>
-           </label>
+       <!-- form start -->
+       <form role="form" id="form_edit">
+         <div class="box-body">
+           <div class="form-group">
+             <label for="category">Product Certification:</label>
+             <input type="hidden"  class="form-control" name="no_e" id="no_e" >
 
-           <p>
-             Some information about this general settings option
-           </p>
+             <input type="text" required class="form-control" name="certification_e" id="certification_e" >
+           </div>
+
          </div>
-         <!-- /.form-group -->
-       </form>
+
+
      </div>
-     <!-- /.tab-pane -->
+       <div class="modal-footer">
+       <button type="button" class="large ui button" data-dismiss="modal">Close</button>
+       <button type="submit" id="save2" class="large ui teal button">Save</button>
+       </div>
+     </form>
    </div>
- </aside>
- <!-- /.control-sidebar -->
- <!-- Add the sidebar's background. This div must be placed
- immediately after the control sidebar -->
- <div class="control-sidebar-bg"></div>
+   <!-- /.modal-content -->
+ </div>
+ <!-- /.modal-dialog -->
 </div>
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+
 <!-- ./wrapper -->
 
 <!-- REQUIRED JS SCRIPTS -->
@@ -226,6 +178,22 @@
    'scroll'		: true
    })
  })
+</script>
+
+<script>
+  $('.editCertificate').on('click',function(){
+    $('#no_e').val($(this).data('no'));
+    $('#certification_e').val($(this).data('name'));
+  })
+
+  $('#form_edit').submit(function(e){
+    e.preventDefault();
+    $.post('/maintenance/editCertification',$('#form_edit').serialize(),function(data,status){
+      if(data){
+        confirm_alert();
+      }
+    })
+  })
 </script>
 
 <script>

@@ -7,7 +7,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Order No. 9012
+        Order No. <%= orderno %>
         <small></small>
       </h1>
       <ol class="breadcrumb">
@@ -39,7 +39,13 @@
                   <div class="box-body">
                     <i class="fa fa-shopping-cart"></i> Store: Ultra Super Green, Quezon City Branch </br>
                     <i class="fa fa-calendar"></i> Order Date: <%= moment(customer[0].dateOrdered).format("MM/DD/YYYY") %> </br>
-                    <i class="fa fa-credit-card"></i> Payment Method: nn </br>
+                    <i class="fa fa-credit-card"></i> Payment Method:
+                     <% if (customer[0].intPaymentMethod == 1) { %>
+                       Cash on Delivery
+                       <% }else { %>
+                         Bank Deposit
+                         <% } %>
+                       </br>
 
 
                   </div>
@@ -220,23 +226,23 @@
                   <div class="box-body">
                     <label for="stats">Order Status:</label>
                     <select class="form-control" id="orderstatus">
-                      <option value="0">Pending</option>
+                      <option id="order_pending" value="0">Pending</option>
                       <option id="order_processing" value="1">Processing</option>
-                      <option value="2">Shipped</option>
-                      <option value="3">Delivered</option>
-                      <option value="4">Will not Deliver</option>
-                      <option value="5">Returned</option>
+                      <option id="order_shipped" value="2">Shipped</option>
+                      <option id="order_delivered" value="3">Delivered</option>
+                      <option id="order_notDeliver" value="4">Will not Deliver</option>
+                      <option id="order_returned" value="5">Returned</option>
                     </select>
 
 
                   </br>
                   <label for="stats">Payment Status:</label>
                   <select class="form-control" id="paymentstatus">
-                    <option value="0">Awaiting Payment</option>
-                    <option value="1">Paid</option>
-                    <option value="2">Partially Paid</option>
-                    <option value="3">Cancelled</option>
-                    <option value="4">Refunded</option>
+                    <option id="payment_awaiting" value="0">Awaiting Payment</option>
+                    <option id="payment_paid" value="1">Paid</option>
+                    <option id="payment_partially" value="2">Partially Paid</option>
+                    <option id="payment_cancelled" value="3">Cancelled</option>
+                    <option id="payment_refunded" value="4">Refunded</option>
                   </select>
                 </br>
                     <label for="notify">
@@ -270,118 +276,14 @@
 
   <!-- /.content-wrapper -->
 
+  <%- include('../../../templates/admin-aside.ejs') -%>
 
-
-  <!-- Main Footer -->
-  <footer class="main-footer">
-    <!-- To the right -->
-    <div class="pull-right hidden-xs">
-      Anything you want
-    </div>
-    <!-- Default to the left -->
-    <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
-  </footer>
-
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Create the tabs -->
-    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-      <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-      <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-    </ul>
-    <!-- Tab panes -->
-    <div class="tab-content">
-      <!-- Home tab content -->
-      <div class="tab-pane active" id="control-sidebar-home-tab">
-        <h3 class="control-sidebar-heading">Recent Activity</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript:;">
-              <i class="menu-icon fa fa-birthday-cake bg-red"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
-
-                <p>Will be 23 on April 24th</p>
-              </div>
-            </a>
-          </li>
-        </ul>
-        <!-- /.control-sidebar-menu -->
-
-        <h3 class="control-sidebar-heading">Tasks Progress</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript:;">
-              <h4 class="control-sidebar-subheading">
-                Custom Template Design
-                <span class="pull-right-container">
-                    <span class="label label-danger pull-right">70%</span>
-                  </span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-              </div>
-            </a>
-          </li>
-        </ul>
-        <!-- /.control-sidebar-menu -->
-
-      </div>
-      <!-- /.tab-pane -->
-      <!-- Stats tab content -->
-      <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-      <!-- /.tab-pane -->
-      <!-- Settings tab content -->
-      <div class="tab-pane" id="control-sidebar-settings-tab">
-        <form method="post">
-          <h3 class="control-sidebar-heading">General Settings</h3>
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Report panel usage
-              <input type="checkbox" class="pull-right" checked>
-            </label>
-
-            <p>
-              Some information about this general settings option
-            </p>
-          </div>
-          <!-- /.form-group -->
-        </form>
-      </div>
-      <!-- /.tab-pane -->
-    </div>
-  </aside>
-  <!-- /.control-sidebar -->
-  <!-- Add the sidebar's background. This div must be placed
-  immediately after the control sidebar -->
-  <div class="control-sidebar-bg"></div>
-</div>
 <!-- ./wrapper -->
 
 <!-- REQUIRED JS SCRIPTS -->
 
-<!-- jQuery 3 -->
-<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- DataTables (new added)	 -->
-<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="/assets/admin/dist/js/adminlte.min.js"></script>
-<!-- iCheck 1.0.1 -->
-<script src="/assets/admin/plugins/iCheck/icheck.min.js"></script>
-<!-- sweetalert  -->
-<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
-<!-- Notification  -->
-<script src="/assets/admin/notification.js"></script>
+<%- include('../../../templates/admin-footer.ejs') -%>
+
 
 <!-- page script (new added) -->
 <script>
@@ -415,24 +317,72 @@
 </script>
 
 <script>
+  // shipped
+  if(<%= customer[0].Stat %> == 2){
+    $('#order_pending').attr('disabled',true);
+    $('#order_processing').attr('disabled',true);
+    $('#order_shipped').attr('disabled',true);
+
+  }
+
+  // delivered
+  if(<%= customer[0].Stat %> == 3){
+    $('#order_pending').attr('disabled',true);
+    $('#order_processing').attr('disabled',true);
+    $('#order_shipped').attr('disabled',true);
+    $('#order_notDeliver').attr('disabled',true);
+    $('#order_cancelled').attr('disabled',true);
+    $('#order_delivered').attr('disabled',true);
+
+  }
+
+  // cancelled
+  if(<%= customer[0].Stat %> == 3){
+    $('#order_pending').attr('disabled',true);
+    $('#order_processing').attr('disabled',true);
+    $('#order_shipped').attr('disabled',true);
+    $('#order_notDeliver').attr('disabled',true);
+    $('#order_cancelled').attr('disabled',true);
+
+  }
+
+  // will not delivered
+  if(<%= customer[0].Stat %> == 4){
+    $('#order_pending').attr('disabled',true);
+    $('#order_processing').attr('disabled',true);
+    $('#order_shipped').attr('disabled',true);
+    $('#order_delivered').attr('disabled',true);
+    $('#order_notDeliver').attr('disabled',true);
+    $('#order_returned').attr('disabled',true);
+
+
+
+  }
+
+  // not working
+  $('#payment_partially').attr('disabled',true);
+  $('#payment_refunded').attr('disabled',true);
+  $('#payment_cancelled').attr('disabled',true);
+
+
+</script>
+
+<script>
 $(document).ready(function(){
   $('#orderstatus').val("<%= customer[0].Stat %>");
   $('#paymentstatus').val("<%= customer[0].intPaymentStatus %>");
   $('#shippingmethod').val("<%=customer[0].strShippingMethod %>");
   $('#courier').val("<%=customer[0].strCourier%>");
 
+
+
 $('#submit').on('click',function(){
-
-
-
   var notifyCustomer = "";
-
   if (document.getElementById('notify').checked == true){
     notifyCustomer = 1;
   }else{
     notifyCustomer = 0;
   }
-
   $.ajax({
     url: '/customerOrder/assessOrder',
     method: 'POST',
@@ -445,15 +395,14 @@ $('#submit').on('click',function(){
           notify: notifyCustomer,
           message: $('#message').val(),
           total: '<%=total%>'
- 
           },
     success: function(response,status,http){
       if (response){
         if (response == "yes"){
-          swal("Success!","","success");
+          confirm_alert();
 
         }else if(response == "false"){
-          swal("Error!","False","error");
+          swal("Error!","You don't have enough stocks","error");
 
         }else{
           swal("Error!","","error");
