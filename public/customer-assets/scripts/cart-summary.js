@@ -27,7 +27,7 @@ $(() => {
                 <img src="${data.img}" height="100" width="100" alt="product">
               </a>
               <div class="px-2">
-                <p class="m-0 fs-08em fw-400 lh-p3em">${data.name}</p>
+                <p class="m-0 fs-08em fw-400 lh-p3em"><span class="text-brand">${data.brand}</span> ${data.name}</p>
                 <p class="fs-08em fw-400 text-muted">${data.curSize}</p>
                 <a class="fw-400 remove cursor-pointer"><i class="fa fa-trash"></i></a>
                 <div class="price">

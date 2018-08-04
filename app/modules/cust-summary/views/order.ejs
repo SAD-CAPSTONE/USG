@@ -1,21 +1,14 @@
 <%- include('../../../templates/navbar.ejs') -%>
 
-<script>
-  function printExternal(url) {
-    var printWindow = window.open(url, 'Print', 'left=200, top=100, width=950, height=500, toolbar=0, resizable=0');
-    printWindow.addEventListener('load', function() {
-      printWindow.print();
-      printWindow.close();
-    }, true);
-  }
-</script>
-<!-- <a onclick="printExternal('/invoice');" class="fake-link"> -->
-
 <div id="summary-container" class="container">
   <div id="summary-main-pane" class="fl-l">
     <div>
       <p class="m-0 fs-08em fw-400 inline-block">Products will be delivered within 7 working days</p>
-      <a class="inline" href=""><p class="m-0 fs-08em fw-400 fl-r">Cancel Order</p></a>
+      <% if (orderOne.orderStatus == 0 || orderOne.orderStatus == 1){ %>
+        <a class="inline" href data-toggle='modal' data-target='#CancelModal'><p class="m-0 fs-08em fw-400 fl-r">Cancel Order</p></a>
+      <% }else if(orderOne.orderStatus == 6){ %>
+        <a class="inline"><p class="m-0 fs-08em fw-400 fl-r text-danger">Cancelled</p></a>
+      <% } %>
     </div>
     <div class="p-0">
       <div id="header" class="px-3 py-1">
@@ -29,32 +22,37 @@
           <p class="inline m-0 fs-08em fw-400">Quantity</p>
         </div>
       </div>
-      <% for(i=0;i<5;i++){ %>
+      <% order.forEach((data)=>{ %>
         <div class="product-div pos-relative px-3">
           <div class="inline-block va-t">
-            <img src="/customer-assets/images/products/img<%= i+5%>.jpg" height="100" width="100" alt="product">
+            <a href="/item/<%= data.intProductNo%>" class="img-link">
+              <img src="/customer-assets/images/products/<%= data.strProductPicture%>" height="100" width="100" alt="product">
+            </a>
             <div class="px-2">
-              <p class="m-0 fs-08em fw-400 lh-p3em">The Superfoods Grocer Super Tempeh Plant Powered Protein</p>
-              <p class="fs-08em fw-400 text-muted">15ml</p>
-              <a class="fw-400" href=""><i class="fa fa-minus-circle"></i></a>
+              <p class="m-0 fs-08em fw-400 lh-p3em"><span class="text-brand"><%= data.strBrand%></span> <%= data.strProductName%></p>
+              <p class="fs-08em fw-400 text-muted"><%= data.intSize%> <%= data.strUnitName%></p>
+              <!-- <% if (orderOne.orderStatus == 0 || orderOne.orderStatus == 1){ %>
+                <a class="fw-400" href=""><i class="fa fa-minus-circle"></i></a>
+              <% } %> -->
               <div class="price">
-                <p class="mb-0 fs-1em fw-400 lh-p3em price-symbol">500.00</p>
-                <p class="mb-0 fs-09em lh-p3em text-muted price-symbol"><s>1,000.00</s> (-50%)</p>
+                <p class="mb-0 fs-1em fw-400 lh-p3em price-symbol"><%= data.productPrice%></p>
+                <p class="mb-0 fs-09em lh-p3em text-muted price-symbol"><s>0</s> (-0%)</p>
               </div>
             </div>
           </div>
           <div class="inline-block va-t mt-2">
-            <p class="mb-1 fs-1em fw-400 lh-p3em price-symbol">500.00</p>
-            <p class="mb-1 fs-09em lh-p3em text-muted price-symbol"><s>1,000.00</s></p>
-            <p class="mb-1 fs-09em lh-p3em text-muted">50% off</p>
+            <p class="mb-1 fs-1em fw-400 lh-p3em price-symbol"><%= data.productPrice%></p>
+            <p class="mb-1 fs-09em lh-p3em text-muted price-symbol"><s>0</s></p>
+            <p class="mb-1 fs-09em lh-p3em text-muted">0% off</p>
           </div>
           <div class="inline-block va-t mt-2">
-            <p class="m-0 fs-09em fw-400 lh-p3em">12</p>
-            <a class="fw-400 no-decoration" href=""><i class="fa fa-minus-circle mt-2"></i></a>
+            <p class="m-0 fs-09em fw-400 lh-p3em"><%= data.orderQty%></p>
+            <!-- <% if (orderOne.orderStatus == 0 || orderOne.orderStatus == 1){ %>
+              <a class="fw-400 no-decoration" href=""><i class="fa fa-minus-circle mt-2"></i></a>
+            <% } %> -->
           </div>
-
         </div>
-      <% } %>
+      <% }) %>
     </div>
   </div>
   <div id="summary-details-pane" class="fl-r">
@@ -62,35 +60,90 @@
       <p class="m-0 mb-1">Shipping & Billing</p>
       <small>Shipping Address</small>
       <small class="address block px-1 mb-1">
-        El Pueblo Manila, 8010 Anonas, Santa Mesa, Maynila, Kalakhang Maynila
-        <br>09236835707
+        <%= orderOne.strShippingAddress%>
       </small>
       <small>Billing Address</small>
       <small class="address block px-1">
-        Anonas, Santa Mesa, Maynila, 1016 Kalakhang Maynila
-        <br>09237438990
+        <%= orderOne.strBillingAddress%>
       </small>
     </div>
     <div>
       <p class="m-0 mb-1">Order Summary</p>
       <small class="label">Subtotal (5)</small>
-      <small class="price price-symbol">2,500.00</small>
+      <small class="price price-symbol"><%= orderTotal%></small>
       <br>
       <small class="label">Shipping Fee</small>
-      <small class="price price-symbol">100.00</small>
+      <small class="price price-symbol">0.00</small>
       <br>
       <small class="label label-total">Total</small>
-      <small id="payment-method">Cash on Delivery</small>
-      <small class="price total price-symbol">2,600.00</small>
+      <% if(orderOne.intPaymentMethod == 1){ %>
+        <small id="payment-method">Cash on Delivery</small>
+      <% }else{ %>
+        <small id="payment-method">Bank Deposit</small>
+      <% } %>
+      <small class="price total price-symbol"><%= orderTotal%></small>
       <div class="pos-relative mb-3">
         <small class="text-muted price vat block">VAT applied</small>
       </div>
-      <button type="button" id="print-btn" class="btn btn-custom-primary btn-sm fl-r">Print Slip</button>
+      <input id="orderNo" type="number" value="<%= orderNumber%>" hidden />
+      <% if(orderOne.intPaymentMethod == 2 && (orderOne.orderStatus == 0 || orderOne.orderStatus == 1 || orderOne.orderStatus == 2)){ %>
+        <button type="button" id="print-btn" class="btn btn-custom-primary btn-sm fl-r">Print Slip</button>
+      <% }else{ %>
+        <button type="button" id="print-btn" class="btn btn-custom-primary btn-sm fl-r" disabled>Print Slip</button>
+      <% } %>
       <div id="more-details">
         <a href=""><small class="block fs-08em fw-400">Vouchers Used</small></a>
-        <small>Date Ordered: Nov 10, 2017</small>
+        <small>Date Ordered: <%= orderOne.dateOrdered%></small>
       </div>
       <div class="clearfix"></div>
+    </div>
+  </div>
+</div>
+<div id="CancelModal" tabindex="-1" role="dialog" aria-labelledby="CancelModalTitle" aria-hidden="true" class="modal fade">
+  <div role="document" class="modal-dialog">
+    <div class="modal-content">
+      <form action="/summary/order/cancel" method="POST" class="m-0">
+        <div class="modal-header">
+          <h5 id="CancelModalTitle" class="modal-title">Cancel Order</h5>
+          <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+        </div>
+        <div class="modal-body pt-2">
+          <input type="number" name="orderNo" value="<%= orderOne.intOrderNo%>" hidden>
+          <select class="form-control custom-select" name="cancelreason">
+            <option value="Changed Mind">Changed Mind</option>
+            <option value="Decided for alternative product">Decided for alternative product</option>
+            <option value="Fees - shipping">Fees - shipping</option>
+            <option value="Found cheaper elsewhere">Found cheaper elsewhere</option>
+            <option value="Lead time too long">Lead time too long</option>
+            <option value="other">Other Reason</option>
+          </select>
+          <div class="form-group mt-2 mb-0 pos-relative">
+            <textarea class="form-control fs-08em" name="canceldesc" placeholder="Specify Reason" rows="3" maxlength="150" hidden></textarea>
+            <div class="txtcount-div block-none">
+              <small id="txtcount">0/150</small>
+            </div>
+          </div>
+          <div class="notice mt-2">
+            <p class="fs-09em fw-400 m-0">Cancellation Policy</p>
+            <small class="text-muted"> * Cancelled order cannot be on our system
+            <br> * Any vouchers, discounts, or promotions applied in the order cannot be reused
+            <br> * Price is subject to change depending on USG promotion programs. We do not commit to offering the same price if you re-order
+            <br> * In case of prepayment via credit/debit cards, your money will be refunded automatically to your account within one to two billing cycles (one billing cycle is 1 month), depending on your bank policy
+            <br> * The remaining order's value after you canceled one or several items has to fullfill the same conditions for discount, promotion, or minimum basket fee exemption applied to the order. If not, your order may be canceled
+            </small>
+          </div>
+          <div class="mt-1">
+            <div class="form-check">
+              <input id="agree" type="checkbox" required="required" class="form-check-input" style="margin-top: .2rem"/>
+              <label for="agree" class="form-check-label fs-08em fw-400">I have read and accept the Cancellation Policy</label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-custom-primary" disabled>Submit</button>
+          <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -98,4 +151,52 @@
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
+<%- include('../../../templates/scripts-pdf.ejs') -%>
+<script type="text/javascript">
+  let txtcount1;
+  function submitBtn(){
+    if(!$('input#agree').is(':checked')){
+      $('button[type=submit]').attr('disabled','disabled');
+    }
+    else if($('textarea').attr('hidden')){
+      $('button[type=submit]').removeAttr('disabled');
+    }
+    else if($("textarea").val()){
+      $('button[type=submit]').removeAttr('disabled');
+    }
+    else {
+      $('button[type=submit]').attr('disabled','disabled');
+    }
+  }
+
+  $('#print-btn').on('click', ()=>{
+    download_voucher();
+  })
+  $('select').on('change', function(){
+    if($(this).val()=='other'){
+      $('textarea').removeAttr('hidden');
+    }
+    else{
+      $('textarea').attr('hidden','hidden');
+      $('.txtcount-div').removeClass('block')
+      $('.txtcount-div').addClass('block-none')
+    }
+    submitBtn();
+  })
+  $('input#agree').on('click', function(){
+    submitBtn();
+  })
+  $('textarea').keyup(function(){
+    clearTimeout(txtcount1);
+    $('#txtcount').text(`${$(this).val().length}/150`);
+    $('.txtcount-div').removeClass('block-none')
+    $('.txtcount-div').addClass('block')
+    txtcount1 = setTimeout(()=>{
+      $('.txtcount-div').removeClass('block')
+      $('.txtcount-div').addClass('block-none')
+    },2000);
+
+    submitBtn();
+  });
+</script>
 <%- include('../../../templates/closer.ejs') -%>

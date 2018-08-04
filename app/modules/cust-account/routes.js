@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../lib/database')();
 const priceFormat = require('../cust-0extras/priceFormat');
+const moment = require('moment');
 
 function checkUser(req, res, next){
   if(!req.user){
@@ -34,9 +35,9 @@ router.get('/orders', checkUser, (req,res)=>{
     	SELECT SUM(purchasePrice*intQuantity)totalPrice, tblorder.intOrderNo FROM tblorder
     	INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
       GROUP BY tblorder.intOrderNo )Price ON tblorder.intOrderNo= Price.intOrderNo
-    WHERE tbluser.intuserID = '1002'`,[req.user.intUserID], (err1, results)=>{
+    WHERE tbluser.intuserID = ? ORDER BY intOrderNo DESC`,[req.user.intUserID], (err1, results)=>{
     if(err1) console.log(err1);
-    results[0] ? results.map( obj => obj.dateOrdered = obj.dateOrdered.toDateString("en-US").slice(4, 15) ) : 0;
+    results[0] ? results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('LL') ) : 0;
     results[0] ? results.map( obj => obj.totalPrice = priceFormat(obj.totalPrice.toFixed(2)) ) : 0
     res.render('cust-account/views/orders', {thisUser: req.user, orders: results});
   })
