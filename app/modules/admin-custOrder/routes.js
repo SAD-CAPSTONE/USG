@@ -126,6 +126,7 @@ function processing(req,res){
   }
 }
 
+var c = 0;
 function shipped(req,res){
 
   // update product inventory
@@ -134,31 +135,21 @@ function shipped(req,res){
     else{
       async.eachSeries(orders,function(data,callback){
         // check if stock is in Quantity
-        db.query(`Select * from tblProductinventory where intInventoryNo = "${orders[0].intInventoryNo}" and intQuantity  >= ${orders[0].intQuantity}`,(errw,resw,fieldsw)=>{
+        db.query(`Select * from tblProductinventory where intInventoryNo = "${orders[c].intInventoryNo}" and intQuantity  >= ${orders[c].intQuantity}`,(errw,resw,fieldsw)=>{
           if(errw){db.rollback(function(){console.log(errw); res.send("no")})}
           else{
             if(resw==undefined||resw==null){db.rollback(function(){ res.send("false")})}
             else if(resw.length==0){db.rollback(function(){ res.send("false")})}
             else{
-              db.query(`Update tblproductinventory set intQuantity = intQuantity - ${orders[0].intQuantity}, intReservedItems = intReservedItems - ${orders[0].intQuantity}
-                where (tblproductinventory.intInventoryNo = "${orders[0].intInventoryNo}") and (intQuantity  >= ${orders[0].intQuantity})`,(errx,resultsx,fieldsx)=>{
+              db.query(`Update tblproductinventory set intQuantity = intQuantity - ${orders[c].intQuantity}
+                where (tblproductinventory.intInventoryNo = "${orders[c].intInventoryNo}") and (intQuantity  >= ${orders[c].intQuantity})`,(errx,resultsx,fieldsx)=>{
                   if(errx){db.rollback(function(){console.log(errx); res.send("no");})}
 
                   else{
-                    db.query(`Select * from tblBatch where intInventoryNo = "${orders[0].intInventoryNo}" order by created_at desc`,(e8,r8,f8)=>{
-                      if(e8) {db.rollback(function(){console.log(e8); res.send("no");})}
-                      else{
-                        for (var i in r8){
-                          if(r8[i].intQuantity < orders[0].intQuantity){
+                    c++;
+                    callback();
 
-                          }else{
-
-                          }
-                        }
-                      }
-                    });
                   }
-                  callback();
                 });
             }
           }
