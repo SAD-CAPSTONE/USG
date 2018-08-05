@@ -1,19 +1,33 @@
 var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
+var voucher_codes = require('voucher-code-generator');
 
 
 // Voucher -----------------------
 router.get('/voucher', (req,res)=>{
+  var code = voucher_codes.generate({
+      prefix: "USG-",
+      postfix: "-2018"
+  })
   db.query(`Select * from tblvoucher`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
 
     db.query(`Select intVoucherNo, strVoucherCode from tblvoucher order by intvoucherno desc limit 1`,(err2,results2,fields2)=>{
       if (err2) console.log(err2);
-      res.render('admin-maintain/views/voucher', {re:results1, moment: moment, lastvoucher: results2});
+      res.render('admin-maintain/views/voucher', {re:results1, moment: moment, lastvoucher: results2, code: code});
 
     });
 
+  });
+});
+
+// Batch -------
+
+router.get('/batch',(req,res)=>{
+  db.query(`Select tblBatch.intQuantity as quantity, tblproductInventory.*, tblBatch.*, tblproductlist.* from tblBatch join tblproductinventory on tblbatch.intInventoryNo = tblproductInventory.intInventoryNo join tblProductList on tblProductList.intProductno = tblproductInventory.intProductno`,(err,results,fields)=>{
+    if(err) console.log(err);
+    res.render('admin-maintain/views/batch',{re: results, moment: moment});
   });
 });
 
