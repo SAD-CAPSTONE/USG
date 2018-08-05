@@ -1,4 +1,12 @@
-
+function confirm_alert(){
+  // changed font size .swal-popup because not compatible of bootstrap 3
+  swal({
+    type: 'success',
+    title: 'Your changes has been saved'
+  }).then(() => {
+    location.reload();
+  })
+}
   $(document).ready(function(){
 
     // new order notification

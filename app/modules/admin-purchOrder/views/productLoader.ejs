@@ -56,10 +56,10 @@ $('.addProdRow').on('click',function(){
 
   t.row.add( [
       count,
-      `<input style="width: 200px" required type="text" name="product[]" value="${$(this).data('product')}" class="form-control">`,
+      `<input  required type="text" name="product[]" value="${$(this).data('product')}" class="form-control">`,
       `<input style="width: 80px" required type="number" name="quantity[]" value="0" class="form-control">`,
-      `<input style="width: 80px" type="text" name="variant[]"  class="form-control">`,
-      `<input style="width: 80px" type="text" name="size[]"  class="form-control">`
+      `<input  type="text" name="variant[]"  class="form-control">`,
+      `<input  type="text" name="size[]"  class="form-control">`
 
   ] ).draw( false );
   count++;
@@ -68,10 +68,10 @@ $('.addProdRow').on('click',function(){
 $('.addRow').on( 'click', function () {
     t.row.add( [
         count,
-        '<input style="width: 200px" required type="text" name="product[]" value="" class="form-control">',
+        '<input  required type="text" name="product[]" value="" class="form-control">',
         '<input style="width: 80px" required type="number" name="quantity[]" value="0" class="form-control">',
-        '<input style="width: 80px" type="text" name="variant[]" class="form-control">',
-        '<input style="width: 80px" type="text" name="size[]" value="2" class="form-control">'
+        '<input  type="text" name="variant[]" class="form-control">',
+        '<input  type="text" name="size[]" value="2" class="form-control">'
 
     ] ).draw( false );
     count++;

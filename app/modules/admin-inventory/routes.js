@@ -65,7 +65,7 @@ router.post('/addProduct', (req,res)=>{
         var link = path.join(path.dirname(path.dirname(path.dirname(__dirname))), 'public/assets/images/products/'+lastnum+'.jpg');
         sample.mv(link, function(err){
           if (err) console.log(err);
-          res.redirect('/inventory/allProducts');
+          res.redirect(`/inventory/productInventory?product=${lastnum}`);
 
         });
 
@@ -282,9 +282,9 @@ router.get('/allStocks', (req,res)=>{
           db.query(`Select * from tbluom where intstatus = 1`, (err4,results4,fields4)=>{
             if (err4) console.log(err4);
 
-            // Query productstock last record
-            db.query(`Select * from tblproductstock order by intproductquantityno desc limit 1`, (err5,results5,fields5)=>{
-              if (err5) console.log(err5);
+            // // Query productstock last record
+            // db.query(`Select * from tblproductstock order by intproductquantityno desc limit 1`, (err5,results5,fields5)=>{
+            //   if (err5) console.log(err5); tbl_q = results5
 
               // query product inventory last record
               db.query(`Select * from tblproductinventory order by intinventoryno desc limit 1`, (err6,results6,fields6)=>{
@@ -298,7 +298,7 @@ router.get('/allStocks', (req,res)=>{
                   db.query(`Select * from tblbatch order by intbatchno desc limit 1`,(err8,results8, fields8)=>{
                     if (err8) console.log(err8);
 
-                    res.render('admin-inventory/views/stock', {re: results1, tbl_q: results5, tbl_i: results6, products: results3, uom: results4, suppliers: results2, transact: results7, lastbatch: results8 });
+                    res.render('admin-inventory/views/stock', {re: results1,  tbl_i: results6, products: results3, uom: results4, suppliers: results2, transact: results7, lastbatch: results8 });
 
                   });
 
@@ -308,7 +308,7 @@ router.get('/allStocks', (req,res)=>{
 
 
               });
-            });
+          //  });
 
           });
         });
@@ -573,25 +573,30 @@ router.post('/pullOutItem',(req,res)=>{
               db.query(`Update tblProductInventory set intQuantity = intQuantity - ${results2[0].intQuantity} where intInventoryNo = "${results2[0].intInventoryNo}"`,(err3,results3,fields3)=>{
                 if (err3){db.rollback(function(){console.log(err3)})
                 }else{
-                  db.query(`Select * from tblstockpullout`, (err4,results4,fields4)=>{
+                  db.query(`Select * from tblstockpullout order by intPullOutNo desc limit 1`, (err4,results4,fields4)=>{
                     if (err4){db.rollback(function(){console.log(err4)})}
                     else{
-                      if (results4 == null || results4 == undefined){}else if(results4.length == 0){}
+                      if (results4 == null || results4 == undefined){final_commit()}else if(results4.length == 0){final_commit()}
                       else{
-                        pullOutNo = parseInt(results4[0]) + 1;
+                        pullOutNo = parseInt(results4[0].intPullOutNo) + 1;
+                        final_commit()
                       }
-                      db.query(`Insert into tblstockpullout (intPullOutNo, intBatchNo, intAdminID, intQuantity) values("${pullOutNo}","${batch}","1000",${results2[0].intQuantity})`,(err5,results5,fields5)=>{
-                        if (err5){
-                          db.rollback(function(){console.log(err5)})
-                        }else{
-                          db.commit(function(e1){
-                            if(e1){db.rollback(function(){console.log(e1)})}
-                            else{
-                              res.send("yes");
-                            }
-                          })
-                        }
-                      });
+
+                      function final_commit(){
+                        db.query(`Insert into tblstockpullout (intPullOutNo, intBatchNo, intAdminID, intQuantity) values("${pullOutNo}","${batch}","1000",${results2[0].intQuantity})`,(err5,results5,fields5)=>{
+                          if (err5){
+                            db.rollback(function(){console.log(err5)})
+                          }else{
+                            db.commit(function(e1){
+                              if(e1){db.rollback(function(){console.log(e1)})}
+                              else{
+                                res.send("yes");
+                              }
+                            })
+                          }
+                        });
+                      }
+
                     }
                   });
                 }
