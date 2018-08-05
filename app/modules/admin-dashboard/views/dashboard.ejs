@@ -17,9 +17,7 @@
    <!-- Main content -->
    <section  class="content container-fluid">
 
-     <!--------------------------
-       | Your Page Content Here |
-       -------------------------->
+
 
       <div id="l"></div>
 
@@ -107,7 +105,7 @@
          <!-- PRODUCT LIST -->
          <div class="box box-primary">
            <div class="box-header with-border">
-             <h3 class="box-title">Recently Added Products</h3>
+             <h3 class="box-title">Nearly Expired Products</h3>
 
              <div class="box-tools pull-right">
                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -279,6 +277,85 @@
          </div>
          <!-- /.box -->
        </div>
+
+       <div class="col-sm-4">
+         <!-- PRODUCT LIST -->
+         <div class="box box-primary">
+           <div class="box-header with-border">
+             <h3 class="box-title">Recently Added Products</h3>
+
+             <div class="box-tools pull-right">
+               <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+               </button>
+               <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+             </div>
+           </div>
+           <!-- /.box-header -->
+           <div class="box-body">
+             <ul class="products-list product-list-in-box">
+               <li class="item">
+                 <div class="product-img">
+                   <img src="/assets/images/products/1000.jpg" alt="Product Image">
+                 </div>
+                 <div class="product-info">
+                   <a href="javascript:void(0)" class="product-title">Keto Leaf
+                     <span class="label label-warning pull-right">$1800</span></a>
+                   <span class="product-description">
+                         Samsung 32" 1080p 60Hz LED Smart HDTV.
+                       </span>
+                 </div>
+               </li>
+               <!-- /.item -->
+               <li class="item">
+                 <div class="product-img">
+                   <img src="/assets/images/products/1001.jpg" alt="Product Image">
+                 </div>
+                 <div class="product-info">
+                   <a href="javascript:void(0)" class="product-title">Gourmet Farms Coffee
+                     <span class="label label-info pull-right">$700</span></a>
+                   <span class="product-description">
+                         26" Mongoose Dolomite Men's 7-speed, Navy Blue.
+                       </span>
+                 </div>
+               </li>
+               <!-- /.item -->
+               <li class="item">
+                 <div class="product-img">
+                   <img src="/assets/images/products/1002.jpg" alt="Product Image">
+                 </div>
+                 <div class="product-info">
+                   <a href="javascript:void(0)" class="product-title">Picole Strawberry <span
+                       class="label label-danger pull-right">$350</span></a>
+                   <span class="product-description">
+                         Xbox One Console Bundle with Halo Master Chief Collection.
+                       </span>
+                 </div>
+               </li>
+               <!-- /.item -->
+               <li class="item">
+                 <div class="product-img">
+                   <img src="/assets/images/products/1003.jpg" alt="Product Image">
+                 </div>
+                 <div class="product-info">
+                   <a href="javascript:void(0)" class="product-title">Organic Soap
+                     <span class="label label-success pull-right">$399</span></a>
+                   <span class="product-description">
+                         PlayStation 4 500GB Console (PS4)
+                       </span>
+                 </div>
+               </li>
+               <!-- /.item -->
+             </ul>
+           </div>
+           <!-- /.box-body -->
+           <div class="box-footer text-center">
+             <a href="javascript:void(0)" class="uppercase">View All Products</a>
+           </div>
+           <!-- /.box-footer -->
+         </div>
+         <!-- /.box -->
+       </div>
+
      </div>
 
 
@@ -289,109 +366,15 @@
  </div>
  <!-- /.content-wrapper -->
 
- <!-- Main Footer -->
- <footer class="main-footer">
-   <!-- To the right -->
-   <div class="pull-right hidden-xs">
-     Ultra Super Green
-   </div>
-   <!-- Default to the left -->
-   <strong>Copyright &copy; 2016 <a href="#">AdminLTE template</a>.</strong> All rights reserved.
- </footer>
+ <%- include('../../../templates/admin-aside.ejs') -%>
 
- <!-- Control Sidebar -->
- <aside class="control-sidebar control-sidebar-dark">
-   <!-- Create the tabs -->
-   <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-     <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-     <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-   </ul>
-   <!-- Tab panes -->
-   <div class="tab-content">
-     <!-- Home tab content -->
-     <div class="tab-pane active" id="control-sidebar-home-tab">
-       <h3 class="control-sidebar-heading">Recent Activity</h3>
-       <ul class="control-sidebar-menu">
-         <li>
-           <a href="javascript:;">
-             <i class="menu-icon fa fa-birthday-cake bg-red"></i>
-
-             <div class="menu-info">
-               <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
-
-               <p>Will be 23 on April 24th</p>
-             </div>
-           </a>
-         </li>
-       </ul>
-       <!-- /.control-sidebar-menu -->
-
-       <h3 class="control-sidebar-heading">Tasks Progress</h3>
-       <ul class="control-sidebar-menu">
-         <li>
-           <a href="javascript:;">
-             <h4 class="control-sidebar-subheading">
-               Custom Template Design
-               <span class="pull-right-container">
-                   <span class="label label-danger pull-right">70%</span>
-                 </span>
-             </h4>
-
-             <div class="progress progress-xxs">
-               <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-             </div>
-           </a>
-         </li>
-       </ul>
-       <!-- /.control-sidebar-menu -->
-
-     </div>
-     <!-- /.tab-pane -->
-     <!-- Stats tab content -->
-     <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-     <!-- /.tab-pane -->
-     <!-- Settings tab content -->
-     <div class="tab-pane" id="control-sidebar-settings-tab">
-       <form method="post">
-         <h3 class="control-sidebar-heading">General Settings</h3>
-
-         <div class="form-group">
-           <label class="control-sidebar-subheading">
-             Report panel usage
-             <input type="checkbox" class="pull-right" checked>
-           </label>
-
-           <p>
-             Some information about this general settings option
-           </p>
-         </div>
-         <!-- /.form-group -->
-       </form>
-     </div>
-     <!-- /.tab-pane -->
-   </div>
- </aside>
- <!-- /.control-sidebar -->
- <!-- Add the sidebar's background. This div must be placed
- immediately after the control sidebar -->
- <div class="control-sidebar-bg"></div>
-</div>
 <!-- ./wrapper -->
 
 <!-- REQUIRED JS SCRIPTS -->
 
-<!-- jQuery 3 -->
-<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="/assets/admin/dist/js/adminlte.min.js"></script>
-<!-- Notification  -->
-<script src="/assets/admin/notification.js"></script>
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+
 <!-- ChartJS -->
 <script src="/assets/admin/bower_components/chart.js/Chart.js"></script>
 <!-- AdminLTE for demo purposes -->

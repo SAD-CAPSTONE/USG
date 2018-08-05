@@ -1,6 +1,7 @@
 <%- include('../../../templates/navbar.ejs') -%>
 <%- include('../../../templates/modals/cart-modal.ejs') -%>
 
+<link rel="stylesheet" href="/customer-assets/scripts/bar-rating/dist/themes/fontawesome-stars-o.css">
 <style>
   #main-desc .simplebar-content {
     height: auto !important;
@@ -16,20 +17,31 @@
   .x-scrolling-div .simplebar-scroll-content {
     overflow-y: hidden !important;
   }
+  .br-theme-fontawesome-stars-o .br-widget a {
+    font: normal normal normal 30px/1 FontAwesome;
+    margin-right: 4px;
+  }
+  .br-widget {
+    margin-bottom: 4px;
+  }
+
 </style>
 
 <div id="item-container" class="container">
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb p-0 mb-2">
-      <li class="breadcrumb-item"><a href="/store"><%= thisProduct.strCategory%></a></li>
-      <li class="breadcrumb-item"><a href="/store"><%= thisProduct.strSubCategory%></a></li>
-      <li class="breadcrumb-item active" aria-current="page"><%= thisProduct.strBrand%> <%= thisProduct.strProductName%></li>
-    </ol>
-  </nav>
   <div class="row">
     <div id="item-main-pane" class="">
       <div>
-        <img src="/customer-assets/images/products/<%= thisProduct.strProductPicture%>" alt="image">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb p-0 mb-0">
+            <li class="breadcrumb-item"><a href="/store?cat=<%= thisProduct.intCategoryNo%>&sub=all&sort=1&page=1"><%= thisProduct.strCategory%></a></li>
+            <li class="breadcrumb-item"><a href="/store?cat=<%= thisProduct.intCategoryNo%>&sub=<%= thisProduct.intSubCategoryNo%>&sort=1&page=1"><%= thisProduct.strSubCategory%></a></li>
+            <li class="breadcrumb-item active" aria-current="page"><%= thisProduct.strBrand%> <%= thisProduct.strProductName%></li>
+          </ol>
+        </nav>
+      </div>
+
+      <div>
+        <img src="/assets/images/products/<%= thisProduct.strProductPicture%>" alt="image">
         <!-- rating,title,desc -->
         <div id="main-desc" class="products-container">
           <%
@@ -46,7 +58,7 @@
           }%>
           <small class="text-muted ml-1"><%= thisProduct.cntRating%> ratings</small>
           <a href="#"><i class="fa fa-share-alt"></i></a>
-          <p class="mb-2"><%= thisProduct.strBrand%> <%= thisProduct.strProductName%></p>
+          <p class="mb-2"><span class="text-brand"><%= thisProduct.strBrand%></span> <%= thisProduct.strProductName%></p>
           <div id="main-desc-text" data-simplebar="">
             <small>
               <%= thisProduct.strDescription%>
@@ -112,11 +124,17 @@
       </div>
 
       <div class="pb-1">
-        <p class="mb-1"><b>Related Products</b></p>
+        <p class="mb-1">
+          <% if (catProducts){ %>
+          <b>Related Products</b>
+          <% }else{ %>
+          <b>More Products</b>
+          <% } %>
+        </p>
         <div class="container x-scrolling-div products-container p-0" data-simplebar="">
           <% relatedProducts.forEach((prod)=>{ %>
-            <div class="custom-card this-product my-1" style="margin-right: 22px !important; margin-left: 1px">
-              <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/customer-assets/images/products/<%= prod.strProductPicture%>"></a></div>
+            <div class="custom-card card-list adjust this-product my-1">
+              <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
               <div class="cart-button-div">
                 <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
                 <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
@@ -125,7 +143,7 @@
               </div>
 
               <div class="card-desc">
-                <p class="card-title"><%= prod.strBrand%> <%= prod.strProductName%></p>
+                <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
                 <p class="card-price price-symbol"><%= prod.productPrice%></p>
                 <small class="card-oldprice text-muted">
                   <span><s class="price-symbol">0</s></span> (-0%)<br>
@@ -151,6 +169,48 @@
             <%})%>
         </div>
       </div>
+
+      <div class="pb-1">
+        <p class="mb-1"><b>Popular Products</b></p>
+        <div class="container x-scrolling-div products-container p-0" data-simplebar="">
+          <% popularProducts.forEach((prod)=>{ %>
+            <div class="custom-card card-list adjust this-product my-1">
+              <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
+              <div class="cart-button-div">
+                <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
+                <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
+                data-target="#modal-product-to-cart">
+                Add to Cart</button>
+              </div>
+
+              <div class="card-desc">
+                <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
+                <p class="card-price price-symbol"><%= prod.productPrice%></p>
+                <small class="card-oldprice text-muted">
+                  <span><s class="price-symbol">0</s></span> (-0%)<br>
+                </small>
+                <small class="card-rating">
+                  <%
+                  rating = prod.aveRating;
+                  for(i=0; i<5; i++){
+                    if (rating < 1 && rating >= 0.5) {
+                    %> <i class="fa fa-star-half-o"></i> <%
+                    } else if (rating < 0.5) {
+                    %> <i class="fa fa-star-o"></i> <%
+                    } else {
+                    %> <i class="fa fa-star"></i> <%
+                    }
+                    --rating;
+                  }%>
+                  <span class="fs-08em fw-400">(<%= prod.cntRating%>)</span>
+                </small>
+                <small class="card-reviews"><%= prod.cntReview%> reviews</small>
+              </div>
+            </div>
+            <%})%>
+        </div>
+      </div>
+
     </div>
 
     <div id="item-review-pane" class="">
@@ -158,7 +218,7 @@
         <p><b>Ratings & Review</b></p>
         <div id="rating">
           <div class="fl-l">
-            <h2 class="m-0 pt-1"><%= thisProduct.aveRating? thisProduct.aveRating: 0%></h2>
+            <h2 class="m-0 pt-1"><%= thisProduct.aveRating? thisProduct.aveRating.toFixed(1): 0%></h2>
             <%
             rating = thisProduct.aveRating;
             for(i=0; i<5; i++){
@@ -207,7 +267,15 @@
         <br>
         <hr>
         <small class="text-muted mb-2"><%= thisProduct.cntReview%> reviews</small>
-        <a href=""><small class="card-reviews fl-r"><i class="fa fa-plus-square mr-1"></i>Add Review</small></a>
+
+        <%
+          switch(thisUserReviewStatus){
+            case 1 : %> <a href data-toggle='modal' data-target='#addReview'><small class="card-reviews fl-r"><i class="fa fa-plus-square mr-1"></i>Add Review</small></a> <% break;
+            case 2 : %> <a href data-toggle='modal' data-target='#editReview'><small class="card-reviews fl-r"><i class="fa fa-plus-square mr-1"></i>Edit Review</small></a> <% break;
+            default : %> <% break;
+          }
+        %>
+
         <% if(!productReviews[0]){ %>
           <p class="fs-09em fw-400 text-muted mt-1"><em>No reviews found</em></p>
         <% } %>
@@ -224,7 +292,7 @@
                 <i class="fa fa-star-o"></i>
               <% }
             } %>
-            <small class="text-muted"><%= rev.created_at %></small>
+            <small class="text-muted"><%= rev.r_created_at %></small>
             <small class="review-desc block">
               <%= rev.strReview %>
             </small>
@@ -235,10 +303,82 @@
     </div>
   </div>
 </div>
+<div id="addReview" tabindex="-1" role="dialog" aria-labelledby="addReviewTitle" aria-hidden="true" class="modal fade">
+  <div role="document" class="modal-dialog">
+    <div class="modal-content">
+      <form class="mb-0" action="/item/<%= thisProduct.intProductNo%>/add-review" method="POST">
+        <div class="modal-header">
+          <h5 id="addReviewTitle" class="modal-title">Add Review</h5>
+          <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+        </div>
+        <div class="modal-body">
+          <div class="align-center">
+            <select class="productRating" name="rating">
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+            <p class="mb-2"><span class="text-brand"><%= thisProduct.strBrand%></span> <%= thisProduct.strProductName%></p>
+          </div>
+          <textarea class="form-control fs-08em" name="review" placeholder="Review Description (Optional)" rows="5" maxlength="150"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-custom-primary" disabled>Submit</button>
+          <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div id="editReview" tabindex="-1" role="dialog" aria-labelledby="editReviewTitle" aria-hidden="true" class="modal fade">
+  <div role="document" class="modal-dialog">
+    <div class="modal-content">
+      <form class="mb-0" action="/item/<%= thisProduct.intProductNo%>/edit-review" method="POST">
+        <div class="modal-header">
+          <h5 id="editReviewTitle" class="modal-title">Edit Review</h5>
+          <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+        </div>
+        <div class="modal-body">
+          <div class="align-center">
+            <% if (thisUserReview){ %>
+              <input type="text" name="reviewNo" value="<%= thisUserReview.intProductReviewNo%>" hidden>
+            <% } %>
+            <select class="productRating" name="rating">
+              <%
+              if (thisUserReview){
+                for(i=0; i<=5; i++){
+                  if (thisUserReview.intStars == i){ %>
+                    <option value="<%= i%>" selected><%= i%></option><%
+                  }else{ %>
+                    <option value="<%= i%>"><%= i%></option><%
+                  }
+                }
+              } %>
+            </select>
+            <p class="mb-2"><span class="text-brand"><%= thisProduct.strBrand%></span> <%= thisProduct.strProductName%></p>
+          </div>
+          <% if (thisUserReview){ %>
+            <textarea class="form-control fs-08em" name="review" placeholder="Review Description (Optional)" rows="5" maxlength="150"><%= thisUserReview.strReview%></textarea>
+          <% }else{ %>
+            <textarea class="form-control fs-08em" name="review" placeholder="Review Description (Optional)" rows="5" maxlength="150"></textarea>
+          <% } %>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-custom-primary" disabled>Submit</button>
+          <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
+<script src="/customer-assets/scripts/bar-rating/dist/jquery.barrating.min.js"></script>
 <script type="text/javascript">
   // GET - InvNo + Display Price
   $('#radio-container').on('click', '.sizes-radio', function() {
@@ -282,5 +422,21 @@
       console.log(error);
     });
   });
+  // DESIGN - Rating
+  $(()=> {
+    $('.productRating').barrating({
+      theme: 'fontawesome-stars-o'
+    });
+    $('.br-widget > a:first-child').addClass('block-none');
+    $('.br-widget > a').on('click', ()=>{
+      if( $('#addReview .productRating').val() != 0 ){
+        $('#addReview button[type=submit]').removeAttr('disabled');
+      }
+    });
+    if( $('#editReview .productRating').val() != 0 ){
+      $('#editReview button[type=submit]').removeAttr('disabled');
+    }
+  });
+
 </script>
 <%- include('../../../templates/closer.ejs') -%>

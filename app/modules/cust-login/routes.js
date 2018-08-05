@@ -24,18 +24,15 @@ router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
 router.get('/auth', (req,res)=>{
   req.user ? 0 : res.redirect('login');
   switch(req.user.intUserTypeNo){
-    case 1:
-      res.redirect('/dashboard');
-      break;
-    case 2:
-      res.redirect('/consignor');
-      break;
+    case 1: res.redirect('/dashboard'); break;
+    case 2: res.redirect('/consignor'); break;
     case 3:
-      req.session.pendRoute == 1 ?
-        res.redirect('/account/dashboard'):
-        req.session.pendRoute == 2 ?
-          res.redirect('/summary/checkout'):
-          res.redirect('/home');
+      switch(req.session.pendRoute){
+        case 1 : res.redirect('/account/dashboard'); break;
+        case 2 : res.redirect('/summary/checkout'); break;
+        case 3 : res.redirect('/summary/order'); break;
+        default : res.redirect('/home'); break;
+      }
       break;
   }
 });

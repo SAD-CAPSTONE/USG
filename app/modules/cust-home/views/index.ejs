@@ -41,8 +41,8 @@
   </div>
   <div class="container x-scrolling-div products-container" data-simplebar="">
     <% popularProducts.forEach((prod)=>{ %>
-      <div class="custom-card this-product my-1" style="margin-right: 22px !important; margin-left: 1px">
-        <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/customer-assets/images/products/<%= prod.strProductPicture%>"></a></div>
+      <div class="custom-card card-list this-product my-1">
+        <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
         <div class="cart-button-div">
           <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
           <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
@@ -51,7 +51,8 @@
         </div>
 
         <div class="card-desc">
-          <p class="card-title"><%= prod.strBrand%> <%= prod.strProductName%></p>
+
+          <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
           <p class="card-price price-symbol"><%= prod.productPrice%></p>
           <small class="card-oldprice text-muted">
             <span><s class="price-symbol">0</s></span> (-0%)<br>
@@ -86,8 +87,8 @@
   </div>
   <div class="container x-scrolling-div products-container" data-simplebar="">
     <% newProducts.forEach((prod)=>{ %>
-      <div class="custom-card this-product my-1" style="margin-right: 22px !important; margin-left: 1px">
-        <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/customer-assets/images/products/<%= prod.strProductPicture%>"></a></div>
+      <div class="custom-card card-list this-product my-1">
+        <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
         <div class="cart-button-div">
           <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
           <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
@@ -96,7 +97,7 @@
         </div>
 
         <div class="card-desc">
-          <p class="card-title"><%= prod.strBrand%> <%= prod.strProductName%></p>
+          <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
           <p class="card-price price-symbol"><%= prod.productPrice%></p>
           <small class="card-oldprice text-muted">
             <span><s class="price-symbol">0</s></span> (-0%)<br>
