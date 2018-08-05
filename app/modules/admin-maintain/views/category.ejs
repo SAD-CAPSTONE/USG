@@ -27,13 +27,13 @@
 					<!-- /.box-header -->
           &nbsp;&nbsp;<button data-toggle="modal" data-target="#categorymodal" class="large ui green button">Add Category</button>
 					<div class="box-body table-responsive">
-					  <table id="category" class="table table-bordered table-hover">
+					  <table id="category_table" class="table table-bordered table-hover">
             <thead>
   						<tr>
-  						  <th style="width: 10px">No</th>
+
   						  <th>Category</th>
-  						  <th>Status</th>
-  						  <th style="width: 40px">Actions</th>
+  						  <th style="width: 20%">Status</th>
+  						  <th style="width: 20%">Actions</th>
   						</tr>
           </thead>
           <tbody>
@@ -42,7 +42,7 @@
             <% }else{ %>
             <%  category.forEach(function(i){ %>
                 <tr>
-                  <td><%=i.intCategoryNo%></td>
+
                   <td><%=i.strCategory%></td>
                   <td>
                     <% if (i.intStatus == 1) { %>
@@ -52,7 +52,7 @@
                       <button data-no="<%=i.intCategoryNo%>" class="ui toggle button inactive activate_category">Inactive</button>
                     <% } %>
                   </td>
-                  <td><button class="btn btn-default btn-sm">Edit</button></td>
+                  <td><button data-no="<%=i.intCategoryNo%>" data-category="<%=i.strCategory%>" data-toggle="modal" data-target="#editCategory" class="editCategory large ui teal button"><i class="glyphicon glyphicon-edit"></i></button></td>
                 </tr>
               <% }) %>
             <% } %>
@@ -75,7 +75,7 @@
 					<!-- /.box-header -->
           &nbsp;&nbsp;<button data-toggle="modal" data-target="#subcategorymodal" class="large ui green button">Add Sub-Category</button>
 					<div class="box-body table-responsive">
-					  <table id="subCategory" class="table table-bordered table-hover">
+					  <table id="subCategory_table" class="table table-bordered table-hover">
               <thead>
               <tr>
   						  <th style="width: 10px">No</th>
@@ -99,7 +99,7 @@
                         <button data-no="<%=i.intSubCategoryNo%>" class="ui toggle button inactive activate_subcategory">Inactive</button>
                       <% } %>
                     </td>
-                    <td><button class="btn btn-default btn-sm">Edit</button></td>
+                    <td><button data-target="#editSubCategory" data-toggle="modal" data-no="<%=i.intSubCategoryNo%>" data-name2="<%=i.strSubCategory%>" data-name1="<%=i.intCategoryNo%>" class="editSubCategory large ui teal button" ><i class="glyphicon glyphicon-edit"></i></button></td>
                   </tr>
               <%  }) %>
             <%  } %>
@@ -123,6 +123,44 @@
 
   <!-- Modals -->
 
+
+  	<div class="modal fade" id="editCategory">
+  	  <div class="modal-dialog">
+  		<div class="modal-content">
+  		  <div class="modal-header">
+  			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  			  <span aria-hidden="true">&times;</span></button>
+  			<h4 class="modal-title">Edit Category</h4>
+  		  </div>
+  		  <div class="modal-body">
+  			<!-- Horizontal Form -->
+
+  					<!-- form start -->
+            <form role="form" id="form1_edit">
+                <div class="box-body">
+                  <div id="formgroup1_edit"  class=" form-group">
+                    <label for="category">Product Category:</label>
+                    <input type="hidden" name="no" id="cat_no">
+                    <input type="text" required class="form-control" name="category" id="category_edit" >
+                    <span id="errorhelpBlock1_edit" class="help-block">You already have the same record!</span>
+
+                  </div>
+
+                </div>
+
+
+  		  </div>
+  		  <div class="modal-footer">
+  			<button type="button" class="large ui button" data-dismiss="modal">Close</button>
+  			<button type="submit" id="save1_edit" class="large ui teal button">Save</button>
+  		  </div>
+        </form>
+  		</div>
+  		<!-- /.modal-content -->
+  	</div>
+    <!-- /.modal-dialog -->
+  </div>
+
 	<div class="modal fade" id="categorymodal">
 	  <div class="modal-dialog">
 		<div class="modal-content">
@@ -137,9 +175,11 @@
 					<!-- form start -->
           <form role="form" method="post" action="/maintenance/addCategory">
               <div class="box-body">
-                <div class="form-group">
+                <div id="formgroup1"  class=" form-group">
                   <label for="category">Product Category:</label>
                   <input type="text" required class="form-control" name="category" id="category" placeholder="ex. Food">
+                  <span id="errorhelpBlock1" class="help-block">You already have the same record!</span>
+
                 </div>
 
               </div>
@@ -148,13 +188,60 @@
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="large ui button" data-dismiss="modal">Close</button>
-			<button type="submit" class="large ui teal button">Save</button>
+			<button type="submit" id="save1" class="large ui teal button">Save</button>
 		  </div>
       </form>
 		</div>
 		<!-- /.modal-content -->
 	</div>
   <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="editSubCategory">
+  <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Edit SubCategory</h4>
+    </div>
+    <div class="modal-body">
+    <!-- Horizontal Form -->
+
+        <!-- form start -->
+        <form role="form" id="form2_edit">
+            <div class="box-body">
+              <div id="formgroup2" class="form-group">
+                <input type="hidden" required class="form-control" name="no_e" id="no_e" placeholder="">
+                <label for="categories">Choose Category here:</label>
+                <select class="form-control" id="categ_e" name="categ_e">
+                  <% if (category == undefined || category == null || category.length == 0){ %>
+
+                  <%}else{ %>
+                  <%  category.forEach(function(i){ %>
+                  <option value="<%=i.intCategoryNo%>"><%=i.strCategory%></option>
+                  <%  }) %>
+                  <% } %>
+                </select>
+                <label for="subcategory">Sub Category:</label>
+                <input type="text" required class="form-control" name="subcategory_e" id="subcategory_e" placeholder="">
+                <span id="errorhelpBlock2" class="help-block">You already have the same record!</span>
+
+              </div>
+
+            </div>
+
+
+    </div>
+    <div class="modal-footer">
+    <button type="button" class="large ui button" data-dismiss="modal">Close</button>
+    <button type="submit" id="save2" class="large ui teal button">Save</button>
+    </div>
+    </form>
+  </div>
+  <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
 </div>
 
 
@@ -172,7 +259,7 @@
 					<!-- form start -->
           <form role="form" method="post" action="/maintenance/addSubCategory">
               <div class="box-body">
-                <div class="form-group">
+                <div id="formgroup2" class="form-group">
                   <label for="categories">Choose Category here:</label>
                   <select class="form-control" name="categ">
                     <% if (category == undefined || category == null || category.length == 0){ %>
@@ -185,6 +272,8 @@
                   </select>
                   <label for="subcategory">Sub Category:</label>
                   <input type="text" required class="form-control" name="subcategory" id="subcategory" placeholder="">
+                  <span id="errorhelpBlock2" class="help-block">You already have the same record!</span>
+
                 </div>
 
               </div>
@@ -193,7 +282,7 @@
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="large ui button" data-dismiss="modal">Close</button>
-			<button type="submit" class="large ui teal button">Save</button>
+			<button type="submit" id="save2" class="large ui teal button">Save</button>
 		  </div>
       </form>
 		</div>
@@ -202,93 +291,9 @@
   <!-- /.modal-dialog -->
 </div>
 
-  <!-- Main Footer -->
-  <footer class="main-footer">
-    <!-- To the right -->
-    <div class="pull-right hidden-xs">
-      Anything you want
-    </div>
-    <!-- Default to the left -->
-    <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
-  </footer>
 
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Create the tabs -->
-    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-      <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-      <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-    </ul>
-    <!-- Tab panes -->
-    <div class="tab-content">
-      <!-- Home tab content -->
-      <div class="tab-pane active" id="control-sidebar-home-tab">
-        <h3 class="control-sidebar-heading">Recent Activity</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript:;">
-              <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+<%- include('../../../templates/admin-aside.ejs') -%>
 
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
-
-                <p>Will be 23 on April 24th</p>
-              </div>
-            </a>
-          </li>
-        </ul>
-        <!-- /.control-sidebar-menu -->
-
-        <h3 class="control-sidebar-heading">Tasks Progress</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript:;">
-              <h4 class="control-sidebar-subheading">
-                Custom Template Design
-                <span class="pull-right-container">
-                    <span class="label label-danger pull-right">70%</span>
-                  </span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-              </div>
-            </a>
-          </li>
-        </ul>
-        <!-- /.control-sidebar-menu -->
-
-      </div>
-      <!-- /.tab-pane -->
-      <!-- Stats tab content -->
-      <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-      <!-- /.tab-pane -->
-      <!-- Settings tab content -->
-      <div class="tab-pane" id="control-sidebar-settings-tab">
-        <form method="post">
-          <h3 class="control-sidebar-heading">General Settings</h3>
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Report panel usage
-              <input type="checkbox" class="pull-right" checked>
-            </label>
-
-            <p>
-              Some information about this general settings option
-            </p>
-          </div>
-          <!-- /.form-group -->
-        </form>
-      </div>
-      <!-- /.tab-pane -->
-    </div>
-  </aside>
-  <!-- /.control-sidebar -->
-  <!-- Add the sidebar's background. This div must be placed
-  immediately after the control sidebar -->
-  <div class="control-sidebar-bg"></div>
-</div>
 <!-- ./wrapper -->
 
 <!-- REQUIRED JS SCRIPTS -->
@@ -298,8 +303,25 @@
 <!-- page script (new added) -->
 
 <script>
+  $('.editSubCategory').on('click',function(){
+    $('#no_e').val($(this).data('no'));
+    $('#categ_e').val($(this).data('name1'));
+    $('#subcategory_e').val($(this).data('name2'));
+  })
+
+  $('#form2_edit').submit(function(e){
+    e.preventDefault();
+    $.post('/maintenance/editSubCategory',$('#form2_edit').serialize(),function(data,status){
+      if(data){
+        confirm_alert();
+      }
+    })
+  })
+</script>
+
+<script>
   $(function () {
-    $('#category').DataTable({
+    $('#category_table').DataTable({
       'paging'      : true,
       'lengthChange': true,
       'searching'   : true,
@@ -314,7 +336,7 @@
 
 <script>
   $(function () {
-    $('#subCategory').DataTable({
+    $('#subCategory_table').DataTable({
       'paging'      : true,
       'lengthChange': true,
       'searching'   : true,
@@ -398,6 +420,65 @@ $(".navi a:contains('Product Category')").parent().addClass("active");
     })
   })
 
+</script>
+
+<script>
+  $('#errorhelpBlock1').hide();
+  $('#save1').attr('disabled',true);
+  $('#category').on('keyup',function(){
+
+    $.post('/validate/category',{data: $(this).val()},function(data,status){
+      if(data == "yes"){
+        $('#errorhelpBlock1').show();
+        $('#formgroup1').attr('class', 'form-group has-error');
+        $('#save1').attr('disabled',true);
+
+      }else{
+        $('#errorhelpBlock1').hide();
+        $('#formgroup1').attr('class', 'form-group has-success');
+        $('#save1').attr('disabled',false);
+      }
+    });
+  })
+</script>
+
+<script>
+  $('.editCategory').on('click',function(){
+    $('#cat_no').val($(this).data('no'));
+    $('#category_edit').val($(this).data('category'));
+  });
+  $('#form1_edit').submit(function(e){
+    e.preventDefault();
+    $.post('/maintenance/editCategory',$('#form1_edit').serialize(), function(data,success){
+      if(data=="yes"){
+        confirm_alert();
+      }else{
+        swal({title:"Error",text:"", type:"error"});
+
+      }
+    })
+  })
+</script>
+
+
+<script>
+  $('#errorhelpBlock2').hide();
+  $('#save2').attr('disabled',true);
+  $('#subcategory_e').on('keyup',function(){
+
+    $.post('/validate/subCategory',{data: $(this).val(), data2: $('#categ_e').val()},function(data,status){
+      if(data == "yes"){
+        $('#errorhelpBlock2').show();
+        $('#formgroup2').attr('class', 'form-group has-error');
+        $('#save2').attr('disabled',true);
+
+      }else{
+        $('#errorhelpBlock2').hide();
+        $('#formgroup2').attr('class', 'form-group has-success');
+        $('#save2').attr('disabled',false);
+      }
+    });
+  })
 </script>
 
 

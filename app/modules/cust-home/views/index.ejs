@@ -42,7 +42,7 @@
   <div class="container x-scrolling-div products-container" data-simplebar="">
     <% popularProducts.forEach((prod)=>{ %>
       <div class="custom-card card-list this-product my-1">
-        <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/customer-assets/images/products/<%= prod.strProductPicture%>"></a></div>
+        <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
         <div class="cart-button-div">
           <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
           <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
@@ -88,7 +88,7 @@
   <div class="container x-scrolling-div products-container" data-simplebar="">
     <% newProducts.forEach((prod)=>{ %>
       <div class="custom-card card-list this-product my-1">
-        <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/customer-assets/images/products/<%= prod.strProductPicture%>"></a></div>
+        <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
         <div class="cart-button-div">
           <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
           <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"

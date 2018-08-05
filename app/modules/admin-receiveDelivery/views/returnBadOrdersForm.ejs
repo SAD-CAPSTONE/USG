@@ -1,0 +1,266 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+
+ <!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Transaction</a></li>
+        <li class="active">Return Bad Orders</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+    <div class="row">
+      <div class="col-sm-1">
+      </div>
+      <div class="col-sm-10">
+        <div class="box box-success">
+      			<div class="box-header with-border">
+      				<h3 class="box-title">Return Bad Orders Form</h3>
+      			</div>
+
+      			<!-- purchase order body -->
+            <form id="returnForm">
+      			<div class="box-body">
+
+      				<small><b>Business Address:</b> 0002 G/F Elizabeth Hall BLDG. 371 Katipunan Ave., Loyola Heights </br>
+      				Quezon City 1108</small> </br>
+      				<small><b>Phone Number:</b> (02) 738-1202</small> </br>
+      				<small><b>Mobile Number:</b> (0955) 904-4744</small> </br>
+      				</br>
+
+      				<div align="center" class="row">
+                <div class="col-sm-1">
+                </div>
+      					<div class="col-sm-4">
+      						<div class="form-group">
+      							<label for="purcNo">Receive Order Number:</label>
+
+                    <input type="text" value="<%= delivery_no  %>" name="rno" class="form-control">
+      						</div>
+      					</div>
+
+      					<div class="col-sm-2">
+      					</div>
+
+      					<div class="col-sm-4">
+
+      						<div class="form-group">
+      							<label for="purcNo">Return Order Date:</label>
+
+      							<input type="date" disabled value="<%= moment().format("YYYY-MM-DD") %>" class="form-control">
+      						</div>
+      					</div>
+                <div class="col-sm-1">
+                </div>
+      				</div>
+            </br>
+
+      				<div class="row">
+      					<div class="col-sm-3">
+      						<h4> &nbsp;  </h4>
+      					</div>
+      				</div>
+
+      				<div class="row">
+      					<div class="col-sm-12">
+      					<div class="box">
+      						<div class="box-header">
+      						  <h3 class="box-title">Bad Orders List</h3>
+      						</div>
+
+      						<!-- buttons -->
+      						&nbsp; &nbsp;<button type="button" id="addButton"  class="addRow small ui green button" ><i class="fa fa-plus"></i> Add Product</button>
+
+      						<!-- /.box-header -->
+      						<div id="deliveryList" class="box-body table-responsive">
+                    <table id="example2" class="table table-bordered table-hover">
+                      <thead>
+                        <th>Product Name</th>
+                        <th>Variant (if any)</th>
+                        <th>Size</th>
+                        <th>Quantity</th>
+                        <th>Expiration Date</th>
+                        <th>Status</th>
+                        <th>SRP</th>
+
+                      </thead>
+                      <tbody>
+                        <% if(bad == null || bad == undefined){ %>
+
+                        <% }else if(bad.length == 0){ %>
+
+                        <% }else{ %>
+                        <%  bad.forEach(function(i){ %>
+                          <td><input type="text" name="product[]" class="form-control" value="<%=i.strProduct%>"></td>
+                          <td><input type="text" name="variant[]" class="form-control" value="<%=i.strVariant%>"></td>
+                          <td><input type="text" name="size[]" class="form-control" value="<%=i.strSize%>"></td>
+                          <td><input type="number" name="quantity[]" class="form-control" value="<%=i.intQuantity%>"></td>
+                          <td><input type="date" name="expiration[]" class="form-control" value="<%=moment(i.dateExpiration).format("YYYY-MM-DD")%>"></td>
+                          <td><input type="text" disabled class="form-control" value="Bad"></td>
+                          <td><input type="text" name="srp[]" class="form-control" value="<%=i.SRP%>"></td>
+                        <% }) %>
+                        <% } %>
+                      </tbody>
+                    </table>
+      						</div>
+      						<!-- /.box-body -->
+      					</div>
+      					  <!-- /.box -->
+      					</div>
+      				</div>
+
+            </br>
+          </br>
+              <div class="row">
+                <div class="col-sm-10">
+                  <label for="note">Why would you want to return the products?</label>
+                  <textarea class="form-control" id="reason" name="reason"></textarea>
+                </div>
+              </div>
+
+      			</div>
+
+      			<div class="box-footer">
+                <a href="/receiveDelivery"><button type="button" class="large ui button">Back</button></a>
+                <button  id="sub" type="submit" class="large ui teal button">Submit Form</button>
+            </div>
+                    <!-- /.box-footer -->
+            </form>
+    		</div>
+
+      </div>
+      <div class="col-sm-1">
+      </div>
+    </div>
+
+	</section>
+
+</div>
+
+  <!-- /.content-wrapper -->
+
+
+
+  <%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+<!-- page script (new added) -->
+
+
+<script>
+  $(function () {
+    $('#example2').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'info'        : false,
+      'autoWidth'   : true,
+      'searching'   : false,
+      'ordering'    : false
+
+    })
+  })
+</script>
+
+
+
+<script>
+
+  var count = 1;
+    $('.addRow').on( 'click', function () {
+      var t = $('#example2').DataTable();
+      var table = document.getElementById("example2");
+      var row = table.getElementsByTagName("tr");
+      var rows = t.rows( '.selected' );
+      var tr = table.getElementsByTagName("tr");
+      var validity = 1;
+
+
+      if (validity){
+        t.row.add( [
+            '<input  required type="text" required name="product[]" value="" class="form-control">',
+            '<input  required type="text" name="variant[]" value="" class="form-control">',
+            '<input  type="text" name="size[]" value="" class="form-control">',
+            '<input  type="number" required name="quantity[]" value="" class=" form-control">',
+            '<input type="date" required name="expiration[]"  class=" form-control">',
+            '<input type="text" disabled required value="Bad"  class=" form-control">',
+            '<input  type="text" name="srp[]" value="" class=" form-control">'
+
+        ] ).draw( false );
+
+        count++;
+      }
+    } );
+
+</script>
+
+
+<script>
+$('#title').html("USG | Receive Delivery");
+$(".treeview a:contains('Transactions')").parent().addClass("active");
+$(".navi a:contains('Receive Delivery')").parent().addClass("active");
+</script>
+
+<script>
+  //Flat red color scheme for iCheck
+  $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+    checkboxClass: 'icheckbox_flat-green',
+    radioClass   : 'iradio_flat-green'
+  })
+</script>
+
+<script>
+  $('#returnForm').submit(function(e){
+    e.preventDefault();
+    swal({
+      title: "Are you sure?",
+      text: "Please review products before proceeding",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, proceed",
+      cancelButtonText: "Cancel",
+      reverseButtons: true
+    }).then((result)=>{
+      if(result.value){
+        $.post('/receiveDelivery/returnBadOrders',$('#returnForm').serialize(),function(response,status){
+          if(response == "yes"){
+            swal({title: "Success!", text:"You can view list of products you returned to supplier", type:"success"}).then(()=>{
+              window.location.href = '/receiveDelivery';
+              // change to current delivery record
+            })
+          }else{
+            swal({title: "Error!", text:"", type:"error"},
+              function(){
+
+            });
+          }
+        })
+      }
+    })
+
+  })
+</script>
+
+
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>

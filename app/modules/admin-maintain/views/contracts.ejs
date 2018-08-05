@@ -1,0 +1,149 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+ <!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+
+        <small>Note: Please monitor stocks regularly, check if there is damaged products.</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Maintenance</a></li>
+        <li class="active">Suppliers</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h4 align="center">Contracts</h4>
+            </div>
+			<!-- buttons -->
+				&nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#addType"><i class="fa fa-plus"></i> Add Contract</button>
+            <!-- /.box-header -->
+            <div class="box-body table-responsive">
+              <table id="example2" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+
+                  <th>Application Date</th>
+                  <th>Validity</th>
+				          <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                  <% if (re == null || re == undefined){ %>
+
+                  <% }else if (re.length == 0){ %>
+
+                  <% }else{ %>
+                  <%  re.forEach(function(i){ %>
+                      <tr>
+
+                        <td><%= moment(i.applicationDate).format("MM/DD/YYYY") %></td>
+                        <td>August 1, 2018 - January 1, 2018</td>
+                        <td>
+                          <% if (i.intContractStatus == 1){ %>
+                            Active
+
+                          <% } %>
+                          <% if(i.intContractStatus == 4){ %>
+                            Terminated
+
+                          <% } %>
+                        </td>
+                        <td>
+                          <a href="https://C:\Users\Janelle\Documents\GitHub\USG\app\modules\admin-maintain\views\Agreement.pdf" target="_blank" class="large ui orange button">Download PDF <i class="fa fa-download"></i></a>
+                          <button type="button" data-contract="<%=i.intContractNo%>" class="terminate large ui red button">Terminate</button>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+
+
+
+
+                </tbody>
+
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+	    </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+  <!-- /.content-wrapper -->
+
+  <%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+<!-- page script (new added) -->
+<script>
+  $(function () {
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+
+<script>
+$('#title').html("USG | Suppliers - Contracts");
+$(".treeview a:contains('Maintenance')").parent().addClass("active");
+$(".navi a:contains('Suppliers')").parent().addClass("active");
+</script>
+
+<script>
+  $('.terminate').on('click',function(){
+    swal({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: 'red',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.value) {
+        swal(
+          'Terminated!',
+          'The consignor has been terminated.',
+          'success'
+        )
+      }
+    })
+  });
+</script>
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>

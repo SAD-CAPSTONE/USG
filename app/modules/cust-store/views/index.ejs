@@ -342,7 +342,7 @@ $(() => {
       res.products.forEach((data) => {
         list.append(`
           <div class="custom-card this-product my-2">
-            <div class="card-img"><a href="/item/${data.intProductNo}"><img src="/customer-assets/images/products/${data.strProductPicture}"></a></div>
+            <div class="card-img"><a href="/item/${data.intProductNo}"><img src="/assets/images/products/${data.strProductPicture}"></a></div>
             <div class="cart-button-div">
               <input type="number" class="product-id" value="${data.intProductNo}" hidden />
               <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
