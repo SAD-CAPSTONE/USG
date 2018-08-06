@@ -110,7 +110,7 @@ function pending(req,res){
   }else if(req.body.paymentStatus == 1){
     paid(req,res);
   }
-}
+} // end of pending
 
 function processing(req,res){
   if (req.body.paymentStatus == 0){
@@ -124,11 +124,11 @@ function processing(req,res){
   }else if(req.body.paymentStatus == 1){
     paid(req,res);
   }
-}
+} // end of processing
 
-var c = 0;
+
 function shipped(req,res){
-
+var c = 0;
   // update product inventory
   db.query(`Select * from tblorderdetails where intOrderNo = "${req.body.orderNo}"`,(errz,orders,fieldsz)=>{
     if(errz){db.rollback(function(){console.log(errz)})}
@@ -146,8 +146,72 @@ function shipped(req,res){
                   if(errx){db.rollback(function(){console.log(errx); res.send("no");})}
 
                   else{
-                    c++;
-                    callback();
+                    var remaining = orders[c].intQuantity; // 22
+                    var remaining2 = orders[c].intQuantity;
+
+
+                      db.query(`Select * from tblBatch where intInventoryNo = "${orders[c].intInventoryNo}" order by created_at`,(e3,batch,f3)=>{
+                        if(e3) console.log(e3);
+
+                        for(var a in batch){
+                          if(remaining == 0){
+                            break;
+
+
+                          }
+                          else if(batch[a].intQuantity < remaining || batch[a].intQuantity == remaining){
+                            let newValue = 0;
+                            remaining -= batch[a].intQuantity;
+                            console.log('newValue: '+newValue);
+                            console.log('remaining: '+remaining);
+                            db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(e4,r4,f4)=>{
+                              if(e4)console.log(e4);
+                            });
+
+                          }
+                          else{
+                            let newValue = batch[a].intQuantity - remaining;
+                            remaining = 0;
+                            console.log('newValue: '+newValue);
+                            console.log('remaining: '+remaining);
+                            db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(e5,r5,f5)=>{
+                              if(e5)console.log(e5);
+                            });
+                          }
+                        }
+
+                          for(var b in batch){
+                            if(remaining2 == 0){
+                            //  console.log('finished');
+                              //c++; callback();
+                              break;
+                            }
+                            else if(batch[b].intReservedItems < remaining2 || batch[b].intReservedItems == remaining2){
+                              let newValue = 0;
+                              remaining2 -= batch[b].intReservedItems;
+                              console.log('newValue2: '+newValue);
+                              console.log('remaining2: '+remaining2);
+                              db.query(`Update tblBatch set intReservedItems = ${newValue} where intBatchNo = "${batch[b].intBatchNo}"`,(e6,r6,f6)=>{
+                                if(e6)console.log(e6);
+                              });
+
+                            }
+                            else{
+                              let newValue = batch[b].intReservedItems - remaining2;
+                              remaining2 = 0;
+                              console.log('newValue2: '+newValue);
+                              console.log('remaining2: '+remaining2);
+                              db.query(`Update tblBatch set intReservedItems = ${newValue} where intBatchNo = "${batch[b].intBatchNo}"`,(e7,r7,f7)=>{
+                                if(e7)console.log(e7);
+                              });
+                            }
+                          }
+
+                          c++;
+                          callback();
+
+
+                      })
 
                   }
                 });
@@ -163,7 +227,7 @@ function shipped(req,res){
             db.commit(function(erri){
               if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
               else{
-                res.send("yes")
+                res.send("yes");
 
               }
             });
@@ -177,7 +241,7 @@ function shipped(req,res){
     }
   });
 
-}
+} // end of Shipped
 
 function delivered(req,res){
   if (req.body.paymentStatus == 0){
@@ -191,7 +255,7 @@ function delivered(req,res){
   }else if(req.body.paymentStatus == 1){
     paid(req,res);
   }
-}
+} // end of delivered
 
 function notDeliver(req,res){
   if (req.body.paymentStatus == 0){
@@ -205,7 +269,7 @@ function notDeliver(req,res){
   }else if(req.body.paymentStatus == 1){
     paid(req,res);
   }
-}
+} // end of not delivered
 
 function returned(req,res){
   if (req.body.paymentStatus == 0){
@@ -219,7 +283,7 @@ function returned(req,res){
   }else if(req.body.paymentStatus == 1){
     paid(req,res);
   }
-}
+} // end of returned
 
 function cancelled(req,res){
   if (req.body.paymentStatus == 0){
@@ -233,7 +297,7 @@ function cancelled(req,res){
   }else if(req.body.paymentStatus == 1){
     paid(req,res);
   }
-}
+} // end of cancelled
 
 function paid(req,res){
     var salesno = "1000";
@@ -256,7 +320,7 @@ function paid(req,res){
       });
     }
   });
-}
+} // end of paid
 
 function awaitingPayment(req,res){
   db.commit(function(e1){
@@ -265,7 +329,7 @@ function awaitingPayment(req,res){
       res.send("yes");
     }
   })
-}
+} // end of awaitingPayment
 
 
 
