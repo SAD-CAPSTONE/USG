@@ -4,6 +4,10 @@ function postToCart(modal, data, res, tog){
   clearTimeout(t1);
   clearTimeout(t2);
 
+  modal.next().on('click', ()=>{
+    $('#cartSidebarCollapse').click();
+  })
+
   tog == 1 ? modal.modal('toggle'): 0;
   modal.next().css({
     "max-width": "100%",
@@ -28,7 +32,7 @@ function postToCart(modal, data, res, tog){
   data[res.latest].curQty == res.limit ?
     modal.next().find('p:nth-of-type(2)').text(`Maximum quantity reached (${data[res.latest].curQty})`):
     modal.next().find('p:nth-of-type(2)').text(`has been added (${data[res.latest].curQty} in cart)`);
-  modal.next().find('p:first-of-type').text(`${data[res.latest].name} ${data[res.latest].curSize}`);
+  modal.next().find('p:first-of-type').html(`<span class="text-brand">${data[res.latest].brand}</span> ${data[res.latest].name} ${data[res.latest].curSize}`);
 
   $('#getCart').click();
 }
@@ -40,7 +44,7 @@ $('.products-container').on('click', '.cart-btn', function(){
   $.get(`/cart/modal/${pid}`).then((res) => {
     let data = res.product, modal = $('#modal-product-to-cart');
     modal.find('img').attr("src", data.img);
-    modal.find('.title').text(data.name);
+    modal.find('.title').html(`<span class="text-brand">${data.brand}</span> ${data.name}`);
     modal.find('.price').text(data.curPrice);
     modal.find('.quantity-input').val(data.curQty);
     modal.find('.select-size').html('');

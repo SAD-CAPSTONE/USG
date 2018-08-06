@@ -128,3 +128,15 @@
   opacity:0;
   display:none;
 }
+
+.custom-card.card-list {
+  margin-right: 22px !important;
+  margin-left: 1px;
+}
+.custom-card.card-list:last-child {
+  margin-right: 1px !important;
+}
+
+.custom-card.card-list.adjust:last-child {
+  margin-right: 22px !important;
+}

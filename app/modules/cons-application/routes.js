@@ -54,7 +54,7 @@ router.post('/register',(req,res)=>{
           db.query(`Select * from tblContract order by intContractNo desc limit 1`,(err2,contract,fields2)=>{
             if(err2){db.rollback(function(){console.log(err2); res.send("error")})
             }else{
-              
+
               if (contract == null || contract == undefined){} else if(contract.length == 0){}
               else{ contract_no = parseInt(contract[0].intContractNo) + 1; }
 
@@ -64,7 +64,7 @@ router.post('/register',(req,res)=>{
                   if (err3){db.rollback(function(){console.log(err3); res.send("error")})}
                   else{
 
-                    db.query(`Insert into tblSupplier (intUserID, intBusinessTypeNo, strBrands, strBusinessName, strBusinessEmail, strBusinessAddress, strSupplierPhone, strSupplierMobile, strBusinessTIN,  intSupplierType, intStatus) values ("${user_no}","${req.body.businessType}","${req.body.brands}","${req.body.businessname}", "${req.body.email}", "${req.body.businessaddress}", "${req.body.phone}","${req.body.mobile}","${req.body.businesstin}",  ${req.body.suppliertype}, 0)`,(err4,supplieri,fields4)=>{
+                    db.query(`Insert into tblSupplier (intUserID, intBusinessTypeNo, strBrands, strBusinessName, strBusinessEmail, strBusinessAddress, strSupplierPhone, strSupplierMobile, strBusinessTIN,  intSupplierType, intStatus) values ("${user_no}","${req.body.businessType}","${req.body.brands}","${req.body.businessname}", "${req.body.email}", "${req.body.businessaddress}", "${req.body.phone}","${req.body.mobile}","${req.body.businesstin}",  ${req.body.suppliertype}, 3)`,(err4,supplieri,fields4)=>{
                       if(err4) {db.rollback(function(){console.log(err4); res.send("error")})}
                       else{
                         // Insert to contract record
