@@ -1,6 +1,5 @@
-<%- include('../../../templates/master.ejs') -%>
-<div class="herbs">
-  <form id="msform">
+<%- include('../../../templates/cons-master.ejs') -%>
+<form id="msform" novalidate>
     <!-- progressbar -->
     <ul id="progressbar">
       <li class="active tes">Start</li>
@@ -384,7 +383,7 @@
   <!-- jQuery 3 -->
   <script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
   <script src="/assets/jquery/jquery-ui.min.js"></script>
-
+  <script src="/assets/jquery-validation-1.17.0/dist/jquery.validate.js"></script>
 
 
 
@@ -430,6 +429,18 @@
         easing: 'easeInOutBack'
       });
     });
+
+    $().click(function(){
+      current_fs = $(this).validate({
+        rules: {
+          businessname: "required"
+        },
+        messages: {
+          businessname: "Please fill up the form"
+        }
+      });
+    });
+
 
     $(".previous").click(function(){
       if(animating) return false;
