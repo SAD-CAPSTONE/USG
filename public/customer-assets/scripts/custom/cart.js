@@ -34,6 +34,14 @@ $(() => {
     let list = $('#cart-pad');
     $.get('/cart/list').then((res) => {
       list.html('');
+      res.thisUser ? 0 :
+        list.append(`
+          <div style="padding: 0px 10px 0px 10px">
+            <em class="fs-08em text-muted">
+              You will be prompted to Log in before proceeding to Checkout
+            </em>
+          </div>
+          `)
       res.cart.forEach((data) => {
         list.append(`
           <div class="cart-product-container">
@@ -162,6 +170,11 @@ $(() => {
     }).catch((error) => {
       console.log(error)
     });
+  });
+
+  // Reload
+  $('#reload').on('click', () => {
+    $('#getCart').click();
   });
 
   // Click Button on Load

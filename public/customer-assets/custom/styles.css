@@ -519,7 +519,7 @@ nav .dropdown-item:hover {
   margin-bottom: 15px;
 }
 #sidebar #main-content .card-body {
-  height: 175px;
+  min-height: 175px;
 }
 
 #topbar {
@@ -1327,6 +1327,14 @@ table th, table td {
   .search>input {
     width: auto !important;
     margin-left: 0px !important;
+  }
+
+  .feature-title {
+    float: none;
+  }
+  .store-link {
+    float: none;
+    display: block
   }
 
   #store-main .sort{
