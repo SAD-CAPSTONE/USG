@@ -63,7 +63,6 @@
          <div class="small-box bg-red">
            <div class="inner">
              <h3><%= re3%></h3>
-
              <p>Products to Expire Within 7 Days</p>
            </div>
            <div class="icon">
@@ -106,7 +105,6 @@
          <div class="box box-primary">
            <div class="box-header with-border">
              <h3 class="box-title">Nearly Expired Products</h3>
-
              <div class="box-tools pull-right">
                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                </button>
@@ -116,58 +114,25 @@
            <!-- /.box-header -->
            <div class="box-body">
              <ul class="products-list product-list-in-box">
+                <% if (re6 == null || re6 == undefined){ %>
+
+                <% }else if (re6.length == 0){ %>
+          
+                <% }else{ %>
+                    <%  re6.forEach(function(i){ %>
                <li class="item">
                  <div class="product-img">
-                   <img src="/assets/images/products/1000.jpg" alt="Product Image">
+                   <img src="/assets/images/products/<%= i.strProductPicture%>" alt="Product Image">
                  </div>
                  <div class="product-info">
-                   <a href="javascript:void(0)" class="product-title">Keto Leaf
-                     <span class="label label-warning pull-right">$1800</span></a>
-                   <span class="product-description">
-                         Samsung 32" 1080p 60Hz LED Smart HDTV.
-                       </span>
+                   <a href="javascript:void(0)" class="product-title"><%= i.strProductName%>(<%=i.intSize%><%=i.strUnitName%>)
+                     <span class="label label-warning pull-right">₱<%=i.productSRP%></span></a>
+                   <span class="product-description"><%=i.strDescription%></span>
                  </div>
                </li>
-               <!-- /.item -->
-               <li class="item">
-                 <div class="product-img">
-                   <img src="/assets/images/products/1001.jpg" alt="Product Image">
-                 </div>
-                 <div class="product-info">
-                   <a href="javascript:void(0)" class="product-title">Gourmet Farms Coffee
-                     <span class="label label-info pull-right">$700</span></a>
-                   <span class="product-description">
-                         26" Mongoose Dolomite Men's 7-speed, Navy Blue.
-                       </span>
-                 </div>
-               </li>
-               <!-- /.item -->
-               <li class="item">
-                 <div class="product-img">
-                   <img src="/assets/images/products/1002.jpg" alt="Product Image">
-                 </div>
-                 <div class="product-info">
-                   <a href="javascript:void(0)" class="product-title">Picole Strawberry <span
-                       class="label label-danger pull-right">$350</span></a>
-                   <span class="product-description">
-                         Xbox One Console Bundle with Halo Master Chief Collection.
-                       </span>
-                 </div>
-               </li>
-               <!-- /.item -->
-               <li class="item">
-                 <div class="product-img">
-                   <img src="/assets/images/products/1003.jpg" alt="Product Image">
-                 </div>
-                 <div class="product-info">
-                   <a href="javascript:void(0)" class="product-title">Organic Soap
-                     <span class="label label-success pull-right">$399</span></a>
-                   <span class="product-description">
-                         PlayStation 4 500GB Console (PS4)
-                       </span>
-                 </div>
-               </li>
-               <!-- /.item -->
+                <!-- /.item -->
+                <%  }) %>
+                <% } %>
              </ul>
            </div>
            <!-- /.box-body -->
@@ -200,69 +165,43 @@
                <table class="table no-margin">
                  <thead>
                  <tr>
-                   <th>Order ID</th>
-                   <th>Item</th>
+                   <th>Order No</th>
+                   <th>Customer Name</th>
+                   <th>Order Date</th>
                    <th>Status</th>
-                   <th>Popularity</th>
                  </tr>
                  </thead>
                  <tbody>
-                 <tr>
-                   <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                   <td>Call of Duty IV</td>
-                   <td><span class="label label-success">Shipped</span></td>
-                   <td>
-                     <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
-                   </td>
-                 </tr>
-                 <tr>
-                   <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                   <td>Samsung Smart TV</td>
-                   <td><span class="label label-warning">Pending</span></td>
-                   <td>
-                     <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
-                   </td>
-                 </tr>
-                 <tr>
-                   <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                   <td>iPhone 6 Plus</td>
-                   <td><span class="label label-danger">Delivered</span></td>
-                   <td>
-                     <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                   </td>
-                 </tr>
-                 <tr>
-                   <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                   <td>Samsung Smart TV</td>
-                   <td><span class="label label-info">Processing</span></td>
-                   <td>
-                     <div class="sparkbar" data-color="#00c0ef" data-height="20">90,80,-90,70,-61,83,63</div>
-                   </td>
-                 </tr>
-                 <tr>
-                   <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                   <td>Samsung Smart TV</td>
-                   <td><span class="label label-warning">Pending</span></td>
-                   <td>
-                     <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
-                   </td>
-                 </tr>
-                 <tr>
-                   <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                   <td>iPhone 6 Plus</td>
-                   <td><span class="label label-danger">Delivered</span></td>
-                   <td>
-                     <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                   </td>
-                 </tr>
-                 <tr>
-                   <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                   <td>Call of Duty IV</td>
-                   <td><span class="label label-success">Shipped</span></td>
-                   <td>
-                     <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
-                   </td>
-                 </tr>
+                  <% if (re4 == null || re4 == undefined){ %>
+
+                  <% }else if (re4.length == 0){ %>
+    
+                  <% }else{ %>
+                    <%  re4.forEach(function(i){ %>
+                  <tr>
+                      <td><%= i.intOrderNo %></td>
+                      <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
+                      <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
+                      <td>
+                        <% if (i.intStatus == 0){ %>
+                          <span class="label label-warning">Pending</span>
+                        <% }else if(i.intStatus == 1){ %>
+                          <span class="label label-info">Processing</span>
+                        <% }else if(i.intStatus == 2){ %>
+                          <span class="label label-default">Shipped</span>
+                        <% }else if (i.intStatus == 3){ %>
+                          <span class="label label-default">Delivered</span>
+                        <% }else if(i.intStatus == 4){ %>
+                          <span class="label label-default">Will not deliver</span>
+                        <% }else if(i.intStatus == 5){ %>
+                          <span class="label label-default">Returned</span>
+                        <% }else{ %>
+                          <span class="label label-danger">Cancelled</span>
+  
+                        <% } %>
+                  </tr>
+                  <%  }) %>
+                  <% } %>
                  </tbody>
                </table>
              </div>
@@ -270,8 +209,7 @@
            </div>
            <!-- /.box-body -->
            <div class="box-footer clearfix">
-             <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
-             <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
+             <a href="customerOrder/allOrders" class="btn btn-sm btn-primary btn-flat pull-right">View All Orders</a>
            </div>
            <!-- /.box-footer -->
          </div>
@@ -293,67 +231,35 @@
            <!-- /.box-header -->
            <div class="box-body">
              <ul class="products-list product-list-in-box">
+                <% if (re5 == null || re5 == undefined){ %>
+
+                <% }else if (re5.length == 0){ %>
+        
+                <% }else{ %>
+                  <%  re5.forEach(function(i){ %>
                <li class="item">
                  <div class="product-img">
-                   <img src="/assets/images/products/1000.jpg" alt="Product Image">
+                   <img src="/assets/images/products/<%= i.strProductPicture %>"  alt="Product Image">
                  </div>
                  <div class="product-info">
-                   <a href="javascript:void(0)" class="product-title">Keto Leaf
-                     <span class="label label-warning pull-right">$1800</span></a>
-                   <span class="product-description">
-                         Samsung 32" 1080p 60Hz LED Smart HDTV.
-                       </span>
+                   <a href="javascript:void(0)" class="product-title"><%= i.strProductName %>(<%= i.intSize%> <%= i.strUnitName%>)
+                     <span class="label label-primary pull-right">₱<%= i.productPrice%></span></a>
+                   <span class="product-description"><%= i.strDescription%></span>
                  </div>
                </li>
                <!-- /.item -->
-               <li class="item">
-                 <div class="product-img">
-                   <img src="/assets/images/products/1001.jpg" alt="Product Image">
-                 </div>
-                 <div class="product-info">
-                   <a href="javascript:void(0)" class="product-title">Gourmet Farms Coffee
-                     <span class="label label-info pull-right">$700</span></a>
-                   <span class="product-description">
-                         26" Mongoose Dolomite Men's 7-speed, Navy Blue.
-                       </span>
-                 </div>
-               </li>
-               <!-- /.item -->
-               <li class="item">
-                 <div class="product-img">
-                   <img src="/assets/images/products/1002.jpg" alt="Product Image">
-                 </div>
-                 <div class="product-info">
-                   <a href="javascript:void(0)" class="product-title">Picole Strawberry <span
-                       class="label label-danger pull-right">$350</span></a>
-                   <span class="product-description">
-                         Xbox One Console Bundle with Halo Master Chief Collection.
-                       </span>
-                 </div>
-               </li>
-               <!-- /.item -->
-               <li class="item">
-                 <div class="product-img">
-                   <img src="/assets/images/products/1003.jpg" alt="Product Image">
-                 </div>
-                 <div class="product-info">
-                   <a href="javascript:void(0)" class="product-title">Organic Soap
-                     <span class="label label-success pull-right">$399</span></a>
-                   <span class="product-description">
-                         PlayStation 4 500GB Console (PS4)
-                       </span>
-                 </div>
-               </li>
-               <!-- /.item -->
+               <%  }) %>
+               <% } %>
              </ul>
            </div>
            <!-- /.box-body -->
            <div class="box-footer text-center">
-             <a href="javascript:void(0)" class="uppercase">View All Products</a>
+             <a href="inventory/allProducts" class="uppercase">View All Products</a>
            </div>
            <!-- /.box-footer -->
          </div>
          <!-- /.box -->
+      
        </div>
 
      </div>
