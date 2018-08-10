@@ -443,7 +443,7 @@
      </div>
      <div class="modal-body">
 
-      <div class="dropdown show">
+      <!-- <div class="dropdown show">
         <button class="btn btn-success  dropdown-toggle" type="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Select changes <i class="fa fa-caret-down"></i>
         </button>
@@ -452,9 +452,9 @@
           <li><a class="dropdown-item" id="form2_active" href="#">Shelf No</a></li>
           <li><a class="dropdown-item" id="form3_active" href="#">Critical Limit</a></li>
 
-          <!-- <li><a class="dropdown-item" id="form5_active" href="#">Change Supplier</a></li> -->
+           <li><a class="dropdown-item" id="form5_active" href="#">Change Supplier</a></li>
         </ul>
-      </div>
+      </div> -->
 
       <!-- Update -->
       <div id="form1">
@@ -479,7 +479,7 @@
               <input type="number" value="0" name="critical" class="critical form-control">
             </div>
 
-            <div class="for_promo">
+            <!-- <div class="for_promo">
               <label for="">Promo Type</label>
               <select name="promotype" class="promotype form-control">
                 <option value="0">None</option>
@@ -487,9 +487,12 @@
                 <option value="2">Package</option>
               </select>
               <small>Note: You can choose where to add product in the Promotion/Package Discount Section</small>
-            </div>
+            </div> -->
             <div class="for_changes">
-              <input type="hidden" name="changes" class="changes form-control">
+              <select name="changes" required class="changes form-control">
+                <option value="Price Changes">Price Changes</option>
+                <option value="Critical Limit Changes">Price Changes</option>
+              </select>
             </div>
           </div>
 
@@ -539,78 +542,65 @@
     })
   </script>
 
-  <script>
-  swal({
-  position: 'top-end',
-  type: 'info',
-  title: 'Click for the information button at the left-top corner to see status legend',
-  showConfirmButton: false,
-  backdrop: '#0000',
-  background: '',
-  timer: 4000
-})
-  </script>
-
-
 
   <script>
-    $('#form1').hide();
-
-
-    $('.for_promo').hide();
-    $('.for_price').hide();
-    $('.for_critical').hide();
-    $('.for_shelf').hide();
+    // $('#form1').hide();
+    //
+    //
+    // $('.for_promo').hide();
+    // $('.for_price').hide();
+    // $('.for_critical').hide();
+    // $('.for_shelf').hide();
 
 
     $('#form1_active').on('click',function(){
-      $('.for_price').show();
-      $('.for_shelf').hide();
-      $('.for_critical').hide();
-      $('.for_promo').hide();
+      // $('.for_price').show();
+      // $('.for_shelf').hide();
+      // $('.for_critical').hide();
+      // $('.for_promo').hide();
       $('.changes').val("Price Changes");
-      $('#form1').show();
+      // $('#form1').show();
 
 
     })
 
     $('#form2_active').on('click',function(){
-      $('.for_shelf').show();
-      $('.for_price').hide();
-      $('.for_critical').hide();
-      $('.for_promo').hide();
+      // $('.for_shelf').show();
+      // $('.for_price').hide();
+      // $('.for_critical').hide();
+      // $('.for_promo').hide();
       $('.changes').val("Changed Shelf Number");
-      $('#form1').show();
+      // $('#form1').show();
 
 
     })
 
     $('#form3_active').on('click',function(){
-      $('.for_critical').show();
-      $('.for_price').hide();
-      $('.for_shelf').hide();
-      $('.for_promo').hide();
+      // $('.for_critical').show();
+      // $('.for_price').hide();
+      // $('.for_shelf').hide();
+      // $('.for_promo').hide();
       $('.changes').val("Changed Critical Limit");
 
-      $('#form1').show();
+      // $('#form1').show();
 
 
     })
 
     $('#form4_active').on('click',function(){
-      $('.for_promo').show();
-      $('.for_price').hide();
-      $('.for_shelf').hide();
-      $('.for_critical').hide();
+      // $('.for_promo').show();
+      // $('.for_price').hide();
+      // $('.for_shelf').hide();
+      // $('.for_critical').hide();
       $('.changes').val("Changed Promo Type");
 
-      $('#form1').show();
+      // $('#form1').show();
 
 
     })
 
     $('#form5_active').on('click',function(){
-      $('#form1').show();
+      // $('#form1').show();
 
 
     })
