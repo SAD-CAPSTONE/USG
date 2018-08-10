@@ -75,7 +75,16 @@
           <a id="cartSidebarCollapse" class="nav-link"><i class="fa d-inline fa-lg fa-shopping-cart"></i>  Cart</a></li>
         <li class="nav-item dropdown cursor-pointer">
           <a id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-top: 12px;" class="nav-link dropdown-toggle"><i class="fa fa-fw fa-cog"></i></a>
-          <div id="nav-setting-dropdown" aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
+          <!-- <ul class="dropdown-menu pull-left" role="menu" style="left:0;">
+            <li><a href="#">Menu Item 01</a></li>
+            <li><a href="#">Menu Item 01</a></li>
+            <li><a href="#">Menu Item 02</a></li>
+            <li><a href="#">Menu Item 03</a></li>
+            <li><a href="#">Menu Item 04</a></li>
+            <li><a href="#"></a></li>
+
+          </ul> -->
+          <div id="nav-setting-dropdown" aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu dropdown-menu-right">
             <% if (thisUser){ %>
               <a href="/account/dashboard" class="dropdown-item"><i class="fa d-inline fa-lg fa-user pr-2"></i>&nbsp<%= thisUser.strFname %></a>
             <% }else{ %>

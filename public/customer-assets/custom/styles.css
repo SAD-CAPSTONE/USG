@@ -1145,11 +1145,6 @@ table th, table td {
   #topbar {
     visibility: hidden !important;
   }
-  .navbar-expand-lg .navbar-nav .dropdown-menu {
-    position: absolute;
-    right: auto;
-    right: : -6.7rem;
-  }
   .navbar {
     padding-bottom: 0px !important;
     padding-top: 0px !important;
@@ -1169,10 +1164,9 @@ table th, table td {
   }
   #nav-setting-dropdown {
     position: absolute;
-    left: -6.7em;
-    top: 46;
+    top: 47.6;
     border-radius: 0px;
-    width:30px;
+    border-top: none;
   }
 }
 

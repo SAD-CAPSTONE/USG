@@ -10,7 +10,7 @@
 <p id="title">My Orders</p>
 <div id="order-filter">
   <p class="m-0 inline">Filter By: </p>
-  <select class="inline sortBy" name="">
+  <select class="inline" name="">
     <option value="all" selected>All Orders</option>
     <option value="0">Pending</option>
     <option value="1">Processing</option>
@@ -81,6 +81,7 @@
 
     $('#getOrders').on('click', () => {
       let status = getParams('status'), page = getParams('page');
+
       status ? status = status.indexOf("'") == -1 ? status : 'all' : 0
       page ? page = page.indexOf("'") == -1 ? page : '1' : 0
 
@@ -92,6 +93,10 @@
 
         let list = $('tbody'), status, payment;
 
+        // Status
+        $('#order-filter > select').val(res.config.status)
+
+        // Orders
         res.orders.length ? list.html('') : list.html('<td colspan="5" class="align-center text-muted"><em>None</em></td>');
         res.orders.forEach((data)=>{
           switch(data.intStatus){
