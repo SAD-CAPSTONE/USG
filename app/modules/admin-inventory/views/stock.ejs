@@ -44,24 +44,24 @@
 
 
 
-        <div class="modal fade" id="legend_modal">
-          <div style="width: 30%;" class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-body">
-              <p >
-              Status Legend <br>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <a class="ui red circular label"></a> No stock in inventory
-              </br>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <a class="ui orange circular label"></a> Reached critical limit
-            </br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <a class="ui green circular label"></a> Enough stock in inventory
+                <div class="modal fade" id="legend_modal">
+                  <div style="width: 30%;" class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-body">
+                      <p >
+                      Status Legend <br>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <a class="ui red circular label"></a> No stock in inventory
+                      </br>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <a class="ui orange circular label"></a> Reached critical limit
+                    </br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <a class="ui green circular label"></a> Enough stock in inventory
 
-          </br>
-        </p>
-            </div>
-          </div>
-        </div>
-      </div>
+                  </br>
+                </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               </br>
               <!-- /.box-header -->
@@ -114,7 +114,7 @@
               </div>
               <!-- /.box-body -->
             </div>
-            <!-- /#fa-icons -->
+
 
             <!-- New product Item-->
             <div class="tab-pane" id="addInventory">
@@ -640,14 +640,12 @@
   </script>
 
 
+<script>
+  $('#title').html("USG | Stocks");
 
+  $(".navi a:contains('Stocks')").parent().addClass("active");
 
-    <script>
-      $('#title').html("USG | Stocks");
-
-      $(".navi a:contains('Stocks')").parent().addClass("active");
-
-    </script>
+</script>
 
 </body>
 </html>

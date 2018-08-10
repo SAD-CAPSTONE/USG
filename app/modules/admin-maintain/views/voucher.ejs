@@ -64,7 +64,10 @@
 
                       <td>
                         <button data-toggle="modal" data-target="#voucher_edit" data-vcode="<%=i.strVoucherCode%>" data-vdesc="<%= i.strDescription %>" data-vno="<%=i.intVoucherNo%>" data-vdisc="<%=i.discount%>" data-vvalid="" class="v_edit large ui button blue left attached">Edit</button>
-                        <a href="/maintenance/voucherUsers?number=<%=i.intVoucherNo%>&vcode=<%=i.strVoucherCode%>"><button class="large ui teal button right attached">View Users</button></a></td>
+                        <a href="/maintenance/voucherUsers?number=<%=i.intVoucherNo%>&vcode=<%=i.strVoucherCode%>"><button class="large ui teal button right attached">View Users</button></a>
+
+                        <button class="large ui red button">Delete</button>
+                      </td>
 
                     </tr>
                   <% }) %>
@@ -170,7 +173,7 @@
                   <%  num = parseInt(lastvoucher[0].intVoucherNo) + 1; %>
                   <% } %>
 
-                  
+
                   <input type="hidden" id="vno" name="vno" value="<%=num%>">
                   <label for="vcode">Voucher code:</label>
                   <input type="text" required class="form-control" name="vcode" id="vcode" value="<%=code%>"  >

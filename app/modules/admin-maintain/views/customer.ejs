@@ -7,7 +7,7 @@
     <section class="content-header">
       <h1>
 
-        <small>Note: .</small>
+        <small>Note: You are only allowed to block and edit customer information.</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -46,7 +46,7 @@
                   <% }else{ %>
                    <%  re.forEach(function(i){ %>
                       <tr>
-                        
+
                         <td><%= i.strFname%> <%=i.strMname %> <%=i.strLname %></td>
                         <td><%= i.strUsername %></td>
                         <td>
@@ -57,8 +57,15 @@
                           <% }else{ %>
                           <% } %>
                           </td>
-                        <td><button type="button" data-toggle="modal" data-target="#viewDetails" class="viewDetailsButton btn btn-default btn-sm" data-custno="<%=i.intUserID%>" data-custsaddress="<%=i.strShippingAddress%>" data-custbaddress="<%=i.strBillingAddress%>" data-custphoneno="<%=i.strCusPhoneNo%>" data-custmobileno="<%=i.strCusMobileNo%>" data-custemail="<%=i.strEmail%>">View Details</button></a>
-                        <button type="button" data-toggle="modal" data-target="#" class="viewDetailsButton btn btn-default btn-sm" data-custno="<%=i.intUserID%>" data-custsaddress="<%=i.strShippingAddress%>" data-custbaddress="<%=i.strBillingAddress%>" data-custphoneno="<%=i.strCusPhoneNo%>" data-custmobileno="<%=i.strCusMobileNo%>" data-custemail="<%=i.strEmail%>">Edit Info</button></a></td>
+                        <td>
+                          <center>
+                          <button type="button" data-toggle="modal" data-target="#viewDetails" class="viewDetailsButton large ui teal button" data-custno="<%=i.intUserID%>" data-custsaddress="<%=i.strShippingAddress%>" data-custbaddress="<%=i.strBillingAddress%>" data-custphoneno="<%=i.strCusPhoneNo%>" data-custmobileno="<%=i.strCusMobileNo%>" data-custemail="<%=i.strEmail%>">View</button>
+
+                        <button type="button" data-toggle="modal" data-target="#" class="viewDetailsButton large ui teal button" data-custno="<%=i.intUserID%>" data-custsaddress="<%=i.strShippingAddress%>" data-custbaddress="<%=i.strBillingAddress%>" data-custphoneno="<%=i.strCusPhoneNo%>" data-custmobileno="<%=i.strCusMobileNo%>" data-custemail="<%=i.strEmail%>">Edit</button>
+
+                        <button class="large ui red button">Remove</button>
+                      </center>
+                      </td>
                       </tr>
                     <%  }) %>
                     <% } %>

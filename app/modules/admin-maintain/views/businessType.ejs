@@ -58,7 +58,12 @@
 
                           <% } %>
                         </td>
-                        <td><button class="editModal large ui teal button" data-toggle="modal" data-target="#edit_modal" data-no="<%=i.intBusinessTypeNo%>" data-name="<%=i.strBusinessType%>"><i class="glyphicon glyphicon-edit"></i></button></td>
+                        <td>
+                          <center>
+                          <button class="editModal large ui teal button" data-toggle="modal" data-target="#edit_modal" data-no="<%=i.intBusinessTypeNo%>" data-name="<%=i.strBusinessType%>"><i class="glyphicon glyphicon-edit"></i></button>
+                          <button class="large ui red button"><i class="glyphicon glyphicon-trash"></i></button>
+                        </center>
+                        </td>
                       </tr>
                     <% }) %>
                   <% } %>
