@@ -291,7 +291,9 @@ router.get('/invoice-print',(req,res)=>{
         res.render('admin-purchOrder/views/invoice-print', {order: orderno, orderdetails: results1, orderlist: results2, moment: moment});
       });
     });
-})
+});
+
+
 // <%- include('../../../templates/admin-navbar.ejs') -%>
 
 exports.purchaseOrder = router;

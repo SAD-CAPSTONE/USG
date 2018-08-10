@@ -4,7 +4,7 @@ Contract Legend
 0 = Pending
 2 = Rejected
 4 = Terminated
-
+ 
 Order Legend
 0 - Pending
 1 - Processing
@@ -25,3 +25,4 @@ Supplier Legend
 1 - active
 0 - inactive/Terminated
 2 - rejected
+3 - For evaluation
