@@ -8,18 +8,34 @@
         <h5><b>Dashboard</b></h5></a>
       <a href="/account/orders">
         <h5><b>Orders</b></h5></a>
+      <a href>
+        <h5><b>Favorites</b></h5></a>
     </div>
     <div class="col">
-      <div id="topbar" class="row">
-        <div class="col">
-          <i class="fa d-inline fa-lg fa-user mr-2"></i>
-          <span class="mr-2"><%= thisUser.strFname%> <%= thisUser.strMname%> <%= thisUser.strLname%></span>
-          <a href="/account/dashboard">
-            <i class="fa d-inline fa-lg fa-columns mr-2"></i>
-            <span class="top-desc mr-2">Dashboard</span></a>
-          <a href="/account/orders">
-            <i class="fa d-inline fa-lg fa-shopping-cart mr-2"></i>
-            <span class="top-desc mr-2">Orders</span></a>
+      <div id="topbar">
+        <div>
+          <span class="mr-1">
+            <i class="fa d-inline fa-lg fa-user mr-1"></i>
+            <%= thisUser.strFname%> <%= thisUser.strMname%> <%= thisUser.strLname%>
+          </span>
+          <a href="/account/dashboard" class="mr-1">
+            <span class="top-desc inline-block">
+              <i class="fa d-inline fa-lg fa-columns mr-1"></i>
+              Dashboard
+            </span>
+          </a>
+          <a href="/account/orders" class="mr-1">
+            <span class="top-desc inline-block">
+              <i class="fa d-inline fa-lg fa-shopping-cart mr-1"></i>
+              Orders
+            </span>
+          </a>
+          <a href class="mr-1">
+            <span class="top-desc inline-block">
+              <i class="fa d-inline fa-lg fa-bookmark mr-1"></i>
+              Favorites
+            </span>
+          </a>
         </div>
       </div>
       <div id="main-content">

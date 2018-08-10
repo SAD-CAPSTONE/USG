@@ -150,7 +150,7 @@
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <script src="/customer-assets/scripts/pagination/jquery.twbsPagination.js" type="text/javascript"></script>
-<script src="/customer-assets/scripts/store.js" type="text/javascript"></script>
+<script src="/customer-assets/scripts/custom/store.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(() => {
   const thisUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
@@ -252,7 +252,6 @@ $(() => {
           <i id="category" class="fa fa-times ml-1"></i></small>`)
         : 0 ;
 
-
       res.store.subcategories.length ?
         res.store.subcategories.forEach((data)=>{
           subCatName = res.store.all_subcategories.reduce((str, all)=>{
@@ -266,7 +265,6 @@ $(() => {
           filters.append(`
             <small class="filter-tag">Sub: None`)
           : 0
-
 
       let priceRange, price = res.store.price
       priceRange = price.min ?
@@ -342,7 +340,7 @@ $(() => {
       res.products.forEach((data) => {
         list.append(`
           <div class="custom-card this-product my-2">
-            <div class="card-img"><a href="/item/${data.intProductNo}"><img src="/customer-assets/images/products/${data.strProductPicture}"></a></div>
+            <div class="card-img"><a href="/item/${data.intProductNo}"><img src="/assets/images/products/${data.strProductPicture}"></a></div>
             <div class="cart-button-div">
               <input type="number" class="product-id" value="${data.intProductNo}" hidden />
               <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
@@ -383,11 +381,10 @@ $(() => {
           </div>`);
       }
 
+      // pagination
       let defaultOpts = {
         totalPages: 1
       }
-
-      // pagination
       let totalPages = res.store.total_pages;
       let currentPage = res.store.page;
       $pagination.twbsPagination('destroy');

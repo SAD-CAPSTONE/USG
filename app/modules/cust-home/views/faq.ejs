@@ -1,6 +1,6 @@
 <%- include('../../../templates/navbar.ejs') -%>
 
-<div id="content" class="container" style="margin-top: 70px;">
+<!-- <div id="content" class="container" style="margin-top: 70px;">
   <div class="row">
     <div class="col">
       <div id="inner-content">
@@ -36,9 +36,75 @@
       </div>
     </div>
   </div>
+</div> -->
+
+<div id="faq-container" class="container">
+  <div id="faq-main-pane" class="fl-l">
+    <div>
+      <span class="fs-1em fw-400">
+        <i class="fa fa-question-circle"></i>
+        Frequently Asked Questions
+      </span>
+      <hr class="mt-1 mb-2">
+      <input type="text" placeholder="Search Question"/>
+
+      <div class="question-block">
+        <span class="question fs-09em fw-400 block mt-2">How do I place my order?<span class="ml-2 fw-500">+</span></span>
+        <div class="answer-block">
+          <span class="fs-08em fw-400 block px-1">Place order by adding items to the Cart and Proceed to Checkout.</span>
+        </div>
+      </div>
+      <div class="question-block">
+        <span class="question fs-09em fw-400 block mt-2">When will I receive my order?<span class="ml-2 fw-500">+</span></span>
+        <div class="answer-block">
+          <span class="fs-08em fw-400 block px-1">When delivery process is done.</span>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+  <div id="faq-contact-pane" class="fl-r">
+    <div>
+      <span class="fs-09em fw-400">Contact Us</span>
+
+      <span class="fs-08em fw-400 block mt-2">Store Location:</span>
+      <span class="fs-08em fw-400 block px-1">G/F Elizabeth Hall Bldg., Katipunan Ave. Quezon City 1108</span>
+
+      <span class="fs-08em fw-400 block mt-2">Phone & Mobile:</span>
+      <span class="fs-08em fw-400 block px-1">0955 9044744  |  (02)738 1202</span>
+
+      <span class="fs-08em fw-400 block mt-2">Social Media:</span>
+      <span class="fs-08em fw-400 block px-1"><a href="https://www.facebook.com/UltraSuperGreen" target="_blank">facebook.com/UltraSuperGreen</a></span>
+      <span class="fs-08em fw-400 block px-1"><a href="https://www.instagram.com/UltraSuperGreen" target="_blank">instagram.com/UltraSuperGreen</a></span>
+
+      <span class="fs-08em fw-400 block mt-2">Customer Information Email:</span>
+      <span class="fs-08em fw-400 block px-1"><a href="mailto:custom-info.ultrasupergreen@gmail.com">info.ultrasupergreen@gmail.com</a></span>
+
+      <span class="fs-08em fw-400 block mt-2">Consignor Application Email:</span>
+      <span class="fs-08em fw-400 block px-1"><a href="mailto:mktg.ultrasupergreen@gmail.com">mktg.ultrasupergreen@gmail.com</a></span>
+
+
+    </div>
+  </div>
 </div>
 
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
+<script type="text/javascript">
+
+  $('#faq-main-pane > div').on('click', 'span.question', function(){
+    let block = $(this).parent().find('.answer-block');
+    if (block.css('display') == 'none'){
+      block.css('display','block');
+      $(this).children().text('-')
+    }
+    else {
+      block.css('display','none');
+      $(this).children().text('+')
+    }
+  });
+
+</script>
 <%- include('../../../templates/closer.ejs') -%>
