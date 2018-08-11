@@ -134,7 +134,10 @@ router.post('/addImage', (req,res)=>{
 });
 
 router.get('/supplierProducts', (req,res)=>{
-  res.render('admin-inventory/views/supplierProducts');
+  db.query(`SELECT * from tblsupplier`,(err1,results1)=>{
+    if (err1) console.log(err1);
+    res.render('admin-inventory/views/supplierProducts', {re: results1});
+  });
 });
 
 router.get('/productInventory', (req,res)=>{
