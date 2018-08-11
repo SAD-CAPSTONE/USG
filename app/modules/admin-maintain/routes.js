@@ -513,9 +513,17 @@ router.post('/getBarcode',(req,res)=>{
       console.log(err1); res.send("error");
     }
     if(!err1){
-      if(inventory == null|| inventory == undefined){res.send("error")}
-      else if(inventory.length == 0){res.send("error")}
-      else{ res.send(inventory)}
+      db.query(`Select SUM(tblBatch.intQuantity) - SUM(tblBatch.intReservedItems) as totalQty from tblBatch join tblproductInventory on tblBatch.intInventoryNo = tblproductInventory.intInventoryNo where strBarcode = "${req.body.o}" `,(err2,batch,fie3)=>{
+        if(err2){
+          console.log(err2); res.send("error");
+        }
+        if(!err2){
+          if(inventory == null|| inventory == undefined){res.send("error")}
+          else if(inventory.length == 0){res.send("error")}
+          else{ res.json({inventory: inventory, batch: batch})}
+        }
+      })
+
     }
   });
 });
@@ -533,7 +541,7 @@ router.post('/addPackage',(req,res)=>{
       num = parseInt(results1[0].intPackageNo) + 1;
     }
 
-    db.query(`Insert into tblpackage (intPackageNo, intAdminID, strPackageName, strPackageDescription, packagePrice, dateDue) values ("${num}","1000","${req.body.pname}","${req.body.pdesc}",${req.body.pprice}, "${req.body.pdue}")`,(err2,results2,fields2)=>{
+    db.query(`Insert into tblpackage (intPackageNo, intAdminID, strPackageName, strPackageDescription, packagePrice, intQuantity, dateDue) values ("${num}","1000","${req.body.pname}","${req.body.pdesc}",${req.body.pprice}, ${req.body.pquantity}, "${req.body.pdue}")`,(err2,results2,fields2)=>{
       if (err2) console.log(err2);
       if (!err2) res.send("yes");
     });
@@ -551,26 +559,93 @@ router.get('/packageList',(req,res)=>{
     where tblpackagelist.intpackageno = ${pack}`,(err1,results1,fields1)=>{
       if (err1) console.log(err1);
 
-      res.render('admin-maintain/views/packagelist',{re:results1, moment: moment, package: pack});
+      db.query(`Select * from tblPackage where intPackageNo = ${pack}`,(err2,results2,fields2)=>{
+        if(err2) console.log(err2);
+
+        res.render('admin-maintain/views/packagelist',{re:results1, moment: moment, package: pack, quantity: results2[0].intQuantity});
+      });
+
+
     });
 });
 
 router.post('/addPackageList',(req,res)=>{
   var no = "1000";
-  db.query(`Select * from tblPackageList order by intpackagelistno desc limit 1`,(err1,results1,fields1)=>{
-    if(err1){console.log(err1); res.send("error");}
-    if(!err1){
-      if(results1==null||results1==undefined){} else if(results1.length==0){}
-      else{
-        no = parseInt(results1[0].intPackageListNo) + 1;
-      }
 
-      db.query(`Insert into tblPackageList (intPackageListNo, intInventoryNo, intPackageNo, intProductQuantity) values ("${no}","${req.body.inventory}","${req.body.package}","${req.body.quantity}")`,(err2,results2,fields2)=>{
-        if(err2){console.log(err2); res.send("error")}
-        if(!err2){res.send("success")}
+  db.beginTransaction(function(err){
+    if(err){db.rollback(function(){console.log(err); res.send("error");})}
+    else{
+      db.query(`Select * from tblPackageList order by intpackagelistno desc limit 1`,(err1,results1,fields1)=>{
+        if(err1){db.rollback(function(){console.log(err1); res.send("error");})}
+        if(!err1){
+          if(results1==null||results1==undefined){} else if(results1.length==0){}
+          else{
+            no = parseInt(results1[0].intPackageListNo) + 1;
+          }
+
+          db.query(`Insert into tblPackageList (intPackageListNo, intInventoryNo, intPackageNo, intProductQuantity) values ("${no}","${req.body.inventory}","${req.body.package}","${req.body.quantity}")`,(err2,results2,fields2)=>{
+            if(err2){db.rollback(function(){console.log(err2); res.send("error");})}
+
+            db.query(`Update tblPackage set intQuantity = ${req.body.package_quantity} where intPackageNo = "${req.body.package}"`,(err3,res3,fie3)=>{
+              if(err3) {db.rollback(function(){console.log(err3); res.send("error");})}
+
+              db.query(`Update tblProductInventory set intQuantity = intQuantity - (${req.body.package_quantity} * ${req.body.quantity}) where intInventoryNo = "${req.body.inventory}"`,(err4,res4,fie4)=>{
+                if(err4) {db.rollback(function(){console.log(err4); res.send("error");})}
+                else{
+                  db.query(`SELECT * FROM tblbatch where intinventoryno = "${req.body.inventory}"  order by created_at`,(err5,batch,fie5)=>{
+                    if(err5) {db.rollback(function(){console.log(err5); res.send("error");})}
+                    else{
+                      var remaining = req.body.package_quantity * req.body.quantity;
+                      for(var a in batch){
+                        if(remaining == 0){
+                          break;
+
+                        }
+                        else if(batch[a].intQuantity < remaining || batch[a].intQuantity == remaining){
+                          let newValue = 0;
+                          // remaining -= batch[a].intQuantity;
+                          // console.log('newValue: '+newValue);
+                          // console.log('remaining: '+remaining);
+                          db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(e4,r4,f4)=>{
+                            if(e4)console.log(e4);
+                          });
+
+                        }
+                        else{
+                          let newValue = batch[a].intQuantity - remaining;
+                          remaining = 0;
+                          // console.log('newValue: '+newValue);
+                          // console.log('remaining: '+remaining);
+                          db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(e5,r5,f5)=>{
+                            if(e5)console.log(e5);
+                          });
+                        }
+                      }
+                      com(req,res);
+                      function com(req,res){
+                        db.commit(function(e){
+                          if(e){db.rollback(function(){console.log(e); res.send("error");})}
+                          else{
+                            res.send("success");
+
+                          }
+                        })
+                      }
+
+
+                    }
+                  })
+                }
+              });
+            });
+
+          });
+        }
       });
     }
-  });
+  })
+
+
 });
 
 router.post('/inactivatePackage',(req,res)=>{
