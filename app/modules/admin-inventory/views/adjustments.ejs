@@ -78,8 +78,7 @@
                       <div class="form-group">
                         <label for="barcode">Scan or Enter Barcode:</label>
                         <input class="form-control" id="barcode">
-                        <span class="help-block">Please press enter after scanning</span>
-
+                        
                       </div>
                     </form>
 
@@ -180,31 +179,7 @@
 </script>
 
 
-<script>
-$(document).ready(function(){
 
-  $('#pull-out').hide();
-
-  //Date range picker
-  $('#reservation').daterangepicker();
-  $('#search-expired').on('click',function(){
-
-    $.ajax({
-      url: '/inventory/searchExpired',
-      method: 'post',
-      datatype: 'json',
-      data: {o: $('#reservation').val()},
-      success: function(response,status,http){
-        if(response){
-          $('#tabl').load('/inventory/showExpired');
-        }
-      }
-    })
-
-  });
-})
-
-</script>
 
 
 <script>
@@ -248,8 +223,7 @@ $(".navi a:contains('Adjustments')").parent().addClass("active");
 <script>
 
 var count = 1;
-  $('#addItem').submit(function (e) {
-    e.preventDefault();
+  $('#addItem').on('keyup',function(){
 
     var t = $('#example2').DataTable();
     var table = document.getElementById("example2");

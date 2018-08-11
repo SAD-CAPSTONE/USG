@@ -588,11 +588,8 @@ router.post('/update',(req,res)=>{
     1`,(err2,results2,fields2)=>{
     if (err2) console.log(err2);
 
-    if (results2 == null || results2 == undefined){
-
-    }else if (results2.length == 0){
-
-    }else{
+    if (results2 == null || results2 == undefined){}else if (results2.length == 0){}
+    else{
       num = parseInt(results2[0].intTransactionID) + 1;
     }
 
@@ -602,7 +599,7 @@ router.post('/update',(req,res)=>{
 
       // Update productInventory
       db.query(`Update tblProductInventory set productSRP = ${req.body.srp}, productPrice =
-        ${req.body.price}, intShelfNo = ${req.body.shelf}, intCriticalLimit = ${req.body.critical}, intPromoType = ${req.body.promotype} where intInventoryno = "${req.body.ino}"`,(err1,results1,fields1)=>{
+        ${req.body.price}, intShelfNo = ${req.body.shelf}, intCriticalLimit = ${req.body.critical} where intInventoryno = "${req.body.ino}"`,(err1,results1,fields1)=>{
         if (err1){
 
           db.rollback(function(){
@@ -611,7 +608,7 @@ router.post('/update',(req,res)=>{
         }
 
         // Insert to inventory transaction
-        db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intUserID, productSRP, productPrice, intShelfNo, intCriticalLimit, intPromoType, strTypeOfChanges) values ("${num}","${req.body.ino}", "1000",${req.body.srp},${req.body.price}, ${req.body.shelf}, ${req.body.critical}, ${req.body.promotype},"${req.body.changes}")`, (err3,results3,fields3)=>{
+        db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intUserID, productSRP, productPrice, intShelfNo, intCriticalLimit,  strTypeOfChanges) values ("${num}","${req.body.ino}", "1000",${req.body.srp},${req.body.price}, ${req.body.shelf}, ${req.body.critical}, "${req.body.changes}")`, (err3,results3,fields3)=>{
           if (err3){
             db.rollback(function(){
               console.log(err3);
@@ -684,6 +681,7 @@ router.post('/addAdjustment',(req,res)=>{
       var inv_no = 0;
       var type = "", type_details = "";
       var transact_no = "1000";
+
       async.eachSeries(list,function(data,callback){
 
         // Insert to tblAdjustments
@@ -718,7 +716,7 @@ router.post('/addAdjustment',(req,res)=>{
                                 if(res6==null||res6==undefined){} else if(res6.length==0){}
                                 else{ transact_no = parseInt(res6[0].intTransactionID) + 1;}
 
-                                db.query(`Insert into tblInventoryTransactions (intTransactionID, intUserID, strTypeOfChanges) values ("${transact_no}","1006","Sample")`,(err7,res7,fie7)=>{
+                                db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intUserID, strTypeOfChanges, intShelfNo, intCriticalLimit, productSRP, productPrice) values ("${transact_no}","${inv_no}","1006","Sample",${res2[0].intShelfNo},${res2[0].intCriticalLimit},${res2[0].productSRP},${res2[0].productPrice})`,(err7,res7,fie7)=>{
                                   if(err7){db.rollback(function(){console.log(err7)})}
                                   else{
                                     count++;
