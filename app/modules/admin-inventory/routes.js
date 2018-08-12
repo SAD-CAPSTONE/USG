@@ -134,7 +134,10 @@ router.post('/addImage', (req,res)=>{
 });
 
 router.get('/supplierProducts', (req,res)=>{
-  db.query(`SELECT * from tblsupplier`,(err1,results1)=>{
+  db.query(`
+    SELECT * from tblproductinventory join tblproductlist on tblproductinventory.intProductNo = tblproductlist.intproductno
+    join tblsupplier on tblsupplier.intUserID = tblproductinventory.intUserID
+    where tblproductinventory.intProductNo = ${product}`,(err1,results1)=>{
     if (err1) console.log(err1);
     res.render('admin-inventory/views/supplierProducts', {re: results1});
   });
@@ -144,7 +147,7 @@ router.get('/productInventory', (req,res)=>{
 
   var product = req.query.product;
   db.query(`
-    Select * from tblproductinventory join tblproductlist on tblproductinventory.intProductno  = tblproductlist.intproductno
+    Select * from tblproductinventory join tblproductlist on tblproductinventory.intProductno = tblproductlist.intproductno
     join tblproductbrand on tblproductlist.intbrandno = tblproductbrand.intbrandno
     join tbluser on tbluser.intuserid = tblproductinventory.intuserid
     join tblsupplier on tblsupplier.intuserid = tblproductinventory.intuserid
