@@ -156,6 +156,52 @@ router.get('/voucher/:orderNo', orderTotal, (req,res)=>{
     });
   }
 })
+router.get('/receipt/:orderNo', (req,res)=>{
+  if (!req.user){
+    res.send('none')
+  }
+  else{
+    db.query(`SELECT (customer.strFname)customerF, (customer.strMname)customerM, (customer.strLname)customerL, orders.*, tblorder.*
+    FROM tblorder
+    INNER JOIN (SELECT * FROM tbluser)customer ON tblorder.intUserID= customer.intUserID
+    INNER JOIN (SELECT tblorderdetails.*, strBrand, strProductName, intSize, strUnitName, (purchasePrice*tblorderdetails.intQuantity)amount, (purchasePrice-(purchasePrice*0.12))priceNonVAT, ((purchasePrice-(purchasePrice*0.12))*tblorderdetails.intQuantity)amountNonVAT
+    FROM tblorderdetails INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
+    INNER JOIN tblproductlist ON tblproductinventory.intProductNo= tblproductlist.intProductNo
+    INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
+    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno)orders ON orders.intOrderNo= tblorder.intOrderNo
+    WHERE tblorder.intOrderNo= ? AND customer.intUserID= ? ORDER BY orders.intOrderDetailsNo`
+    ,[req.params.orderNo, req.user.intUserID], (err, results, fields) => {
+      if (err) console.log(err);
+      if (results[0]){
+        let totalNonVAT = results.reduce((data, obj)=>{
+          return data + obj.amountNonVAT
+          console.log(data)
+        }, 0);
+        let totalPrice = results.reduce((data, obj)=>{
+          return data + obj.amount
+        }, 0);
+        let vat = totalPrice - totalNonVAT;
+        results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('MM/DD/YY') );
+        results.map( obj => obj.priceNonVAT = priceFormat(obj.priceNonVAT.toFixed(2)) );
+        results.map( obj => obj.amountNonVAT = priceFormat(obj.amountNonVAT.toFixed(2)) );
+        totalNonVAT = priceFormat(totalNonVAT.toFixed(2));
+        totalPrice = priceFormat(totalPrice.toFixed(2));
+        vat = priceFormat(vat.toFixed(2));
+
+        res.send({
+          receipt: results,
+          receiptNonVAT: totalNonVAT,
+          vat: vat,
+          receiptTotal: totalPrice,
+        })
+        // console.log(results)
+      }
+      else{
+        res.send('none')
+      }
+    });
+  }
+})
 
 router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsNo, (req,res)=>{
   db.beginTransaction(function(err) {

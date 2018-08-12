@@ -1032,6 +1032,9 @@ table th, table td {
 #summary-main-pane .fa-minus-circle:hover {
   color: #ED1D1C;
 }
+#summary-details-pane > div:nth-child(2) > p:nth-of-type(2) {
+  color: var(--primary-color)
+}
 
 /* FAQs --------------------------------------------------------------------- */
 :root{
