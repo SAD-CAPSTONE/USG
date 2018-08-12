@@ -38,7 +38,7 @@ $(() => {
         list.append(`
           <div style="padding: 0px 10px 0px 10px">
             <em class="fs-08em text-muted">
-              You will be prompted to Log in before proceeding to Checkout
+              You must be logged in before proceeding to Checkout
             </em>
           </div>
           `)
@@ -83,6 +83,8 @@ $(() => {
       else{
         chekoutBtnActive();
       }
+      $('svg#SVG_refreshCart').attr('hidden','hidden');
+      $('#reload > i').removeAttr('hidden');
       $('#subtotal-btn').click();
     }).catch((error) => {
       list.html('');
@@ -174,7 +176,11 @@ $(() => {
 
   // Reload
   $('#reload').on('click', () => {
-    $('#getCart').click();
+    $('#reload > i').attr('hidden','hidden');
+    $('svg#SVG_refreshCart').removeAttr('hidden');
+    let tRefresh1 = setTimeout(()=>{
+      $('#getCart').click();
+    },500);
   });
 
   // Click Button on Load

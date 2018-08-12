@@ -3,11 +3,11 @@
 <div id="summary-container" class="container">
   <div id="summary-main-pane" class="fl-l">
     <div>
-      <p class="m-0 fs-08em fw-400 inline-block">Products will be delivered within 7 working days</p>
+      <p id="notice" class="m-0 fs-08em fw-400 inline-block">Products will be delivered within 7 working days</p>
       <% if (orderOne.orderStatus == 0 || orderOne.orderStatus == 1){ %>
-        <a class="inline" href data-toggle='modal' data-target='#CancelModal'><p class="m-0 fs-08em fw-400 fl-r">Cancel Order</p></a>
+        <a class="inline-block fl-r" href data-toggle='modal' data-target='#CancelModal'><p class="m-0 fs-08em fw-400">Cancel Order</p></a>
       <% }else if(orderOne.orderStatus == 6){ %>
-        <a class="inline"><p class="m-0 fs-08em fw-400 fl-r text-danger">Cancelled</p></a>
+        <a class="inline-block fl-r"><p class="m-0 fs-08em fw-400 text-danger">Cancelled</p></a>
       <% } %>
     </div>
     <div class="p-0">
@@ -153,50 +153,68 @@
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <%- include('../../../templates/scripts-pdf.ejs') -%>
 <script type="text/javascript">
-  let txtcount1;
-  function submitBtn(){
-    if(!$('input#agree').is(':checked')){
-      $('button[type=submit]').attr('disabled','disabled');
+  $(()=>{
+    let txtcount1;
+    function submitBtn(){
+      if(!$('input#agree').is(':checked')){
+        $('button[type=submit]').attr('disabled','disabled');
+      }
+      else if($('textarea').attr('hidden')){
+        $('button[type=submit]').removeAttr('disabled');
+      }
+      else if($("textarea").val()){
+        $('button[type=submit]').removeAttr('disabled');
+      }
+      else {
+        $('button[type=submit]').attr('disabled','disabled');
+      }
     }
-    else if($('textarea').attr('hidden')){
-      $('button[type=submit]').removeAttr('disabled');
-    }
-    else if($("textarea").val()){
-      $('button[type=submit]').removeAttr('disabled');
-    }
-    else {
-      $('button[type=submit]').attr('disabled','disabled');
-    }
-  }
 
-  $('#print-btn').on('click', ()=>{
-    download_voucher();
-  })
-  $('select').on('change', function(){
-    if($(this).val()=='other'){
-      $('textarea').removeAttr('hidden');
-    }
-    else{
-      $('textarea').attr('hidden','hidden');
-      $('.txtcount-div').removeClass('block')
-      $('.txtcount-div').addClass('block-none')
-    }
-    submitBtn();
-  })
-  $('input#agree').on('click', function(){
-    submitBtn();
-  })
-  $('textarea').keyup(function(){
-    clearTimeout(txtcount1);
-    $('#txtcount').text(`${$(this).val().length}/150`);
-    $('.txtcount-div').removeClass('block-none')
-    $('.txtcount-div').addClass('block')
-    txtcount1 = setTimeout(()=>{
-      $('.txtcount-div').removeClass('block')
-      $('.txtcount-div').addClass('block-none')
-    },2000);
+    $('#print-btn').on('click', ()=>{
+      download_voucher();
+    })
+    $('select').on('change', function(){
+      if($(this).val()=='other'){
+        $('textarea').removeAttr('hidden');
+      }
+      else{
+        $('textarea').attr('hidden','hidden');
+        $('.txtcount-div').removeClass('block')
+        $('.txtcount-div').addClass('block-none')
+      }
+      submitBtn();
+    })
+    $('input#agree').on('click', function(){
+      submitBtn();
+    })
+    $('textarea').keyup(function(){
+      clearTimeout(txtcount1);
+      $('#txtcount').text(`${$(this).val().length}/150`);
+      $('.txtcount-div').removeClass('block-none')
+      $('.txtcount-div').addClass('block')
+      txtcount1 = setTimeout(()=>{
+        $('.txtcount-div').removeClass('block')
+        $('.txtcount-div').addClass('block-none')
+      },2000);
 
-    submitBtn();
+      submitBtn();
+    });
+    // Notice
+    let text = [
+      "Bank deposit vouchers are valid for 24 hours, failure to pay cancels order",
+      "Products will be delivered within 7 working days"],
+    notice = $('#notice'), counter = 0, iNotice1 = setInterval(change, 8000), tNotice1;
+    function change() {
+      notice.css('opacity','0');
+      tNotice1 = setTimeout(()=>{
+        notice.css('opacity','1');
+        notice.text(text[counter])
+        counter++;
+        if (counter >= text.length) {
+          counter = 0;
+        }
+      },350);
+    }
   });
 </script>
 <%- include('../../../templates/closer.ejs') -%>

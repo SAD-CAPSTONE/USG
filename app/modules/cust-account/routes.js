@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../../lib/database')();
 const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
-const pageLimit = 5;
+const pageLimit = 15;
 const orderQuery = `SELECT tblorder.intStatus AS Status, tblorder.*, Price.totalPrice FROM tbluser
   INNER JOIN tblorder ON tbluser.intUserID= tblorder.intUserID INNER JOIN (
 	SELECT SUM(purchasePrice*intQuantity)totalPrice, tblorder.intOrderNo FROM tblorder

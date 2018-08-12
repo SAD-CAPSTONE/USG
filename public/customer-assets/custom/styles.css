@@ -366,6 +366,10 @@ input#mobile {
   color: var(--price-color);
 }
 
+#notice {
+  transition: all 0.25s ease;
+}
+
 /* Pills */
 li.nav-item > a{
   border-radius: 2px !important;
@@ -1063,8 +1067,6 @@ table th, table td {
   display: none;
 }
 #faq-main-pane input{
-  border: none;
-  border-bottom: 2px solid var(--primary-color);
   width: 100%;
   font-size: .9em;
   padding: 5px;
@@ -1264,6 +1266,13 @@ table th, table td {
     width: 100%;
     position: relative;
   }
+  #summary-main-pane > div:first-child a {
+    float: none;
+  }
+  #summary-main-pane > div:first-child svg#SVG_refreshList {
+    float: none;
+    display: block
+  }
   #summary-main-pane #header {
     display: none;
   }
@@ -1349,9 +1358,6 @@ table th, table td {
     height: 380;
     padding: 0px;
   }
-  #summary-main-pane > div:first-child a p {
-    float: none;
-  }
   #summary-main-pane > div:first-child a {
     display: block;
   }
@@ -1385,4 +1391,32 @@ table th, table td {
   #store-main > div:nth-child(2) {
     text-align: center;
   }
+}
+
+svg#SVG_loadList{
+  width: 25px;
+  height: 30px;
+  margin-top: 2px;
+  margin-left: 5px;
+}
+svg#SVG_loadList > rect{
+  fill: var(--primary-color);
+}
+
+svg#SVG_refreshList{
+  width: 40px;
+  height: 21px;
+  display:inline-block;
+}
+svg#SVG_refreshList > circle{
+  fill: var(--primary-color);
+}
+
+svg#SVG_refreshCart{
+  width: 25px;
+  height: 30px;
+  display:inline-block;
+}
+svg#SVG_refreshCart > rect{
+  fill: #fff;
 }

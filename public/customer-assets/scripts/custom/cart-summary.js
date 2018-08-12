@@ -59,6 +59,8 @@ $(() => {
           </div>`);
         OrderDisabled();
       }
+      $('svg#SVG_refreshList').attr('hidden','hidden');
+      $('#refresh').removeAttr('hidden');
       $('#total-btn').click();
     }).catch((error) => {
       list.html('');
@@ -113,11 +115,33 @@ $(() => {
 
   // Refresh List
   $('#refresh').on('click', () => {
-    $('#getSummary').click();
+    $('#refresh').attr('hidden','hidden');
+    $('svg#SVG_refreshList').removeAttr('hidden');
+    let tRefresh1 = setTimeout(()=>{
+      $('#getSummary').click();
+    },500);
   });
 
   // Click Button on Load
   $('#getSummary').click();
+
+  // Notice
+  let text = [
+    "Remember to refresh list before placing order",
+    "Only one discount voucher per order is allowed",
+    "Products will be delivered within 7 working days"],
+  notice = $('#notice'), counter = 0, iNotice1 = setInterval(change, 8000), tNotice1;
+  function change() {
+    notice.css('opacity','0');
+    tNotice1 = setTimeout(()=>{
+      notice.css('opacity','1');
+      notice.text(text[counter])
+      counter++;
+      if (counter >= text.length) {
+        counter = 0;
+      }
+    },350);
+  }
 
   // Nav Cart
   $('#nav-cart').css("cursor" , "not-allowed");
