@@ -27,7 +27,12 @@ router.post('/renew',(req,res)=>{
   console.log('renew');
   db.query(`Update tblContract set intContractStatus = 1 where intContractNo = "${req.body.no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
-    if(!err1) res.send("yes");
+    db.query(`Update tblSupplier set intStatus = 1
+      where tblSupplier.intUserID = (Select intConsignorID from tblContract where intContractNo = ${req.body.no})`,(err2,res2,fie2)=>{
+        if(err2) console.log(err2);
+        if(!err2) res.send("yes");
+      });
+
   })
 });
 
@@ -35,7 +40,12 @@ router.post('/terminate',(req,res)=>{
   console.log('terminate')
   db.query(`Update tblContract set intContractStatus = 4 where intContractNo = "${req.body.no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
-    if(!err1) res.send("yes");
+    db.query(`Update tblSupplier set intStatus = 0
+      where tblSupplier.intUserID = (Select intConsignorID from tblContract where intContractNo = ${req.body.no})`,(err2,res2,fie2)=>{
+        if(err2) console.log(err2);
+        if(!err2) res.send("yes");
+      })
+
   })
 });
 

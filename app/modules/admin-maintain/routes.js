@@ -77,7 +77,7 @@ router.get('/batch', (req,res)=>{
 router.get('/supplier', (req,res)=>{
   db.query(`Select tblSupplier.intStatus as Stats, tblUser.*,tblSupplier.* from
     tblUser join tblSupplier on tblUser.intUserID =
-    tblSupplier.intUserID where tblSupplier.intStatus <> 3`,(err1,results1,fields1)=>{
+    tblSupplier.intUserID where tblSupplier.intStatus <> 3 and tblSupplier.intStatus <> 0 and tblSupplier.intStatus <> 2`,(err1,results1,fields1)=>{
       if (err1) console.log(err1);
       res.render('admin-maintain/views/supplier', {re: results1});
 
@@ -176,7 +176,7 @@ router.post('/addSupplier',(req,res)=>{
 });
 
 router.post('/inactivateSupplier',(req,res)=>{
-  db.query(`Update tblSupplier set intStatus = 0 where intUserID = "${req.body.no}"`,(err1,results1,fields1)=>{
+  db.query(`Update tblSupplier set intStatus = 4 where intUserID = "${req.body.no}"`,(err1,results1,fields1)=>{
     if (err1) console.log(err1);
     if(!err1) res.send("yes");
   });
