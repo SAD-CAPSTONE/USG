@@ -715,6 +715,9 @@ table th, table td {
   #store-main #filters-div {
     display: none;
   }
+  #store-main #filterClearDiv {
+    margin: 3px 0px;
+  }
 
 /* Product------------------------------------------------------ */
 :root {

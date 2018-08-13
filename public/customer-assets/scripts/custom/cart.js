@@ -38,7 +38,7 @@ $(() => {
         list.append(`
           <div style="padding: 0px 10px 0px 10px">
             <em class="fs-08em text-muted">
-              You must be logged in before proceeding to Checkout
+              You must be logged in to proceed to Checkout
             </em>
           </div>
           `)
@@ -74,10 +74,15 @@ $(() => {
           </div>`)
       });
       if(!res.cart.length){
-        list.append(`
-          <div class="cart-product-container">
-            <p> Cart currently empty </p>
-          </div>`);
+        res.thisUser ?
+          list.append(`
+            <div class="cart-product-container">
+              <p> Cart currently empty </p>
+            </div>`):
+          list.append(`
+            <div class="cart-product-container">
+              <p style="line-height: .8em"> Cart currently empty </p>
+            </div>`);
         chekoutBtnDisabled();
       }
       else{

@@ -191,6 +191,10 @@
           doc.text(firstX, newY, str.slice((max*i)+1,max*(i+1))) :
           doc.text(firstX, newY, str.slice(max*i,max*(i+1)))
         i++;
+        if (newY > 275){
+          doc.addPage();
+          newY = 22-gap;
+        }
         if (str.length > max*(i)){
           newY+= gap;
           stringCut(str,i,max);
@@ -213,7 +217,7 @@
       doc.text(91, 35.5, `Official Receipt`);
 
       // Receipt Details
-      let firstX = 10, firstY = 48, gap = 4.5 , newY, maxY;
+      let firstX = 10, firstY = 48, gap = 4.5 , newY, maxY, originalX = firstX;
       // Order
       newY = firstY;
       doc.setFont('Poppins-Regular');
@@ -259,75 +263,66 @@
       maxY < newY ? maxY = newY : 0;
 
       // Products
-      firstX = 16, firstY = maxY + 15, gap = 6, originalX = 16;
+      qtyX = 16, descX = 24, unitX = 162, amntX = 199,
+      firstY = maxY + 15, gap = 6;
 
-      // Description
-      firstX += 8;
+      // Headers
       newY = firstY;
       doc.setFont('Poppins-Regular');
-      doc.text(firstX, newY, `Description`); newY+= gap*1.4;
+      doc.text(qtyX, newY, `Qty`, 'right');
+      doc.text(descX, newY, `Description`);
+      doc.text(unitX, newY, `Unit Price`, 'right');
+      doc.text(amntX, newY, `Amount`, 'right');
+      newY+= gap*1.4;
+
+      // Product Loop
       doc.setFont('Poppins-Light');
-      let descArr = []
+      firstX = descX;
       res.receipt.forEach((data,i)=>{
-        str = `${data.strBrand} ${data.strProductName} ${data.intSize}${data.strUnitName}`
-        extend = Math.floor((str.length-1) / 55)+1
+        // qty
+        doc.text(qtyX, newY, `${data.intQuantity}`, 'right');
+        // unit
+        doc.text(unitX, newY, `${data.priceNonVAT}`, 'right');
+        // amnt
+        doc.text(amntX, newY, `${data.amountNonVAT}`, 'right');
+        // desc
+        str = `${data.strBrand} ${data.strProductName} ${data.intSize}${data.strUnitName}`;
         stringCut(str,0,55)
         newY+= gap
-        descArr.push(extend);
       })
-      console.log(descArr)
 
-
-      // Qty
-      newY = firstY;
-      doc.setFont('Poppins-Regular');
-      doc.text(originalX, newY, `Qty`, 'right'); newY+= gap*1.4;
-      doc.setFont('Poppins-Light');
-      res.receipt.forEach((data, i)=>{
-        doc.text(originalX, newY, `${data.intQuantity}`, 'right'); newY+= gap*descArr[i];
-      })
-      firstX += 138;
-
-      // Unit Price
-      newY = firstY;
-      doc.setFont('Poppins-Regular');
-      doc.text(firstX, newY, `Unit Price`, 'right'); newY+= gap*1.4;
-      doc.setFont('Poppins-Light');
-      res.receipt.forEach((data, i)=>{
-        doc.text(firstX, newY, `${data.priceNonVAT}`, 'right'); newY+= gap*descArr[i];
-      })
-      // Summary Labels
+      // Summary
       newY+= gap*0.4;
+
+      if (newY > 275){doc.addPage(); newY = 22;}
       doc.setFont('Poppins-Regular');
-      doc.text(firstX, newY, `Subtotal`, 'right'); newY+= gap;
-      doc.text(firstX, newY, `VAT(12%)`, 'right'); newY+= gap;
-      doc.text(firstX, newY, `Total`, 'right');
-      firstX += 37;
-      // Amount
-      newY = firstY;
-      doc.setFont('Poppins-Regular');
-      doc.text(firstX, newY, `Amount`, 'right'); newY+= gap*1.4;
+      doc.text(unitX, newY, `Subtotal`, 'right');
       doc.setFont('Poppins-Light');
-      res.receipt.forEach((data, i)=>{
-        doc.text(firstX, newY, `${data.amountNonVAT}`, 'right'); newY+= gap*descArr[i];
-      })
-      // Summary Values
-      newY+= gap*0.4;
+      doc.text(amntX, newY, `${res.receiptNonVAT}`, 'right'); newY+= gap;
+
+      if (newY > 275){doc.addPage(); newY = 22;}
       doc.setFont('Poppins-Regular');
-      doc.text(firstX, newY, `${res.receiptNonVAT}`, 'right'); newY+= gap;
-      doc.text(firstX, newY, `${res.vat}`, 'right'); newY+= gap;
-      doc.text(firstX, newY, `Php ${res.receiptTotal}`, 'right');
-      firstX += 40;
-      newY += 17;
+      doc.text(unitX, newY, `VAT(12%)`, 'right');
+      doc.setFont('Poppins-Light');
+      doc.text(amntX, newY, `${res.vat}`, 'right'); newY+= gap;
 
-      doc.setFontSize('9');
-      doc.text(88.1, newY-4, `© Ultra Super Green`);
+      if (newY > 275){doc.addPage(); newY = 22;}
+      doc.setFont('Poppins-Regular');
+      doc.text(unitX, newY, `Total`, 'right');
+      doc.setFont('Poppins-Light');
+      doc.text(amntX, newY, `Php ${res.receiptTotal}`, 'right');
 
-      doc.setDrawColor(0, 0, 0);
-      let x=10, w=15
-      for(i=0; i<=26; i++){ // broken lines
-        doc.line(x, newY, w, newY);
-        x+=7.065; w+=7.065;
+      doc.text(originalX, newY, `© Ultra Super Green`);
+
+      // Broken line
+      newY += 10;
+      if(!(newY > 265 && newY < 275)){
+        doc.setDrawColor(0, 0, 0);
+        let x=originalX, w=15
+        for(i=0; i<=26; i++){ // broken lines
+          doc.line(x, newY, w, newY);
+          x+=7.065; w+=7.065;
+        }
       }
 
       doc.save('UltraSuperGreen Order Receipt.pdf');
