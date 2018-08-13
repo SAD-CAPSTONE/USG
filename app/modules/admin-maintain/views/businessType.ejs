@@ -61,7 +61,7 @@
                         <td>
                           <center>
                           <button class="editModal large ui teal button" data-toggle="modal" data-target="#edit_modal" data-no="<%=i.intBusinessTypeNo%>" data-name="<%=i.strBusinessType%>"><i class="glyphicon glyphicon-edit"></i></button>
-                          <button data-no="<%=i.intBusinessTypeNo%>" class="delete large ui red button"><i class="glyphicon glyphicon-trash"></i></button>
+                          <button data-no="<%=i.intBusinessTypeNo%>" onclick="del(<%=i.intBusinessTypeNo%>)" class="large ui red button"><i class="glyphicon glyphicon-trash"></i></button>
                         </center>
                         </td>
                       </tr>
@@ -217,7 +217,7 @@
 </script>
 
 <script>
-  $('.delete').on('click',function(){
+  function del(value){
     swal({
       title: 'Are you sure?',
       text: "You cannot revert this once you proceed",
@@ -229,7 +229,7 @@
       reverseButtons: true
     }).then((result) => {
       if (result.value) {
-        $.post('/maintenance2/deleteBusinessType',{number: $('#delete').data('no')}, function(data,status){
+        $.post('/maintenance2/deleteBusinessType',{number: value}, function(data,status){
           if(data){
             swal(
               'Success!',
@@ -243,7 +243,7 @@
 
       }
     })
-  })
+  }
 </script>
 
 <script>

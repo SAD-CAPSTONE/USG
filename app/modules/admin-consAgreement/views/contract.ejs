@@ -1,0 +1,604 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+
+ <!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+
+      <h1>
+
+        <small></small>
+
+		<small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Transactions</a></li>
+        <li class="active">Consignor Contract</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+
+    <section class="content">
+
+
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 align="center">Consignor Agreement</h3>
+              <center>
+              <% if(contract[0].intContractStatus == 1) { %>
+                <span class="label label-success">Active</span>
+
+              <% }else if(contract[0].intContractStatus == 4){ %>
+                <span class="label label-danger">Terminated</span>
+
+              <% }else{ %>
+
+              <% } %>
+            </center>
+            </div>
+
+        <div class="row">
+          <div class="col-md-1"></div>
+          <div class="col-md-2">
+            <h5>Application Date:</h5>
+          </div>
+          <div class="col-md-5">
+            <h5><%= moment(contract[0].applicationDate).format("MMMM Do YYYY") %></h5>
+          </div>
+        </div>
+
+        <div class="row">
+  				<div class="col-md-1"></div>
+  				<div class="col-md-2">
+  				  <h5>Business Name:</h5>
+  				</div>
+  				<div class="col-md-5">
+  			    <h5><%=contract[0].strBusinessName%></h5>
+  				</div>
+			   </div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Brands:</h5>
+				</div>
+				<div class="col-md-5">
+				<h5><%=contract[0].strBrands%></h5>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Business Type:</h5>
+				</div>
+				<div class="col-md-5">
+				<h5><%= contract[0].strBusinessType %></h5>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Business Address:</h5>
+				</div>
+				<div class="col-md-5">
+				<h5><%= contract[0].strBusinessAddress %></h5>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Business TIN:</h5>
+				</div>
+				<div class="col-md-5">
+				<h5>
+          <% if (contract[0].strBusinessTIN == null){ %>
+            <span class="label label-danger">Not Available</span>
+          <% }else{ %>
+            <%= contract[0].strBusinessTIN %>
+          <% } %>
+        </h5>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Sales Invoice Available:</h5>
+				</div>
+				<div class="col-md-5">
+				<h5>
+          <% if (contract[0].intInvoiceAvailable == 0){ %>
+            <span class="label label-warning">To be followed</span></h5>
+          <% } else if(contract[0].intInvoiceAvailable == 1){ %>
+            <span class="label label-success">Available</span></h5>
+          <% }else{ %>
+            <span class="label label-danger">Not Available</span></h5>
+          <% } %>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Contact Numbers:</h5>
+				</div>
+				<div class="col-md-5">
+				<h5><%= contract[0].strSupplierMobile %>, <%= contract[0].strSupplierPhone %></h5>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Email Address:</h5>
+				</div>
+				<div class="col-md-5">
+				<h5 id="email"><%= contract[0].strBusinessEmail %></h5>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Best Time and Day to reach:</h5>
+				</div>
+				<div class="col-md-5">
+				<h5><%= contract[0].timeDayToReach %></h5>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Consignment Price:</h5>
+				</div>
+				<div class="col-md-5">
+				<h5>We agree with the <%= contract[0].consignmentPrice %> commission on all product consignment</h5>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Product Lines:</h5>
+				</div>
+				<div class="col-md-5">
+				<h5><%= contract[0].strProductLines %></h5>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Product Certifications:</h5>
+				</div>
+				<div class="col-md-5">
+				<h5><%= contract[0].strProductCertifications %></h5>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				  <h5>FDA Registration Status:</h5>
+				</div>
+				<div class="col-md-5">
+				  <h5>
+            <% if (contract[0].intFDAReg == 0){ %>
+              <span class="label label-danger">Not Registered</span>
+            <% }else if (contract[0].intFDAReg == 2){ %>
+              <span class="label label-warning">To be followed</span>
+            <% }else{ %>
+              <span class="label label-success">Registered</span>
+            <% } %>
+          </h5>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Proposed Schedule of Delivery:</h5>
+				</div>
+				<div class="col-md-5">
+				<h5><%= moment(contract[0].deliverySchedule).format() %></h5>
+				</div>
+			</div>
+
+    </br>
+    </br>
+    </br>
+
+    <h4 align="center">Documents Attached</h4>
+
+      <div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Product Information sheet</h5>
+				</div>
+				<div class="col-md-5">
+          <input type="checkbox" value="1" id="product_info" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+				<!-- <h5><% if (contract[0].intProductInfoSheet == 0){ %>
+          <span class="label label-danger">Not Available</span>
+        <% }else{ %>
+          <span class="label label-success">Available</span>
+        <% } %>
+           </h5> -->
+				</div>
+			</div>
+
+      <div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Delivery Receipt</h5>
+				</div>
+				<div class="col-md-5">
+          <input type="checkbox" id="delivery_receipt" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+
+				<!-- <h5><% if (contract[0].intDeliveryReceipt == 0){ %>
+          <span class="label label-danger">Not Available</span>
+        <% }else{ %>
+          <span class="label label-success">Available</span>
+        <% } %>
+           </h5> -->
+				</div>
+			</div>
+
+
+
+      <div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Company Profile</h5>
+				</div>
+				<div class="col-md-5">
+          <input type="checkbox" id="company_profile" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+
+				<!-- <h5><% if (contract[0].intCompanyProfile == 0){ %>
+          <span class="label label-danger">Not Available</span>
+        <% }else{ %>
+          <span class="label label-success">Available</span>
+        <% } %>
+           </h5> -->
+				</div>
+			</div>
+
+      <div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Eco Certification</h5>
+				</div>
+				<div class="col-md-5">
+          <input type="checkbox" id="eco_certification" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+
+				<!-- <h5><% if (contract[0].intEcoCertification == 0){ %>
+          <span class="label label-danger">Not Available</span>
+        <% }else{ %>
+          <span class="label label-success">Available</span>
+        <% } %>
+           </h5> -->
+				</div>
+			</div>
+
+
+
+
+
+			<div class="box-footer">
+        <a href="/consApplication"><button class="btn btn-default" >Back</button></a>
+
+        <button type="button" id="sendInvite" data-toggle="modal" data-target="#sendInvitation" class="invite large ui green button pull-right"><i class="fa fa-envelope"></i> Send Invitation for Product Sampling
+				</button>
+        <button type="button"  class="large ui teal button pull-right"><i class="fa fa-download"></i> Download
+  				</button>
+				<button type="button" data-contract="<%=contract[0].intContractNo%>" class="renew large ui blue button pull-right" id="renew" style="margin-right: 5px;">
+				 Renew Contract
+				</button>
+
+			</div>
+			<!-- /.box-footer -->
+          </div>
+          <!-- /.box -->
+	    </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+  <!-- /.content-wrapper -->
+
+  <!-- Modals -->
+
+	<div class="modal fade" id="sendInvitation">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title">Invitation Form</h4>
+		  </div>
+		  <div class="modal-body">
+			<!-- Horizontal Form -->
+
+					<!-- form start -->
+          <form role="form">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="receiver">To:</label>
+                  <input type="text" class="form-control" id="receiver" disabled value="PICOLE" placeholder="">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Set Preferred Schedules for Product Presentation:</label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="ex. June 10, 2018 8:00 onwards">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Special Note:</label>
+                  <textarea class="form-control" id="exampleInputPassword1"> </textarea>
+                </div>
+
+                <div class="form-group">
+                  <label for="exampleInputFile">Insert PDF for other requirements</label>
+                  <input type="file" id="exampleInputFile">
+
+                  <p class="help-block">Include in the requirements the documents to bring.</p>
+                </div>
+                <!-- <div class="checkbox">
+                  <label>
+                    <input type="checkbox"> Check me out
+                  </label>
+                </div> -->
+              </div>
+            </form>
+
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+			<button type="button" data-dismiss="modal" class="sendInvite btn btn-primary">Save changes</button>
+		  </div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+  <!-- /.modal-dialog -->
+</div>
+
+
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+
+<!-- page script (new added) -->
+
+
+<script>
+  $(function () {
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $('.invite').on('click', function(){
+    $('#receiver').val($('#email').html());
+  });
+</script>
+
+
+
+<% if ( contract[0].intContractStatus == 1){ %>
+  <script>
+  // Accepted
+  $('.renew').html('Terminate Contract');
+  $('.renew').attr('class','terminate large ui red button pull-right');
+
+   </script>
+<% } %>
+
+<% if ( contract[0].intContractStatus == 4){ %>
+  <script>
+  // Terminated
+  $('.terminate').html('Renew Contract');
+  $('.terminate').attr('class','renew large ui blue button pull-right');
+  </script>
+<% } %>
+
+
+
+<script>
+
+  $('.sendInvite').on('click', function(){
+    $.ajax({url:'/consApplication/sendInvitation', method: 'POST' });
+    $('.invite').attr('disabled','disabled');
+  })
+</script>
+
+<script>
+  $('#title').html("USG | Consignor Agreement");
+  $(".treeview a:contains('Transactions')").parent().addClass("active");
+  $(".navi a:contains('Consignor Agreement')").parent().addClass("active");
+</script>
+
+<script>
+  $('.renew').on('click',function(){
+    swal({
+      title: "Are you sure?",
+      text: "You cannout undo this once you proceed",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonClass: "btn-danger",
+      confirmButtonText: "Renew Consignor",
+      cancelButtonText: "Back",
+      reverseButtons: true
+    }).then((result)=>{
+      if(result.value){
+        $.post('/consAgreement/renew',{no: $('.renew').data('contract')}, function(data,success){
+          swal({title: 'Success', text: 'This contract is now active', type:'success'}).then(()=>{
+            $('.renew').html('Terminate Contract');
+            $('.renew').attr('class','terminate large ui red button pull-right');
+
+            location.reload();
+          })
+        })
+      }
+    })
+  })
+
+
+  $('.terminate').on('click',function(){
+    swal({
+      title: "Are you sure?",
+      text: "You cannout undo this once you proceed",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonClass: "btn-danger",
+      confirmButtonText: "Terminate Consignor",
+      cancelButtonText: "Back",
+      reverseButtons: true
+    }).then((result)=>{
+      if(result.value){
+        $.post('/consAgreement/terminate',{no: $('.terminate').data('contract')}, function(data,success){
+          swal({title: 'Success', text: 'This contract is now terminated', type:'success'}).then(()=>{
+            $('.terminate').html('Renew Contract');
+            $('.terminate').attr('class','renew large ui blue button pull-right');
+
+            location.reload();
+          })
+        })
+      }
+    })
+  })
+</script>
+
+
+<script>
+  <% if (contract[0].intDeliveryReceipt == 0){ %>
+    $('#delivery_receipt').attr('checked',false);
+    $('#delivery_receipt').val(0);
+  <% }else{ %>
+    $('#delivery_receipt').attr('checked',true);
+    $('#delivery_receipt').val(1);
+  <% } %>
+
+  <% if (contract[0].intProductInfoSheet == 0){ %>
+    $('#product_info').attr('checked',false);
+    $('#product_info').val(0);
+
+  <% }else{ %>
+    $('#product_info').attr('checked',true);
+    $('#product_info').val(1);
+
+  <% } %>
+
+  <% if (contract[0].intCompanyProfile == 0){ %>
+    $('#company_profile').attr('checked',false);
+    $('#company_profile').val(0);
+  <% }else{ %>
+    $('#company_profile').val(1);
+    $('#company_profile').attr('checked',true);
+  <% } %>
+
+  <% if (contract[0].intEcoCertification == 0){ %>
+    $('#eco_certification').attr('checked',false);
+    $('#eco_certification').val(0);
+  <% }else{ %>
+    $('#eco_certification').attr('checked',true);
+    $('#eco_certification').val(1);
+  <% } %>
+</script>
+
+<script>
+  $('#product_info').on('change',function(){
+    if($(this).val() == 1){
+      $('#product_info').val(0);
+      $.post('/consApplication/updateContract',{type: 1, value: 0, contractno: <%=contract[0].intContractNo%>},function(data,success){
+
+      });
+    }else{
+      $('#product_info').val(1);
+      $.post('/consApplication/updateContract',{type: 1, value: 1,  contractno: <%=contract[0].intContractNo%>},function(data,success){
+
+      });
+    }
+
+  })
+
+  $('#delivery_receipt').on('change',function(){
+    if($(this).val() == 1){
+      $('#delivery_receipt').val(0);
+      $.post('/consApplication/updateContract',{type: 2, value: 0, contractno: <%=contract[0].intContractNo%>},function(data,success){
+
+      });
+    }else{
+      $('#delivery_receipt').val(1);
+      $.post('/consApplication/updateContract',{type: 2, value: 1,  contractno: <%=contract[0].intContractNo%>},function(data,success){
+
+      });
+    }
+
+  })
+
+  $('#company_profile').on('change',function(){
+    if($(this).val() == 1){
+      $('#company_profile').val(0);
+      $.post('/consApplication/updateContract',{type: 3, value: 0, contractno: <%=contract[0].intContractNo%>},function(data,success){
+
+      });
+    }else{
+      $('#company_profile').val(1);
+      $.post('/consApplication/updateContract',{type: 3, value: 1,  contractno: <%=contract[0].intContractNo%>},function(data,success){
+
+      });
+    }
+
+  })
+
+  $('#eco_certification').on('change',function(){
+    if($(this).val() == 1){
+      $('#eco_certification').val(0);
+      $.post('/consApplication/updateContract',{type: 4, value: 0, contractno: <%=contract[0].intContractNo%>},function(data,success){
+
+      });
+    }else{
+      $('#eco_certification').val(1);
+      $.post('/consApplication/updateContract',{type: 4, value: 1,  contractno: <%=contract[0].intContractNo%>},function(data,success){
+
+      });
+    }
+
+  })
+</script>
+
+
+
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>

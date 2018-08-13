@@ -1,0 +1,197 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      <small> Consignment Agreement </small>
+    </h1>
+
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="#">Transactions</a></li>
+      <li class="active">Consignor Agreement</li>
+    </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#active_consignors" data-toggle="tab"><i class="fa fa-bars"></i> Active Consignors</a></li>
+            <li ><a href="#terminated_consignors" data-toggle="tab"><i class="fa fa-bars"></i> Terminated Consignors</a></li>
+            <!-- <li><a href="#quantity" data-toggle="tab"><i class=""></i>Quantity</a></li> -->
+          </ul>
+          <div class="tab-content">
+            <!-- Active -->
+            <div class="tab-pane active" id="active_consignors">
+
+              </br>
+              <!-- /.box-header -->
+              <div class="box-body table-responsive">
+                <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>Business Name</th>
+                    <th>Email</th>
+                    <th>Active Contracts</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+
+
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <% if(active==null||active==undefined){ %>
+
+                    <% }else if(active.length == 0){ %>
+
+                    <% }else{ %>
+                      <% active.forEach(function(i){ %>
+                        <tr>
+                          <td><%=i.strBusinessName%></td>
+                          <td><%=i.strBusinessEmail%></td>
+                          <td>Not sure</td>
+                          <td>
+                            <% if (i.intStatus == 0){ %>
+                              <span class="label label-danger">Inactive</span>
+                            <% }else{ %>
+                            <span class="label label-success">Active</span>
+                            <% } %>
+                          </td>
+                          <td>
+                            <a href="/consAgreement/contract?q=<%=i.intUserID%>"<button class="large ui teal button">View Contract</button>
+                            <a href="/consAgreement/history?q=<%=i.intUserID%>"<button class="large ui button">History</button>
+
+                          </td>
+                        </tr>
+                      <% }) %>
+                    <% } %>
+
+
+                  </tbody>
+
+                </table>
+              </div>
+              <!-- /.box-body -->
+            </div>
+
+            <!-- Terminated -->
+            <div class="tab-pane" id="terminated_consignors">
+
+              </br>
+              <!-- /.box-header -->
+              <div class="box-body table-responsive">
+                <table id="example3" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>Business Name</th>
+                    <th>Email</th>
+                    <th>Active Contracts</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+
+
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <% if(terminated==null||terminated==undefined){ %>
+
+                    <% }else if(terminated.length == 0){ %>
+
+                    <% }else{ %>
+                      <% terminated.forEach(function(i){ %>
+                        <tr>
+                          <td><%=i.strBusinessName%></td>
+                          <td><%=i.strBusinessEmail%></td>
+                          <td>Not sure</td>
+                          <td>
+                            <% if (i.intStatus == 0){ %>
+                              <span class="label label-danger">Inactive</span>
+                            <% }else{ %>
+                            <span class="label label-success">Active</span>
+                            <% } %>
+                          </td>
+                          <td>
+                            <a href="/consAgreement/contract?q=<%=i.intUserID%>"<button class="large ui teal button">View Contract</button>
+                            <a href="/consAgreement/history?q=<%=i.intUserID%>"<button class="large ui button">History</button>
+
+                          </td>
+                        </tr>
+                      <% }) %>
+                    <% } %>
+
+
+                  </tbody>
+
+                </table>
+              </div>
+              <!-- /.box-body -->
+            </div>
+
+          </div>
+          <!-- /.tab-content -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+  <!-- ./wrapper -->
+
+  <!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+  <!-- page script (new added) -->
+  <script>
+    $(function () {
+      $('#example2').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+  	  'select'		: true,
+  	  'scroll'		: true
+      })
+    })
+  </script>
+
+  <script>
+    $(function () {
+      $('#example3').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+  	  'select'		: true,
+  	  'scroll'		: true
+      })
+    })
+  </script>
+
+
+  <script>
+    $('#title').html("USG | Consignor Agreement");
+
+    $(".treeview a:contains('Transaction')").parent().addClass("active");
+    $(".navi a:contains('Consignor Agreement')").parent().addClass("active");
+  </script>
+
+  </body>
+  </html>
