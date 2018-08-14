@@ -33,11 +33,25 @@
                   <th>No</th>
                   <th>Product Name</th>
                   <th>Supplier Name</th>
+                  <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
+                    <% if (re == null || re == undefined){ %>
 
+                      <% }else if (re.length == 0){ %>
+    
+                      <% }else{ %>
+                       <%  re.forEach(function(i){ %>
+                          <tr>
+                            <td><%= i.intUserID%></td>
+                            <td><%= i.strProductName%></td>
+                            <td><%= i.strBusinessName%></td>
 
+                            <td><button type="button" data-toggle="modal" data-target="#viewProduct" class="viewDetailsButton btn btn-default btn-sm">View Product</button></a>
+                          </tr>
+                        <%  }) %>
+                        <% } %>
                 </tbody>
 
               </table>
