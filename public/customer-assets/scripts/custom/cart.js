@@ -34,6 +34,14 @@ $(() => {
     let list = $('#cart-pad');
     $.get('/cart/list').then((res) => {
       list.html('');
+      res.thisUser ? 0 :
+        list.append(`
+          <div style="padding: 0px 10px 0px 10px">
+            <em class="fs-08em text-muted">
+              You must be logged in to proceed to Checkout
+            </em>
+          </div>
+          `)
       res.cart.forEach((data) => {
         list.append(`
           <div class="cart-product-container">
@@ -66,15 +74,22 @@ $(() => {
           </div>`)
       });
       if(!res.cart.length){
-        list.append(`
-          <div class="cart-product-container">
-            <p> Cart currently empty </p>
-          </div>`);
+        res.thisUser ?
+          list.append(`
+            <div class="cart-product-container">
+              <p> Cart currently empty </p>
+            </div>`):
+          list.append(`
+            <div class="cart-product-container">
+              <p style="line-height: .8em"> Cart currently empty </p>
+            </div>`);
         chekoutBtnDisabled();
       }
       else{
         chekoutBtnActive();
       }
+      $('svg#SVG_refreshCart').attr('hidden','hidden');
+      $('#reload > i').removeAttr('hidden');
       $('#subtotal-btn').click();
     }).catch((error) => {
       list.html('');
@@ -162,6 +177,15 @@ $(() => {
     }).catch((error) => {
       console.log(error)
     });
+  });
+
+  // Reload
+  $('#reload').on('click', () => {
+    $('#reload > i').attr('hidden','hidden');
+    $('svg#SVG_refreshCart').removeAttr('hidden');
+    let tRefresh1 = setTimeout(()=>{
+      $('#getCart').click();
+    },500);
   });
 
   // Click Button on Load

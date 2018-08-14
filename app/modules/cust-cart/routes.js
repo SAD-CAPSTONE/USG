@@ -147,12 +147,12 @@ router.get('/list', (req, res)=>{
       else{
         db.commit(function(err) {
           if (err) console.log(err);
-          res.send({cart: req.session.cart});
+          res.send({cart: req.session.cart, thisUser: req.user});
         });
       }
     });
   }
-  req.session.cart.length ? cartLimitLoop(0) : res.send({cart: req.session.cart});
+  req.session.cart.length ? cartLimitLoop(0) : res.send({cart: req.session.cart, thisUser: req.user});
 });
 router.put('/list', (req, res)=>{
   req.session.cart ? 0 : req.session.cart = [];

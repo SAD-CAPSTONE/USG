@@ -3,11 +3,11 @@
 <div id="summary-container" class="container">
   <div id="summary-main-pane" class="fl-l">
     <div>
-      <p class="m-0 fs-08em fw-400 inline-block">Products will be delivered within 7 working days</p>
+      <p id="notice" class="m-0 fs-08em fw-400 inline-block">Products will be delivered within 7 working days</p>
       <% if (orderOne.orderStatus == 0 || orderOne.orderStatus == 1){ %>
-        <a class="inline" href data-toggle='modal' data-target='#CancelModal'><p class="m-0 fs-08em fw-400 fl-r">Cancel Order</p></a>
+        <a class="inline-block fl-r" href data-toggle='modal' data-target='#CancelModal'><p class="m-0 fs-08em fw-400">Cancel Order</p></a>
       <% }else if(orderOne.orderStatus == 6){ %>
-        <a class="inline"><p class="m-0 fs-08em fw-400 fl-r text-danger">Cancelled</p></a>
+        <a class="inline-block fl-r"><p class="m-0 fs-08em fw-400 text-danger">Cancelled</p></a>
       <% } %>
     </div>
     <div class="p-0">
@@ -68,8 +68,10 @@
       </small>
     </div>
     <div>
-      <p class="m-0 mb-1">Order Summary</p>
-      <small class="label">Subtotal (5)</small>
+      <p class="m-0 mb-1 fl-l">Order Summary</p>
+      <p class="fl-r mb-0 fw-400">#1005</p>
+      <div style="clear: both"></div>
+      <small class="label">Subtotal (<%= order.length%>)</small>
       <small class="price price-symbol"><%= orderTotal%></small>
       <br>
       <small class="label">Shipping Fee</small>
@@ -87,9 +89,22 @@
       </div>
       <input id="orderNo" type="number" value="<%= orderNumber%>" hidden />
       <% if(orderOne.intPaymentMethod == 2 && (orderOne.orderStatus == 0 || orderOne.orderStatus == 1 || orderOne.orderStatus == 2)){ %>
-        <button type="button" id="print-btn" class="btn btn-custom-primary btn-sm fl-r">Print Slip</button>
+        <button type="button" id="bs-print-btn" class="btn btn-custom-primary btn-sm fl-r" title="Bank Slip">
+          <i class="zmdi zmdi-file" style="font-size: 1.3em; margin: 1.5px 0px"></i>
+        </button>
       <% }else{ %>
-        <button type="button" id="print-btn" class="btn btn-custom-primary btn-sm fl-r" disabled>Print Slip</button>
+        <button type="button" id="bs-print-btn" class="btn btn-custom-primary btn-sm fl-r" title="Bank Slip" disabled>
+          <i class="zmdi zmdi-file" style="font-size: 1.3em; margin: 1.5px 0px"></i>
+        </button>
+      <% } %>
+      <% if(orderOne.intPaymentStatus){ %>
+        <button type="button" id="or-print-btn" class="btn btn-custom-primary btn-sm fl-r mr-2" title="Receipt">
+          <i class="zmdi zmdi-receipt" style="font-size: 1.3em; margin: 1.5px 0px"></i>
+        </button>
+      <% }else{ %>
+        <button type="button" id="or-print-btn" class="btn btn-custom-primary btn-sm fl-r mr-2" title="Receipt" disabled>
+          <i class="zmdi zmdi-receipt" style="font-size: 1.3em; margin: 1.5px 0px"></i>
+        </button>
       <% } %>
       <div id="more-details">
         <a href=""><small class="block fs-08em fw-400">Vouchers Used</small></a>
@@ -153,50 +168,222 @@
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <%- include('../../../templates/scripts-pdf.ejs') -%>
 <script type="text/javascript">
-  let txtcount1;
-  function submitBtn(){
-    if(!$('input#agree').is(':checked')){
-      $('button[type=submit]').attr('disabled','disabled');
+  $(()=>{
+    let txtcount1;
+    function submitBtn(){
+      if(!$('input#agree').is(':checked')){
+        $('button[type=submit]').attr('disabled','disabled');
+      }
+      else if($('textarea').attr('hidden')){
+        $('button[type=submit]').removeAttr('disabled');
+      }
+      else if($("textarea").val()){
+        $('button[type=submit]').removeAttr('disabled');
+      }
+      else {
+        $('button[type=submit]').attr('disabled','disabled');
+      }
     }
-    else if($('textarea').attr('hidden')){
-      $('button[type=submit]').removeAttr('disabled');
-    }
-    else if($("textarea").val()){
-      $('button[type=submit]').removeAttr('disabled');
-    }
-    else {
-      $('button[type=submit]').attr('disabled','disabled');
-    }
-  }
+    function printReceipt(res){
+      let doc = new jsPDF(), string;
+      function stringCut(str,i,max){
+        str.slice(max*i,max*(i+1)).charAt(0) == ' ' ?
+          doc.text(firstX, newY, str.slice((max*i)+1,max*(i+1))) :
+          doc.text(firstX, newY, str.slice(max*i,max*(i+1)))
+        i++;
+        if (newY > 275){
+          doc.addPage();
+          newY = 22-gap;
+        }
+        if (str.length > max*(i)){
+          newY+= gap;
+          stringCut(str,i,max);
+        }
+      }
 
-  $('#print-btn').on('click', ()=>{
-    download_voucher();
-  })
-  $('select').on('change', function(){
-    if($(this).val()=='other'){
-      $('textarea').removeAttr('hidden');
-    }
-    else{
-      $('textarea').attr('hidden','hidden');
-      $('.txtcount-div').removeClass('block')
-      $('.txtcount-div').addClass('block-none')
-    }
-    submitBtn();
-  })
-  $('input#agree').on('click', function(){
-    submitBtn();
-  })
-  $('textarea').keyup(function(){
-    clearTimeout(txtcount1);
-    $('#txtcount').text(`${$(this).val().length}/150`);
-    $('.txtcount-div').removeClass('block-none')
-    $('.txtcount-div').addClass('block')
-    txtcount1 = setTimeout(()=>{
-      $('.txtcount-div').removeClass('block')
-      $('.txtcount-div').addClass('block-none')
-    },2000);
+      doc.addFont('Poppins-Regular.ttf', 'Poppins-Regular', 'normal');
+      doc.addFont('Poppins-Light.ttf', 'Poppins-Light', 'normal');
+      doc.addFont('Poppins-ExtraLight.ttf', 'Poppins-ExtraLight', 'normal');
 
-    submitBtn();
+      // Brand Title
+      doc.setFont('Poppins-Regular');
+      doc.setFontSize('25');
+      doc.text(62.5, 22, `ULTRA SUPER GREEN`);
+      // Brand Subtitle
+      doc.setFont('Poppins-Light');
+      doc.setFontSize('10');
+      doc.text(64, 26.5, `Elizabeth Hall Bldg., Katipunan Ave. Quezon City`);
+      doc.text(78, 31, `0955 9044744  |  (02)738 1202`);
+      doc.text(91, 35.5, `Official Receipt`);
+
+      // Receipt Details
+      let firstX = 10, firstY = 48, gap = 4.5 , newY, maxY, originalX = firstX;
+      // Order
+      newY = firstY;
+      doc.setFont('Poppins-Regular');
+      doc.text(firstX, newY, `Order`); newY+= gap;
+      doc.setFont('Poppins-Light');
+      doc.text(firstX, newY, `No: #${res.receipt[0].intOrderNo}`); newY+= gap;
+      doc.text(firstX, newY, `Date: ${res.receipt[0].dateOrdered}`);
+      firstX += 32;
+      maxY = newY;
+      // Cashier
+      newY = firstY;
+      doc.setFont('Poppins-Regular');
+      doc.text(firstX, newY, `Cashier/`); newY+= gap;
+      doc.text(firstX, newY, `Personnel:`); newY+= gap;
+      doc.setFont('Poppins-Light');
+      stringCut(`Gustle Agulto`,0,15)
+      firstX += 37;
+      maxY < newY ? maxY = newY : 0;
+      // Customer
+      newY = firstY;
+      doc.setFont('Poppins-Regular');
+      doc.text(firstX, newY, `Customer:`); newY+= gap;
+      doc.setFont('Poppins-Light');
+      res.receipt[0].customerM ?
+        stringCut(`${res.receipt[0].customerF} ${res.receipt[0].customerM} ${res.receipt[0].customerL}`,0,15) :
+        stringCut(`${res.receipt[0].customerF} ${res.receipt[0].customerL}`,0,15)
+      firstX += 37;
+      maxY < newY ? maxY = newY : 0;
+      // Billing
+      newY = firstY;
+      doc.setFont('Poppins-Regular');
+      doc.text(firstX, newY, `Billing Address:`); newY+= gap;
+      doc.setFont('Poppins-Light');
+      stringCut(res.receipt[0].strBillingAddress,0,18)
+      firstX += 44;
+      maxY < newY ? maxY = newY : 0;
+      // Shipping
+      newY = firstY;
+      doc.setFont('Poppins-Regular');
+      doc.text(firstX, newY, `Shipping Address:`); newY+= gap;
+      doc.setFont('Poppins-Light');
+      stringCut(res.receipt[0].strShippingAddress,0,18)
+      maxY < newY ? maxY = newY : 0;
+
+      // Products
+      qtyX = 16, descX = 24, unitX = 162, amntX = 199,
+      firstY = maxY + 15, gap = 6;
+
+      // Headers
+      newY = firstY;
+      doc.setFont('Poppins-Regular');
+      doc.text(qtyX, newY, `Qty`, 'right');
+      doc.text(descX, newY, `Description`);
+      doc.text(unitX, newY, `Unit Price`, 'right');
+      doc.text(amntX, newY, `Amount`, 'right');
+      newY+= gap*1.4;
+
+      // Product Loop
+      doc.setFont('Poppins-Light');
+      firstX = descX;
+      res.receipt.forEach((data,i)=>{
+        // qty
+        doc.text(qtyX, newY, `${data.intQuantity}`, 'right');
+        // unit
+        doc.text(unitX, newY, `${data.priceNonVAT}`, 'right');
+        // amnt
+        doc.text(amntX, newY, `${data.amountNonVAT}`, 'right');
+        // desc
+        str = `${data.strBrand} ${data.strProductName} ${data.intSize}${data.strUnitName}`;
+        stringCut(str,0,55)
+        newY+= gap
+      })
+
+      // Summary
+      newY+= gap*0.4;
+
+      if (newY > 275){doc.addPage(); newY = 22;}
+      doc.setFont('Poppins-Regular');
+      doc.text(unitX, newY, `Subtotal`, 'right');
+      doc.setFont('Poppins-Light');
+      doc.text(amntX, newY, `${res.receiptNonVAT}`, 'right'); newY+= gap;
+
+      if (newY > 275){doc.addPage(); newY = 22;}
+      doc.setFont('Poppins-Regular');
+      doc.text(unitX, newY, `VAT(12%)`, 'right');
+      doc.setFont('Poppins-Light');
+      doc.text(amntX, newY, `${res.vat}`, 'right'); newY+= gap;
+
+      if (newY > 275){doc.addPage(); newY = 22;}
+      doc.setFont('Poppins-Regular');
+      doc.text(unitX, newY, `Total`, 'right');
+      doc.setFont('Poppins-Light');
+      doc.text(amntX, newY, `Php ${res.receiptTotal}`, 'right');
+
+      doc.text(originalX, newY, `© Ultra Super Green`);
+
+      // Broken line
+      newY += 10;
+      if(!(newY > 265 && newY < 275)){
+        doc.setDrawColor(0, 0, 0);
+        let x=originalX, w=15
+        for(i=0; i<=26; i++){ // broken lines
+          doc.line(x, newY, w, newY);
+          x+=7.065; w+=7.065;
+        }
+      }
+
+      doc.save('UltraSuperGreen Order Receipt.pdf');
+      console.log('PDF Downloaded!');
+    }
+
+    $('#or-print-btn').on('click', ()=>{
+      let orderNo = $('#orderNo').val();
+
+      $.get(`/summary/receipt/${orderNo}`).then((res)=>{
+        printReceipt(res);
+      }).catch((error)=>{
+        console.log(error);
+      })
+    })
+    $('#bs-print-btn').on('click', ()=>{
+      download_voucher();
+    })
+    $('select').on('change', function(){
+      if($(this).val()=='other'){
+        $('textarea').removeAttr('hidden');
+      }
+      else{
+        $('textarea').attr('hidden','hidden');
+        $('.txtcount-div').removeClass('block')
+        $('.txtcount-div').addClass('block-none')
+      }
+      submitBtn();
+    })
+    $('input#agree').on('click', function(){
+      submitBtn();
+    })
+    $('textarea').keyup(function(){
+      clearTimeout(txtcount1);
+      $('#txtcount').text(`${$(this).val().length}/150`);
+      $('.txtcount-div').removeClass('block-none')
+      $('.txtcount-div').addClass('block')
+      txtcount1 = setTimeout(()=>{
+        $('.txtcount-div').removeClass('block')
+        $('.txtcount-div').addClass('block-none')
+      },2000);
+
+      submitBtn();
+    });
+    // Notice
+    let text = [
+      "Bank deposit slips are valid for 24 hours, failure to pay cancels order",
+      "Online receipt is available after payment",
+      "Products will be delivered within 7 working days"],
+    notice = $('#notice'), counter = 0, iNotice1 = setInterval(change, 8000), tNotice1;
+    function change() {
+      notice.css('opacity','0');
+      tNotice1 = setTimeout(()=>{
+        notice.css('opacity','1');
+        notice.text(text[counter])
+        counter++;
+        if (counter >= text.length) {
+          counter = 0;
+        }
+      },350);
+    }
   });
 </script>
 <%- include('../../../templates/closer.ejs') -%>

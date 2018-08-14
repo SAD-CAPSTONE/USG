@@ -81,7 +81,7 @@
   color: var(--cart-font-color);
   font-size: 1.6em;
 }
-#dismiss {
+.cart-header-button {
   width: 35px;
   height: 35px;
   line-height: 35px;
@@ -92,14 +92,19 @@
   position: absolute;
   padding: 8px;
   top: 20px;
-  right: 20px;
   cursor: pointer;
   -webkit-transition: all 0.3s;
   -o-transition: all 0.3s;
   transition: all 0.3s;
 }
-#dismiss:hover {
+.cart-header-button:hover {
   background: var(--primary-hover);
+}
+#dismiss {
+  right: 20px;
+}
+#reload {
+  right: 65px;
 }
 
 /* Cart Content */
