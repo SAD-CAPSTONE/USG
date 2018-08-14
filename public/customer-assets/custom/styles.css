@@ -1110,9 +1110,6 @@ table th, table td {
   transition: opacity .7s ease-in;
 
 }
-.alert.green {
-  border-left: none;
-}
 
 /*Responsive Sizes------------------------------------------------------------*/
 
@@ -1311,6 +1308,14 @@ table th, table td {
   #summary-main-pane .product-div > div:nth-child(3) i.fa {
     display: block;
   }
+
+  .alert.cartAlert p:nth-of-type(1){
+    display: block !important;
+  }
+  .alert.cartAlert p:nth-of-type(2){
+    display: none !important;
+  }
+
 }
 @media (max-width: 576px) {
   .search>input {
@@ -1337,6 +1342,7 @@ table th, table td {
   #item-main-pane #main-desc #cart-modal-btn{
     width: 100%;
   }
+
 }
 @media (max-width: 450px) {
   .search>input {

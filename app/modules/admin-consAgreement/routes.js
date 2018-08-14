@@ -49,4 +49,30 @@ router.post('/terminate',(req,res)=>{
   })
 });
 
+router.get('/contract/load/:id',(req,res)=>{
+  if (!req.user){
+    res.send('none')
+  }
+  else if (req.user.intUserTypeNo != 1){
+    res.send('none')
+  }
+  else{
+    db.query(`SELECT strFname, strMname, strLname, strBusinessName, strBrands, strBusinessTIN, strSupplierPhone,
+    strSupplierMobile, strBusinessEmail, deliverySchedule, strFrequencyOfDelivery, remittanceSchedule FROM tbluser
+    INNER JOIN tblsupplier ON tbluser.intUserID= tblsupplier.intUserID
+    INNER JOIN tblcontract ON tblsupplier.intUserID= tblcontract.intConsignorID
+    WHERE tblsupplier.intUserID= ?`,[req.params.id], (err, results, fields) => {
+      if (err) console.log(err);
+      if (results[0]){
+        res.send({
+          contract: results[0]
+        })
+      }
+      else{
+        res.send('none')
+      }
+    });
+  }
+})
+
 exports.consAgreement = router;

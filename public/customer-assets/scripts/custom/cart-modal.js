@@ -30,9 +30,9 @@ function postToCart(modal, data, res, tog){
   },4700);
 
   data[res.latest].curQty == res.limit ?
-    modal.next().find('p:nth-of-type(2)').text(`Maximum quantity reached (${data[res.latest].curQty})`):
-    modal.next().find('p:nth-of-type(2)').text(`has been added (${data[res.latest].curQty} in cart)`);
-  modal.next().find('p:first-of-type').html(`<span class="text-brand">${data[res.latest].brand}</span> ${data[res.latest].name} ${data[res.latest].curSize}`);
+    modal.next().find('p:nth-of-type(3)').text(`Maximum quantity reached (${data[res.latest].curQty})`):
+    modal.next().find('p:nth-of-type(3)').text(`has been added (${data[res.latest].curQty} in cart)`);
+  modal.next().find('p:nth-of-type(2)').html(`<span class="text-brand">${data[res.latest].brand}</span> ${data[res.latest].name} ${data[res.latest].curSize}`);
 
   $('#getCart').click();
 }

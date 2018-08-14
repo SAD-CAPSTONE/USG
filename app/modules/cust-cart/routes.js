@@ -160,6 +160,8 @@ router.put('/list', (req, res)=>{
     req.session.cart.reduce((temp, obj, i)=>{
       return obj.inv == req.body.inv ? i : temp
     }, null);
+  req.session.cart[index].limit > quantLimit ?
+    req.session.cart[index].limit = quantLimit : 0
   if (index != null){
     let curQty = req.session.cart[index].curQty;
     // Limit
