@@ -1,3 +1,5 @@
+
+// for all confirm alert
 function confirm_alert(){
   // changed font size .swal-popup because not compatible of bootstrap 3
   swal({
@@ -8,6 +10,17 @@ function confirm_alert(){
   })
 }
   $(document).ready(function(){
+
+    // check expired
+    $('#notifexpired').hide();
+    $.post('/inventory/checkExpired','',function(data,status){
+      if(data == 'no'){
+        $('#notifexpired').hide();
+      }else{
+        $('#notifexpired').show();
+        $('#notifexpired').html(data[0].allExp);
+      }
+    })
 
     // new order notification
     $('#notiforder').hide();

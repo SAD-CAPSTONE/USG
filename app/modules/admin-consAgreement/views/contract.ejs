@@ -15,8 +15,8 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Maintenance</a></li>
-        <li class="active">Consignor Application</li>
+        <li><a href="#">Transactions</a></li>
+        <li class="active">Consignor Contract</li>
       </ol>
     </section>
 
@@ -24,22 +24,24 @@
 
     <section class="content">
 
-	<div class="alert alert-info alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                <h4><i class="fa fa-info"></i> Notice!</h4>
-                There are attached files in this application form. Once you approved the application of the consignor, please fill out the details for product sampling and/or demo activity to test the market and get instant feedback from customers.
 
-				</br>
-
-				Upon application, the consignor agreed to replace any goods/products that are about to expire, non-moving, damaged upon delivery or with valid customer complains.
-				Also, the consignor would like to actively participate and support any marketing and promotional activities of Ultra Super Green.
-              </div>
 
       <div class="row">
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 align="center">Consignor Evaluation</h3>
+              <h3 align="center">Consignor Agreement</h3>
+              <center>
+              <% if(contract[0].intContractStatus == 1) { %>
+                <span class="label label-success">Active</span>
+
+              <% }else if(contract[0].intContractStatus == 4){ %>
+                <span class="label label-danger">Terminated</span>
+
+              <% }else{ %>
+
+              <% } %>
+            </center>
             </div>
 
         <div class="row">
@@ -297,12 +299,10 @@
 
         <button type="button" id="sendInvite" data-toggle="modal" data-target="#sendInvitation" class="invite large ui green button pull-right"><i class="fa fa-envelope"></i> Send Invitation for Product Sampling
 				</button>
-
-				<button type="button" data-contract="<%=contract[0].intContractNo%>"  class="accept large ui blue button pull-right"  style="margin-right: 5px;">
-				 Accept Consignor
-				</button>
-        <button type="button"  data-contract="<%=contract[0].intContractNo%>" class="reject large ui button red pull-right"  style="margin-right: 5px;">
-				 Reject Consignor
+        <button type="button"  class="large ui teal button pull-right"><i class="fa fa-download"></i> Download
+  				</button>
+				<button type="button" data-contract="<%=contract[0].intContractNo%>" class="renew large ui blue button pull-right" id="renew" style="margin-right: 5px;">
+				 Renew Contract
 				</button>
 
 			</div>
@@ -410,80 +410,90 @@
 
 
 
+<% if ( contract[0].intContractStatus == 1){ %>
+  <script>
+  // Accepted
+  $('.renew').html('Terminate Contract');
+  $('.renew').attr('class','terminate large ui red button pull-right');
+
+   </script>
+<% } %>
+
+<% if ( contract[0].intContractStatus == 4){ %>
+  <script>
+  // Terminated
+  $('.terminate').html('Renew Contract');
+  $('.terminate').attr('class','renew large ui blue button pull-right');
+  </script>
+<% } %>
+
+
+
 <script>
-  $('#title').html("USG | Consignor Application");
+
+  $('.sendInvite').on('click', function(){
+    $.ajax({url:'/consApplication/sendInvitation', method: 'POST' });
+    $('.invite').attr('disabled','disabled');
+  })
+</script>
+
+<script>
+  $('#title').html("USG | Consignor Agreement");
   $(".treeview a:contains('Transactions')").parent().addClass("active");
-  $(".navi a:contains('Consignor Application')").parent().addClass("active");
+  $(".navi a:contains('Consignor Agreement')").parent().addClass("active");
 </script>
 
 <script>
-  $('.accept').on('click',function(){
+  $('.renew').on('click',function(){
     swal({
       title: "Are you sure?",
-      text: "Please check carefully the documents attached in this application",
+      text: "You cannout undo this once you proceed",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Accept Consignor",
+      confirmButtonClass: "btn-danger",
+      confirmButtonText: "Renew Consignor",
       cancelButtonText: "Back",
       reverseButtons: true
     }).then((result)=>{
       if(result.value){
-        $.post('/consApplication/accept',{no: $('.accept').data('contract')},function(data,success){
-          if(data){
-            swal({title: 'Success', text: 'You accepted this consignor', type: 'success'}).then(()=>{
-              window.location.href = '/consApplication';
-            })
-          }
+        $.post('/consAgreement/renew',{no: $('.renew').data('contract')}, function(data,success){
+          swal({title: 'Success', text: 'This contract is now active', type:'success'}).then(()=>{
+            $('.renew').html('Terminate Contract');
+            $('.renew').attr('class','terminate large ui red button pull-right');
+
+            location.reload();
+          })
         })
       }
     })
   })
 
-  $('.reject').on('click',function(){
+
+  $('.terminate').on('click',function(){
     swal({
       title: "Are you sure?",
-      text: "You cannot undo this once you rejected the consignor",
+      text: "You cannout undo this once you proceed",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Reject Consignor",
+      confirmButtonClass: "btn-danger",
+      confirmButtonText: "Terminate Consignor",
       cancelButtonText: "Back",
       reverseButtons: true
     }).then((result)=>{
       if(result.value){
-        $.post('/consApplication/reject',{no: $('.accept').data('contract')},function(data,success){
-          if(data){
-            swal({title: 'Success', text: 'You rejected this consignor', type: 'success'}).then(()=>{
-              window.location.href = '/consApplication';
+        $.post('/consAgreement/terminate',{no: $('.terminate').data('contract')}, function(data,success){
+          swal({title: 'Success', text: 'This contract is now terminated', type:'success'}).then(()=>{
+            $('.terminate').html('Renew Contract');
+            $('.terminate').attr('class','renew large ui blue button pull-right');
 
-            })
-          }
+            location.reload();
+          })
         })
       }
     })
   })
 </script>
 
-
-<script>
-  $(document).ready(function() {
-    var max_fields      = 10; //maximum input boxes allowed
-    var wrapper         = $(".input_fields_wrap"); //Fields wrapper
-    var add_button      = $(".add_field_button"); //Add button ID
-
-    var x = 1; //initlal text box count
-    $(add_button).click(function(e){ //on add input button click
-        e.preventDefault();
-        if(x < max_fields){ //max input box allowed
-            x++; //text box increment
-            $(wrapper).append('<div class="row"><div class="col-sm-6"><input required class=""type="text" name="mytext[]"/><a href="#" class="remove_field">&nbsp;Remove</a></div></div>'); //add input box
-        }
-    });
-
-    $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
-        e.preventDefault(); $(this).parent('div').remove(); x--;
-    })
-  });
-</script>
 
 <script>
   <% if (contract[0].intDeliveryReceipt == 0){ %>

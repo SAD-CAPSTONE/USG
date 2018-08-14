@@ -52,7 +52,13 @@
                       <button data-no="<%=i.intUomNo%>" class="ui toggle button inactive activate_uom">Inactive</button>
                     <% } %>
                     </td>
-                    <td><button data-toggle="modal" data-target="#editMeasurement" data-num="<%=i.intUomNo%>" data-name="<%=i.strUnitName%>" class="edit_modal large ui teal button"><i class="glyphicon glyphicon-edit"></i></button></td>
+                    <td>
+                      <center>
+                      <button data-toggle="modal" data-target="#editMeasurement" data-num="<%=i.intUomNo%>" data-name="<%=i.strUnitName%>" class="edit_modal large ui teal button"><i class="glyphicon glyphicon-edit"></i></button>
+
+                      <button class="large ui red button"><i class="glyphicon glyphicon-trash"></i></button>
+                    </center>
+                    </td>
                   </tr>
                 <%  }) %>
                 <% } %>

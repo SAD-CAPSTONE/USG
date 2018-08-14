@@ -102,8 +102,15 @@
           <span id="successhelpBlock" class="help-block"></span>
         </div>
       </div>
+      <div class="form-group">
+        <label for="" class="col-sm-3 control-label"> Package Quantity </label>
+        <div class="col-sm-4">
+          <input type="number" id="package_quantity" value="<%=quantity%>" name="package_quantity" class="form-control" required>
+
+        </div>
+      </div>
       <div id="form-group2" class="form-group">
-        <label for="" class="col-sm-3 control-label">Quantity:</label>
+        <label for="" class="col-sm-3 control-label"> Item Quantity:</label>
         <div class="col-sm-4">
           <input type="number" id="quantity" name="quantity" class="form-control" required>
           <span id="starthelpBlock2" class="help-block"></span>
@@ -254,7 +261,7 @@ $('#errorhelpBlock2').hide();
 $('#starthelpBlock2').show();
 
 $('#quantity').on('keyup',function(){
-  if($(this).val() > $('#prod_stock2').val()){
+  if(($('#quantity').val() * $('#package_quantity').val())  > $('#prod_stock2').val()){
 
     $('#form-group2').attr('class', 'form-group2 has-error');
     $('#errorhelpBlock2').show();
@@ -290,13 +297,13 @@ $('#quantity').on('keyup',function(){
         $('#successhelpBlock').show();
         $('#errorhelpBlock').hide();
 
-        $('#prod_name').html(response[0].strProductName);
-        $('#prod_stock').html(response[0].intQuantity);
-        $('#prod_stock2').val(response[0].intQuantity);
-        $('#prod_size').html(response[0].intSize);
-        $('#prod_brand').html(response[0].strBrand);
-        $('#prod_category').html(response[0].strSubCategory);
-        $('#inventory').val(response[0].intInventoryNo);
+        $('#prod_name').html(response.inventory[0].strProductName);
+        $('#prod_stock').html(response.batch[0].totalQty);
+        $('#prod_stock2').val(response.batch[0].totalQty);
+        $('#prod_size').html(response.inventory[0].intSize);
+        $('#prod_brand').html(response.inventory[0].strBrand);
+        $('#prod_category').html(response.inventory[0].strSubCategory);
+        $('#inventory').val(response.inventory[0].intInventoryNo);
 
       }
     })
@@ -308,7 +315,7 @@ $('#quantity').on('keyup',function(){
     e.preventDefault();
     $.post('/maintenance/addPackageList',$('#form_add').serialize(),function(response,status){
       if(response == "success"){
-        swal({title:"Success",text:"You added a product!", type:"success"},function(){
+        swal({title:"Success",text:"You added a product!", type:"success"}).then(()=>{
           location.reload();
         })
       }else{

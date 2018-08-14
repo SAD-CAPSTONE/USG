@@ -74,4 +74,15 @@ router.post('/measurement',(req,res)=>{
   })
 });
 
-exports.validate = router;
+router.post('/deleteBusinessType',(req,res)=>{
+  console.log(req.body.number)
+  db.query(`Update tblbusinesstype set intStatus = 2 where intBusinessTypeNo = "${req.body.number}"`,(err,results,fields)=>{
+    if(err) console.log(err);
+    else{
+
+      res.send("yes");
+    }
+  });
+});
+
+exports.maintenance2 = router;
