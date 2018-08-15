@@ -299,7 +299,7 @@
 
         <button type="button" id="sendInvite" data-toggle="modal" data-target="#sendInvitation" class="invite large ui green button pull-right"><i class="fa fa-envelope"></i> Send Invitation for Product Sampling
 				</button>
-        <button type="button"  class="large ui teal button pull-right"><i class="fa fa-download"></i> Download
+        <button type="button" id="downloadContract" class="large ui teal button pull-right"><i class="fa fa-download"></i> Download
   				</button>
 				<button type="button" data-contract="<%=contract[0].intContractNo%>" class="renew large ui blue button pull-right" id="renew" style="margin-right: 5px;">
 				 Renew Contract
@@ -494,7 +494,6 @@
   })
 </script>
 
-
 <script>
   <% if (contract[0].intDeliveryReceipt == 0){ %>
     $('#delivery_receipt').attr('checked',false);
@@ -593,7 +592,238 @@
   })
 </script>
 
+<script src="/customer-assets/scripts/jspdf-customfonts/dist/jspdf.min.js"></script>
+<script src="/customer-assets/scripts/jspdf-customfonts/dist/jspdf.customfonts.min.js"></script>
+<script src="/customer-assets/scripts/jspdf-customfonts/dist/default_vfs.js"></script>
+<script type="text/javascript">
 
+  function printReceipt(cont){
+    let doc = new jsPDF(), img = new Image;
+
+    doc.addFont('Poppins-Regular.ttf', 'Poppins-Regular', 'normal');
+    doc.addFont('Poppins-Light.ttf', 'Poppins-Light', 'normal');
+    doc.addFont('Poppins-ExtraLight.ttf', 'Poppins-ExtraLight', 'normal');
+    doc.addFont('Poppins-SemiBold.ttf', 'Poppins-SemiBold', 'normal');
+
+    function pdfContent(img){
+      let firstX = 25, newY, gap = 5;
+      doc.addImage(img, 42, 7, 125, 32);
+
+      // title
+      doc.setFont('Poppins-SemiBold');
+      doc.setFontSize('15');
+      doc.text(71, 53, `Consignment Agreement`);
+      doc.line(71, 54, 139.5, 54);
+
+      // Labels & Inputs
+      newY = 68
+      doc.setFont('Poppins-SemiBold');
+      doc.setFontSize('10');
+      doc.text(firstX, newY, `Business Name:`); newY+= gap;
+      doc.text(firstX, newY, `Brand Name:`); newY+= gap;
+      doc.text(firstX, newY, `TIN:`); newY+= gap;
+      doc.text(firstX, newY, `Consignor Commission Rate:`); newY+= gap;
+      doc.text(firstX, newY, `Contact Person:`); newY+= gap;
+      doc.text(firstX, newY, `Contact Numbers:`); newY+= gap;
+      doc.text(firstX, newY, `Email Address:`); newY+= gap;
+      doc.text(firstX, newY, `Delivery Schedule:`); newY+= gap;
+      doc.text(firstX, newY, `Frequency of Delivery:`); newY+= gap;
+      doc.text(firstX, newY, `Consignee’s Remittance Schedule:`); newY+= gap;
+      doc.text(firstX, newY, `Consigned List Products/brand names including full ingredients list and shelf life:`);
+
+      let contactPerson = cont.strMname ?
+        `${cont.strFname} ${cont.strMname} ${cont.strLname}`:
+        `${cont.strFname} ${cont.strLname}`
+      let contactNum = ``;
+      cont.strSupplierPhone ? contactNum += cont.strSupplierPhone : 0
+      cont.strSupplierPhone && cont.strSupplierMobile ? contactNum += ` | ` : 0
+      cont.strSupplierMobile ? contactNum += cont.strSupplierMobile : 0
+
+      newY = 68
+      doc.setFont('Poppins-Light');
+      doc.text(firstX+30, newY, `${cont.strBusinessName}`); newY+= gap;
+      doc.text(firstX+25, newY, `${cont.strBrands}`); newY+= gap;
+      doc.text(firstX+8, newY, `${cont.strBusinessTIN}`); newY+= gap;
+      doc.text(firstX+54, newY, `30%`); newY+= gap;
+      doc.text(firstX+30, newY, `${contactPerson}`); newY+= gap;
+      doc.text(firstX+34, newY, `${contactNum}`); newY+= gap;
+      doc.text(firstX+28, newY, `${cont.strBusinessEmail}`); newY+= gap;
+      doc.text(firstX+34, newY, `${cont.deliverySchedule}`); newY+= gap;
+      doc.text(firstX+41, newY, `${cont.strFrequencyOfDelivery}`); newY+= gap;
+      doc.text(firstX+64, newY, ``); newY+= gap*2;
+      // doc.text(firstX+147, newY, `Milan`); newY+= gap;
+      doc.text(firstX, newY, `Please attach a separate sheet for product information and price list`); newY+= gap*2;
+
+      let indent1 = 12.5, indent2 = 25;
+      // Consignment Provisions
+      doc.setFont('Poppins-SemiBold');
+      doc.text(firstX, newY, `Consignment Provisions:`); newY+= gap;
+      // 1
+      doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+      doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+      doc.setFont('Poppins-Light');
+      doc.text(firstX+indent1, newY, `Consignor hereby agrees to replace any goods that are about to expire, any`); newY+= gap;
+      doc.text(firstX+indent1, newY, `non-moving products, any product found damaged upon delivery or any`); newY+= gap;
+      doc.text(firstX+indent1, newY, `product with valid customer complaints`); newY+= gap;
+      // 2
+      doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+      doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+      doc.text(firstX+indent1, newY, `All labels should include full ingredients list, expiration, manufacturing date`); newY+= gap;
+      // 3
+      doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+      doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+      doc.setFont('Poppins-Light');
+      doc.text(firstX+indent1, newY, `If your product has no certification, you must indicate in your label that your`); newY+= gap;
+      doc.text(firstX+indent1, newY, `product is either All Natural, homemade or herbal`); newY+= gap;
+      // 4
+      doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+      doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+      doc.text(firstX+indent1, newY, `Consignor must provide 2 copies of delivery receipt`); newY+= gap;
+      // 5
+      doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+      doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+      doc.setFont('Poppins-Light');
+      doc.text(firstX+indent1, newY, `In-store product sampling launch must be scheduled 1 week prior to the event`); newY+= gap;
+      // 6
+      doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+      doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+      doc.text(firstX+indent1, newY, `Delivery Receipt format:`); newY+= gap;
+      // 6.x
+      doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
+      doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
+      doc.setFont('Poppins-Light'); doc.setFontSize('10');
+      doc.text(firstX+indent2, newY, `Item (product name)`); newY+= gap;
+
+      doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
+      doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
+      doc.setFont('Poppins-Light'); doc.setFontSize('10');
+      doc.text(firstX+indent2, newY, `Variant (if any)`); newY+= gap;
+
+      doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
+      doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
+      doc.setFont('Poppins-Light'); doc.setFontSize('10');
+      doc.text(firstX+indent2, newY, `Size / Product Content (e.g. 500ml / 100 grams, etc.)`); newY+= gap;
+
+      doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
+      doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
+      doc.setFont('Poppins-Light'); doc.setFontSize('10');
+      doc.text(firstX+indent2, newY, `Quantity`); newY+= gap;
+
+      doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
+      doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
+      doc.setFont('Poppins-Light'); doc.setFontSize('10');
+      doc.text(firstX+indent2, newY, `List price (discounted price)`); newY+= gap;
+
+      doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
+      doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
+      doc.setFont('Poppins-Light'); doc.setFontSize('10');
+      doc.text(firstX+indent2, newY, `SRP`); newY+= gap;
+
+      doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
+      doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
+      doc.setFont('Poppins-Light'); doc.setFontSize('10');
+      doc.text(firstX+indent2, newY, `Total amount based on list price`); newY+= gap;
+
+      doc.addPage();
+      doc.addImage(img, 42, 7, 125, 32);
+      newY = 46
+
+      // Documents for Submission
+      doc.setFont('Poppins-SemiBold');
+      doc.text(firstX, 46, `Documents for submission: (digital and printed copy required)`); newY+= gap;
+      //
+      doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+      doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+      doc.setFont('Poppins-Light');
+      doc.text(firstX+indent1, newY, `Company profile`); newY+= gap;
+      //
+      doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+      doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+      doc.setFont('Poppins-Light');
+      doc.text(firstX+indent1, newY, `Product information Sheet – full and specified ingredients list, usage, and other`); newY+= gap;
+      doc.text(firstX+indent1, newY, `useful information to drive sales and product awareness`); newY+= gap;
+      //
+      doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+      doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+      doc.setFont('Poppins-Light');
+      doc.text(firstX+indent1, newY, `DTI /SEC Registration`); newY+= gap;
+      //
+      doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+      doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+      doc.setFont('Poppins-Light');
+      doc.text(firstX+indent1, newY, `Official Receipt / BIR Registration`); newY+= gap;
+      //
+      doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+      doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+      doc.setFont('Poppins-Light');
+      doc.text(firstX+indent1, newY, `Sales Invoice and Delivery receipt (upon product delivery)`); newY+= gap;
+      //
+      doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+      doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+      doc.setFont('Poppins-Light');
+      doc.text(firstX+indent1, newY, `FDA Registration (if any)`); newY+= gap;
+      //
+      doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+      doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+      doc.setFont('Poppins-Light');
+      doc.text(firstX+indent1, newY, `Eco Certification or Third Party Laboratory Results for product safety and efficacy`); newY+= gap;
+      doc.text(firstX+indent1, newY, `(Required for personal and beauty products)`); newY+= gap*3;
+
+      // Conforme
+      doc.setFont('Poppins-SemiBold');
+      doc.text(firstX, newY, `CONFORME:`); newY+= gap;
+      newY+= 25;
+      doc.line(firstX, newY-4, firstX+38, newY-4);
+      doc.line(firstX+110, newY-4, firstX+148, newY-4);
+
+      doc.text(firstX, newY, `Gustle Agulto`);
+
+      doc.setFont('Poppins-Light');
+      doc.text(firstX+110, newY, `Signature over printed`); newY+= gap;
+
+      doc.text(firstX, newY, `Operations Manager`);
+      doc.text(firstX+110, newY, `Name`); newY+= gap;
+
+      doc.text(firstX, newY, `Ultra Super Green Trading Corporation`); newY+= gap;
+
+      newY+= 25;
+      doc.setFont('Poppins-SemiBold');
+      doc.text(firstX, newY, `Date:`);
+      doc.line(firstX+10, newY+0.5, 63, newY+0.5);
+
+    }
+
+    img.onload = function() {
+      pdfContent(this);
+      doc.save('UltraSuperGreen Consignment Agreement.pdf');
+      console.log('PDF Downloaded!');
+    };
+    img.crossOrigin = "";
+    img.src = "/customer-assets/images/static/usg-contract.png";
+
+  }
+
+  $('#downloadContract').on('click', ()=>{
+    function getParams(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
+    $.get(`/consAgreement/contract/load/${getParams('q')}`).then((res)=>{
+      printReceipt(res.contract);
+    }).catch((error)=>{
+      console.log(error);
+    })
+
+  })
+
+
+</script>
 
 
 
