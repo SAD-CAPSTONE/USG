@@ -211,11 +211,17 @@ desired effect
         <li class="navi"><a href="/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard	</span></a></li>
         <li class="navi">
             <a href="/customerOrder/checkNewOrders"><i class="fa fa-cart-arrow-down"></i> <span>Orders</span><span class="pull-right-container">
-            <small id="notiforder" class="label pull-right bg-green">New</small>
+            <small id="notiforder" class="label pull-right bg-green"></small>
 
           </span></a>
         </li>
-        <li class="navi"><a href="/inventory/allStocks"><i class="fa fa-bar-chart"></i> <span>Stocks</span></a></li>
+        <li class="navi"><a href="/inventory/allStocks"><i class="fa fa-bar-chart"></i> <span>Stocks</span><span class="pull-right-container">
+          <small class="notifExpired label pull-right bg-red"></small>
+
+
+            <small class="notifCritical label pull-right bg-orange"></small>
+            </span>
+        </a></li>
 
 
         <li class="header">Main Tools</li>
@@ -229,14 +235,12 @@ desired effect
           </a>
           <ul class="treeview-menu">
             <li class="navi"><a href="/inventory/allProducts"><i class="fa fa-circle-o"></i>All Products</a></li>
-            <li class="navi"><a href="/inventory/pulledOutStocks"><i class="fa fa-circle-o"></i>Expired Products<span class="pull-right-container">
-              <small id="notifexpired" class="label pull-right bg-red"></small>
-              </span></a></li>
+            <li class="navi"><a href="/inventory/pulledOutStocks"><i class="fa fa-circle-o"></i>Expired Products</a></li>
             <li class="navi"><a href="/inventory/adjustments"><i class="fa fa-circle-o"></i>Adjustments</a></li>
             <li class="navi"><a href="/inventory/supplierProducts"><i class="fa fa-circle-o"></i>Products per Supplier</a></li>
             <li class="navi"><a href="/maintenance/package"><i class="fa fa-genderless"></i>Package Discounts</a></li>
             <li class="navi"><a href="/maintenance/promotion"><i class="fa fa-genderless"></i>Promotions</a></li>
-            
+
           </ul>
         </li>
 

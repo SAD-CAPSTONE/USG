@@ -75,10 +75,14 @@
                 <div class="row">
                   <div class="col-sm-6">
                     <form id="addItem">
-                      <div class="form-group">
-                        <label for="barcode">Scan or Enter Barcode:</label>
+                      <label for="barcode">Scan or Enter Barcode:</label>
+
+                      <div class="input-group input-group-sm">
                         <input class="form-control" id="barcode">
-                        
+                          <span class="input-group-btn">
+                            <button type="button" id="add_barcode" class="btn btn-success btn-flat">Add</button>
+                          </span>
+
                       </div>
                     </form>
 
@@ -102,6 +106,7 @@
                               <th>Barcode</th>
                               <th>Product Name</th>
                               <th>Quantity</th>
+                              <th>Batch</th>
                               <th>Adjustment Type</th>
                               <th>Other Details</th>
                             </tr>
@@ -204,7 +209,7 @@ $(".navi a:contains('Adjustments')").parent().addClass("active");
     }).then((result) => {
       if (result.value) {
         $.post('/inventory/addAdjustment',$('#list_form').serialize(), function(data,status){
-          if(data){
+          if(data == "yes"){
             swal(
               'Success!',
               'You have added an adjustment',
@@ -212,6 +217,8 @@ $(".navi a:contains('Adjustments')").parent().addClass("active");
             ).then(()=>{
               location.reload();
             })
+          }else{
+            swal('Error!','One of the batch of your choice has no stock for loss', 'error');
           }
         })
 
@@ -223,7 +230,7 @@ $(".navi a:contains('Adjustments')").parent().addClass("active");
 <script>
 
 var count = 1;
-  $('#addItem').on('keyup',function(){
+  $('#add_barcode').on('click',function(){
 
     var t = $('#example2').DataTable();
     var table = document.getElementById("example2");
@@ -245,6 +252,7 @@ var count = 1;
               `<input style="width: 90px" id="barcodes"required type="text" required name="barcode[]" value="" class="barcode form-control">`,
               '<input style="width: 200px" id="products" required type="text" name="product[]" value="" class="product form-control">',
               '<input style="width: 80px" type="number" name="quantity[]" value="" class="form-control">',
+              '<input style="width: 80px" type="number" name="batch[]" value="" class="form-control">',
               '<select   required name="type[]" value="" class=" form-control">  <%if(type.length==0){}else{ type.forEach(function(i){ %> <option style="width: 90px" value="<%=i.intAdjustmentTypeNo%>"><%=i.strAdjustment%></option><% })}%>                  </select>',
               '<input style="width: 180px" type="text" required name="note[]"  class=" form-control">'
           ] ).draw( false );
