@@ -757,11 +757,22 @@ router.get('/adjustments',(req,res)=>{
       db.query(`Select * from tblAdjustmentTypes where intStatus = 1`,(err2,res2,fie2)=>{
         if(err2) console.log(err2);
         else{
-          res.render('admin-inventory/views/adjustments',{all: res1, moment: moment, type: res2});
+          db.query(`Select * from tblProductInventory join tblProductList on tblProductinventory.intProductNo = tblProductList.intProductNo where tblProductlist.intStatus = 1`,(err3,res3,fie3)=>{
+            if(err3) console.log(err3);
+            res.render('admin-inventory/views/adjustments',{all: res1, moment: moment, type: res2, inv: res3});
+
+          });
 
         }
       })
     }
+  });
+});
+
+router.get('/count',(req,res)=>{
+  db.query(`Select * from tblbatch where intInventoryNo = "${req.query.inv}" and intStatus = 1`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    res.render('admin-inventory/views/batchAdjust',{re: res1, moment: moment});
   });
 });
 

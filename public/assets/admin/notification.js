@@ -16,6 +16,8 @@ function confirm_alert(){
     $.post('/inventory/checkExpired','',function(data,status){
       if(data == 'no'){
         $('.notifExpired').hide();
+      }else if(data[0].allExp == 0){
+        $('.notifExpired').hide();
       }else{
         $('.notifExpired').show();
         $('.notifExpired').html(data[0].allExp);
@@ -26,6 +28,8 @@ function confirm_alert(){
     $('.notifCritical').hide();
     $.post('/inventory/checkCritical','',function(data,status){
       if(data == 'no'){
+        $('.notifCritical').hide();
+      }else if(data[0].allCrit == 0){
         $('.notifCritical').hide();
       }else{
         $('.notifCritical').show();
@@ -47,7 +51,10 @@ function confirm_alert(){
         if (response){
           if (response == "no"){
 
+          }else if(response[0].qty ==0){
+            $('#notiforder').hide();
           }else{
+            $('#notiforder').show();
             $('#notiforder').html(response[0].qty);
 
           }

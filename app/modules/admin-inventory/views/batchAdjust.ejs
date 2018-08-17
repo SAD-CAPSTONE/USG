@@ -1,0 +1,123 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+
+    </h1>
+
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="#">Maintenance</a></li>
+      <li class="active">Batch Adjust</li>
+    </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#transactions" data-toggle="tab"><i class="fa fa-bars"></i> All Batch</a></li>
+            <!-- <li><a href="#quantity" data-toggle="tab"><i class=""></i>Quantity</a></li> -->
+          </ul>
+          <div class="tab-content">
+            <!-- Inventory -->
+            <div class="tab-pane active" id="transactions">
+
+              </br>
+              <!-- /.box-header -->
+              <div class="box-body table-responsive">
+                <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>Batch No</th>
+                    <th>Quantity</th>
+                    <th>Date Received</th>
+                    <th>Expiration Date</th>
+                    <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% if (re == null || re == undefined || re.length == 0) { %>
+
+                  <% }else { %>
+                    <% re.forEach(function(i){ %>
+                      <tr>
+                      <td><%= i.intBatchNo%></td>
+                      <td><%=i.intQuantity%></td>
+                      <td><%= moment(i.created_at).format("MM/DD/YYYY")%></td>
+                      <td><%= moment(i.expirationDate).format("MM/DD/YYYY")%></td>
+                      <td></td>
+
+                    </tr>
+                    <% }) %>
+                  <% } %>
+
+                  </tbody>
+
+                </table>
+              </div>
+              <!-- /.box-body -->
+            </div>
+            <!-- /#fa-icons -->
+
+
+            <!-- New product Item-->
+            <!-- <div class="tab-pane" id="newProduct">
+              <div class="row">
+              </div>
+            </div> -->
+            <!-- /#ion-icons -->
+
+          </div>
+          <!-- /.tab-content -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+  <!-- ./wrapper -->
+
+  <!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+  <!-- page script (new added) -->
+  <script>
+    $(function () {
+      $('#example2').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+  	  'select'		: true,
+  	  'scroll'		: true
+      })
+    })
+  </script>
+
+
+    <script>
+    $('#title').html("USG | All Products");
+
+    $(".treeview a:contains('Inventory')").parent().addClass("active");
+    $(".navi a:contains('All Products')").parent().addClass("active");
+    </script>
+
+  </body>
+  </html>

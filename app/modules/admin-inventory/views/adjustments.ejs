@@ -24,6 +24,7 @@
             <ul class="nav nav-tabs">
               <li class="active"><a href="#allAdjustments" data-toggle="tab"><i class="fa fa-bars"></i> All Adjustments</a></li>
               <li><a href="#newAdjustment" data-toggle="tab"><i class="fa fa-plus"></i> New</a></li>
+              <li><a href="#inventory_count" data-toggle="tab">Inventory Count</a></li>
 
             </ul>
             <div class="tab-content">
@@ -121,6 +122,46 @@
                   </div>
                 </div>
               </div>
+
+              <!-- All Adjustments -->
+              <div class="tab-pane" id="inventory_count">
+                <div class="box-body table-responsive">
+                  <table id="example1" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th>Barcode</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if(inv == null || inv == undefined){ %>
+
+                      <% }else if(inv.length == 0){ %>
+
+                      <% }else{ %>
+                      <%  inv.forEach(function(i){ %>
+                          <tr>
+                            <td><%=i.intInventoryNo%></td>
+                            <td><%=i.strBarcode%></td>
+                            <td><%=i.strProductName%></td>
+                            <td><%= i.intQuantity %></td>
+                            <td>
+                              <a href="/inventory/count?inv=<%=i.intInventoryNo%>"><button class="large ui teal button">Check Batch</button></a>
+                            </td>
+
+                          </tr>
+                      <%  }) %>
+                      <% } %>
+
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+
 
             <!-- /.tab-content -->
           </div>
