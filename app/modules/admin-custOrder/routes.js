@@ -139,7 +139,7 @@ var c = 0;
             if(resw==undefined||resw==null){db.rollback(function(){ res.send("false")})}
             else if(resw.length==0){db.rollback(function(){ res.send("false")})}
             else{
-              db.query(`Update tblproductinventory set intQuantity = intQuantity - ${orders[c].intQuantity}
+              db.query(`Update tblproductinventory set intQuantity = intQuantity - ${orders[c].intQuantity}, intReservedItems = intReservedItems - ${orders[c].intQuantity}
                 where (tblproductinventory.intInventoryNo = "${orders[c].intInventoryNo}") and (intQuantity  >= ${orders[c].intQuantity})`,(errx,resultsx,fieldsx)=>{
                   if(errx){db.rollback(function(){console.log(errx); res.send("no");})}
 
@@ -154,8 +154,6 @@ var c = 0;
                         for(var a in batch){
                           if(remaining == 0){
                             break;
-
-
                           }
                           else if(batch[a].intQuantity < remaining || batch[a].intQuantity == remaining){
                             let newValue = 0;
@@ -178,32 +176,6 @@ var c = 0;
                           }
                         }
 
-                          for(var b in batch){
-                            if(remaining2 == 0){
-                            //  console.log('finished');
-                              //c++; callback();
-                              break;
-                            }
-                            else if(batch[b].intReservedItems < remaining2 || batch[b].intReservedItems == remaining2){
-                              let newValue = 0;
-                              remaining2 -= batch[b].intReservedItems;
-                              console.log('newValue2: '+newValue);
-                              console.log('remaining2: '+remaining2);
-                              db.query(`Update tblBatch set intReservedItems = ${newValue} where intBatchNo = "${batch[b].intBatchNo}"`,(e6,r6,f6)=>{
-                                if(e6)console.log(e6);
-                              });
-
-                            }
-                            else{
-                              let newValue = batch[b].intReservedItems - remaining2;
-                              remaining2 = 0;
-                              console.log('newValue2: '+newValue);
-                              console.log('remaining2: '+remaining2);
-                              db.query(`Update tblBatch set intReservedItems = ${newValue} where intBatchNo = "${batch[b].intBatchNo}"`,(e7,r7,f7)=>{
-                                if(e7)console.log(e7);
-                              });
-                            }
-                          }
 
                           c++;
                           callback();

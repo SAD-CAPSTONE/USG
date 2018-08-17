@@ -5,6 +5,7 @@
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
+      <small>All batch</small>
 
     </h1>
 
@@ -21,11 +22,11 @@
       <div class="col-xs-12">
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs">
-            <li class="active"><a href="#transactions" data-toggle="tab"><i class="fa fa-bars"></i> All Batch</a></li>
+            <li class="active"><a href="#transactions" data-toggle="tab"> All Batch</a></li>
             <!-- <li><a href="#quantity" data-toggle="tab"><i class=""></i>Quantity</a></li> -->
           </ul>
           <div class="tab-content">
-            <!-- Inventory -->
+            <!-- Batch -->
             <div class="tab-pane active" id="transactions">
 
               </br>
@@ -51,7 +52,9 @@
                       <td><%=i.intQuantity%></td>
                       <td><%= moment(i.created_at).format("MM/DD/YYYY")%></td>
                       <td><%= moment(i.expirationDate).format("MM/DD/YYYY")%></td>
-                      <td></td>
+                      <td>
+                        <button data-batch="<%= i.intBatchNo%>" data-toggle="modal" data-target="#adjust" class="adjust large ui green button">Adjust</button>
+                      </td>
 
                     </tr>
                     <% }) %>
@@ -63,15 +66,10 @@
               </div>
               <!-- /.box-body -->
             </div>
-            <!-- /#fa-icons -->
 
 
-            <!-- New product Item-->
-            <!-- <div class="tab-pane" id="newProduct">
-              <div class="row">
-              </div>
-            </div> -->
-            <!-- /#ion-icons -->
+
+
 
           </div>
           <!-- /.tab-content -->
@@ -85,6 +83,63 @@
   <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+
+<div class="modal fade" id="adjust">
+  <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Batch Adjustment</h4>
+    </div>
+    <div class="modal-body">
+
+      <!-- form start -->
+      <form role="form" id="batch_adjust_form">
+        <div class="box-body">
+
+          <input type="hidden" name="batch_no" id="batch_no" class="form-control">
+          <div class="form-group">
+            <label>Choose adjustment type:</label>
+            <select class="form-control" name="types" >
+
+              <% if(types==null||types==undefined){ %>
+
+              <% }else if(types.length == 0){ %>
+
+              <% }else{ %>
+                <% types.forEach(function(i){ %>
+                  <option value="<%=i.intAdjustmentTypeNo%>"><%=i.strAdjustment%></option>
+                <% }) %>
+              <% } %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Quantity:</label>
+            <input type="number" class="form-control" name="quantity">
+          </div>
+
+          <div class="form-group">
+            <label>Other details:</label>
+            <textarea name="details" class="form-control"></textarea>
+          </div>
+
+        </div>
+        <!-- /.box-body -->
+
+
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+      <button type="submit" class="btn btn-primary">Save</button>
+      </form>
+    </div>
+  </div>
+  <!-- /.modal-content -->
+</div>
+ <!-- /.modal-dialog -->
+</div>
 
 
 <%- include('../../../templates/admin-aside.ejs') -%>
@@ -111,12 +166,35 @@
     })
   </script>
 
+  <script>
+    $('.adjust').on('click', function(){
+      $('#batch_no').val($(this).data('batch'));
+    })
+  </script>
+
+  <script>
+    $('#batch_adjust_form').submit(function(e){
+
+      e.preventDefault();
+
+      $.post('/inventory/addBatchAdjust',$('#batch_adjust_form').serialize(),function(data,status){
+        if(data == 'yes'){
+          swal({title:'Success',text:'',type:'success'}).then(()=>{
+            location.reload();
+          })
+        }else{
+          swal('Error!','No enough stock for loss adjustment','error')
+        }
+      })
+    })
+  </script>
+
 
     <script>
     $('#title').html("USG | All Products");
 
     $(".treeview a:contains('Inventory')").parent().addClass("active");
-    $(".navi a:contains('All Products')").parent().addClass("active");
+    $(".navi a:contains('Adjustments')").parent().addClass("active");
     </script>
 
   </body>
