@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../lib/database')();
-const firstID = 1000;
 const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
+const firstID = 1000;
+const quantLimit = 50;
 
 function newOrderNo (req, res, next){
   db.query(`SELECT * FROM tblorder ORDER BY intOrderNo DESC LIMIT 1`, (err, results, fields) => {
@@ -99,6 +100,34 @@ function orderProductQty (req, res, next){
     req.orderProductQty = results;
     return next();
   });
+}
+function cartCheck (req, res, next){
+  function cartLimitLoop(i){
+    let cart = req.session.cart;
+    db.query(`SELECT (SUM(intQuantity) - SUM(intReservedItems))stock FROM tblbatch WHERE intInventoryNo= ?`
+      , [req.session.cart[i].inv], (err, results, fields) => {
+      if (err) console.log(err);
+      req.session.cart[i].limit = results[0].stock > quantLimit ?
+        quantLimit : results[0].stock;
+      req.session.cart[i].curQty > req.session.cart[i].limit ?
+        req.session.cart[i].curQty = req.session.cart[i].limit : 0;
+      results[0].stock < 1 ? req.session.cart.splice(i,1) : 0
+      ++i;
+      if (cart.length > i){
+        cartLimitLoop(i);
+      }
+      else{
+        if (req.session.cart.length){
+          return next();
+        }
+        else{
+          res.redirect('/summary/checkout');
+        }
+      }
+    });
+  }
+  req.session.cart.length ? cartLimitLoop(0) : res.redirect('/summary/checkout');
+
 }
 
 router.get('/checkout', checkUser, contactDetails, (req,res)=>{
@@ -203,7 +232,7 @@ router.get('/receipt/:orderNo', (req,res)=>{
   }
 })
 
-router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsNo, (req,res)=>{
+router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsNo, cartCheck, (req,res)=>{
   db.beginTransaction(function(err) {
     if (err) console.log(err);
     let thisOrderNo = req.newOrderNo;

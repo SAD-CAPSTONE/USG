@@ -137,9 +137,11 @@ router.get('/list', (req, res)=>{
     db.query(`SELECT (SUM(intQuantity) - SUM(intReservedItems))stock FROM tblbatch WHERE intInventoryNo= ?`
       , [req.session.cart[i].inv], (err, results, fields) => {
       if (err) console.log(err);
-      req.session.cart[i].limit = results[0].stock;
+      req.session.cart[i].limit = results[0].stock > quantLimit ?
+        quantLimit : results[0].stock;
       req.session.cart[i].curQty > req.session.cart[i].limit ?
         req.session.cart[i].curQty = req.session.cart[i].limit : 0;
+      results[0].stock < 1 ? req.session.cart.splice(i,1) : 0
       ++i;
       if (cart.length > i){
         cartLimitLoop(i);
