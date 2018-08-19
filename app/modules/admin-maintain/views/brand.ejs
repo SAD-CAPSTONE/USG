@@ -156,7 +156,7 @@
   $('#save').attr('disabled',true);
   $('#brand').on('keyup',function(){
 
-    $.post('/validate/brand',{data: $(this).val()},function(data,status){
+    $.post('/maintenance2/brand',{data: $(this).val()},function(data,status){
       if(data == "yes"){
         $('#errorhelpBlock').show();
         $('#formgroup').attr('class', 'form-group has-error');

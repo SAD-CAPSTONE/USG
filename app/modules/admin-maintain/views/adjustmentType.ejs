@@ -31,14 +31,16 @@
               <table id="example2" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-
+                  <th style="width: 20px">No</th>
                   <th>Adjustment</th>
                   <th>Type</th>
-				          <th>Status</th>
-                  <th>Actions</th>
+                  <th>Date Added</th>
+				          <th >Status</th>
+                  <th style="width: 150px">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
+                  <% var count = 1; %>
                   <% if (re == null || re == undefined){ %>
 
                   <% }else if (re.length == 0){ %>
@@ -46,7 +48,7 @@
                   <% }else{ %>
                   <%  re.forEach(function(i){ %>
                       <tr>
-
+                        <td><%= count %></td>
                         <td><%=i.strAdjustment%></td>
                         <td>
                           <% if( i.intAdjustmentType == 0){ %>
@@ -55,20 +57,26 @@
                             Gain
                           <% } %>
                         </td>
+                        <td><%=moment(i.created_at).format("MM/DD/YYYY")%></td>
                         <td>
-                          <% if (i.intStatus == 1){ %>
-
+                          <input type="checkbox"
+                          <% if (i.intStatus == 0){ %>
+                            value="0"
                           <% }else{ %>
-
+                            value="1" checked
                           <% } %>
+
+                           data-no="<%=i.intAdjustmentTypeNo%>" class="adjustment_stat" data-size="mini"  data-on="Active" data-off="Inactive" data-toggle="toggle" data-offstyle="danger" data-onstyle="success">
+
                         </td>
                         <td>
                           <center>
-                          <button class="editModal large ui teal button" data-toggle="modal" data-target="#edit_modal" data-no="<%=i.intAdjustmentTypeNo%>" data-name="<%=i.strAdjustment%>"><i class="glyphicon glyphicon-edit"></i></button>
+                          <button class="editModal large ui teal button"  data-toggle="modal" data-target="#edit_modal" data-no="<%=i.intAdjustmentTypeNo%>" data-name="<%=i.strAdjustment%>"><i class="glyphicon glyphicon-edit"></i></button>
                           <button data-no="<%=i.intAdjustmentTypeNo%>" onclick="del(<%=i.intAdjustmentTypeNo%>)" class="large ui red button"><i class="glyphicon glyphicon-trash"></i></button>
                         </center>
                         </td>
                       </tr>
+                      <% count++; %>
                     <% }) %>
                   <% } %>
 
@@ -270,21 +278,19 @@
 </script>
 
 <script>
-$('.inactivate_type').on('click',function(){
-  $(this).removeClass("ui toggle button active inactivate_type").addClass("ui toggle button  activate_type").html("Inactive");
+$('.adjustment_stat').on('change',function(){
+  var val = $(this).val() == 1 ? 0 : 1;
 
-  $.ajax({
-    url: '/maintenance/inactivateType',
-    method: 'post',
-    datatype: 'json',
-    data: {no: $(this).data('no')},
-    success: function(response,status,http){
-      if (response){
-        swal("Success!", "You have activated Business Type no"+$(this).data('no'), "success");
-      }
+  $.post('/maintenance/changeAdjustmentStat',{no: $(this).data('no'), value: val}, function(data,status){
+    if (data){
+
     }
   })
+
+
 })
+
+
 
 $('.activate_type').on('click',function(){
   $(this).removeClass("ui toggle button activate_type").addClass("ui toggle button active inactivate_type").html("Active");
@@ -308,7 +314,7 @@ $('.activate_type').on('click',function(){
   $('#save').attr('disabled',true);
   $('#bType').on('keyup',function(){
 
-    $.post('/validate/businessType',{data: $(this).val()},function(data,status){
+    $.post('/validate/adjustmentType',{data: $(this).val()},function(data,status){
       if(data == "yes"){
         $('#errorhelpBlock').show();
         $('#formgroup').attr('class', 'form-group has-error');

@@ -311,7 +311,7 @@ $('.activate_type').on('click',function(){
   $('#save').attr('disabled',true);
   $('#bType').on('keyup',function(){
 
-    $.post('/validate/businessType',{data: $(this).val()},function(data,status){
+    $.post('/maintenance2/businessType',{data: $(this).val()},function(data,status){
       if(data == "yes"){
         $('#errorhelpBlock').show();
         $('#formgroup').attr('class', 'form-group has-error');

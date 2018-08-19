@@ -427,7 +427,7 @@ $(".navi a:contains('Product Category')").parent().addClass("active");
   $('#save1').attr('disabled',true);
   $('#category').on('keyup',function(){
 
-    $.post('/validate/category',{data: $(this).val()},function(data,status){
+    $.post('/maintenance2/category',{data: $(this).val()},function(data,status){
       if(data == "yes"){
         $('#errorhelpBlock1').show();
         $('#formgroup1').attr('class', 'form-group has-error');
@@ -466,7 +466,7 @@ $(".navi a:contains('Product Category')").parent().addClass("active");
   $('#save2').attr('disabled',true);
   $('#subcategory_e').on('keyup',function(){
 
-    $.post('/validate/subCategory',{data: $(this).val(), data2: $('#categ_e').val()},function(data,status){
+    $.post('/maintenance2/subCategory',{data: $(this).val(), data2: $('#categ_e').val()},function(data,status){
       if(data == "yes"){
         $('#errorhelpBlock2').show();
         $('#formgroup2').attr('class', 'form-group has-error');

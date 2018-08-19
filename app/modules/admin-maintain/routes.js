@@ -8,8 +8,15 @@ var voucher_codes = require('voucher-code-generator');
 router.get('/adjustmentTypes',(req,res)=>{
   db.query(`Select * from tblAdjustmentTypes where intStatus <> 2`,(err1,res1,fie1)=>{
     if(err1) console.log(err1)
-    if(!err1) res.render('admin-maintain/views/adjustmentType', {re: res1});
+    if(!err1) res.render('admin-maintain/views/adjustmentType', {re: res1, moment: moment});
   });
+});
+
+router.post('/changeAdjustmentStat',(req,res)=>{
+  db.query(`Update tblAdjustmentTypes set intStatus = ${req.body.value} where intAdjustmentTypeNo = "${req.body.no}"`,(err2,res2,fie2)=>{
+    if(err2) console.log(err2);
+    res.send("")
+  })
 });
 
 // Voucher -----------------------

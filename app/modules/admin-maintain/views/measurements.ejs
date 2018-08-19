@@ -249,7 +249,7 @@ $('.activate_uom').on('click',function(){
   $('#save').attr('disabled',true);
   $('#measure').on('keyup',function(){
 
-    $.post('/validate/measurement',{data: $(this).val()},function(data,status){
+    $.post('/maintenance2/measurement',{data: $(this).val()},function(data,status){
       if(data == "yes"){
         $('#errorhelpBlock').show();
         $('#formgroup').attr('class', 'form-group has-error');
