@@ -89,14 +89,19 @@
                     </button>
                   </div>
                 </div>
-                <button id="thisItemBtn" class="btn btn-custom-primary radius-0">Add to Cart</button>
+                <% if(thisInventory[0].stock > 0){ %>
+                  <button id="thisItemBtn" class="btn btn-custom-primary radius-0">Add to Cart</button>
+                <% }else{ %>
+                  <button id="thisItemBtn" class="btn btn-custom-primary radius-0" disabled>Add to Cart</button>
+                <% } %>
                 <input type="text" value="<%= thisProduct.intProductNo%>" hidden />
               </div>
               <div>
                 <div id="radio-container" class="fl-l">
                   <% thisInventory.forEach((inv, i)=>{ %>
                     <div class="form-check radio-div">
-                      <input class="prod-price" type="radio" value="<%= inv.productPrice%>" hidden />
+                      <input class="prod_price" type="text" value="<%= inv.productPrice%>" hidden />
+                      <input class="prod_stock" type="text" value="<%= inv.stock%>" hidden />
                       <% if(i==0){ %>
                         <input id="<%= inv.intInventoryNo%>" class="form-check-input sizes-radio" type="radio" name="invSizes" value="<%= inv.intInventoryNo%>" checked>
                       <% }else{ %>
@@ -108,14 +113,14 @@
                     </div>
                   <% }) %>
                 </div>
-                <% thisInventory.forEach((inv, i)=>{
-                  if(i==0){ %>
-                  <div id="item-price" class="fl-r pos-relative">
-                    <p class="m-0 price-symbol"><%= inv.productPrice%></p>
-                    <small class="text-muted"><s class="price-symbol">0</s></small>
-                  </div>
-                <% }
-                }) %>
+                <div id="item-price" class="fl-r pos-relative">
+                  <p class="m-0 price-symbol"><%= thisInventory[0].productPrice%></p>
+                  <% if(thisInventory[0].stock > 0){ %>
+                    <small class="text-muted"><%= thisInventory[0].stock%> items left</small>
+                  <% }else{ %>
+                    <small class="text-muted">0 items left</small>
+                  <% } %>
+                </div>
               </div>
             </div>
           </div>
@@ -137,7 +142,7 @@
               <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
               <div class="cart-button-div">
                 <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
-                <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
+                <button type="button" class="cart-btn btn p-0 no-focus" data-toggle="modal"
                 data-target="#modal-product-to-cart">
                 Add to Cart</button>
               </div>
@@ -145,9 +150,9 @@
               <div class="card-desc">
                 <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
                 <p class="card-price price-symbol"><%= prod.productPrice%></p>
-                <small class="card-oldprice text-muted">
+                <!-- <small class="card-oldprice text-muted">
                   <span><s class="price-symbol">0</s></span> (-0%)<br>
-                </small>
+                </small> -->
                 <small class="card-rating">
                   <%
                   rating = prod.aveRating;
@@ -178,7 +183,7 @@
               <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
               <div class="cart-button-div">
                 <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
-                <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
+                <button type="button" class="cart-btn btn p-0 no-focus" data-toggle="modal"
                 data-target="#modal-product-to-cart">
                 Add to Cart</button>
               </div>
@@ -186,9 +191,9 @@
               <div class="card-desc">
                 <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
                 <p class="card-price price-symbol"><%= prod.productPrice%></p>
-                <small class="card-oldprice text-muted">
+                <!-- <small class="card-oldprice text-muted">
                   <span><s class="price-symbol">0</s></span> (-0%)<br>
-                </small>
+                </small> -->
                 <small class="card-rating">
                   <%
                   rating = prod.aveRating;
@@ -382,7 +387,18 @@
 <script type="text/javascript">
   // GET - InvNo + Display Price
   $('#radio-container').on('click', '.sizes-radio', function() {
-    $('#item-price p').text($(this).prev().val());
+    let price = $(this).closest('.radio-div').find('.prod_price').val(),
+    stock = $(this).closest('.radio-div').find('.prod_stock').val();
+
+    $('#item-price p').text(price);
+    if (stock > 0){
+      $('#item-price small').text(`${stock} items left`);
+      $('#thisItemBtn').removeAttr('disabled');
+    }
+    else{
+      $('#item-price small').text(`0 items left`);
+      $('#thisItemBtn').attr('disabled','disabled');
+    }
     $.get(`/cart/item-inv/${this.value}`).then((res) => {
 
     }).catch((error) => {

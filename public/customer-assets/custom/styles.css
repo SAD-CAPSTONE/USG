@@ -16,6 +16,7 @@
   --price-color: #00AF66;
   --info-color: #17AACB;
   --search-focus: #0bdc8f;
+  --disabled-color: #CFCFCF;
 
   --sub-color: #ccc;
 }
@@ -802,6 +803,7 @@ table th, table td {
   height: 100%;
   padding: 0px 10px;
   overflow: auto;
+  width: 98.5px;
 }
 #item-main-pane #item-options > div > div:nth-child(2) {/*price*/
   text-align: right;

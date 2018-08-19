@@ -91,7 +91,7 @@ router.post('/modal/:type', (req, res)=>{
     if (err) console.log(err);
     modal.inv = results[0].intInventoryNo;
 
-    db.query(`SELECT (SUM(intQuantity) - SUM(intReservedItems))stock FROM tblbatch WHERE intInventoryNo= ?`
+    db.query(`SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`
       , [modal.inv], (err,results,fields)=>{
       if (err) console.log(err);
       modal.limit = results[0].stock < quantLimit ?
@@ -134,7 +134,7 @@ router.get('/list', (req, res)=>{
   }
   function cartLimitLoop(i){
     let cart = req.session.cart;
-    db.query(`SELECT (SUM(intQuantity) - SUM(intReservedItems))stock FROM tblbatch WHERE intInventoryNo= ?`
+    db.query(`SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`
       , [req.session.cart[i].inv], (err, results, fields) => {
       if (err) console.log(err);
       req.session.cart[i].limit = results[0].stock > quantLimit ?

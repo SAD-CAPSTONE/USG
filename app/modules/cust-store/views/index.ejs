@@ -176,6 +176,10 @@
     let newUrl, $pagination = $('#pagination'), defaultOpts = { totalPages: 1 };
     $pagination.twbsPagination(defaultOpts);
 
+    $(window).on('hashchange',(e)=>{
+      console.log('changes')
+    })
+
     function getParams(name, url) {
       if (!url) url = window.location.href;
       name = name.replace(/[\[\]]/g, '\\$&');
@@ -401,9 +405,6 @@
                 <div class="card-desc">
                   <p class="card-title"><span class="text-brand">${data.strBrand}</span> ${data.strProductName}</p>
                   <p class="card-price price-symbol">${data.productPrice}</p>
-                  <small class="card-oldprice text-muted">
-                    <span><s class="price-symbol">0</s></span> (-0%)<br>
-                  </small>
                   <small class="card-rating">
 
                   </small>
