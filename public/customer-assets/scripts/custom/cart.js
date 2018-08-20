@@ -51,9 +51,6 @@ $(() => {
               <div class="product-desc">
                 <p class="product-title"><span class="text-brand">${data.brand}</span> ${data.name}</p>
                 <small class="product-size text-muted">Size: ${data.curSize}</small>
-                <small class="product-oldprice text-muted">
-                  <span><s class="price-symbol">0</s></span><span> (-0%)</span><br>
-                </small>
                 <div class="input-group quantity">
                   <div class="input-group-prepend addon">
                     <button class="btn btn-primary quantity-buttons minus" type="button">
@@ -71,7 +68,10 @@ $(() => {
               </div>
             </div>
             <div class="product-remove"><i class="fa fa-remove product-remove-icon"></i></div>
-          </div>`)
+          </div>`);
+        // <small class="product-oldprice text-muted">
+        //   <span><s class="price-symbol">0</s></span><span> (-0%)</span><br>
+        // </small>
       });
       if(!res.cart.length){
         res.thisUser ?

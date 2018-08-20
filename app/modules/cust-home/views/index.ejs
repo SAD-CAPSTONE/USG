@@ -45,7 +45,7 @@
         <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
         <div class="cart-button-div">
           <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
-          <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
+          <button type="button" class="cart-btn btn p-0 no-focus" data-toggle="modal"
           data-target="#modal-product-to-cart">
           Add to Cart</button>
         </div>
@@ -54,9 +54,9 @@
 
           <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
           <p class="card-price price-symbol"><%= prod.productPrice%></p>
-          <small class="card-oldprice text-muted">
+          <!-- <small class="card-oldprice text-muted">
             <span><s class="price-symbol">0</s></span> (-0%)<br>
-          </small>
+          </small> -->
           <small class="card-rating">
             <%
             rating = prod.aveRating;
@@ -91,7 +91,7 @@
         <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
         <div class="cart-button-div">
           <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
-          <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
+          <button type="button" class="cart-btn btn p-0 no-focus" data-toggle="modal"
           data-target="#modal-product-to-cart">
           Add to Cart</button>
         </div>
@@ -99,9 +99,9 @@
         <div class="card-desc">
           <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
           <p class="card-price price-symbol"><%= prod.productPrice%></p>
-          <small class="card-oldprice text-muted">
+          <!-- <small class="card-oldprice text-muted">
             <span><s class="price-symbol">0</s></span> (-0%)<br>
-          </small>
+          </small> -->
           <small class="card-rating">
             <%
             rating = prod.aveRating;

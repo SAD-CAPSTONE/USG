@@ -143,6 +143,46 @@ $(() => {
     },350);
   }
 
+  // Alert
+  function postToCart(modal, data, res, tog){
+    clearTimeout(t1);
+    clearTimeout(t2);
+
+    modal.next().on('click', ()=>{
+      $('#cartSidebarCollapse').click();
+    })
+
+    tog == 1 ? modal.modal('toggle'): 0;
+    modal.next().css({
+      "max-width": "100%",
+      "padding": "20px 23px 20px 20px"
+    });
+    data[res.latest].curQty == res.limit ?
+      modal.next().css("border-left", "3px solid #FFC107"):
+      modal.next().css("border-left", "3px solid #00AF6E");
+    modal.next().children('div').css("opacity", "1");
+
+    t1 = setTimeout(()=>{
+      modal.next().css({
+        "max-width": "0",
+        "padding": "20px 0px 20px 0px",
+        "border-left": "none"
+      });
+    },5000);
+    t2 = setTimeout(()=>{
+      modal.next().children('div').css("opacity", "0");
+    },4700);
+
+    data[res.latest].curQty == res.limit ?
+      modal.next().find('p:nth-of-type(3)').text(`Maximum quantity reached (${data[res.latest].curQty})`):
+      modal.next().find('p:nth-of-type(3)').text(`has been added (${data[res.latest].curQty} in cart)`);
+    modal.next().find('p:nth-of-type(2)').html(`<span class="text-brand">${data[res.latest].brand}</span> ${data[res.latest].name} ${data[res.latest].curSize}`);
+
+    $('#getCart').click();
+  }
+
+
+
   // Nav Cart
   $('#nav-cart').css("cursor" , "not-allowed");
   $('#nav-cart *').css("color", "rgba(255,255,255,.75)");
