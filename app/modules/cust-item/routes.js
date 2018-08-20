@@ -31,7 +31,7 @@ function thisProduct(req,res,next){
     SUM(case when Review.intStars= 3 then 1 else 0 end) AS ThreeS,
     SUM(case when Review.intStars= 4 then 1 else 0 end) AS FourS,
     SUM(case when Review.intStars= 5 then 1 else 0 end) AS FiveS FROM(
-    SELECT tblproductlist.*, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.productPrice, Brand.strBrand FROM tblproductlist
+    SELECT tblproductlist.*, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.productPrice, Inv.strVariant, Brand.strBrand FROM tblproductlist
     INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
     INNER JOIN (SELECT * FROM tblproductinventory)Inv ON tblproductlist.intProductNo= Inv.intProductNo
     WHERE Brand.intStatus= 1 AND tblproductlist.intProductNo= ? GROUP BY tblproductlist.intProductNo)A

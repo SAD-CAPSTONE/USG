@@ -181,8 +181,6 @@ $(() => {
     $('#getCart').click();
   }
 
-
-
   // Nav Cart
   $('#nav-cart').css("cursor" , "not-allowed");
   $('#nav-cart *').css("color", "rgba(255,255,255,.75)");

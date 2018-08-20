@@ -94,10 +94,10 @@
                 <% }else{ %>
                   <button id="thisItemBtn" class="btn btn-custom-primary radius-0" disabled>Add to Cart</button>
                 <% } %>
-                <input type="text" value="<%= thisProduct.intProductNo%>" hidden />
+                <input id="thisprod_id" type="text" value="<%= thisProduct.intProductNo%>" hidden />
               </div>
               <div>
-                <div id="radio-container" class="fl-l">
+                <!-- <div id="radio-container" class="fl-l">
                   <% thisInventory.forEach((inv, i)=>{ %>
                     <div class="form-check radio-div">
                       <input class="prod_price" type="text" value="<%= inv.productPrice%>" hidden />
@@ -112,15 +112,35 @@
                       </label>
                     </div>
                   <% }) %>
-                </div>
-                <div id="item-price" class="fl-r pos-relative">
-                  <p class="m-0 price-symbol"><%= thisInventory[0].productPrice%></p>
-                  <% if(thisInventory[0].stock > 0){ %>
-                    <small class="text-muted"><%= thisInventory[0].stock%> items left</small>
-                  <% }else{ %>
-                    <small class="text-muted">0 items left</small>
-                  <% } %>
-                </div>
+                </div> -->
+                <!-- <div id="item-price" class="fl-r pos-relative"></div> -->
+                <select class="select-size" name="">
+                  <% thisInventory.forEach((inv, i)=>{ %>
+                    <% if(i==0){ %>
+                      <option value="<%= inv.intInventoryNo%>" selected>
+                        <% if(inv.strVariant){ %>
+                          <%= inv.strVariant%> - <%= inv.intSize%><%= inv.strUnitName%>
+                        <% }else{ %>
+                          <%= inv.intSize%><%= inv.strUnitName%>
+                        <% } %>
+                      </option>
+                    <% }else{ %>
+                      <option value="<%= inv.intInventoryNo%>">
+                        <% if(inv.strVariant){ %>
+                          <%= inv.strVariant%> - <%= inv.intSize%><%= inv.strUnitName%>
+                        <% }else{ %>
+                          <%= inv.intSize%><%= inv.strUnitName%>
+                        <% } %>
+                      </option>
+                    <% } %>
+                  <% }) %>
+                </select>
+                <p id="thisprod_price" class="m-0 price-symbol"><%= thisInventory[0].productPrice%></p>
+                <% if(thisInventory[0].stock > 0){ %>
+                  <small id="thisprod_stock" class="text-muted"><span><%= thisInventory[0].stock%></span> items left</small>
+                <% }else{ %>
+                  <small id="thisprod_stock" class="text-muted"><span>0</span> items left</small>
+                <% } %>
               </div>
             </div>
           </div>
@@ -386,20 +406,26 @@
 <script src="/customer-assets/scripts/bar-rating/dist/jquery.barrating.min.js"></script>
 <script type="text/javascript">
   // GET - InvNo + Display Price
-  $('#radio-container').on('click', '.sizes-radio', function() {
-    let price = $(this).closest('.radio-div').find('.prod_price').val(),
-    stock = $(this).closest('.radio-div').find('.prod_stock').val();
-
-    $('#item-price p').text(price);
-    if (stock > 0){
-      $('#item-price small').text(`${stock} items left`);
-      $('#thisItemBtn').removeAttr('disabled');
-    }
-    else{
-      $('#item-price small').text(`0 items left`);
-      $('#thisItemBtn').attr('disabled','disabled');
-    }
+  $('#item-options .select-size').on('change', function() {
     $.get(`/cart/item-inv/${this.value}`).then((res) => {
+      $('#thisprod_price').text(res.inventory.productPrice);
+      if (res.inventory.stock > 0){
+        $('#thisprod_stock span').text(res.inventory.stock);
+        $('#thisItemBtn').removeAttr('disabled');
+      }
+      else{
+        $('#thisprod_stock span').text(`0`);
+        $('#thisItemBtn').attr('disabled','disabled');
+      }
+
+      let stock = parseInt($('#thisprod_stock span').text()),
+      qty = parseInt($('#item-options input.quantity-input').val());
+      if(stock < 1){
+        $('#item-options input.quantity-input').val(1);
+      }
+      else if(qty > stock){
+        $('#item-options input.quantity-input').val(stock);
+      }
 
     }).catch((error) => {
       console.log(error);
@@ -407,31 +433,25 @@
   })
   // GET - Plus Button
   $('#item-options').on('click', '.plus-btn', ()=>{
-    $.get(`/cart/item-qty/plus`).then((res) => {
-      $('#item-options').find('.quantity-input').val(`${res.qty}`);
-    }).catch((error) => {
-      console.log(error);
-    });
+    let stock = parseInt($('#thisprod_stock span').text()),
+    qty = parseInt($('#item-options input.quantity-input').val());
+    qty < stock ? $('#item-options input.quantity-input').val(qty+1) : 0
   });
   // GET - Minus Button
   $('#item-options').on('click', '.minus-btn', ()=>{
-    $.get(`/cart/item-qty/minus`).then((res) => {
-      $('#item-options').find('.quantity-input').val(`${res.qty}`);
-    }).catch((error) => {
-      console.log(error);
-    });
+    let stock = parseInt($('#thisprod_stock span').text()),
+    qty = parseInt($('#item-options input.quantity-input').val());
+    qty > 1 ? $('#item-options input.quantity-input').val(qty-1) : 0
   });
   // GET & POST to Cart
   $('#item-options').on('click', '#thisItemBtn', function(){
-    let pid = $(this).next().val();
-    console.log(pid);
-    $('#item-options').find('.quantity-input').val(1);
-    $.get(`/cart/item-post/${pid}`).then((res) => {
-      return $.post(`/cart/modal/item`);
-    })
-    .then((res) => {
+    let inv = $('#item-options .select-size').val(),
+    qty = parseInt($('#item-options input.quantity-input').val());
+    $.post(`/cart/item-post`, {
+      inv: inv, qty: qty
+    }).then((res) => {
       let modal = $('#modal-product-to-cart'), data = res.cart;
-
+      console.log(res)
       postToCart(modal, data, res, 0);
     })
     .catch((error) => {

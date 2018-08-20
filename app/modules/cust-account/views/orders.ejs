@@ -54,6 +54,7 @@
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <script src="/customer-assets/scripts/pagination/jquery.twbsPagination.js" type="text/javascript"></script>
 <script type="text/javascript">
+  let oldUrl = window.location.href;
   $(() => {
     const thisUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
     let newUrl, $pagination = $('#pagination'), defaultOpts = { totalPages: 1 };
@@ -80,6 +81,8 @@
     }
 
     $('#getOrders').on('click', () => {
+      oldUrl = window.location.href
+
       let status = getParams('status'), page = getParams('page');
 
       status ? status = status.indexOf("'") == -1 ? status : 'all' : 0
@@ -89,7 +92,7 @@
         status: status,
         page: page
       }).then((res) => {
-        pushParams(res.config.status,res.config.page);
+        // pushParams(res.config.status,res.config.page);
 
         let list = $('tbody'), status, payment;
 
@@ -146,12 +149,18 @@
     });
 
     $('#order-filter > select').on('change', function(){
-      console.log($(this).val());
       pushParams($(this).val());
       $('#getOrders').click();
     });
 
     $('#getOrders').click();
+
+    if (window.history && window.history.pushState) {
+      $(window).on('popstate', function() {
+        window.location.href != oldUrl ? $('#getOrders').click() : 0
+      });
+    }
+
   });
 
 </script>

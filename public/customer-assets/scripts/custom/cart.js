@@ -50,7 +50,7 @@ $(() => {
               <div class="product-pic"><a href="/item/${data.id}"><img src="${data.img}"/></a></div>
               <div class="product-desc">
                 <p class="product-title"><span class="text-brand">${data.brand}</span> ${data.name}</p>
-                <small class="product-size text-muted">Size: ${data.curSize}</small>
+                <small class="product-size text-muted">${data.curSize}</small>
                 <div class="input-group quantity">
                   <div class="input-group-prepend addon">
                     <button class="btn btn-primary quantity-buttons minus" type="button">
