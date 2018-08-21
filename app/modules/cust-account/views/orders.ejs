@@ -8,6 +8,7 @@
 
 <!-- main content title -->
 <p id="title">My Orders</p>
+<!-- main content -->
 <div id="order-filter">
   <p class="m-0 inline">Filter By: </p>
   <select class="inline" name="">
@@ -21,7 +22,6 @@
     <option value="6">Cancelled</option>
   </select>
 </div>
-<!-- main content -->
 <div class="tab">
   <table class="table">
     <thead>
@@ -29,12 +29,12 @@
         <th scope="col">Order</th>
         <th scope="col">Status</th>
         <th scope="col">Date of Order</th>
-        <th scope="col">Payment Method</th>
+        <th scope="col">Payment</th>
         <th scope="col">Total Price</th>
       </tr>
     </thead>
     <tbody>
-      <td colspan="5" class="align-center">
+      <td colspan="6" class="align-center">
         <p> Loading Orders ... </p>
         <div class="loader"></div>
       </td>
@@ -42,7 +42,7 @@
   </table>
 </div>
 <!-- pagination -->
-<ul class="pagination pull-right mb-2" id="pagination"></ul>
+<ul class="pagination pull-right mb-1" id="pagination"></ul>
 <div style="clear: both"></div>
 
 <button id="getOrders" type="button" hidden></button>
@@ -100,7 +100,7 @@
         $('#order-filter > select').val(res.config.status)
 
         // Orders
-        res.orders.length ? list.html('') : list.html('<td colspan="5" class="align-center text-muted"><em>None</em></td>');
+        res.orders.length ? list.html('') : list.html('<td colspan="6" class="align-center text-muted"><em>None</em></td>');
         res.orders.forEach((data)=>{
           switch(data.intStatus){
             case 0: status = 'Pending'; break;
@@ -112,21 +112,22 @@
             case 6: status = 'Cancelled'; break;
           }
           payment = data.intPaymentMethod == 1 ? 'Cash on Delivery' : 'Bank Deposit'
+          paymentstatus = data.intPaymentStatus == 1 ?
+            `<i class="fa fa-check-circle mr-2"></i>` : `<i class="fa fa-circle mr-2"></i>`
+
+
           list.append(`
             <tr>
               <td><a href="/summary/order/${data.intOrderNo}">#${data.intOrderNo}</a></td>
               <td>${status}</td>
               <td>${data.dateOrdered}</td>
-              <td>${payment}</td>
+              <td>${paymentstatus}${payment}</td>
               <td><span class="price-symbol price-color">${data.totalPrice}</span></td>
             </tr>
           `);
         })
 
         // pagination
-        let defaultOpts = {
-          totalPages: 1
-        }
         let totalPages = res.config.total_pages;
         let currentPage = res.config.page;
         $pagination.twbsPagination('destroy');

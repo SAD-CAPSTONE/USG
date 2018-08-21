@@ -185,7 +185,8 @@
       }
     }
     function printReceipt(res){
-      let doc = new jsPDF(), string;
+      // var pdf = new jsPDF('p', 'in', [5,2]);
+      let doc = new jsPDF('p', 'mm', [260,180]), string;
       function stringCut(str,i,max){
         str.slice(max*i,max*(i+1)).charAt(0) == ' ' ?
           doc.text(firstX, newY, str.slice((max*i)+1,max*(i+1))) :
@@ -205,19 +206,35 @@
       doc.addFont('Poppins-Light.ttf', 'Poppins-Light', 'normal');
       doc.addFont('Poppins-ExtraLight.ttf', 'Poppins-ExtraLight', 'normal');
 
+      // doc.setFontSize('10');
+      // doc.text(0, 0, `Elizabeth Hall Bldg., Katipunan Ave. Quezon City`);
+
+
       // Brand Title
       doc.setFont('Poppins-Regular');
       doc.setFontSize('25');
-      doc.text(62.5, 22, `ULTRA SUPER GREEN`);
+      doc.text(47.5, 22, `ULTRA SUPER GREEN`);
       // Brand Subtitle
       doc.setFont('Poppins-Light');
       doc.setFontSize('10');
-      doc.text(64, 26.5, `Elizabeth Hall Bldg., Katipunan Ave. Quezon City`);
-      doc.text(78, 31, `0955 9044744  |  (02)738 1202`);
-      doc.text(91, 35.5, `Official Receipt`);
+      doc.text(49, 26.5, `Elizabeth Hall Bldg., Katipunan Ave. Quezon City`);
+      doc.text(63, 31, `0955 9044744  |  (02)738 1202`);
+      doc.setFont('Poppins-Regular');
+      doc.setFontSize('15');
+      doc.text(69.5, 37.5, `Official Receipt`);
+      doc.setFontSize('10');
 
       // Receipt Details
-      let firstX = 10, firstY = 48, gap = 4.5 , newY, maxY, originalX = firstX;
+      let firstX = 10, firstY = 49, gap = 4.5 , newY, maxY, originalX = firstX;
+
+      // Receipt No
+      newY = firstY;
+      doc.setFont('Poppins-Regular');
+      doc.text(firstX, newY, `Receipt No:`); newY+= gap;
+      doc.setFont('Poppins-Light');
+      doc.text(firstX, newY, `#72954168`);
+      firstX += 40.5;
+      maxY = newY;
       // Order
       newY = firstY;
       doc.setFont('Poppins-Regular');
@@ -225,7 +242,7 @@
       doc.setFont('Poppins-Light');
       doc.text(firstX, newY, `No: #${res.receipt[0].intOrderNo}`); newY+= gap;
       doc.text(firstX, newY, `Date: ${res.receipt[0].dateOrdered}`);
-      firstX += 32;
+      firstX += 40.5;
       maxY = newY;
       // Cashier
       newY = firstY;
@@ -233,8 +250,8 @@
       doc.text(firstX, newY, `Cashier/`); newY+= gap;
       doc.text(firstX, newY, `Personnel:`); newY+= gap;
       doc.setFont('Poppins-Light');
-      stringCut(`Gustle Agulto`,0,15)
-      firstX += 37;
+      stringCut(`Gustle Agulto`,0,17)
+      firstX += 40.5;
       maxY < newY ? maxY = newY : 0;
       // Customer
       newY = firstY;
@@ -242,28 +259,28 @@
       doc.text(firstX, newY, `Customer:`); newY+= gap;
       doc.setFont('Poppins-Light');
       res.receipt[0].customerM ?
-        stringCut(`${res.receipt[0].customerF} ${res.receipt[0].customerM} ${res.receipt[0].customerL}`,0,15) :
-        stringCut(`${res.receipt[0].customerF} ${res.receipt[0].customerL}`,0,15)
-      firstX += 37;
+        stringCut(`${res.receipt[0].customerF} ${res.receipt[0].customerM} ${res.receipt[0].customerL}`,0,18) :
+        stringCut(`${res.receipt[0].customerF} ${res.receipt[0].customerL}`,0,18)
+      firstX += 40.5;
       maxY < newY ? maxY = newY : 0;
-      // Billing
-      newY = firstY;
-      doc.setFont('Poppins-Regular');
-      doc.text(firstX, newY, `Billing Address:`); newY+= gap;
-      doc.setFont('Poppins-Light');
-      stringCut(res.receipt[0].strBillingAddress,0,18)
-      firstX += 44;
-      maxY < newY ? maxY = newY : 0;
-      // Shipping
-      newY = firstY;
-      doc.setFont('Poppins-Regular');
-      doc.text(firstX, newY, `Shipping Address:`); newY+= gap;
-      doc.setFont('Poppins-Light');
-      stringCut(res.receipt[0].strShippingAddress,0,18)
-      maxY < newY ? maxY = newY : 0;
+      // // Billing
+      // newY = firstY;
+      // doc.setFont('Poppins-Regular');
+      // doc.text(firstX, newY, `Billing Address:`); newY+= gap;
+      // doc.setFont('Poppins-Light');
+      // stringCut(res.receipt[0].strBillingAddress,0,18)
+      // firstX += 44;
+      // maxY < newY ? maxY = newY : 0;
+      // // Shipping
+      // newY = firstY;
+      // doc.setFont('Poppins-Regular');
+      // doc.text(firstX, newY, `Shipping Address:`); newY+= gap;
+      // doc.setFont('Poppins-Light');
+      // stringCut(res.receipt[0].strShippingAddress,0,18)
+      // maxY < newY ? maxY = newY : 0;
 
       // Products
-      qtyX = 16, descX = 24, unitX = 162, amntX = 199,
+      qtyX = 16, descX = 24, unitX = 137, amntX = 170,
       firstY = maxY + 15, gap = 6;
 
       // Headers
@@ -287,7 +304,7 @@
         doc.text(amntX, newY, `${data.amountNonVAT}`, 'right');
         // desc
         str = `${data.strBrand} ${data.strProductName} ${data.intSize}${data.strUnitName}`;
-        stringCut(str,0,55)
+        stringCut(str,0,43)
         newY+= gap
       })
 
@@ -319,7 +336,7 @@
       if(!(newY > 265 && newY < 275)){
         doc.setDrawColor(0, 0, 0);
         let x=originalX, w=15
-        for(i=0; i<=26; i++){ // broken lines
+        for(i=0; i<=22; i++){ // broken lines
           doc.line(x, newY, w, newY);
           x+=7.065; w+=7.065;
         }

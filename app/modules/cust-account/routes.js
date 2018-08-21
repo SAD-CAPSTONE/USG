@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../../lib/database')();
 const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
-const pageLimit = 15;
+const pageLimit = 2;
 const orderQuery = `SELECT tblorder.intStatus AS Status, tblorder.*, Price.totalPrice FROM tbluser
   INNER JOIN tblorder ON tbluser.intUserID= tblorder.intUserID INNER JOIN (
 	SELECT SUM(purchasePrice*intQuantity)totalPrice, tblorder.intOrderNo FROM tblorder
@@ -38,8 +38,8 @@ router.get('/dashboard', checkUser, contactDetails, (req,res)=>{
 router.get('/orders', checkUser, (req,res)=>{
   res.render('cust-account/views/orders', {thisUser: req.user});
 });
-router.get('/cancellations', checkUser, (req,res)=>{
-  res.render('cust-account/views/cancellations', {thisUser: req.user});
+router.get('/messages', checkUser, (req,res)=>{
+  res.render('cust-account/views/messages', {thisUser: req.user});
 });
 
 router.post('/dashboard/info', checkUser, (req,res)=>{
