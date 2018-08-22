@@ -50,13 +50,15 @@
                         <td><%=i.strBusinessType%></td>
                         <td><%= moment(i.dateCreated).format("MM/DD/YYYY")%></td>
                         <td>
-                          <% if (i.intStatus == 1){ %>
-                            <button data-no="<%=i.intBusinessTypeNo%>" class="ui toggle button active inactivate_type">Active</button>
-
+                          <input type="checkbox"
+                          <% if (i.intStatus == 0){ %>
+                            value="0"
                           <% }else{ %>
-                            <button data-no="<%=i.intBusinessTypeNo%>" class="ui toggle button inactive activate_type">Inactive</button>
-
+                            value="1" checked
                           <% } %>
+
+                           data-no="<%=i.intBusinessTypeNo%>" class="businessType_stat" data-size="mini"  data-on="Active" data-off="Inactive" data-toggle="toggle" data-offstyle="danger" data-onstyle="success">
+
                         </td>
                         <td>
                           <center>
@@ -103,31 +105,25 @@
 			<!-- Horizontal Form -->
 
 					<!-- form start -->
-          <form role="form">
+          <form role="form" id="add_form">
               <div class="box-body">
                 <div id="formgroup" class="form-group">
-                  <% num = "1000" %>
-                  <% if (lasttype == null || lasttype == undefined){ %>
 
-                  <% }else if (lasttype.length == 0){ %>
-
-                  <% }else{ %>
-                    <% num = parseInt(lasttype[0].intBusinessTypeNo) + 1; %>
-                  <% } %>
-                  <input type="hidden" id="bno" value="<%=num%>">
                   <label for="bType">Business Type:</label>
-                  <input type="text" class="form-control" id="bType" placeholder="">
+                  <input  required pattern="^[^\s]+.*$" type="text" class="form-control" name="btype" id="bType" placeholder="">
                   <span id="errorhelpBlock" class="help-block">You already have the same record!</span>
+                  <small>Same records are not allowed. No whitespaces at the beginning.</small>
                 </div>
 
               </div>
-            </form>
+
 
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-			<button type="button" id="save" class="btn btn-primary">Save</button>
+			<button type="submit" id="save"  class="btn btn-primary">Save</button>
 		  </div>
+      </form>
 		</div>
 		<!-- /.modal-content -->
 	</div>
@@ -152,8 +148,10 @@
 
                   <input type="hidden" id="no_edit" name="no_edit">
                   <label for="bType">Business Type:</label>
-                  <input type="text" class="form-control" name="type_edit" id="type_edit">
+                  <input required type="text" pattern="^[^\s]+.*$" class="form-control" name="type_edit" id="type_edit">
                   <span id="errorhelpBlock_e" class="help-block">You already have the same record!</span>
+                  <small>Same records are not allowed. No whitespaces at the beginning.</small>
+
                 </div>
 
               </div>
@@ -248,20 +246,18 @@
 
 <script>
   $(document).ready(function(){
-    $('#save').on('click',function(){
+    $('#add_form').submit(function(e){
+      e.preventDefault();
       $.ajax({
         url: '/maintenance/addBusinessType',
         method: 'POST',
         datatype: "json",
-        data: {
-          bno: $('#bno').val(),
-          btype: $('#bType').val(),
-        },
+        data: $('#add_form').serialize(),
         success: function(response,status,http){
           if (response){
             if (response == "yes"){
-              swal({title:"Success",text:"Business type added!", type:"success"}, function(){
-                  window.location.reload();
+              swal({title:"Success",text:"Business type added!", type:"success"}).then(()=>{
+                location.reload();
               });
 
             }
@@ -273,37 +269,18 @@
 </script>
 
 <script>
-$('.inactivate_type').on('click',function(){
-  $(this).removeClass("ui toggle button active inactivate_type").addClass("ui toggle button  activate_type").html("Inactive");
+$('.businessType_stat').on('change',function(){
+  var val = $(this).val() == 1 ? 0 : 1;
 
-  $.ajax({
-    url: '/maintenance/inactivateType',
-    method: 'post',
-    datatype: 'json',
-    data: {no: $(this).data('no')},
-    success: function(response,status,http){
-      if (response){
-        swal("Success!", "You have activated Business Type no"+$(this).data('no'), "success");
-      }
+  $.post('/maintenance/changeBusinessTypeStat',{no: $(this).data('no'), value: val}, function(data,status){
+    if (data){
+
     }
   })
+
+
 })
 
-$('.activate_type').on('click',function(){
-  $(this).removeClass("ui toggle button activate_type").addClass("ui toggle button active inactivate_type").html("Active");
-
-  $.ajax({
-    url: '/maintenance/activateType',
-    method: 'post',
-    datatype: 'json',
-    data: {no: $(this).data('no')},
-    success: function(response,status,http){
-      if (response){
-        swal("Success!", "You have activated Business Type no"+$(this).data('no'), "success");
-      }
-    }
-  })
-})
 </script>
 
 <script>
@@ -321,6 +298,26 @@ $('.activate_type').on('click',function(){
         $('#errorhelpBlock').hide();
         $('#formgroup').attr('class', 'form-group has-success');
         $('#save').attr('disabled',false);
+      }
+    });
+  })
+</script>
+
+<script>
+  $('#errorhelpBlock_e').hide();
+  $('#save_e').attr('disabled',true);
+  $('#type_edit').on('keyup',function(){
+
+    $.post('/maintenance2/businessType',{data: $(this).val()},function(data,status){
+      if(data == "yes"){
+        $('#errorhelpBlock_e').show();
+        $('#formgroup_e').attr('class', 'form-group has-error');
+        $('#save_e').attr('disabled',true);
+
+      }else{
+        $('#errorhelpBlock_e').hide();
+        $('#formgroup_e').attr('class', 'form-group has-success');
+        $('#save_e').attr('disabled',false);
       }
     });
   })

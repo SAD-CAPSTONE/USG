@@ -62,6 +62,19 @@ router.post('/adjustmentType',(req,res)=>{
   })
 });
 
+router.post('/certification',(req,res)=>{
+  db.query(`Select * from tblProductCertification where strCertification = "${req.body.data}"`,(err,results,fields)=>{
+    if(err){ console.log(err); res.send("yes")}
+    else{
+      if(results.length == 0){
+        res.send("no");
+      }else{
+        res.send("yes");
+      }
+    }
+  })
+});
+
 router.post('/brand',(req,res)=>{
   db.query(`Select * from tblProductBrand where strBrand = "${req.body.data}"`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}

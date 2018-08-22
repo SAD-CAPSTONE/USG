@@ -48,13 +48,15 @@
 
                  <td><%=i.strCertification%></td>
                  <td>
-                   <% if (i.intStatus == 1) { %>
-                     <button data-no="<%=i.intCertificationNo%>" class="ui toggle button active inactivate_certification">Active</button>
-
+                   <input type="checkbox"
+                   <% if (i.intStatus == 0){ %>
+                     value="0"
                    <% }else{ %>
-                     <button data-no="<%=i.intCertificationNo%>" class="ui toggle button inactive activate_certification">Inactive</button>
-
+                     value="1" checked
                    <% } %>
+
+                    data-no="<%=i.intCertificationNo%>" class="certification_stat" data-size="mini"  data-on="Active" data-off="Inactive" data-toggle="toggle" data-offstyle="danger" data-onstyle="success">
+
                  </td>
                  <td>
                    <center>
@@ -102,9 +104,12 @@
        <!-- form start -->
        <form role="form" id="certificationForm">
          <div class="box-body">
-           <div class="form-group">
+           <div id="formgroup" class="form-group">
              <label for="category">Product Certification:</label>
-             <input type="text" required class="form-control" name="certification" id="category" placeholder="ex. Gluten-free">
+             <input type="text" pattern="^[^\s]+.*$" required class="form-control" name="certification" id="certification" placeholder="ex. Gluten-free">
+             <span id="errorhelpBlock" class="help-block">You already have the same record!</span>
+             <small>Same records are not allowed. No whitespaces at the beginning.</small>
+
            </div>
 
          </div>
@@ -139,7 +144,7 @@
          <div class="box-body">
            <div class="form-group">
              <label for="category">Product Certification:</label>
-             <input type="hidden"  class="form-control" name="no_e" id="no_e" >
+             <input type="hidden" pattern="^[^\s]+.*$"  class="form-control" name="no_e" id="no_e" >
 
              <input type="text" required class="form-control" name="certification_e" id="certification_e" >
            </div>
@@ -243,37 +248,37 @@ $(".navi a:contains('Product Certification')").parent().addClass("active");
 </script>
 
 <script>
-$('.inactivate_certification').on('click',function(){
-  $(this).removeClass("ui toggle button active inactivate_certification").addClass("ui toggle button  activate_certification").html("Inactive");
+$('.certification_stat').on('change',function(){
+  var val = $(this).val() == 1 ? 0 : 1;
 
-  $.ajax({
-    url: '/maintenance/inactivateCertification',
-    method: 'post',
-    datatype: 'json',
-    data: {no: $(this).data('no')},
-    success: function(response,status,http){
-      if (response){
-        swal("Success!", "You have activated Certification no"+$(this).data('no'), "success");
-      }
+  $.post('/maintenance/changeCertificationStat',{no: $(this).data('no'), value: val}, function(data,status){
+    if (data){
+
     }
   })
+
+
 })
+</script>
 
-$('.activate_certification').on('click',function(){
-  $(this).removeClass("ui toggle button activate_certification").addClass("ui toggle button active inactivate_certification").html("Active");
+<script>
+  $('#errorhelpBlock').hide();
+  $('#save').attr('disabled',true);
+  $('#certification').on('keyup',function(){
 
-  $.ajax({
-    url: '/maintenance/activateCertification',
-    method: 'post',
-    datatype: 'json',
-    data: {no: $(this).data('no')},
-    success: function(response,status,http){
-      if (response){
-        swal("Success!", "You have activated Certification no"+$(this).data('no'), "success");
+    $.post('/maintenance2/certification',{data: $(this).val()},function(data,status){
+      if(data == "yes"){
+        $('#errorhelpBlock').show();
+        $('#formgroup').attr('class', 'form-group has-error');
+        $('#save').attr('disabled',true);
+
+      }else{
+        $('#errorhelpBlock').hide();
+        $('#formgroup').attr('class', 'form-group has-success');
+        $('#save').attr('disabled',false);
       }
-    }
+    });
   })
-})
 </script>
 
 

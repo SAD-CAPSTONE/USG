@@ -48,13 +48,15 @@
 
                         <td><%=i.strBrand%></td>
                         <td>
-                          <% if (i.intStatus == 1){ %>
-                            <button data-no="<%=i.intBrandNo%>" class="ui toggle button active inactivate_brand">Active</button>
-
+                          <input type="checkbox"
+                          <% if (i.intStatus == 0){ %>
+                            value="0"
                           <% }else{ %>
-                            <button data-no="<%=i.intBrandNo%>" class="ui toggle button inactive activate_brand">Inactive</button>
-
+                            value="1" checked
                           <% } %>
+
+                           data-no="<%=i.intBrandNo%>" class="brand_stat" data-size="mini"  data-on="Active" data-off="Inactive" data-toggle="toggle" data-offstyle="danger" data-onstyle="success">
+
                         </td>
                         <td>
                           <center>
@@ -190,36 +192,16 @@
 </script>
 
 <script>
-$('.inactivate_brand').on('click',function(){
-  $(this).removeClass("ui toggle button active inactivate_type").addClass("ui toggle button  activate_type").html("Inactive");
+$('.brand_stat').on('change',function(){
+  var val = $(this).val() == 1 ? 0 : 1;
 
-  $.ajax({
-    url: '/maintenance/inactivateBrand',
-    method: 'post',
-    datatype: 'json',
-    data: {no: $(this).data('no')},
-    success: function(response,status,http){
-      if (response){
-        swal("Success!", "You have activated Brand no"+$(this).data('no'), "success");
-      }
+  $.post('/maintenance/changeBrandStat',{no: $(this).data('no'), value: val}, function(data,status){
+    if (data){
+
     }
   })
-})
 
-$('.activate_brand').on('click',function(){
-  $(this).removeClass("ui toggle button activate_type").addClass("ui toggle button active inactivate_type").html("Active");
 
-  $.ajax({
-    url: '/maintenance/activateBrand',
-    method: 'post',
-    datatype: 'json',
-    data: {no: $(this).data('no')},
-    success: function(response,status,http){
-      if (response){
-        swal("Success!", "You have activated Brand no"+$(this).data('no'), "success");
-      }
-    }
-  })
 })
 </script>
 

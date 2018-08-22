@@ -104,7 +104,7 @@
                       <form>
                       <td>
                         <center>
-                          <button type="button" data-number="<%=i.intInventoryNo%>" data-toggle="modal" data-target="#addStock" class="addStock large ui teal button"><i class="fa fa-plus"></i></button>
+                          <button type="button" data-number="<%=i.intInventoryNo%>" data-toggle="modal" data-target="#addStock" class="addStock large ui teal button" data-toggle="tooltip" title="Add Stock"><i class="fa fa-plus"></i></button>
                           <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>" data-promotype="<%=i.intPromoType%>" data-toggle="modal" data-target="#editInventory" class="editbutton large ui blue button" ><i class="fa fa-edit"></i></button>
 
                           <a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="large ui button" >Transactions</button></a>
@@ -126,12 +126,14 @@
 
 
             <!-- New product Item-->
-            <div class="tab-pane" id="newProduct">
+            <div class="tab-pane " id="newProduct">
               <div class="row">
-                <div class="col-sm-8">
+                <div class="col-sm-12">
                   <!-- form start -->
                   <form role="form" id="newProductForm" >
                     <div class="box-body">
+
+
 
                       <div class="form-group">
 
@@ -152,47 +154,45 @@
                             </div>
                           </div>
                       </div>
+
                       <div class="form-group">
                         <div class="row">
-                          <div class="col-sm-6">
+                          <div class="col-sm-3">
+                          </br>
+                            <button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
+                          <p>  New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
+                          </div>
+                          <div class="col-sm-4">
                             <label for="add_sname">Supplier Name</label>
                             <input type="hidden" class="form-control"  id="add_sno" name="add_sno" >
                             <input type="text" class="form-control" disabled id="add_sname" name="add_sname" >
                           </div>
-                          <div class="col-sm-6">
-                          </br>
-                            &nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
-                          <p>  &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
-                          </div>
-                        </div>
 
-                      </div>
-                      <div class="form-group">
-                        <div class="row">
-                          <div class="col-sm-6">
+                          <div class="col-sm-4">
                             <label for="add_bname">Business Name</label>
                             <input type="text" class="form-control" disabled id="add_bname" name="add_bname" >
                           </div>
+
                         </div>
+
                       </div>
-                      <div class="form-group">
-                        <label for="add_srp">Product SRP</label>
-                        <input type="number" class="form-control" required id="add_srp" name="add_srp" >
-                      </div>
-                      <div class="form-group">
-                        <label for="add_price">Product Price</label>
-                        <input type="number" class="form-control" required id="add_price" name="add_price" >
-                      </div>
+
                       <div class="form-group">
                         <div class="row">
-
-                          <div class="col-sm-2">
+                          <div class="col-sm-3">
+                            <label for="add_srp">Product SRP</label>
+                            <input type="number" placeholder="Original price" class="form-control" required id="add_srp" name="add_srp" >
+                          </div>
+                          <div class="col-sm-3">
+                            <label for="add_price">Product Price</label>
+                            <input type="number" placeholder="with added markup" class="form-control" required id="add_price" name="add_price" >
+                          </div>
+                          <div class="col-sm-3">
                             <label for="add_size">Size</label>
                             <input type="number" class="form-control" required id="add_size" name="add_size" >
                           </div>
-                          <div class="col-sm-2">
-
-                            <label for="add_uom">   </label>
+                          <div class="col-sm-3">
+                            <label for="add_uom">Measure </label>
                             <select class="form-control" required id="add_uom" name="add_uom"  >
                               <% if (uom == null || uom == undefined || uom.length == 0){ %>
                                 <option></option>
@@ -206,17 +206,18 @@
                           </div>
                         </div>
                       </div>
+
                       <div class="form-group">
                         <div class="row">
-                          <div class="col-xs-4">
+                          <div class="col-sm-4">
                             <label for="add_barcode">Barcode</label>
                             <input type="number" class="form-control" id="add_barcode" name="add_barcode" >
                           </div>
-                          <div class="col-xs-4">
+                          <div class="col-sm-2">
                             <label for="shelf">Shelf No</label>
                             <input type="number" class="form-control"id="add_shelf" name="add_shelf" >
                           </div>
-                          <div class="col-xs-4">
+                          <div class="col-sm-2">
                             <label for="add_critical">Critical Limit</label>
                             <input type="number" class="form-control" required id="add_critical" name="add_critical" >
                           </div>
@@ -741,6 +742,8 @@
         }
       })
     })
+
+
   </script>
 
 

@@ -126,7 +126,7 @@
               <!-- All Adjustments -->
               <div class="tab-pane" id="inventory_count">
                 <div class="box-body table-responsive">
-                  <table id="example1" class="table table-bordered table-hover">
+                  <table id="example3" class="table table-bordered table-hover">
                     <thead>
                       <tr>
                         <th>No</th>
@@ -225,7 +225,20 @@
 </script>
 
 
-
+<script>
+  $(function () {
+    $('#example3').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
 
 
 <script>

@@ -45,12 +45,15 @@
 
                   <td><%=i.strCategory%></td>
                   <td>
-                    <% if (i.intStatus == 1) { %>
-                      <button data-no="<%=i.intCategoryNo%>" class="ui toggle button active inactivate_category">Active</button>
-
+                    <input type="checkbox"
+                    <% if (i.intStatus == 0){ %>
+                      value="0"
                     <% }else{ %>
-                      <button data-no="<%=i.intCategoryNo%>" class="ui toggle button inactive activate_category">Inactive</button>
+                      value="1" checked
                     <% } %>
+
+                     data-no="<%=i.intCategoryNo%>" class="category_stat" data-size="mini"  data-on="Active" data-off="Inactive" data-toggle="toggle" data-offstyle="danger" data-onstyle="success">
+
                   </td>
                   <td><button data-no="<%=i.intCategoryNo%>" data-category="<%=i.strCategory%>" data-toggle="modal" data-target="#editCategory" class="editCategory large ui teal button"><i class="glyphicon glyphicon-edit"></i></button></td>
                 </tr>
@@ -93,11 +96,15 @@
                     <td><%=i.intSubCategoryNo%></td>
                     <td><%=i.strCategory%> - <%=i.strSubCategory%></td>
                     <td>
-                      <% if (i.S == 1) { %>
-                        <button data-no="<%=i.intSubCategoryNo%>" class="ui toggle button active inactivate_subcategory">Active</button>
+                      <input type="checkbox"
+                      <% if (i.S == 0){ %>
+                        value="0"
                       <% }else{ %>
-                        <button data-no="<%=i.intSubCategoryNo%>" class="ui toggle button inactive activate_subcategory">Inactive</button>
+                        value="1" checked
                       <% } %>
+
+                       data-no="<%=i.intSubCategoryNo%>" class="subCategory_stat" data-size="mini"  data-on="Active" data-off="Inactive" data-toggle="toggle" data-offstyle="danger" data-onstyle="success">
+
                     </td>
                     <td><button data-target="#editSubCategory" data-toggle="modal" data-no="<%=i.intSubCategoryNo%>" data-name2="<%=i.strSubCategory%>" data-name1="<%=i.intCategoryNo%>" class="editSubCategory large ui teal button" ><i class="glyphicon glyphicon-edit"></i></button></td>
                   </tr>
@@ -356,69 +363,29 @@ $(".navi a:contains('Product Category')").parent().addClass("active");
 </script>
 
 <script>
-  $('.activate_category').on('click',function(){
-    $(this).removeClass("ui toggle button activate_category").addClass("ui toggle button active inactivate_category").html("Active");
+$('.category_stat').on('change',function(){
+  var val = $(this).val() == 1 ? 0 : 1;
 
-    $.ajax({
-      url: '/maintenance/activateCategory',
-      method: 'post',
-      datatype: 'json',
-      data: {no: $(this).data('no')},
-      success: function(response,status,http){
-        if (response){
-          swal("Success!", "You have activated category no"+$(this).data('no'), "success");
-        }
-      }
-    })
+  $.post('/maintenance/changeCategoryStat',{no: $(this).data('no'), value: val}, function(data,status){
+    if (data){
+
+    }
   })
 
-  $('.inactivate_category').on('click',function(){
-    $(this).removeClass("ui toggle button active inactivate_category").addClass("ui toggle button  activate_category").html("Inactive");
 
-    $.ajax({
-      url: '/maintenance/inactivateCategory',
-      method: 'post',
-      datatype: 'json',
-      data: {no: $(this).data('no')},
-      success: function(response,status,http){
-        if (response){
-          swal("Success!", "You have activated category no"+$(this).data('no'), "success");
-        }
-      }
-    })
+})
+
+$('.subCategory_stat').on('change',function(){
+  var val = $(this).val() == 1 ? 0 : 1;
+
+  $.post('/maintenance/changeSubCategoryStat',{no: $(this).data('no'), value: val}, function(data,status){
+    if (data){
+
+    }
   })
 
-  $('.inactivate_subcategory').on('click',function(){
-    $(this).removeClass("ui toggle button active inactivate_subcategory").addClass("ui toggle button  activate_subcategory").html("Inactive");
 
-    $.ajax({
-      url: '/maintenance/inactivateSubCategory',
-      method: 'post',
-      datatype: 'json',
-      data: {no: $(this).data('no')},
-      success: function(response,status,http){
-        if (response){
-          swal("Success!", "You have activated SubCategory no"+$(this).data('no'), "success");
-        }
-      }
-    })
-  })
-
-  $('.activate_subcategory').on('click',function(){
-    $(this).removeClass("ui toggle button activate_subcategory").addClass("ui toggle button active inactivate_subcategory").html("Active");
-
-    $.ajax({
-      url: '/maintenance/activateSubCategory',
-      method: 'post',
-      datatype: 'json',
-      data: {no: $(this).data('no')},
-      success: function(response,status,http){
-        if (response){
-          swal("Success!", "You have activated SubCategory no"+$(this).data('no'), "success");
-        }
-      }
-    })
-  })
+})
 
 </script>
 

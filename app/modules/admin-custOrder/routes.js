@@ -9,7 +9,7 @@ router.get('/', (req,res)=>{
 });
 
 router.post('/checkNewOrders',(req,res)=>{
-    db.query(`Select count(*) as qty from tblOrder where dateOrdered >= CURDATE() - INTERVAL 2 DAY and tblOrder.intStatus = 0`, (err1,results1,fields1)=>{
+    db.query(`Select count(*) as qty from tblOrder where  tblOrder.intStatus = 0`, (err1,results1,fields1)=>{
         if (err1) console.log(err1);
 
         if (results1 == null || results1 == undefined){
@@ -25,7 +25,7 @@ router.post('/checkNewOrders',(req,res)=>{
 router.get('/checkNewOrders',(req,res)=>{
   db.query(`Select CURDATE() - INTERVAL 2 DAY as DatesFrom, tblOrder.intStatus as Stat,
     tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
-    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where dateOrdered >= CURDATE() - INTERVAL 2 DAY and tblOrder.intStatus = 0`,(err1,results1,fields1)=>{
+    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where  tblOrder.intStatus = 0`,(err1,results1,fields1)=>{
       if (err1) console.log(err1);
 
       res.render('admin-custOrder/views/newOrders', {re: results1, moment: moment})
