@@ -98,22 +98,14 @@
           <a id="cartSidebarCollapse" class="nav-link"><i class="fa d-inline fa-lg fa-shopping-cart"></i>  Cart</a></li>
         <li class="nav-item dropdown cursor-pointer">
           <a id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-top: 12px;" class="nav-link dropdown-toggle"><i class="fa fa-fw fa-cog"></i></a>
-          <!-- <ul class="dropdown-menu pull-left" role="menu" style="left:0;">
-            <li><a href="#">Menu Item 01</a></li>
-            <li><a href="#">Menu Item 01</a></li>
-            <li><a href="#">Menu Item 02</a></li>
-            <li><a href="#">Menu Item 03</a></li>
-            <li><a href="#">Menu Item 04</a></li>
-            <li><a href="#"></a></li>
-
-          </ul> -->
           <div id="nav-setting-dropdown" aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu dropdown-menu-right">
             <% if (thisUser){ %>
-              <a href="/account/dashboard" class="dropdown-item"><i class="fa d-inline fa-lg fa-user pr-2"></i>&nbsp<%= thisUser.strFname %></a>
+              <a href="/account/dashboard" class="dropdown-item"><%= thisUser.strFname %></a>
             <% }else{ %>
-              <a href="/account/dashboard" class="dropdown-item"><i class="fa d-inline fa-lg fa-user pr-2"></i>&nbspAccount</a>
+              <a href="/account/dashboard" class="dropdown-item">Account</a>
             <% } %>
-            <a href="/home/faq" class="dropdown-item"><i class="fa d-inline fa-lg fa-question-circle pr-2"></i>FAQs</a>
+            <a href="/account/messages" class="dropdown-item">Messages</a>
+            <a href="/home/faq" class="dropdown-item">FAQs</a>
             <hr id="hzline" />
             <a href="/login" class="dropdown-item"><i class="fa d-inline fa-lg fa-sign-out pr-2"></i>Logout</a>
           </div>

@@ -104,7 +104,7 @@ function orderProductQty (req, res, next){
 function cartCheck (req, res, next){
   function cartLimitLoop(i){
     let cart = req.session.cart;
-    db.query(`SELECT (SUM(intQuantity) - SUM(intReservedItems))stock FROM tblbatch WHERE intInventoryNo= ?`
+    db.query(`SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`
       , [req.session.cart[i].inv], (err, results, fields) => {
       if (err) console.log(err);
       req.session.cart[i].limit = results[0].stock > quantLimit ?
@@ -233,6 +233,7 @@ router.get('/receipt/:orderNo', (req,res)=>{
 })
 
 router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsNo, cartCheck, (req,res)=>{
+  console.log(`length: ${req.session.cart.length}`)
   db.beginTransaction(function(err) {
     if (err) console.log(err);
     let thisOrderNo = req.newOrderNo;
@@ -264,11 +265,17 @@ router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsN
               });
             }
             else{
-              db.commit(function(err) {
-                if (err) console.log(err);
-                req.session.cart = null;
-                res.redirect(`/summary/success/`);
-              });
+              ++i;
+              if (cart.length > i){
+                multiInsert(i);
+              }
+              else{
+                db.commit(function(err) {
+                  if (err) console.log(err);
+                  req.session.cart = null;
+                  res.redirect(`/summary/success`);
+                });
+              }
             }
           });
         });
