@@ -354,7 +354,7 @@ router.post('/addSubCategory', (req,res)=>{
 
 // Business Type -------------------
 router.get('/businessType', (req,res)=>{
-  db.query(`Select * from tblbusinesstype`,(err1,results1,fields1)=>{
+  db.query(`Select * from tblbusinesstype WHERE intStatus != 2`,(err1,results1,fields1)=>{
     if (err1) console.log(err2);
     db.query(`Select * from tblbusinesstype order by intbusinesstypeno desc limit 1`,(err2,results2,fields2)=>{
       if (err2) console.log(err2);
@@ -693,7 +693,7 @@ router.post('/activatePackage',(req,res)=>{
 
 // Measuremens ------------------------------------
 router.get('/measurements', (req,res)=>{
-  db.query(`Select * from tblUom`, (err1,results1,fields1)=>{
+  db.query(`Select * from tblUom WHERE intStatus != 2`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
     res.render('admin-maintain/views/measurements', {re: results1, moment: moment});
   });
@@ -740,7 +740,7 @@ router.post('/changeUomStat',(req,res)=>{
 router.get('/customer', (req,res)=>{
   db.query(`SELECT tblcustomer.intStatus as Stats, tblUser.*,tblcustomer.* from
     tblUser join tblcustomer on tblUser.intUserID =
-    tblcustomer.intUserID`,(err1,results1)=>{
+    tblcustomer.intUserID WHERE intStatus != 2`,(err1,results1)=>{
       if (err1) console.log(err1);
       res.render('admin-maintain/views/customer', {re: results1});
 
@@ -750,7 +750,7 @@ router.get('/customer', (req,res)=>{
 
 // Certification --------------------------------
 router.get('/productCertification',(req,res)=>{
-  db.query(`Select * from tblProductCertification`,(err1,results1,fields1)=>{
+  db.query(`Select * from tblProductCertification WHERE intStatus != 2`,(err1,results1,fields1)=>{
     if(err1) console.log(err1);
     res.render('admin-maintain/views/certifications',{certification: results1});
   });
@@ -794,7 +794,7 @@ router.post('/changeCertificationStat',(req,res)=>{
 
 // Brand ---------------
 router.get('/brand',(req,res)=>{
-  db.query(`Select * from tblProductBrand`,(err1,results1,fields1)=>{
+  db.query(`Select * from tblProductBrand WHERE intStatus != 2`,(err1,results1,fields1)=>{
     if(err1) console.log(err1);
     if(!err1) res.render('admin-maintain/views/brand',{re: results1});
   });
@@ -831,6 +831,23 @@ router.post('/changeBrandStat',(req,res)=>{
     res.send("")
   })
 });
-// <%- include('../../../templates/admin-navbar.ejs') -%>
+
+
+// router.post('/editCustomer' (req,res)=>{
+  //db.query(`UPDATE tbluser SET strEtits= ?, strPepe= ? WHERE intEtits= ?`), [req.body, req.body]
+
+router.post('/editCustomer',(req,res)=>{
+    db.query(`UPDATE tbluser SET strEmail = ?, strUsername = ?, strFname = ?, strMname = ?, strLname = ? WHERE intUserID = ?`,[req.body.c_email, req.body.c_uname, req.body.c_fname, req.body.c_mname, req.body.c_lname, req.body.c_no], (err,results,fields)=>{
+      if(err) console.log(err);
+      else{
+        res.send("yes")
+      }
+      db.query(`UPDATE tblcustomer SET strShippingAddress = ?, strBillingAddress = ?, strCusPhoneNo = ?, strCusMobileNo = ? WHERE intUserID = ?`,[req.body.c_saddress, req.body.c_baddress, req.body.c_pno, req.body.c_mno, req.body.c_no], (err,results,fields)=>{
+        if(err) console.log(err);
+    });
+  });
+});
+  
+
 
 exports.maintenance = router;

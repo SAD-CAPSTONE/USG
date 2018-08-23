@@ -50,7 +50,7 @@ router.post('/createAccount',(req,res)=>{
 });
 
 router.post('/adjustmentType',(req,res)=>{
-  db.query(`Select * from tblAdjustmentTypes where strAdjustment = "${req.body.data}"`,(err,results,fields)=>{
+  db.query(`Select * from tblAdjustmentTypes where strAdjustment = "${req.body.data}" and intStatus <> 2`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
       if(results.length == 0){
@@ -63,7 +63,7 @@ router.post('/adjustmentType',(req,res)=>{
 });
 
 router.post('/certification',(req,res)=>{
-  db.query(`Select * from tblProductCertification where strCertification = "${req.body.data}"`,(err,results,fields)=>{
+  db.query(`Select * from tblProductCertification where strCertification = "${req.body.data}" and intStatus <> 2`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
       if(results.length == 0){
@@ -76,7 +76,7 @@ router.post('/certification',(req,res)=>{
 });
 
 router.post('/brand',(req,res)=>{
-  db.query(`Select * from tblProductBrand where strBrand = "${req.body.data}"`,(err,results,fields)=>{
+  db.query(`Select * from tblProductBrand where strBrand = "${req.body.data}" and intStatus <> 2`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
       if(results.length == 0){
@@ -89,7 +89,7 @@ router.post('/brand',(req,res)=>{
 });
 
 router.post('/businessType',(req,res)=>{
-  db.query(`Select * from tblbusinesstype where strBusinessType = "${req.body.data}"`,(err,results,fields)=>{
+  db.query(`Select * from tblbusinesstype where strBusinessType = "${req.body.data}" and intStatus <> 2`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
       if(results.length == 0){
@@ -102,7 +102,7 @@ router.post('/businessType',(req,res)=>{
 });
 
 router.post('/category',(req,res)=>{
-  db.query(`Select * from tblcategory where strCategory = "${req.body.data}"`,(err,results,fields)=>{
+  db.query(`Select * from tblcategory where strCategory = "${req.body.data}" and intStatus <> 2`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
       if(results.length == 0){
@@ -115,7 +115,7 @@ router.post('/category',(req,res)=>{
 });
 
 router.post('/subCategory',(req,res)=>{
-  db.query(`Select * from tblsubcategory where strsubCategory = "${req.body.data}" and intCategoryno = ${req.body.data2}`,(err,results,fields)=>{
+  db.query(`Select * from tblsubcategory where (strsubCategory = "${req.body.data}" and intCategoryno = ${req.body.data2}) and intStatus <> 2`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
       if(results.length == 0){
@@ -128,7 +128,7 @@ router.post('/subCategory',(req,res)=>{
 });
 
 router.post('/measurement',(req,res)=>{
-  db.query(`Select * from tbluom where strUnitName = "${req.body.data}"`,(err,results,fields)=>{
+  db.query(`Select * from tbluom where strUnitName = "${req.body.data}" and intStatus <> 2`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
       if(results.length == 0){
@@ -146,6 +146,42 @@ router.post('/deleteBusinessType',(req,res)=>{
     if(err) console.log(err);
     else{
 
+      res.send("yes");
+    }
+  });
+});
+
+router.post('/deleteProductCertification',(req,res)=>{
+  db.query(`UPDATE tblproductcertification SET intStatus = 2 where intCertificationNo = "${req.body.number}"`,(err,results,fields)=>{
+    if(err) console.log(err);
+    else{
+      res.send("yes");
+    }
+  });
+});
+
+router.post('/deleteProductBrand',(req,res)=>{
+  db.query(`UPDATE tblproductbrand SET intStatus = 2 where intBrandNo = "${req.body.number}"`,(err,results,fields)=>{
+    if(err) console.log(err);
+    else{
+      res.send("yes");
+    }
+  });
+});
+
+router.post('/deleteMeasurements',(req,res)=>{
+  db.query(`UPDATE tbluom SET intStatus = 2 where intUomNo = "${req.body.number}"`,(err,results,fields)=>{
+    if(err) console.log(err);
+    else{
+      res.send("yes");
+    }
+  });
+});
+
+router.post('/banCustomer',(req,res)=>{
+  db.query(`UPDATE tblcustomer SET intStatus = 2 where intUserID = "${req.body.number}"`,(err,results,fields)=>{
+    if(err) console.log(err);
+    else{
       res.send("yes");
     }
   });
