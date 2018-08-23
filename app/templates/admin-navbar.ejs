@@ -50,11 +50,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
    <link rel="stylesheet" href="/assets/admin/animate.css">
    <!-- Semantic Buttons -->
    <link rel="stylesheet" href="/assets/admin/UI-Button-master/button.min.css">
-   <!-- Semantic Icons  -->
-   <link rel="stylesheet" href="/assets/admin/UI-Icon-master/icon.min.css">
-   <!-- Semantic Forms -->
-   <!-- <link rel="stylesheet" href="/assets/admin/UI-Form-master/form.min.css"> -->
-   <!-- Semantic Label -->
+
    <link rel="stylesheet" href="/assets/admin/UI-Label-master/label.min.css">
    <!-- Bootstrap toggle -->
    <link rel="stylesheet" href="/assets/admin/bower_components/bootstrap-toggle/css/bootstrap-toggle.min.css">
@@ -87,7 +83,7 @@ desired effect
   <header class="main-header">
 
     <!-- Logo -->
-    <a href="index2.html" class="logo">
+    <a href="/dashboard" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>USG</b></span>
       <!-- logo for regular state and mobile devices -->
@@ -211,11 +207,17 @@ desired effect
         <li class="navi"><a href="/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard	</span></a></li>
         <li class="navi">
             <a href="/customerOrder/checkNewOrders"><i class="fa fa-cart-arrow-down"></i> <span>Orders</span><span class="pull-right-container">
-            <small id="notiforder" class="label pull-right bg-green">New</small>
+            <small id="notiforder" class="label pull-right bg-green"></small>
 
           </span></a>
         </li>
-        <li class="navi"><a href="/inventory/allStocks"><i class="fa fa-bar-chart"></i> <span>Stocks</span></a></li>
+        <li class="navi"><a href="/inventory/allStocks"><i class="fa fa-bar-chart"></i> <span>Stocks</span><span class="pull-right-container">
+          <small class="notifExpired label pull-right bg-red"></small>
+
+
+            <small class="notifCritical label pull-right bg-orange"></small>
+            </span>
+        </a></li>
 
 
         <li class="header">Main Tools</li>
@@ -229,11 +231,11 @@ desired effect
           </a>
           <ul class="treeview-menu">
             <li class="navi"><a href="/inventory/allProducts"><i class="fa fa-circle-o"></i>All Products</a></li>
-            <li class="navi"><a href="/inventory/pulledOutStocks"><i class="fa fa-circle-o"></i>Expired Products<span class="pull-right-container">
-              <small id="notifexpired" class="label pull-right bg-red"></small>
-              </span></a></li>
+            <li class="navi"><a href="/inventory/pulledOutStocks"><i class="fa fa-circle-o"></i>Expired Products</a></li>
             <li class="navi"><a href="/inventory/adjustments"><i class="fa fa-circle-o"></i>Adjustments</a></li>
             <li class="navi"><a href="/inventory/supplierProducts"><i class="fa fa-circle-o"></i>Products per Supplier</a></li>
+            <li class="navi"><a href="/maintenance/package"><i class="fa fa-genderless"></i>Package Discounts</a></li>
+            <li class="navi"><a href="/maintenance/promotion"><i class="fa fa-genderless"></i>Promotions</a></li>
 
           </ul>
         </li>
@@ -251,10 +253,9 @@ desired effect
             <li class="navi"><a href="/maintenance/businessType"><i class="fa fa-genderless"></i>Business Types</a></li>
             <li class="navi"><a href="/maintenance/productCertification"><i class="fa fa-genderless"></i>Product Certification</a></li>
             <li class="navi"><a href="/maintenance/productCategory"><i class="fa fa-genderless"></i>Product Category</a></li>
+            <li class="navi"><a href="/maintenance/adjustmentTypes"><i class="fa fa-genderless"></i>Adjustment Types</a></li>
             <li class="navi"><a href="/maintenance/supplier"><i class="fa fa-genderless"></i>Suppliers</a></li>
             <li class="navi"><a href="/maintenance/brand"><i class="fa fa-genderless"></i>Product Brand</a></li>
-            <li class="navi"><a href="/maintenance/promotion"><i class="fa fa-genderless"></i>Promotions</a></li>
-            <li class="navi"><a href="/maintenance/package"><i class="fa fa-genderless"></i>Package Discounts</a></li>
             <li class="navi"><a href="/maintenance/customer"><i class="fa fa-genderless"></i>Customers</a></li>
             <li class="navi"><a href="/maintenance/voucher"><i class="fa fa-genderless"></i>Voucher</a></li>
             <li class="navi"><a href="/maintenance/batch"><i class="fa fa-genderless"></i>Product Batch</a></li>

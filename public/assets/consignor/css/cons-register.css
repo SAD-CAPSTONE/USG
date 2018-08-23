@@ -10,8 +10,10 @@ html {
 
 	/*background = gradient + image pattern combo*/
 
-	background-image: url("/assets/images/static/herbs4.jpg");
-	background-size: 130% 100%;
+	background-image: url("/assets/images/static2/herbs4.jpg");
+    background-size:     cover;
+    background-repeat:   no-repeat;
+    background-position: center center;  
 }
 
 body {
@@ -49,8 +51,8 @@ body {
 	margin-bottom: 10px;
 
 	box-sizing: border-box;
-	font-family: montserrat;
-	color: #2C3E50;
+	font-family: montserrat;	
+	color: rgb(14, 23, 32);
 	font-size: 13px;
 }
 /*buttons*/
@@ -78,20 +80,20 @@ body {
 .fs-subtitle {
 	font-weight: normal;
 	font-size: 13px;
-	color: #666;
+	color: rgb(0, 0, 0);
 	margin-bottom: 20px;
 }
 
 .control-label {
 	font-weight: normal;
 	font-size: 19px;
-	color: #666;
+	color: rgb(0, 0, 0);
 	margin-bottom: 10px;
 }
 .help-block {
 	font-weight: normal;
 	font-size: 16px;
-	color: #8D8784;
+	color: rgb(0, 0, 0);
 	margin-bottom: 10px;
 }
 
@@ -173,14 +175,14 @@ hr {
 p {
 	font-weight: normal;
 	font-size: 19px;
-	color: #666;
+	color: #000000;
 	margin-bottom: 10px;
 }
 
 .text-center {
 	font-weight: normal;
 	font-size: 25px;
-	color: #666;
+	color: #000000;
 	margin-bottom: 10px;
 }
 

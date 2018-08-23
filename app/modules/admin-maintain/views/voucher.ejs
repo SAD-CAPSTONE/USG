@@ -65,7 +65,6 @@
                       <td>
                         <button data-toggle="modal" data-target="#voucher_edit" data-vcode="<%=i.strVoucherCode%>" data-vdesc="<%= i.strDescription %>" data-vno="<%=i.intVoucherNo%>" data-vdisc="<%=i.discount%>" data-vvalid="" class="v_edit large ui button blue left attached">Edit</button>
                         <a href="/maintenance/voucherUsers?number=<%=i.intVoucherNo%>&vcode=<%=i.strVoucherCode%>"><button class="large ui teal button right attached">View Users</button></a>
-
                         <button class="large ui red button">Delete</button>
                       </td>
 
@@ -197,10 +196,7 @@
                   <input type="date" required class="form-control" id="vvalid" name="vvalid" placeholder="">
                 </div>
 
-
               </div>
-
-
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="big ui button" data-dismiss="modal">Close</button>

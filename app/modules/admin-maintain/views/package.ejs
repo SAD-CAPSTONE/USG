@@ -186,12 +186,15 @@
          pname: $('#pname').val(),
          pdesc: $('#pdesc').val(),
          pprice: $('#pprice').val(),
-         pdue: $('#pdue').val()
+         pdue: $('#pdue').val(),
+         pquantity: $('#pquantity').val()
        },
        success: function(response,status,http){
          if (response == "yes"){
-           swal("Success!", "You've added the package", "success");
-           window.location.reload();
+           swal({title:"Success!", text:"You've added the package", type:"success"}).then(()=>{
+             window.location.reload();
+
+           });
          }else{
 
          }

@@ -4,6 +4,46 @@ var moment = require('moment');
 var voucher_codes = require('voucher-code-generator');
 
 
+// Adjustment Types ---------------
+router.get('/adjustmentTypes',(req,res)=>{
+  db.query(`Select * from tblAdjustmentTypes where intStatus <> 2`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1)
+    if(!err1) res.render('admin-maintain/views/adjustmentType', {re: res1, moment: moment});
+  });
+});
+
+router.post('/changeAdjustmentStat',(req,res)=>{
+  db.query(`Update tblAdjustmentTypes set intStatus = ${req.body.value} where intAdjustmentTypeNo = "${req.body.no}"`,(err2,res2,fie2)=>{
+    if(err2) console.log(err2);
+    res.send("")
+  })
+});
+
+router.post('/addAdjustment',(req,res)=>{
+  var no = "1000";
+  db.query(`Select * from tblAdjustmentTypes order by intAdjustmentTypeNo desc limit 1`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    if(!err1){
+      if(res1.length == 0){}
+      else{ no = parseInt(res1[0].intAdjustmentTypeNo) +1}
+
+      db.query(`Insert into tblAdjustmentTypes (intAdjustmentTypeNo, strAdjustment, intAdjustmentType, intAdminID) values (${no}, "${req.body.adjustment}", ${req.body.type}, "1000")`,(err2,res2,fie2)=>{
+        if(err2) console.log(err2);
+        if(!err2) res.send("yes")
+      })
+    }
+  })
+});
+
+router.post('/editAdjustmentType',(req,res)=>{
+  db.query(`Update tblAdjustmentTypes set strAdjustment = "${req.body.type_edit}", intAdjustmentType = ${req.body.type} where intAdjustmentTypeNo = "${req.body.no_edit}"`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      res.send("yes")
+    }
+  })
+})
+
 // Voucher -----------------------
 router.get('/voucher', (req,res)=>{
   var code = voucher_codes.generate({
@@ -254,32 +294,18 @@ router.post('/editSubCategory',(req,res)=>{
   });
 });
 
-router.post('/inactivateCategory',(req,res)=>{
-  db.query(`Update tblCategory set intStatus = 0 where intCategoryNo = "${req.body.no}"`,(err1,results1,fields1)=>{
-    if (err1) console.log(err1);
-    if (!err1) res.send("yes");
-  });
+router.post('/changeCategoryStat',(req,res)=>{
+  db.query(`Update tblCategory set intStatus = ${req.body.value} where intCategoryNo = "${req.body.no}"`,(err2,res2,fie2)=>{
+    if(err2) console.log(err2);
+    res.send("")
+  })
 });
 
-router.post('/activateCategory',(req,res)=>{
-  db.query(`Update tblCategory set intStatus = 1 where intCategoryNo = "${req.body.no}"`,(err1,results1,fields1)=>{
-    if (err1) console.log(err1);
-    if (!err1) res.send("yes");
-  });
-});
-
-router.post('/inactivateSubCategory',(req,res)=>{
-  db.query(`Update tblSubCategory set intStatus = 0 where intSubCategoryNo = "${req.body.no}"`,(err1,results1,fields1)=>{
-    if (err1) console.log(err1);
-    if (!err1) res.send("yes");
-  });
-});
-
-router.post('/activateSubCategory',(req,res)=>{
-  db.query(`Update tblSubCategory set intStatus = 1 where intSubCategoryNo = "${req.body.no}"`,(err1,results1,fields1)=>{
-    if (err1) console.log(err1);
-    if (!err1) res.send("yes");
-  });
+router.post('/changeSubCategoryStat',(req,res)=>{
+  db.query(`Update tblSubCategory set intStatus = ${req.body.value} where intSubCategoryNo = "${req.body.no}"`,(err2,res2,fie2)=>{
+    if(err2) console.log(err2);
+    res.send("")
+  })
 });
 
 router.post('/addCategory',(req,res)=>{
@@ -328,7 +354,7 @@ router.post('/addSubCategory', (req,res)=>{
 
 // Business Type -------------------
 router.get('/businessType', (req,res)=>{
-  db.query(`Select * from tblbusinesstype`,(err1,results1,fields1)=>{
+  db.query(`Select * from tblbusinesstype WHERE intStatus != 2`,(err1,results1,fields1)=>{
     if (err1) console.log(err2);
     db.query(`Select * from tblbusinesstype order by intbusinesstypeno desc limit 1`,(err2,results2,fields2)=>{
       if (err2) console.log(err2);
@@ -338,10 +364,20 @@ router.get('/businessType', (req,res)=>{
 });
 
 router.post('/addBusinessType',(req,res)=>{
-  db.query(`Insert into tblbusinesstype (intBusinessTypeNo,intAdminID, strBusinessType) values ("${req.body.bno}", "1000","${req.body.btype}")`,(err1,results1,fields1)=>{
-    if (err1) console.log(err1);
-    if (!err1) res.send("yes");
-  });
+  var no = "1000";
+  db.query(`Select * from tblBusinessType order by intBusinessTypeNo desc limit 1`,(err2,res2,fie2)=>{
+    if(err2) console.log(err2);
+    if(!err2){
+      if(res2.length == 0){}
+      else{ no = parseInt(res2[0].intBusinessTypeNo) + 1}
+
+      db.query(`Insert into tblbusinesstype (intBusinessTypeNo,intAdminID, strBusinessType) values ("${no}", "1000","${req.body.btype}")`,(err1,results1,fields1)=>{
+        if (err1) console.log(err1);
+        if (!err1) res.send("yes");
+      });
+    }
+  })
+
 });
 
 router.post('/editBusinessType',(req,res)=>{
@@ -353,18 +389,11 @@ router.post('/editBusinessType',(req,res)=>{
   });
 })
 
-router.post('/inactivateType',(req,res)=>{
-  db.query(`Update tblBusinessType set intStatus = 0 where intBusinessTypeNo = "${req.body.no}"`,(err1,results1,fields1)=>{
-    if(err1) console.log(err1);
-    if(!err1) res.send("yes");
-  });
-});
-
-router.post('/activateType',(req,res)=>{
-  db.query(`Update tblBusinessType set intStatus = 1 where intBusinessTypeNo = "${req.body.no}"`,(err1,results1,fields1)=>{
-    if(err1) console.log(err1);
-    if(!err1) res.send("yes");
-  });
+router.post('/changeBusinessTypeStat',(req,res)=>{
+  db.query(`Update tblBusinessType set intStatus = ${req.body.value} where intBusinessTypeNo = "${req.body.no}"`,(err2,res2,fie2)=>{
+    if(err2) console.log(err2);
+    res.send("")
+  })
 });
 
 
@@ -664,7 +693,7 @@ router.post('/activatePackage',(req,res)=>{
 
 // Measuremens ------------------------------------
 router.get('/measurements', (req,res)=>{
-  db.query(`Select * from tblUom`, (err1,results1,fields1)=>{
+  db.query(`Select * from tblUom WHERE intStatus != 2`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
     res.render('admin-maintain/views/measurements', {re: results1, moment: moment});
   });
@@ -699,18 +728,11 @@ router.post('/editMeasurement',(req,res)=>{
   });
 });
 
-router.post('/inactivateUom',(req,res)=>{
-  db.query(`Update tblUom set intStatus = 0 where intUomNo = "${req.body.no}"`,(err1,results1,fields1)=>{
-    if (err1) console.log(err1);
-    if (!err1) res.send("yes");
-  });
-});
-
-router.post('/activateUom',(req,res)=>{
-  db.query(`Update tblUom set intStatus = 1 where intUomNo = "${req.body.no}"`,(err1,results1,fields1)=>{
-    if (err1) console.log(err1);
-    if (!err1) res.send("yes");
-  });
+router.post('/changeUomStat',(req,res)=>{
+  db.query(`Update tblUom set intStatus = ${req.body.value} where intUomno = "${req.body.no}"`,(err2,res2,fie2)=>{
+    if(err2) console.log(err2);
+    res.send("")
+  })
 });
 
 
@@ -718,7 +740,7 @@ router.post('/activateUom',(req,res)=>{
 router.get('/customer', (req,res)=>{
   db.query(`SELECT tblcustomer.intStatus as Stats, tblUser.*,tblcustomer.* from
     tblUser join tblcustomer on tblUser.intUserID =
-    tblcustomer.intUserID`,(err1,results1)=>{
+    tblcustomer.intUserID WHERE intStatus != 2`,(err1,results1)=>{
       if (err1) console.log(err1);
       res.render('admin-maintain/views/customer', {re: results1});
 
@@ -728,7 +750,7 @@ router.get('/customer', (req,res)=>{
 
 // Certification --------------------------------
 router.get('/productCertification',(req,res)=>{
-  db.query(`Select * from tblProductCertification`,(err1,results1,fields1)=>{
+  db.query(`Select * from tblProductCertification WHERE intStatus != 2`,(err1,results1,fields1)=>{
     if(err1) console.log(err1);
     res.render('admin-maintain/views/certifications',{certification: results1});
   });
@@ -763,23 +785,16 @@ router.post('/editCertification',(req,res)=>{
   });
 });
 
-router.post('/activateCertification',(req,res)=>{
-  db.query(`Update tblProductCertification set intStatus = 1 where intCertificationNo = "${req.body.no}"`,(err1,results1,fields1)=>{
-    if(err1) console.log(err1);
-    if(!err1) res.send("yes");
-  });
-});
-
-router.post('/inactivateCertification',(req,res)=>{
-  db.query(`Update tblProductCertification set intStatus = 0 where intCertificationNo = "${req.body.no}"`,(err1,results1,fields1)=>{
-    if(err1) console.log(err1);
-    if(!err1) res.send("yes");
-  });
+router.post('/changeCertificationStat',(req,res)=>{
+  db.query(`Update tblProductCertification set intStatus = ${req.body.value} where intCertificationNo = "${req.body.no}"`,(err2,res2,fie2)=>{
+    if(err2) console.log(err2);
+    res.send("")
+  })
 });
 
 // Brand ---------------
 router.get('/brand',(req,res)=>{
-  db.query(`Select * from tblProductBrand`,(err1,results1,fields1)=>{
+  db.query(`Select * from tblProductBrand WHERE intStatus != 2`,(err1,results1,fields1)=>{
     if(err1) console.log(err1);
     if(!err1) res.render('admin-maintain/views/brand',{re: results1});
   });
@@ -801,19 +816,38 @@ router.post('/addBrand',(req,res)=>{
   });
 });
 
-router.post('/activateBrand',(req,res)=>{
-  db.query(`Update tblProductBrand set intStatus = 1 where intBrandNo = "${req.body.no}"`,(err1,results1,fields1)=>{
-    if(err1) console.log(err1);
-    if(!err1) res.send("yes");
-  });
+router.post('/editBrand',(req,res)=>{
+  db.query(`Update tblProductBrand set strBrand = "${req.body.brand}" where intBrandNo = "${req.body.no}"`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1)
+    else{
+      res.send("yes");
+    }
+  })
+})
+
+router.post('/changeBrandStat',(req,res)=>{
+  db.query(`Update tblProductBrand set intStatus = ${req.body.value} where intBrandNo = "${req.body.no}"`,(err2,res2,fie2)=>{
+    if(err2) console.log(err2);
+    res.send("")
+  })
 });
 
-router.post('/inactivateBrand',(req,res)=>{
-  db.query(`Update tblProductBrand set intStatus = 0 where intBrandNo = "${req.body.no}"`,(err1,results1,fields1)=>{
-    if(err1) console.log(err1);
-    if(!err1) res.send("yes");
+
+// router.post('/editCustomer' (req,res)=>{
+  //db.query(`UPDATE tbluser SET strEtits= ?, strPepe= ? WHERE intEtits= ?`), [req.body, req.body]
+
+router.post('/editCustomer',(req,res)=>{
+    db.query(`UPDATE tbluser SET strEmail = ?, strUsername = ?, strFname = ?, strMname = ?, strLname = ? WHERE intUserID = ?`,[req.body.c_email, req.body.c_uname, req.body.c_fname, req.body.c_mname, req.body.c_lname, req.body.c_no], (err,results,fields)=>{
+      if(err) console.log(err);
+      else{
+        res.send("yes")
+      }
+      db.query(`UPDATE tblcustomer SET strShippingAddress = ?, strBillingAddress = ?, strCusPhoneNo = ?, strCusMobileNo = ? WHERE intUserID = ?`,[req.body.c_saddress, req.body.c_baddress, req.body.c_pno, req.body.c_mno, req.body.c_no], (err,results,fields)=>{
+        if(err) console.log(err);
+    });
   });
 });
-// <%- include('../../../templates/admin-navbar.ejs') -%>
+  
+
 
 exports.maintenance = router;
