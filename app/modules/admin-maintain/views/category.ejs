@@ -130,7 +130,7 @@
 
   <!-- Modals -->
 
-
+    <!-- EDIT CATEGORY -->
   	<div class="modal fade" id="editCategory">
   	  <div class="modal-dialog">
   		<div class="modal-content">
@@ -143,13 +143,14 @@
   			<!-- Horizontal Form -->
 
   					<!-- form start -->
-            <form role="form" id="form1_edit">
+            <form role="form" id="editCat_form">
                 <div class="box-body">
-                  <div id="formgroup1_edit"  class=" form-group">
+                  <div id="editCat_group"  class=" form-group">
                     <label for="category">Product Category:</label>
                     <input type="hidden" name="no" id="cat_no">
-                    <input type="text" required class="form-control" name="category" id="category_edit" >
-                    <span id="errorhelpBlock1_edit" class="help-block">You already have the same record!</span>
+                    <input type="text" pattern="^[^\s]+.*$" required class="form-control" name="category" id="category_edit" >
+                    <span id="editCat_error" class="help-block">You already have the same record!</span>
+                    <small>Same records are not allowed. No whitespaces at the beginning.</small>
 
                   </div>
 
@@ -159,7 +160,7 @@
   		  </div>
   		  <div class="modal-footer">
   			<button type="button" class="large ui button" data-dismiss="modal">Close</button>
-  			<button type="submit" id="save1_edit" class="large ui teal button">Save</button>
+  			<button type="submit" id="editCat_save" class="large ui teal button">Save</button>
   		  </div>
         </form>
   		</div>
@@ -168,6 +169,7 @@
     <!-- /.modal-dialog -->
   </div>
 
+  <!-- ADD CATEGORY  -->
 	<div class="modal fade" id="categorymodal">
 	  <div class="modal-dialog">
 		<div class="modal-content">
@@ -182,10 +184,10 @@
 					<!-- form start -->
           <form role="form" method="post" action="/maintenance/addCategory">
               <div class="box-body">
-                <div id="formgroup1"  class=" form-group">
+                <div id="addCat_group"  class=" form-group">
                   <label for="category">Product Category:</label>
-                  <input type="text" required class="form-control" name="category" id="category" placeholder="ex. Food">
-                  <span id="errorhelpBlock1" class="help-block">You already have the same record!</span>
+                  <input type="text" pattern="^[^\s]+.*$" required class="form-control" name="category" id="category_add" placeholder="ex. Food">
+                  <span id="addCat_error" class="help-block">You already have the same record!</span>
 
                 </div>
 
@@ -195,7 +197,7 @@
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="large ui button" data-dismiss="modal">Close</button>
-			<button type="submit" id="save1" class="large ui teal button">Save</button>
+			<button type="submit" id="addCat_save" class="large ui teal button">Save</button>
 		  </div>
       </form>
 		</div>
@@ -204,6 +206,7 @@
   <!-- /.modal-dialog -->
 </div>
 
+<!-- EDIT SUB CATEGORY -->
 <div class="modal fade" id="editSubCategory">
   <div class="modal-dialog">
   <div class="modal-content">
@@ -216,10 +219,10 @@
     <!-- Horizontal Form -->
 
         <!-- form start -->
-        <form role="form" id="form2_edit">
+        <form role="form" id="editSub_form">
             <div class="box-body">
-              <div id="formgroup2" class="form-group">
-                <input type="hidden" required class="form-control" name="no_e" id="no_e" placeholder="">
+              <div id="editSub_group" class="form-group">
+                <input type="hidden"  class="form-control" name="no_e" id="no_e" placeholder="">
                 <label for="categories">Choose Category here:</label>
                 <select class="form-control" id="categ_e" name="categ_e">
                   <% if (category == undefined || category == null || category.length == 0){ %>
@@ -231,8 +234,8 @@
                   <% } %>
                 </select>
                 <label for="subcategory">Sub Category:</label>
-                <input type="text" required class="form-control" name="subcategory_e" id="subcategory_e" placeholder="">
-                <span id="errorhelpBlock2" class="help-block">You already have the same record!</span>
+                <input type="text" pattern="^[^\s]+.*$" required class="form-control" name="subcateg_e" id="subcateg_e" placeholder="">
+                <span id="editSub_error" class="help-block">You already have the same record!</span>
 
               </div>
 
@@ -242,7 +245,7 @@
     </div>
     <div class="modal-footer">
     <button type="button" class="large ui button" data-dismiss="modal">Close</button>
-    <button type="submit" id="save2" class="large ui teal button">Save</button>
+    <button type="submit" id="editSub_save" class="large ui teal button">Save</button>
     </div>
     </form>
   </div>
@@ -251,7 +254,7 @@
 <!-- /.modal-dialog -->
 </div>
 
-
+<!-- ADD SUB CATEGORY -->
 	<div class="modal fade" id="subcategorymodal">
 	  <div class="modal-dialog">
 		<div class="modal-content">
@@ -266,9 +269,9 @@
 					<!-- form start -->
           <form role="form" method="post" action="/maintenance/addSubCategory">
               <div class="box-body">
-                <div id="formgroup2" class="form-group">
+                <div id="addSub_group" class="form-group">
                   <label for="categories">Choose Category here:</label>
-                  <select class="form-control" name="categ">
+                  <select class="form-control" id="categ_a" name="categ_a">
                     <% if (category == undefined || category == null || category.length == 0){ %>
 
                     <%}else{ %>
@@ -278,8 +281,8 @@
                     <% } %>
                   </select>
                   <label for="subcategory">Sub Category:</label>
-                  <input type="text" required class="form-control" name="subcategory" id="subcategory" placeholder="">
-                  <span id="errorhelpBlock2" class="help-block">You already have the same record!</span>
+                  <input type="text" pattern="^[^\s]+.*$" required class="form-control" name="subcategory" id="subcateg_a" placeholder="">
+                  <span id="addSub_error" class="help-block">You already have the same record!</span>
 
                 </div>
 
@@ -289,7 +292,7 @@
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="large ui button" data-dismiss="modal">Close</button>
-			<button type="submit" id="save2" class="large ui teal button">Save</button>
+			<button type="submit" id="addSub_save" class="large ui teal button">Save</button>
 		  </div>
       </form>
 		</div>
@@ -313,12 +316,15 @@
   $('.editSubCategory').on('click',function(){
     $('#no_e').val($(this).data('no'));
     $('#categ_e').val($(this).data('name1'));
-    $('#subcategory_e').val($(this).data('name2'));
+    $('#subcateg_e').val($(this).data('name2'));
+    $('#editSub_group').attr('class','form-group');
+    $('#editSub_save').attr('disabled',true);
+    $('#editSub_error').hide();
   })
 
-  $('#form2_edit').submit(function(e){
+  $('#editSub_form').submit(function(e){
     e.preventDefault();
-    $.post('/maintenance/editSubCategory',$('#form2_edit').serialize(),function(data,status){
+    $.post('/maintenance/editSubCategory',$('#editSub_form').serialize(),function(data,status){
       if(data){
         confirm_alert();
       }
@@ -363,47 +369,41 @@ $(".navi a:contains('Product Category')").parent().addClass("active");
 </script>
 
 <script>
-$('.category_stat').on('change',function(){
-  var val = $(this).val() == 1 ? 0 : 1;
+  $('.category_stat').on('change',function(){
+    var val = $(this).val() == 1 ? 0 : 1;
 
-  $.post('/maintenance/changeCategoryStat',{no: $(this).data('no'), value: val}, function(data,status){
-    if (data){
-
-    }
+    $.post('/maintenance/changeCategoryStat',{no: $(this).data('no'), value: val}, function(data,status){
+      if (data){
+      }
+    })
   })
 
-
-})
-
-$('.subCategory_stat').on('change',function(){
+  $('.subCategory_stat').on('change',function(){
   var val = $(this).val() == 1 ? 0 : 1;
 
   $.post('/maintenance/changeSubCategoryStat',{no: $(this).data('no'), value: val}, function(data,status){
     if (data){
-
     }
   })
-
-
-})
-
+  })
 </script>
 
 <script>
-  $('#errorhelpBlock1').hide();
-  $('#save1').attr('disabled',true);
-  $('#category').on('keyup',function(){
+// add Category validate
+  $('#addCat_error').hide();
+  $('#addCat_save').attr('disabled',true);
+  $('#category_add').on('keyup',function(){
 
     $.post('/maintenance2/category',{data: $(this).val()},function(data,status){
       if(data == "yes"){
-        $('#errorhelpBlock1').show();
-        $('#formgroup1').attr('class', 'form-group has-error');
-        $('#save1').attr('disabled',true);
+        $('#addCat_error').show();
+        $('#addCat_group').attr('class', 'form-group has-error');
+        $('#addCat_save').attr('disabled',true);
 
       }else{
-        $('#errorhelpBlock1').hide();
-        $('#formgroup1').attr('class', 'form-group has-success');
-        $('#save1').attr('disabled',false);
+        $('#addCat_error').hide();
+        $('#addCat_group').attr('class', 'form-group has-success');
+        $('#addCat_save').attr('disabled',false);
       }
     });
   })
@@ -413,10 +413,14 @@ $('.subCategory_stat').on('change',function(){
   $('.editCategory').on('click',function(){
     $('#cat_no').val($(this).data('no'));
     $('#category_edit').val($(this).data('category'));
+    $('#editCat_group').attr('class','form-group');
+    $('#editCat_save').attr('disabled',true);
+    $('#editCat_error').hide();
   });
-  $('#form1_edit').submit(function(e){
+
+  $('#editCat_form').submit(function(e){
     e.preventDefault();
-    $.post('/maintenance/editCategory',$('#form1_edit').serialize(), function(data,success){
+    $.post('/maintenance/editCategory',$('#editCat_form').serialize(), function(data,success){
       if(data=="yes"){
         confirm_alert();
       }else{
@@ -429,25 +433,67 @@ $('.subCategory_stat').on('change',function(){
 
 
 <script>
-  $('#errorhelpBlock2').hide();
-  $('#save2').attr('disabled',true);
-  $('#subcategory_e').on('keyup',function(){
+// Edit subcategory validate
+  $('#editSub_error').hide();
+  $('#editSub_save').attr('disabled',true);
+  $('#subcateg_e').on('keyup',function(){
 
-    $.post('/maintenance2/subCategory',{data: $(this).val(), data2: $('#categ_e').val()},function(data,status){
+    $.post('/maintenance2/subCategory',{data: $('#subcateg_e').val(), data2: $('#categ_e').val()},function(data,status){
       if(data == "yes"){
-        $('#errorhelpBlock2').show();
-        $('#formgroup2').attr('class', 'form-group has-error');
-        $('#save2').attr('disabled',true);
+        $('#editSub_error').show();
+        $('#editSub_group').attr('class', 'form-group has-error');
+        $('#editSub_save').attr('disabled',true);
 
       }else{
-        $('#errorhelpBlock2').hide();
-        $('#formgroup2').attr('class', 'form-group has-success');
-        $('#save2').attr('disabled',false);
+        $('#editSub_error').hide();
+        $('#editSub_group').attr('class', 'form-group has-success');
+        $('#editSub_save').attr('disabled',false);
       }
     });
   })
 </script>
 
+<script>
+// add subcategory validate
+  $('#addSub_error').hide();
+  $('#addSub_save').attr('disabled',true);
+  $('#subcateg_a').on('keyup',function(){
+
+    $.post('/maintenance2/subCategory',{data: $('#subcateg_a').val(), data2: $('#categ_a').val()},function(data,status){
+      if(data == "yes"){
+        $('#addSub_error').show();
+        $('#addSub_group').attr('class', 'form-group has-error');
+        $('#addSub_save').attr('disabled',true);
+
+      }else{
+        $('#addSub_error').hide();
+        $('#addSub_group').attr('class', 'form-group has-success');
+        $('#addSub_save').attr('disabled',false);
+      }
+    });
+  })
+</script>
+
+<script>
+// Edit category validate
+  $('#editCat_error').hide();
+  $('#editCat_save').attr('disabled',true);
+  $('#category_edit').on('keyup',function(){
+
+    $.post('/maintenance2/category',{data: $(this).val()},function(data,status){
+      if(data == "yes"){
+        $('#editCat_error').show();
+        $('#editCat_group').attr('class', 'form-group has-error');
+        $('#editCat_save').attr('disabled',true);
+
+      }else{
+        $('#editCat_error').hide();
+        $('#editCat_group').attr('class', 'form-group has-success');
+        $('#editCat_save').attr('disabled',false);
+      }
+    });
+  })
+</script>
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the

@@ -35,6 +35,15 @@ router.post('/addAdjustment',(req,res)=>{
   })
 });
 
+router.post('/editAdjustmentType',(req,res)=>{
+  db.query(`Update tblAdjustmentTypes set strAdjustment = "${req.body.type_edit}", intAdjustmentType = ${req.body.type} where intAdjustmentTypeNo = "${req.body.no_edit}"`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      res.send("yes")
+    }
+  })
+})
+
 // Voucher -----------------------
 router.get('/voucher', (req,res)=>{
   var code = voucher_codes.generate({
@@ -806,6 +815,15 @@ router.post('/addBrand',(req,res)=>{
     }
   });
 });
+
+router.post('/editBrand',(req,res)=>{
+  db.query(`Update tblProductBrand set strBrand = "${req.body.brand}" where intBrandNo = "${req.body.no}"`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1)
+    else{
+      res.send("yes");
+    }
+  })
+})
 
 router.post('/changeBrandStat',(req,res)=>{
   db.query(`Update tblProductBrand set intStatus = ${req.body.value} where intBrandNo = "${req.body.no}"`,(err2,res2,fie2)=>{

@@ -107,11 +107,11 @@
 					<!-- form start -->
           <form role="form" id="add_form">
               <div class="box-body">
-                <div id="formgroup" class="form-group">
+                <div id="add_group" class="form-group">
 
                   <label for="bType">Business Type:</label>
                   <input  required pattern="^[^\s]+.*$" type="text" class="form-control" name="btype" id="bType" placeholder="">
-                  <span id="errorhelpBlock" class="help-block">You already have the same record!</span>
+                  <span id="add_error" class="help-block">You already have the same record!</span>
                   <small>Same records are not allowed. No whitespaces at the beginning.</small>
                 </div>
 
@@ -121,7 +121,7 @@
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-			<button type="submit" id="save"  class="btn btn-primary">Save</button>
+			<button type="submit" id="add_save"  class="btn btn-primary">Save</button>
 		  </div>
       </form>
 		</div>
@@ -144,12 +144,12 @@
 					<!-- form start -->
           <form role="form" id="edit_form">
               <div class="box-body">
-                <div id="formgroup_e" class="form-group">
+                <div id="edit_group" class="form-group">
 
                   <input type="hidden" id="no_edit" name="no_edit">
                   <label for="bType">Business Type:</label>
                   <input required type="text" pattern="^[^\s]+.*$" class="form-control" name="type_edit" id="type_edit">
-                  <span id="errorhelpBlock_e" class="help-block">You already have the same record!</span>
+                  <span id="edit_error" class="help-block">You already have the same record!</span>
                   <small>Same records are not allowed. No whitespaces at the beginning.</small>
 
                 </div>
@@ -160,7 +160,7 @@
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-			<button type="submit" id="save_e" class="large ui teal button">Save</button>
+			<button type="submit" id="edit_save" class="large ui teal button">Save</button>
 		  </div>
 		</div>
     </form>
@@ -196,6 +196,9 @@
   $('.editModal').on('click',function(){
     $('#no_edit').val($(this).data('no'));
     $('#type_edit').val($(this).data('name'));
+    $('#edit_group').attr('class','form-group');
+    $('#edit_error').hide();
+    $('#edit_save').attr('disabled',true);
   })
 </script>
 
@@ -269,55 +272,55 @@
 </script>
 
 <script>
-$('.businessType_stat').on('change',function(){
-  var val = $(this).val() == 1 ? 0 : 1;
+  $('.businessType_stat').on('change',function(){
+    var val = $(this).val() == 1 ? 0 : 1;
 
-  $.post('/maintenance/changeBusinessTypeStat',{no: $(this).data('no'), value: val}, function(data,status){
-    if (data){
+    $.post('/maintenance/changeBusinessTypeStat',{no: $(this).data('no'), value: val}, function(data,status){
+      if (data){
 
-    }
+      }
+    })
+
+
   })
-
-
-})
 
 </script>
 
 <script>
-  $('#errorhelpBlock').hide();
-  $('#save').attr('disabled',true);
+  $('#add_error').hide();
+  $('add_save').attr('disabled',true);
   $('#bType').on('keyup',function(){
 
     $.post('/maintenance2/businessType',{data: $(this).val()},function(data,status){
       if(data == "yes"){
-        $('#errorhelpBlock').show();
-        $('#formgroup').attr('class', 'form-group has-error');
-        $('#save').attr('disabled',true);
+        $('#add_error').show();
+        $('#add_group').attr('class', 'form-group has-error');
+        $('add_save').attr('disabled',true);
 
       }else{
-        $('#errorhelpBlock').hide();
-        $('#formgroup').attr('class', 'form-group has-success');
-        $('#save').attr('disabled',false);
+        $('#add_error').hide();
+        $('#add_group').attr('class', 'form-group has-success');
+        $('add_save').attr('disabled',false);
       }
     });
   })
 </script>
 
 <script>
-  $('#errorhelpBlock_e').hide();
-  $('#save_e').attr('disabled',true);
+  $('#edit_error').hide();
+  $('#edit_save').attr('disabled',true);
   $('#type_edit').on('keyup',function(){
 
     $.post('/maintenance2/businessType',{data: $(this).val()},function(data,status){
       if(data == "yes"){
-        $('#errorhelpBlock_e').show();
-        $('#formgroup_e').attr('class', 'form-group has-error');
-        $('#save_e').attr('disabled',true);
+        $('#edit_error').show();
+        $('#edit_group').attr('class', 'form-group has-error');
+        $('#edit_save').attr('disabled',true);
 
       }else{
-        $('#errorhelpBlock_e').hide();
-        $('#formgroup_e').attr('class', 'form-group has-success');
-        $('#save_e').attr('disabled',false);
+        $('#edit_error').hide();
+        $('#edit_group').attr('class', 'form-group has-success');
+        $('#edit_save').attr('disabled',false);
       }
     });
   })

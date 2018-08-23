@@ -102,12 +102,12 @@
      <!-- Horizontal Form -->
 
        <!-- form start -->
-       <form role="form" id="certificationForm">
+       <form role="form" id="add_form">
          <div class="box-body">
-           <div id="formgroup" class="form-group">
+           <div id="add_group" class="form-group">
              <label for="category">Product Certification:</label>
              <input type="text" pattern="^[^\s]+.*$" required class="form-control" name="certification" id="certification" placeholder="ex. Gluten-free">
-             <span id="errorhelpBlock" class="help-block">You already have the same record!</span>
+             <span id="add_error" class="help-block">You already have the same record!</span>
              <small>Same records are not allowed. No whitespaces at the beginning.</small>
 
            </div>
@@ -118,7 +118,7 @@
      </div>
        <div class="modal-footer">
        <button type="button" class="large ui button" data-dismiss="modal">Close</button>
-       <button type="submit" class="large ui teal button">Save</button>
+       <button type="submit" id="add_save" class="large ui teal button">Save</button>
        </div>
      </form>
    </div>
@@ -140,13 +140,14 @@
      <!-- Horizontal Form -->
 
        <!-- form start -->
-       <form role="form" id="form_edit">
+       <form role="form" id="edit_form">
          <div class="box-body">
-           <div class="form-group">
+           <div id="edit_group" class="form-group">
              <label for="category">Product Certification:</label>
-             <input type="hidden" pattern="^[^\s]+.*$"  class="form-control" name="no_e" id="no_e" >
-
-             <input type="text" required class="form-control" name="certification_e" id="certification_e" >
+             <input type="hidden" class="form-control" name="no_e" id="no_e" >
+             <input type="text"  pattern="^[^\s]+.*$"  required class="form-control" name="certification_e" id="certification_e" >
+             <span id="edit_error" class="help-block">You already have the same record!</span>
+             <small>Same records are not allowed. No whitespaces at the beginning.</small>
            </div>
 
          </div>
@@ -155,7 +156,7 @@
      </div>
        <div class="modal-footer">
        <button type="button" class="large ui button" data-dismiss="modal">Close</button>
-       <button type="submit" id="save2" class="large ui teal button">Save</button>
+       <button type="submit" id="edit_save" class="large ui teal button">Save</button>
        </div>
      </form>
    </div>
@@ -194,6 +195,9 @@
   $('.editCertificate').on('click',function(){
     $('#no_e').val($(this).data('no'));
     $('#certification_e').val($(this).data('name'));
+    $('#edit_group').attr('class','form-group');
+    $('#edit_save').attr('disabled',true);
+    $('#edit_error').hide();
   })
 
   $('#form_edit').submit(function(e){
@@ -228,13 +232,13 @@ $(".navi a:contains('Product Certification')").parent().addClass("active");
 </script>
 
 <script>
-  $('#certificationForm').submit(function(e){
+  $('#add_form').submit(function(e){
     e.preventDefault();
 
     $.ajax({
       url: '/maintenance/addCertification',
       type: 'post',
-      data: $('#certificationForm').serialize(),
+      data: $('#add_form').serialize(),
       success: function(response,status,http){
         swal("Success!","You added a product certification", "success");
         location.reload();
@@ -262,20 +266,40 @@ $('.certification_stat').on('change',function(){
 </script>
 
 <script>
-  $('#errorhelpBlock').hide();
+  $('#add_error').hide();
   $('#save').attr('disabled',true);
   $('#certification').on('keyup',function(){
 
     $.post('/maintenance2/certification',{data: $(this).val()},function(data,status){
       if(data == "yes"){
-        $('#errorhelpBlock').show();
-        $('#formgroup').attr('class', 'form-group has-error');
-        $('#save').attr('disabled',true);
+        $('#add_error').show();
+        $('#add_group').attr('class', 'form-group has-error');
+        $('#add_save').attr('disabled',true);
 
       }else{
-        $('#errorhelpBlock').hide();
-        $('#formgroup').attr('class', 'form-group has-success');
-        $('#save').attr('disabled',false);
+        $('#add_error').hide();
+        $('#add_group').attr('class', 'form-group has-success');
+        $('#add_save').attr('disabled',false);
+      }
+    });
+  })
+</script>
+
+<script>
+  $('#edit_error').hide();
+  $('#edit_save').attr('disabled',true);
+  $('#certification_e').on('keyup',function(){
+
+    $.post('/maintenance2/certification',{data: $(this).val()},function(data,status){
+      if(data == "yes"){
+        $('#edit_error').show();
+        $('#edit_group').attr('class', 'form-group has-error');
+        $('#edit_save').attr('disabled',true);
+
+      }else{
+        $('#edit_error').hide();
+        $('#edit_group').attr('class', 'form-group has-success');
+        $('#edit_save').attr('disabled',false);
       }
     });
   })

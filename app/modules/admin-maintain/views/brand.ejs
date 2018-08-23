@@ -60,7 +60,7 @@
                         </td>
                         <td>
                           <center>
-                          <button type="button" class="large ui teal button" data-toggle="modal" data-target="#editBrand" data-no="<%=i.intBrandNo%>"><i class="glyphicon glyphicon-edit"></i></button>
+                          <button type="button" class="editButton large ui teal button" data-toggle="modal" data-target="#editBrand" data-name="<%=i.strBrand%>" data-no="<%=i.intBrandNo%>"><i class="glyphicon glyphicon-edit"></i></button>
                           <button class="large ui red button"><i class="glyphicon glyphicon-trash"></i></button>
                         </center>
                         </td>
@@ -103,13 +103,15 @@
 			<!-- Horizontal Form -->
 
 					<!-- form start -->
-          <form role="form" id="brand_form">
+          <form role="form" id="add_form">
               <div class="box-body">
-                <div id="formgroup" class="form-group">
+                <div id="add_group" class="form-group">
 
                   <label for="bType">Brand Name:</label>
-                  <input type="text" id="brand" class="form-control" name="brand" placeholder="">
-                  <span id="errorhelpBlock" class="help-block">You already have the same record!</span>
+                  <input type="text" id="add_brand" class="form-control" name="brand" placeholder="">
+                  <span id="add_error" class="help-block">You already have the same record!</span>
+                  <small>Same records are not allowed. No whitespaces at the beginning.</small>
+
                 </div>
 
               </div>
@@ -118,13 +120,52 @@
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-			<button type="submit" id="save" class="btn btn-primary">Save</button>
+			<button type="submit" id="add_save" class="btn btn-primary">Save</button>
 		  </div>
       </form>
 		</div>
 		<!-- /.modal-content -->
 	</div>
   <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="editBrand">
+  <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title"></h4>
+    </div>
+    <div class="modal-body">
+    <!-- Horizontal Form -->
+
+        <!-- form start -->
+        <form role="form" id="edit_form">
+            <div class="box-body">
+              <div id="edit_group" class="form-group">
+
+                <label for="bType">Brand Name:</label>
+                <input type="hidden" id="edit_no" name="no">
+                <input type="text" class="form-control" name="brand" id="edit_brand" placeholder="">
+                <span id="edit_error" class="help-block">You already have the same record!</span>
+                <small>Same records are not allowed. No whitespaces at the beginning.</small>
+
+              </div>
+
+            </div>
+
+
+    </div>
+    <div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+    <button type="submit" id="edit_save" class="btn btn-primary">Save</button>
+    </div>
+    </form>
+  </div>
+  <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
 </div>
 
 
@@ -154,37 +195,90 @@
 </script>
 
 <script>
-  $('#errorhelpBlock').hide();
-  $('#save').attr('disabled',true);
-  $('#brand').on('keyup',function(){
+  $('.editButton').on('click',function(){
+    $('#edit_brand').val($(this).data('name'));
+    $('#edit_no').val($(this).data('no'));
+    $('#edit_group').attr('class','form-group');
+    $('#edit_save').attr('disabled',true);
+    $('#edit_error').hide();
+  })
+
+</script>
+
+<script>
+  $('#add_error').hide();
+  $('#add_save').attr('disabled',true);
+  $('#add_brand').on('keyup',function(){
 
     $.post('/maintenance2/brand',{data: $(this).val()},function(data,status){
       if(data == "yes"){
-        $('#errorhelpBlock').show();
-        $('#formgroup').attr('class', 'form-group has-error');
-        $('#save').attr('disabled',true);
+        $('#add_error').show();
+        $('#add_group').attr('class', 'form-group has-error');
+        $('#add_save').attr('disabled',true);
 
       }else{
-        $('#errorhelpBlock').hide();
-        $('#formgroup').attr('class', 'form-group has-success');
-        $('#save').attr('disabled',false);
+        $('#add_error').hide();
+        $('#add_group').attr('class', 'form-group has-success');
+        $('#add_save').attr('disabled',false);
       }
     });
   })
 </script>
 
 <script>
-  $('#brand_form').submit(function(e){
+  $('#edit_error').hide();
+  $('#edit_save').attr('disabled',true);
+  $('#edit_brand').on('keyup',function(){
+
+    $.post('/maintenance2/brand',{data: $(this).val()},function(data,status){
+      if(data == "yes"){
+        $('#edit_error').show();
+        $('#edit_group').attr('class', 'form-group has-error');
+        $('#edit_save').attr('disabled',true);
+
+      }else{
+        $('#edit_error').hide();
+        $('#edit_group').attr('class', 'form-group has-success');
+        $('#edit_save').attr('disabled',false);
+      }
+    });
+  })
+</script>
+
+<script>
+  $('#add_form').submit(function(e){
     e.preventDefault();
 
     $.ajax({
       url: '/maintenance/addBrand',
       method: 'post',
-      data: $('#brand_form').serialize(),
+      data: $('#add_form').serialize(),
       success: function(response,status,http){
         if(response){
-          swal("Success","You have added a brand","success");
-          location.reload();
+          swal({title: "Success",text:"You have edited a brand",type:"success"}).then(()=>{
+            location.reload();
+
+          });
+        }
+      }
+    })
+  })
+</script>
+
+<script>
+  $('#edit_form').submit(function(e){
+    e.preventDefault();
+
+    $.ajax({
+      url: '/maintenance/editBrand',
+      method: 'post',
+      data: $('#edit_form').serialize(),
+      success: function(response,status,http){
+        if(response){
+          swal({title: "Success",text:"You have edited a brand",type:"success"}).then(()=>{
+            location.reload();
+
+          });
         }
       }
     })
