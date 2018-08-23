@@ -59,7 +59,7 @@
                  <td>
                    <center>
                    <button data-toggle="modal" data-target="#editCertification" data-no="<%=i.intCertificationNo%>" data-name="<%=i.strCertification%>"  class="editCertificate large ui teal button"><i class="glyphicon glyphicon-edit"></i></button>
-                   <button class="large ui red button"><i class="glyphicon glyphicon-trash"></i></button>
+                   <button data-no="<%=i.intCertificationNo%>" onclick="del(<%=i.intCertificationNo%>)" class="large ui red button"><i class="glyphicon glyphicon-trash"></i></button>
                  </center>
                  </td>
                </tr>
@@ -274,6 +274,35 @@ $('.activate_certification').on('click',function(){
     }
   })
 })
+</script>
+<script>
+  function del(value){
+    swal({
+      title: 'Are you sure?',
+      text: "You cannot revert this once you proceed",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+        $.post('/maintenance2/deleteProductCertification',{number: value}, function(data,status){
+          if(data){
+            swal(
+              'Success!',
+              'You have deleted a product certification',
+              'success'
+            ).then(()=>{
+              location.reload();
+            })
+          }
+        })
+
+      }
+    })
+  }
 </script>
 
 

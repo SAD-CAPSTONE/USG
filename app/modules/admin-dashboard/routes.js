@@ -15,7 +15,6 @@ router.get('/', (req,res)=>{
               if(err1) console.log(err1)
               db.query(`SELECT * FROM tblbatch JOIN tblproductinventory ON tblproductinventory.intInventoryNo = tblbatch.intInventoryNo JOIN tblproductlist ON tblproductinventory.intProductNo = tblproductlist.intProductNo JOIN tbluom ON tblproductinventory.intUOMno = tbluom.intUomNo WHERE tblbatch.intStatus = 1 AND expirationDate >= NOW() AND expirationDate <= NOW() + INTERVAL 7 DAY ORDER BY expirationDate ASC LIMIT 4`, (err1,results6)=>{
                 if(err1) console.log(err1)
-        console.log(results6)
       res.render('admin-dashboard/views/dashboard', {
         re1: results1[0].cnt, 
         re2: results2[0].cnt, 

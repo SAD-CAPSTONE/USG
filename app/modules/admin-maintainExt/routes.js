@@ -83,4 +83,40 @@ router.post('/deleteBusinessType',(req,res)=>{
   });
 });
 
+router.post('/deleteProductCertification',(req,res)=>{
+  db.query(`UPDATE tblproductcertification SET intStatus = 2 where intCertificationNo = "${req.body.number}"`,(err,results,fields)=>{
+    if(err) console.log(err);
+    else{
+      res.send("yes");
+    }
+  });
+});
+
+router.post('/deleteProductBrand',(req,res)=>{
+  db.query(`UPDATE tblproductbrand SET intStatus = 2 where intBrandNo = "${req.body.number}"`,(err,results,fields)=>{
+    if(err) console.log(err);
+    else{
+      res.send("yes");
+    }
+  });
+});
+
+router.post('/deleteMeasurements',(req,res)=>{
+  db.query(`UPDATE tbluom SET intStatus = 2 where intUomNo = "${req.body.number}"`,(err,results,fields)=>{
+    if(err) console.log(err);
+    else{
+      res.send("yes");
+    }
+  });
+});
+
+router.post('/banCustomer',(req,res)=>{
+  db.query(`UPDATE tblcustomer SET intStatus = 2 where intUserID = "${req.body.number}"`,(err,results,fields)=>{
+    if(err) console.log(err);
+    else{
+      res.send("yes");
+    }
+  });
+});
+
 exports.maintenance2 = router;
