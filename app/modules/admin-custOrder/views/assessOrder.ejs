@@ -314,6 +314,15 @@
     checkboxClass: 'icheckbox_flat-green',
     radioClass   : 'iradio_flat-green'
   })
+
+  $('#message').attr('disabled', true);
+  $('#notify').on('ifChecked',function(){
+    $('#message').attr('disabled', false);
+  })
+  $('#notify').on('ifUnchecked',function(){
+    $('#message').attr('disabled', true);
+  })
+
 </script>
 
 <script>

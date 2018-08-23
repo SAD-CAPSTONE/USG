@@ -165,12 +165,12 @@
                           <div class="col-sm-4">
                             <label for="add_sname">Supplier Name</label>
                             <input type="hidden" class="form-control"  id="add_sno" name="add_sno" >
-                            <input type="text" class="form-control" disabled id="add_sname" name="add_sname" >
+                            <input type="text" required class="form-control" disabled id="add_sname" name="add_sname" >
                           </div>
 
                           <div class="col-sm-4">
                             <label for="add_bname">Business Name</label>
-                            <input type="text" class="form-control" disabled id="add_bname" name="add_bname" >
+                            <input type="text" required class="form-control" disabled id="add_bname" name="add_bname" >
                           </div>
 
                         </div>
@@ -185,7 +185,7 @@
                           </div>
                           <div class="col-sm-3">
                             <label for="add_price">Product Price</label>
-                            <input type="number" placeholder="with added markup" class="form-control" required id="add_price" name="add_price" >
+                            <input type="number" placeholder="" class="form-control" required id="add_price" name="add_price" >
                           </div>
                           <div class="col-sm-3">
                             <label for="add_size">Size</label>
@@ -210,8 +210,12 @@
                       <div class="form-group">
                         <div class="row">
                           <div class="col-sm-4">
+                            <label for="add_variant">Variant</label>
+                            <input type="number" class="form-control" id="add_variant" name="add_variant" >
+                          </div>
+                          <div class="col-sm-4">
                             <label for="add_barcode">Barcode</label>
-                            <input type="number" class="form-control" id="add_barcode" name="add_barcode" >
+                            <input type="number" required class="form-control" id="add_barcode" name="add_barcode" >
                           </div>
                           <div class="col-sm-2">
                             <label for="shelf">Shelf No</label>
@@ -219,7 +223,7 @@
                           </div>
                           <div class="col-sm-2">
                             <label for="add_critical">Critical Limit</label>
-                            <input type="number" class="form-control" required id="add_critical" name="add_critical" >
+                            <input type="number" required class="form-control" required id="add_critical" name="add_critical" >
                           </div>
                         </div>
                       </div>

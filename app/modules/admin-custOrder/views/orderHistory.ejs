@@ -46,24 +46,33 @@
                  <tr>
                    <td><%= moment(i.historyDate).format("MM/DD/YYYY") %></td>
                    <td>
-                     <% if (i.intStatus == 0){ %>
+                     <% if (i.orderStatus == 0){ %>
                        <span class="label label-warning">Pending</span>
-                     <% }else if(i.intStatus == 1){ %>
+                     <% }else if(i.orderStatus == 1){ %>
                        <span class="label label-info">Processing</span>
-                     <% }else if(i.intStatus == 2){ %>
+                     <% }else if(i.orderStatus == 2){ %>
                        <span class="label label-default">Shipped</span>
-                     <% }else if (i.intStatus == 3){ %>
+                     <% }else if (i.orderStatus == 3){ %>
                        <span class="label label-default">Delivered</span>
-                     <% }else if(i.intStatus == 4){ %>
+                     <% }else if(i.orderStatus == 4){ %>
                        <span class="label label-default">Will not deliver</span>
                      <% }else{ %>
                        <span class="label label-default">Returned</span>
                      <% } %>
                    </td>
-                   <td>Payment Stats here</td>
+                   <td>
+                     <% if (i.paymentStatus == 0){ %>
+                       <span class="label label-warning">Awaiting Payment</span>
+                     <% }else if(i.paymentStatus == 1){ %>
+                       <span class="label label-info">Paid</span>
+
+                     <% }else{ %>
+                       <span class="label label-default">Not labeled</span>
+                     <% } %>
+                   </td>
                    <td><%= i.strShippingMethod %></td>
                    <td><%= i.strCourier %></td>
-                   <td>Message to Customer</td>
+                   <td><%= i.strMessage %></td>
 
 
                  </tr>

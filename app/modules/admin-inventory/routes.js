@@ -201,7 +201,7 @@ router.post('/addProductItem', (req,res)=>{
   // Change to transaction
   var url = `/inventory/productInventory?product=${req.body.add_productno}`;
   db.query(`
-    Insert into tblProductInventory (intInventoryNo, intProductNo, intUserID, productSRP, intUOMno, intSize, productPrice, strBarcode, intCriticalLimit) values ("${req.body.add_inventoryno}","${req.body.add_productno}", "${req.body.add_sno}", ${req.body.add_srp}, "${req.body.add_uom}", ${req.body.add_size}, ${req.body.add_price}, "${req.body.add_barcode}", ${req.body.add_critical})`, (err1,results1,fields1)=>{
+    Insert into tblProductInventory (intInventoryNo, intProductNo, intUserID, productSRP, intUOMno, intSize, productPrice, strBarcode, intCriticalLimit, strVariant) values ("${req.body.add_inventoryno}","${req.body.add_productno}", "${req.body.add_sno}", ${req.body.add_srp}, "${req.body.add_uom}", ${req.body.add_size}, ${req.body.add_price}, "${req.body.add_barcode}", ${req.body.add_critical}, "${req.body.variant}")`, (err1,results1,fields1)=>{
       if (err1) console.log(err1);
       db.query(`Select * from tblinventorytransactions order by intTransactionID desc limit 1`, (err2,results2,fields2)=>{
         if (err2) console.log(err2);

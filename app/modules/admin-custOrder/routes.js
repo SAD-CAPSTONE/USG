@@ -139,6 +139,7 @@ var c = 0;
             if(resw==undefined||resw==null){db.rollback(function(){ res.send("false")})}
             else if(resw.length==0){db.rollback(function(){ res.send("false")})}
             else{
+              // Update inventory (less quantity , reserved items )
               db.query(`Update tblproductinventory set intQuantity = intQuantity - ${orders[c].intQuantity}, intReservedItems = intReservedItems - ${orders[c].intQuantity}
                 where (tblproductinventory.intInventoryNo = "${orders[c].intInventoryNo}") and (intQuantity  >= ${orders[c].intQuantity})`,(errx,resultsx,fieldsx)=>{
                   if(errx){db.rollback(function(){console.log(errx); res.send("no");})}
@@ -340,7 +341,7 @@ router.post('/assessOrder',(req,res)=>{
                         }
                         // Insert into order history
                         db.query(`Insert into tblOrderHistory (intOrderHistoryNo, intOrderNo,
-                          strShippingMethod, strCourier, intStatus, intAdminID, intMessageNo) values ("${historynum}", "${req.body.orderNo}", "${req.body.shippingMethod}","${req.body.courier}", ${req.body.orderStatus}, "1000", "${messagenum}")`, (err5,results5,fields5)=>{
+                          strShippingMethod, strCourier, intStatus, intAdminID, intMessageNo, intPaymentStatus) values ("${historynum}", "${req.body.orderNo}", "${req.body.shippingMethod}","${req.body.courier}", ${req.body.orderStatus}, "1000", "${messagenum}", ${req.body.paymentStatus})`, (err5,results5,fields5)=>{
                             if(err5){db.rollback(function(){console.log(err5); res.send("no")})}
                             else{
 
@@ -394,7 +395,7 @@ router.post('/assessOrder',(req,res)=>{
 router.get('/orderHistory',(req,res)=>{
   var orderno = req.query.order;
 
-  db.query(`Select * from tblOrderHistory where intOrderNo = ${orderno}`, (err1,results1,fields1)=>{
+  db.query(`Select tblOrderHistory.intStatus as orderStatus, tblOrderHistory.intPaymentStatus as paymentStatus, tblOrderHistory.*,tblMessages.* from tblOrderHistory join tblMessages on tblOrderHistory.intOrderHistoryNo = tblMessages.intOrderHistoryNo where intOrderNo = ${orderno}`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
 
     res.render('admin-custOrder/views/orderHistory', {re: results1, moment: moment, order: orderno});
@@ -450,8 +451,7 @@ router.get('/cancelledOrders',(req,res)=>{
   db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
     join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where tblOrder.intStatus = 6`, (err1,results1,fields1)=>{
       if (err1) console.log(err1);
-
-      res.render('admin-custOrder/views/cancelledOrders',{re: results1});
+      res.render('admin-custOrder/views/cancelledOrders',{re: results1, moment: moment});
   });
 });
 
@@ -461,7 +461,8 @@ router.get('/invoice-print',(req,res)=>{
   // Order list
   db.query(`Select * from tblOrder
     join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
-    join tblproductlist on tblorderdetails.intproductno = tblproductlist.intproductno
+    join tblproductinventory on tblorderdetails.intinventoryno = tblProductinventory.intinventoryno
+    join tblproductlist on tblproductlist.intproductno = tblProductinventory.intproductno
     where tblOrder.intOrderno = ${orderno}`, (err1,results1,fields1)=>{
       if (err1) console.log(err1);
 
@@ -476,7 +477,8 @@ router.get('/invoice-print',(req,res)=>{
           db.query(`Select SUM(tblorderdetails.intquantity * tblorderdetails.purchaseprice) as
             totalAll from tblOrder
             join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
-            join tblproductlist on tblorderdetails.intproductno = tblproductlist.intproductno
+            join tblproductinventory on tblorderdetails.intinventoryno = tblProductinventory.intinventoryno
+            join tblproductlist on tblproductlist.intproductno = tblProductinventory.intproductno
             where tblOrder.intOrderno = ${orderno}`, (err3,results3,fields3)=>{
               if (err3) console.log(err3);
 
