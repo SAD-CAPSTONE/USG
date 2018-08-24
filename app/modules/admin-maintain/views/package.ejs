@@ -20,68 +20,127 @@
      <!-- Main content -->
      <section class="content">
        <div class="row">
-         <div class="col-xs-12">
-           <div class="box">
-             <div class="box-header">
-               <h4 align="center">Package Discounts</h4>
-             </div>
- 			<!-- buttons -->
- 				&nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#addPackage"><i class="fa fa-plus"></i> Add New Package</button>
-             <!-- /.box-header -->
-             <div class="box-body table-responsive">
-               <table id="example2" class="table table-bordered table-hover">
-                 <thead>
-                 <tr>
+         <div class="col-sm-12">
+           <div class="nav-tabs-custom">
+             <ul class="nav nav-tabs">
+               <li class="active"><a href="#active" data-toggle="tab"> Active Packages</a></li>
+               <li><a href="#inactive" data-toggle="tab"> Due Packages</a></li>
+             </ul>
+             <div class="tab-content">
+               <!-- Active Package -->
+               <div class="tab-pane active" id="active">
+               <!-- buttons -->
+                 &nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#addPackage"><i class="fa fa-plus"></i> Add New Package</button>
+                     <!-- /.box-header -->
+                     <div class="box-body table-responsive">
+                       <table id="example2" class="table table-bordered table-hover">
+                         <thead>
+                         <tr>
 
-                   <th>Package Name</th>
-                   <th>Price</th>
-                   <th>Date Created</th>
-                   <th>Date Due</th>
- 				           <th>Status</th>
-                   <th>Actions</th>
-                 </tr>
-                 </thead>
-                 <tbody>
+                           <th>Package Name</th>
+                           <th>Price</th>
+                           <th>Date Created</th>
+                           <th>Date Due</th>
+                            <th>Status</th>
+                           <th>Actions</th>
+                         </tr>
+                         </thead>
+                         <tbody>
 
-                <% if (re == null || re == undefined){ %>
+                        <% if (re == null || re == undefined){ %>
 
-                <% }else if (re.length == 0){ %>
-
-                <% }else{ %>
-                <%  re.forEach(function(i){ %>
-                    <tr>
-
-                      <td><%=i.strPackageName%></td>
-                      <td>Php <%= i.packagePrice.toFixed(2)%></td>
-                      <td><%= moment(i.dateCreated).format("MM/DD/YYYY") %></td>
-                      <td><%= moment(i.dateDue).format("MM/DD/YYYY") %></td>
-                      <td>
-                        <% if (i.intStatus==1){ %>
-                          <button data-no="<%=i.intPackageNo%>" class="ui toggle button active inactivate_package">Active</button>
+                        <% }else if (re.length == 0){ %>
 
                         <% }else{ %>
-                          <button data-no="<%=i.intPackageNo%>" class="ui toggle button inactive activate_package">Inactive</button>
+                        <%  re.forEach(function(i){ %>
+                            <tr>
 
+                              <td><%=i.strPackageName%></td>
+                              <td>Php <%= i.packagePrice.toFixed(2)%></td>
+                              <td><%= moment(i.dateCreated).format("MM/DD/YYYY") %></td>
+                              <td><%= moment(i.dateDue).format("MM/DD/YYYY") %></td>
+                              <td>
+                                <input type="checkbox"
+                                <% if (i.intStatus == 0){ %>
+                                  value="0"
+                                <% }else{ %>
+                                  value="1" checked
+                                <% } %>
+
+                                 data-no="<%=i.intPackageNo%>" class="package_stat" data-size="mini"  data-on="Active" data-off="Inactive" data-toggle="toggle" data-offstyle="danger" data-onstyle="success">
+
+                              </td>
+                              <td>
+                                <center>
+
+                                <button type="button" data-toggle="modal" data-target="#editPackage" data-no="<%=i.intPackageNo%>" data-name="<%=i.strPackageName%>" data-desc="<%=i.strPackageDescription%>" data-price="<%=i.packagePrice%>" data-date="<%=moment(i.dateDue).format("YYYY-MM-DD")%>" data-quantity="<%=i.intQuantity%>"  class="editButton small ui button">Edit Details</button>
+                                <a href="/maintenance/packageList?package=<%=i.intPackageNo%>"><button class="small ui teal button">Product List</button></a>
+                              </center>
+                              </td>
+                            </tr>
+                        <%  }) %>
                         <% } %>
-                      </td>
-                      <td>
-                        <a href=""><button class="btn btn-default btn-xs">Description</button></a>
-                        <a href=""><button class="btn btn-default btn-xs">Edit Details</button></a>
-                        <a href="/maintenance/packageList?package=<%=i.intPackageNo%>"><button class="btn btn-primary btn-xs">Product List</button></a>
-
-                      </td>
-                    </tr>
-                <%  }) %>
-                <% } %>
 
 
-                 </tbody>
+                         </tbody>
 
-               </table>
+                       </table>
+                     </div>
+                     <!-- /.box-body -->
+               </div>
+
+               <!-- Inactive Package -->
+               <div class="tab-pane" id="inactive">
+                 <!-- /.box-header -->
+                 <div class="box-body table-responsive">
+                   <table id="example3" class="table table-bordered table-hover">
+                     <thead>
+                     <tr>
+
+                       <th>Package Name</th>
+                       <th>Price</th>
+                       <th>Date Created</th>
+                       <th>Date Due</th>
+
+                       <th>Actions</th>
+                     </tr>
+                     </thead>
+                     <tbody>
+
+                    <% if (due == null || due == undefined){ %>
+
+                    <% }else if (due.length == 0){ %>
+
+                    <% }else{ %>
+                    <%  due.forEach(function(i){ %>
+                        <tr>
+
+                          <td><%=i.strPackageName%></td>
+                          <td>Php <%= i.packagePrice.toFixed(2)%></td>
+                          <td><%= moment(i.dateCreated).format("MM/DD/YYYY") %></td>
+                          <td><%= moment(i.dateDue).format("MM/DD/YYYY") %></td>
+
+                          <td>
+                            <center>
+
+                            <button type="button" data-toggle="modal" data-target="#editPackage" data-no="<%=i.intPackageNo%>" data-name="<%=i.strPackageName%>" data-desc="<%=i.strPackageDescription%>" data-price="<%=i.packagePrice%>" data-date="<%=moment(i.dateDue).format("YYYY-MM-DD")%>" data-quantity="<%=i.intQuantity%>" class="editButton small ui button">Edit Details</button>
+                            <a href="/maintenance/packageList?package=<%=i.intPackageNo%>"><button class="small ui teal button">Product List</button></a>
+                          </center>
+                          </td>
+                        </tr>
+                    <%  }) %>
+                    <% } %>
+
+
+                     </tbody>
+
+                   </table>
+                 </div>
+                 <!-- /.box-body -->
+               </div>
              </div>
-             <!-- /.box-body -->
            </div>
-           <!-- /.box -->
+
 
  	    </div>
          <!-- /.col -->
@@ -94,6 +153,64 @@
    <!-- /.content-wrapper -->
 
  	<!-- Modals -->
+
+  <div class="modal fade" id="editPackage">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">Package Information Form</h4>
+      </div>
+      <div class="modal-body">
+      <!-- Horizontal Form -->
+
+          <!-- form start -->
+          <form role="form" id="edit_form">
+              <div class="box-body">
+                <input type="hidden" required class="form-control" name="no" id="pno_e" placeholder="">
+
+                <div class="form-group">
+                  <label for="pname">Package Name:</label>
+                  <input type="text" required class="form-control" name="name" id="pname_e" placeholder="">
+                </div>
+
+                <div class="form-group">
+                  <label for="pdesc">Package Description:</label>
+                  <textarea class="form-control" id="pdesc_e"name="description" placeholder=""></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label for="pname">Package Quantity:</label>
+                  <input type="number" required class="form-control" disabled id="pquantity_e" >
+                </div>
+
+                <div class="form-group">
+                  <label for="pprice">Package Price</label>
+                  <input type="number" required class="form-control" id="pprice_e" name="price">
+                  <small>this will be the price of the products included.</small>
+                </div>
+
+                <div class="form-group">
+                  <label for="pdue_e">Due Date</label>
+                  <input type="date" required class="form-control" name="date"   id="pdate_e" >
+
+                </div>
+
+              </div>
+
+
+        </div>
+        <div class="modal-footer">
+        <button type="button" class=" btn btn-default pull-left" data-dismiss="modal">Close</button>
+        <button type="submit" id="save_e" class="btn btn-primary">Save changes</button>
+        </div>
+        </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+   <!-- /.modal-dialog -->
+ </div>
 
  	<div class="modal fade" id="addPackage">
  	  <div class="modal-dialog">
@@ -176,6 +293,34 @@
  </script>
 
  <script>
+   $(function () {
+     $('#example3').DataTable({
+       'paging'      : true,
+       'lengthChange': true,
+       'searching'   : true,
+       'ordering'    : true,
+       'info'        : true,
+       'autoWidth'   : true,
+     'select'		: true,
+     'scroll'		: true
+     })
+   })
+ </script>
+
+ <script>
+  $('.editButton').on('click',function(){
+
+    $('#pname_e').val($(this).data('name'));
+    $('#pno_e').val($(this).data('no'));
+    $('#pdesc_e').val($(this).data('desc'));
+    $('#pquantity_e').val($(this).data('quantity'));
+     $('#pdate_e').val($(this).data('date'));
+    $('#pprice_e').val($(this).data('price'));
+  })
+
+ </script>
+
+ <script>
  $(document).ready(function(i){
    $('#save').on('click',function(){
      $.ajax({
@@ -205,40 +350,31 @@
  </script>
 
  <script>
- $('#title').html("USG | Package Discounts");
- $(".treeview a:contains('Maintenance')").parent().addClass("active");
- $(".navi a:contains('Package')").parent().addClass("active");
+  $('#edit_form').submit(function(e){
+    e.preventDefault()
+    $.post('/maintenance/editPackage', $('#edit_form').serialize(), function(data,status){
+      if(data == "yes"){
+        swal('Success!','','success').then(()=>{
+          location.reload()
+        })
+      }
+    })
+  })
  </script>
 
  <script>
- $('.inactivate_package').on('click',function(){
-   $(this).removeClass("ui toggle button active inactivate_package").addClass("ui toggle button  activate_package").html("Inactive");
+ $('#title').html("USG | Package Discounts");
+ $(".treeview a:contains('Inventory')").parent().addClass("active");
+ $(".navi a:contains('Package')").parent().addClass("active");
+ </script>
 
-   $.ajax({
-     url: '/maintenance/inactivatePackage',
-     method: 'post',
-     datatype: 'json',
-     data: {no: $(this).data('no')},
-     success: function(response,status,http){
-       if (response){
-         swal("Success!", "You have activated Package no"+$(this).data('no'), "success");
-       }
-     }
-   })
- })
 
- $('.activate_package').on('click',function(){
-   $(this).removeClass("ui toggle button activate_package").addClass("ui toggle button active inactivate_package").html("Active");
+ <script>
+ $('.package_stat').on('change',function(){
+   var val = $(this).val() == 1 ? 0 : 1;
 
-   $.ajax({
-     url: '/maintenance/activatePackage',
-     method: 'post',
-     datatype: 'json',
-     data: {no: $(this).data('no')},
-     success: function(response,status,http){
-       if (response){
-         swal("Success!", "You have activated Package no"+$(this).data('no'), "success");
-       }
+   $.post('/maintenance/changePackageStat',{no: $(this).data('no'), value: val}, function(data,status){
+     if (data){
      }
    })
  })
