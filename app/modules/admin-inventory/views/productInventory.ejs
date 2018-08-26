@@ -105,7 +105,7 @@
                       <td>
                         <center>
                           <button type="button" data-number="<%=i.intInventoryNo%>" data-toggle="modal" data-target="#addStock" class="addStock large ui teal button" data-toggle="tooltip" title="Add Stock"><i class="fa fa-plus"></i></button>
-                          <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>" data-promotype="<%=i.intPromoType%>" data-toggle="modal" data-target="#editInventory" class="editbutton large ui blue button" ><i class="fa fa-edit"></i></button>
+                          <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory" class="editbutton large ui blue button" ><i class="fa fa-edit"></i></button>
 
                           <a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="large ui button" >Transactions</button></a>
                         </center>
@@ -484,15 +484,7 @@
               <input type="number" value="0" name="critical" class="critical form-control">
             </div>
 
-            <!-- <div class="for_promo">
-              <label for="">Promo Type</label>
-              <select name="promotype" class="promotype form-control">
-                <option value="0">None</option>
-                <option value="1">Discount</option>
-                <option value="2">Package</option>
-              </select>
-              <small>Note: You can choose where to add product in the Promotion/Package Discount Section</small>
-            </div> -->
+
             <div class="for_changes">
               <label for="">Note your changes</label>
               <select name="changes" required class="changes form-control">
@@ -621,7 +613,7 @@
       $('.srp').val($(this).data('srp'));
       $('.shelf').val($(this).data('shelf'));
       $('.critical').val($(this).data('critical'));
-      $('.promotype').val($(this).data('promotype'));
+
     })
   </script>
 
