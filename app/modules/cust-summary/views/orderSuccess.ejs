@@ -24,7 +24,9 @@
 
 <script type="text/javascript">
 $(() => {
-  $('#download-file').val() == 2 ? download_voucher() : 0
+  let bankAccountNo = `<%= admin.bankAccountNo%>`,
+  bankServiceFee = `<%= admin.bankServiceFee%>`;
+  $('#download-file').val() == 2 ? download_voucher(bankAccountNo,bankServiceFee) : 0
 });
 
 </script>

@@ -1,4 +1,4 @@
-function download_voucher(){
+function download_voucher(bankAccountNo, bankServiceFee){
   let orderNo = $('#orderNo').val();
   $.get(`/summary/voucher/${orderNo}`).then((res)=>{
     let doc = new jsPDF(), order = res.order;
@@ -41,7 +41,7 @@ function download_voucher(){
     doc.setFontSize('12');
     doc.text(185, 28.8, `#${order.intOrderNo}`, 'right' );
     doc.text(185, 35.8, `PHP ${res.orderTotal}`, 'right' );
-    doc.text(185, 42.8, `25.00`, 'right' );
+    doc.text(185, 42.8, `${bankServiceFee}`, 'right' );
 
     // Title
     doc.setFont('Poppins-Regular');
@@ -61,7 +61,7 @@ function download_voucher(){
       doc.text(70, 56.2, `${order.strLname.toUpperCase()}, ${order.strFname.toUpperCase()} ${order.strMname.toUpperCase()}`):
       doc.text(70, 56.2, `${order.strLname.toUpperCase()}, ${order.strFname.toUpperCase()}`);
     doc.text(70, 63.2, `#${order.intUserID}`);
-    doc.text(70, 70.2, `0682-2220-14`);
+    doc.text(70, 70.2, `${bankAccountNo}`);
 
     // Foot Note
     doc.setFont('Poppins-ExtraLight');
@@ -120,7 +120,7 @@ function download_voucher(){
     doc.setFontSize('12');
     doc.text(185, 28.8+ext, `#${order.intOrderNo}`, 'right' );
     doc.text(185, 35.8+ext, `PHP ${res.orderTotal}`, 'right' );
-    doc.text(185, 42.8+ext, '25.00', 'right' );
+    doc.text(185, 42.8+ext, `${bankServiceFee}`, 'right' );
 
     // Title
     doc.setFont('Poppins-Regular');

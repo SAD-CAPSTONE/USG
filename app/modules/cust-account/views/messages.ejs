@@ -10,22 +10,27 @@
 <p id="title">Account Messages</p>
 <!-- main content -->
 <div id="messages-content" class="mb-3">
-  <div class="message-div row">
+  <% messages.forEach((data)=>{ %>
+    <% if (data.seenStatus){ %>
+      <div class="message-div row seen">
+    <% }else{ %>
+      <div class="message-div row">
+    <% } %>
+        <div class="col-sm-12 col-md-2">
+          <p class="mb-0 fs-08em fw-500"><%= data.historyDate%></p>
+        </div>
+        <div class="col">
+          <p class="mb-0 fs-08em fw-400"><%= data.strMessage%></p>
+        </div>
+      </div>
+  <% }) %>
+
+  <!-- <div class="message-div row">
     <div class="col-sm-12 col-md-2">
       <p class="mb-0 fs-08em fw-500">09/09/2020</p>
     </div>
     <div class="col">
       <p class="mb-0 fs-08em fw-400">Lorem </p>
-      <!-- <p class="mb-0 fs-08em fw-400">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p> -->
-    </div>
-  </div>
-  <div class="message-div row">
-    <div class="col-sm-12 col-md-2">
-      <p class="mb-0 fs-08em fw-500">09/09/2020</p>
-    </div>
-    <div class="col">
-      <p class="mb-0 fs-08em fw-400">Lorem </p>
-      <!-- <p class="mb-0 fs-08em fw-400">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p> -->
     </div>
   </div>
   <div class="message-div row seen">
@@ -33,10 +38,10 @@
       <p class="mb-0 fs-08em fw-500">09/09/2020</p>
     </div>
     <div class="col">
-      <!-- <p class="mb-0 fs-08em fw-400">Lorem </p> -->
       <p class="mb-0 fs-08em fw-400">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
     </div>
-  </div>
+  </div> -->
+
 </div>
 <!-- pagination -->
 <ul class="pagination pull-right mb-1" id="pagination"></ul>

@@ -113,7 +113,7 @@
           }
           payment = data.intPaymentMethod == 1 ? 'Cash on Delivery' : 'Bank Deposit'
           paymentstatus = data.intPaymentStatus == 1 ?
-            `<i class="fa fa-check-circle mr-2"></i>` : `<i class="fa fa-circle mr-2"></i>`
+            `<i class="fa fa-check-circle mr-2" title="Paid"></i>` : `<i class="fa fa-circle mr-2" title="Unpaid"></i>`
 
 
           list.append(`

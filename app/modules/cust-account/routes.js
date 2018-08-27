@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../../lib/database')();
 const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
-const pageLimit = 2;
+const pageLimit = 10;
 const orderQuery = `SELECT tblorder.intStatus AS Status, tblorder.*, Price.totalPrice FROM tbluser
   INNER JOIN tblorder ON tbluser.intUserID= tblorder.intUserID INNER JOIN (
 	SELECT SUM(purchasePrice*intQuantity)totalPrice, tblorder.intOrderNo FROM tblorder
@@ -39,7 +39,22 @@ router.get('/orders', checkUser, (req,res)=>{
   res.render('cust-account/views/orders', {thisUser: req.user});
 });
 router.get('/messages', checkUser, (req,res)=>{
-  res.render('cust-account/views/messages', {thisUser: req.user});
+  db.query(`SELECT * FROM tblmessages
+    INNER JOIN tblorderhistory ON tblmessages.intOrderHistoryNo= tblorderhistory.intOrderHistoryNo
+    INNER JOIN tblorder ON tblorderhistory.intOrderNo= tblorder.intOrderNo
+    WHERE intUserID = ? ORDER BY tblmessages.intMessageNo DESC`,[req.user.intUserID], (err, results, fields) => {
+    if (err) console.log(err);
+    results[0] ? results.map( obj => obj.historyDate = moment(obj.historyDate).format('MM - DD - YYYY') ) : 0;
+    db.query(`UPDATE tblmessages INNER JOIN tblorderhistory ON tblmessages.intOrderHistoryNo= tblorderhistory.intOrderHistoryNo
+      INNER JOIN tblorder ON tblorderhistory.intOrderNo= tblorder.intOrderNo
+      SET seenStatus= 1 WHERE tblmessages.seenStatus= 0 AND tblorder.intUserID= ?`,[req.user.intUserID], (err, update, fields) => {
+      if (err) console.log(err);
+      res.render('cust-account/views/messages', {
+        thisUser: req.user,
+        messages: results
+      });
+    });
+  });
 });
 
 router.post('/dashboard/info', checkUser, (req,res)=>{
@@ -119,7 +134,6 @@ router.post('/orders/load', checkUser, (req,res)=>{
         results[0] ? results.map( obj => obj.totalPrice = priceFormat(obj.totalPrice.toFixed(2)) ) : 0;
         db.commit(function(err) {
           if (err) console.log(err);
-          console.log(config)
           res.send({config: config, orders: results})
         });
       });
