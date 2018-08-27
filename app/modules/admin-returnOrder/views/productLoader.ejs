@@ -1,0 +1,50 @@
+
+<table id="example" class="table table-bordered table-hover">
+  <thead>
+
+    <th style="width: 10px">#</th>
+    <th style="width: 250px">Ordered Products</th>
+    <th style="width: 90px">Quantity</th>
+    <th style="width: 200px">Replaced with</th>
+    <th style="width: 90px">Quantity</th>
+
+
+  </thead>
+  <tbody>
+    <% if (re==null||re==undefined){ %>
+
+    <% }else if(re.length == 0){ %>
+
+    <% }else{ %>
+    <%  re.forEach(function(i){ %>
+        <tr>
+          <td></td>
+          <td>
+            <input type="hidden" style="width: 250px" required type="text" required name="inventory[]" value="<%=i.strBarcode%>" class="form-control">
+
+            <input style="width: 250px" required type="text" required name="orderProduct[]" value="<%=i.strProductName%> <%=i.intSize%> <%=i.strUnitName%>" class="form-control">
+          </td>
+          <td><input style="width: 90px" required type="number" name="orderQuantity[]" value="<%=i.quantity%>" class="form-control"></td>
+          <td><input style="width: 200px" type="text" name="replacementProduct[]" placeholder="Scan Barcode"  class="form-control"></td>
+          <td><input style="width: 90px" type="number" required name="replacementQuantity[]"  class=" form-control"></td>
+
+        </tr>
+    <%  }) %>
+    <% } %>
+  </tbody>
+
+</table>
+
+<script>
+  $(function () {
+    $('#example').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'info'        : false,
+      'autoWidth'   : true,
+      'searching'   : false,
+      'ordering'    : false
+
+    })
+  })
+</script>

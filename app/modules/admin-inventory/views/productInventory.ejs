@@ -18,7 +18,7 @@
   <!-- Main content -->
   <section class="content">
     <div class="row">
-      <div class="col-xs-12">
+      <div class="col-sm-12">
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs">
             <li class="active"><a href="#inventory" data-toggle="tab"><i class="fa fa-bars"></i> Inventory</a></li>
@@ -29,27 +29,6 @@
             <div class="tab-pane active" id="inventory">
 
               <a data-toggle="modal" data-target="#legend_modal"><i style="font-size: 30px" class="glyphicon glyphicon-info-sign"></i> </a>
-
-
-
-                <div class="modal fade" id="legend_modal">
-                  <div style="width: 30%;" class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-body">
-                      <p >
-                      Status Legend <br>
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <a class="ui red circular label"></a> No stock in inventory
-                      </br>
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <a class="ui orange circular label"></a> Reached critical limit
-                    </br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <a class="ui green circular label"></a> Enough stock in inventory
-
-                  </br>
-                </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
 
               </br>
@@ -105,7 +84,18 @@
                       <td>
                         <center>
                           <button type="button" data-number="<%=i.intInventoryNo%>" data-toggle="modal" data-target="#addStock" class="addStock large ui teal button" data-toggle="tooltip" title="Add Stock"><i class="fa fa-plus"></i></button>
-                          <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>" data-promotype="<%=i.intPromoType%>" data-toggle="modal" data-target="#editInventory" class="editbutton large ui blue button" ><i class="fa fa-edit"></i></button>
+                          <!-- <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory" class="editbutton large ui blue button" ><i class="fa fa-edit"></i></button> -->
+
+                          <div class="btn-group">
+                            <button type="button" class="large ui blue button" data-toggle="dropdown">
+                              <i class="glyphicon glyphicon-option-horizontal"></i>
+
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><a href="#">Edit Details</a></li>
+                              <li><a href="#">See Batch Products</a></li>
+                            </ul>
+                          </div>
 
                           <a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="large ui button" >Transactions</button></a>
                         </center>
@@ -484,15 +474,7 @@
               <input type="number" value="0" name="critical" class="critical form-control">
             </div>
 
-            <!-- <div class="for_promo">
-              <label for="">Promo Type</label>
-              <select name="promotype" class="promotype form-control">
-                <option value="0">None</option>
-                <option value="1">Discount</option>
-                <option value="2">Package</option>
-              </select>
-              <small>Note: You can choose where to add product in the Promotion/Package Discount Section</small>
-            </div> -->
+
             <div class="for_changes">
               <label for="">Note your changes</label>
               <select name="changes" required class="changes form-control">
@@ -621,7 +603,7 @@
       $('.srp').val($(this).data('srp'));
       $('.shelf').val($(this).data('shelf'));
       $('.critical').val($(this).data('critical'));
-      $('.promotype').val($(this).data('promotype'));
+
     })
   </script>
 

@@ -525,10 +525,12 @@ router.post('/activatePromo',(req,res)=>{
 router.get('/package', (req,res)=>{
   db.query(`Select * from tblpackage`,(err1,results1,fields1)=>{
     if (err1) console.log(err1);
-
-      res.render('admin-maintain/views/package',{re: results1, moment: moment});
-
-
+    db.query(`Select * from tblpackage where dateDue <= CURDATE()`,(err2,res2,fie2)=>{
+      if(err2) console.log(err2);
+      else{
+        res.render('admin-maintain/views/package',{re: results1, moment: moment, due: res2});
+      }
+    })
   });
 });
 
@@ -677,19 +679,22 @@ router.post('/addPackageList',(req,res)=>{
 
 });
 
-router.post('/inactivatePackage',(req,res)=>{
-  db.query(`Update tblPackage set intStatus = 0 where intPackageNo = "${req.body.no}"`,(err1,results1,fields1)=>{
-    if(err1) console.log(err1);
-    if(!err1) res.send("yes");
+router.post('/changePackageStat',(req,res)=>{
+  db.query(`Update tblPackage set intStatus = ${req.body.value} where intPackageNo = "${req.body.no}"`,(err2,res2,fie2)=>{
+    if(err2) console.log(err2);
+    res.send("")
   })
 });
 
-router.post('/activatePackage',(req,res)=>{
-  db.query(`Update tblPackage set intStatus = 1 where intPackageNo = "${req.body.no}"`,(err1,results1,fields1)=>{
+router.post('/editPackage',(req,res)=>{
+  //var d = moment(req.body.date).format('')
+  db.query(`Update tblPackage set strPackageName = "${req.body.name}", strPackageDescription="${req.body.description}", packagePrice=${req.body.price}, dateDue="${req.body.date}" where intPackageNo = "${req.body.no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
-    if(!err1) res.send("yes");
+    else{
+      res.send("yes")
+    }
   })
-});
+})
 
 // Measuremens ------------------------------------
 router.get('/measurements', (req,res)=>{
@@ -847,7 +852,7 @@ router.post('/editCustomer',(req,res)=>{
     });
   });
 });
-  
+
 
 
 exports.maintenance = router;

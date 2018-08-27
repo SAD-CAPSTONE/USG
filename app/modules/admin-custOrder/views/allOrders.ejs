@@ -19,74 +19,179 @@
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <div class="col-xs-12">
-          <div class="box">
-            <div class="box-header">
-              <h3 class="box-title">Customer Orders</h3>
+        <div class="col-sm-12">
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#allOrders" data-toggle="tab"> All Orders</a></li>
+              <li><a href="#recentOrders" data-toggle="tab"> Recent Orders</a></li>
+              <li><a href="#cancelledOrders" data-toggle="tab"> Cancelled Orders</a></li>
+            </ul>
+            <div class="tab-content">
+              <!-- All Orders -->
+              <div class="tab-pane active" id="allOrders">
+
+                <div class="box-body table-responsive">
+                  <table id="example1" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                      <th>Order No</th>
+                      <th>Customer Name</th>
+                      <th>Order Date</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% if (re == null || re == undefined || re.length == 0){ %>
+                    <% }else{ %>
+                    <%  re.forEach(function(i){ %>
+                      <tr>
+                        <td><%= i.intOrderNo %></td>
+                        <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
+                        <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
+                        <td>
+                          <% if (i.Stat == 0){ %>
+                            <span class="label label-warning">Pending</span>
+                          <% }else if(i.Stat == 1){ %>
+                            <span class="label label-info">Processing</span>
+                          <% }else if(i.Stat == 2){ %>
+                            <span class="label label-default">Shipped</span>
+                          <% }else if (i.Stat == 3){ %>
+                            <span class="label label-default">Delivered</span>
+                          <% }else if(i.Stat == 4){ %>
+                            <span class="label label-default">Will not deliver</span>
+                          <% }else if(i.Stat == 5){ %>
+                            <span class="label label-default">Returned</span>
+                          <% }else{ %>
+                            <span class="label label-danger">Cancelled</span>
+                          <% } %>
+                        </td>
+                        <td>
+                          <center>
+                          <% orderno = i.intOrderNo %>
+                          <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="large ui button">View Invoice</button></a>
+                            <a href="/customerOrder/assessOrder?order=<%=orderno%>"><button class="large ui blue button">Assess</button></a>
+                          <a href="/customerOrder/orderHistory?order=<%=orderno%>"><button class="large ui teal button">View History</button></a>
+                        </center>
+                        </td>
+                      </tr>
+                    <% }) %>
+                    <% } %>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.box-body -->
+
+              </div>
+
+              <!-- Recent Orders -->
+              <div class="tab-pane" id="recentOrders">
+                <div class="box-body table-responsive">
+                  <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                      <th>Order No</th>
+                      <th>Customer Name</th>
+                      <th>Order Date</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% if (re2 == null || re2 == undefined || re2.length == 0){ %>
+                    <% }else{ %>
+                    <%  re2.forEach(function(i){ %>
+                      <tr>
+                        <td><%= i.intOrderNo %></td>
+                        <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
+                        <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
+                        <td>
+                          <% if (i.Stat == 0){ %>
+                            <span class="label label-warning">Pending</span>
+                          <% }else if(i.Stat == 1){ %>
+                            <span class="label label-info">Processing</span>
+                          <% }else if(i.Stat == 2){ %>
+                            <span class="label label-default">Shipped</span>
+                          <% }else if (i.Stat == 3){ %>
+                            <span class="label label-default">Delivered</span>
+                          <% }else if(i.Stat == 4){ %>
+                            <span class="label label-default">Will not deliver</span>
+                          <% }else if(i.Stat == 5){ %>
+                            <span class="label label-default">Returned</span>
+                          <% }else{ %>
+                            <span class="label label-danger">Cancelled</span>
+                          <% } %>
+                        </td>
+                        <td>
+                          <% orderno = i.intOrderNo %>
+                          <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="btn btn-default btn-sm">View Invoice</button></a>
+                            <a href="/customerOrder/assessOrder?order=<%=orderno%>"><button class="btn btn-primary btn-sm">Assess</button></a>
+                          <a href="/customerOrder/orderHistory?order=<%=orderno%>"><button class="btn btn-info btn-sm">View History</button></a>
+                        </td>
+                      </tr>
+                    <% }) %>
+                    <% } %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Cancelled Orders -->
+              <div class="tab-pane" id="cancelledOrders">
+                <div class="box-body table-responsive">
+                  <table id="example3" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                      <th>Order No</th>
+                      <th>Customer Name</th>
+                      <th>Order Date</th>
+                      <th>Status</th>
+                      <th>Reason</th>
+                      <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% if (re3 == null || re3 == undefined || re3.length == 0){ %>
+                    <% }else{ %>
+                    <%  re3.forEach(function(i){ %>
+                      <tr>
+                        <td><%= i.intOrderNo %></td>
+                        <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
+                        <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
+                        <td>
+                          <% if (i.Stat == 0){ %>
+                            <span class="label label-warning">Pending</span>
+                          <% }else if(i.Stat == 1){ %>
+                            <span class="label label-info">Processing</span>
+                          <% }else if(i.Stat == 2){ %>
+                            <span class="label label-default">Shipped</span>
+                          <% }else if (i.Stat == 3){ %>
+                            <span class="label label-default">Delivered</span>
+                          <% }else if(i.Stat == 4){ %>
+                            <span class="label label-default">Will not deliver</span>
+                          <% }else if(i.Stat == 5){ %>
+                            <span class="label label-default">Returned</span>
+                          <% }else{ %>
+                            <span class="label label-danger">Cancelled</span>
+                          <% } %>
+                        </td>
+                        <td><%=i.strCancellationReason%></td>
+                        <td>
+                          <% orderno = i.intOrderNo %>
+                          <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="large ui button">View Invoice</button></a>
+                          <a href="/customerOrder/orderHistory?order=<%=orderno%>"><button class="large ui teal button">View History</button></a>
+                        </td>
+                      </tr>
+                    <% }) %>
+                    <% } %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-			<!-- buttons -->
-
-            <!-- /.box-header -->
-            <div class="box-body table-responsive">
-              <table id="example2" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                  <th>Order No</th>
-                  <th>Customer Name</th>
-                  <th>Order Date</th>
-				          <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <% if (re == null || re == undefined || re.length == 0){ %>
-
-                <% }else{ %>
-                <%  re.forEach(function(i){ %>
-                  <tr>
-                    <td><%= i.intOrderNo %></td>
-                    <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
-                    <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
-                    <td>
-                      <% if (i.Stat == 0){ %>
-                        <span class="label label-warning">Pending</span>
-                      <% }else if(i.Stat == 1){ %>
-                        <span class="label label-info">Processing</span>
-                      <% }else if(i.Stat == 2){ %>
-                        <span class="label label-default">Shipped</span>
-                      <% }else if (i.Stat == 3){ %>
-                        <span class="label label-default">Delivered</span>
-                      <% }else if(i.Stat == 4){ %>
-                        <span class="label label-default">Will not deliver</span>
-                      <% }else if(i.Stat == 5){ %>
-                        <span class="label label-default">Returned</span>
-                      <% }else{ %>
-                        <span class="label label-danger">Cancelled</span>
-
-                      <% } %>
-                    </td>
-                    <td>
-                      <center>
-                      <% orderno = i.intOrderNo %>
-                      <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="large ui button">View Invoice</button></a>
-
-                        <a href="/customerOrder/assessOrder?order=<%=orderno%>"><button class="large ui blue button">Assess</button></a>
-
-                      <a href="/customerOrder/orderHistory?order=<%=orderno%>"><button class="large ui teal button">View History</button></a>
-                    </center>
-                    </td>
-                  </tr>
-                <% }) %>
-                <% } %>
-
-
-                </tbody>
-
-              </table>
-            </div>
-            <!-- /.box-body -->
           </div>
-          <!-- /.box -->
+
+
 
 	    </div>
         <!-- /.col -->
@@ -98,63 +203,6 @@
 
   <!-- /.content-wrapper -->
 
-	<!-- Modals -->
-
-	<div class="modal fade" id="addProduct">
-	  <div class="modal-dialog">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title">Product Information Form</h4>
-		  </div>
-		  <div class="modal-body">
-			<!-- Horizontal Form -->
-
-					<!-- form start -->
-						<form class="form-horizontal">
-						  <div class="box-body">
-							<div class="form-group">
-							  <label for="inputProductCode" class="col-sm-2 control-label">Product Code</label>
-
-							  <div class="col-sm-10">
-								<input type="text" class="form-control" id="inputProductCode" placeholder="">
-							  </div>
-							</div>
-
-							<div class="form-group">
-							  <label for="inputProductName" class="col-sm-2 control-label">Product Name</label>
-
-							  <div class="col-sm-10">
-								<input type="text" class="form-control" id="inputProductName" placeholder="">
-							  </div>
-
-							</div>
-
-							<div class="form-group">
-							  <label for="inputConsignorName" class="col-sm-2 control-label">Consignor Name</label>
-
-							  <div class="col-sm-10">
-								<input type="text" class="form-control" id="inputConsignorName" placeholder="">
-							  </div>
-
-							</div>
-
-						  </div>
-						  <!-- /.box-body -->
-
-						</form>
-
-			  </div>
-			  <div class="modal-footer">
-				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Save changes</button>
-			  </div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-  <!-- /.modal-dialog -->
-</div>
 
 <%- include('../../../templates/admin-aside.ejs') -%>
 
@@ -165,6 +213,21 @@
 <%- include('../../../templates/admin-footer.ejs') -%>
 
 <!-- page script (new added) -->
+<script>
+  $(function () {
+    $('#example1').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
 <script>
   $(function () {
     $('#example2').DataTable({
@@ -181,10 +244,24 @@
 </script>
 
 <script>
-$('#title').html("USG | All Orders");
+  $(function () {
+    $('#example3').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+$('#title').html("USG | All Customer Orders");
 $(".treeview a:contains('Transactions')").parent().addClass("active");
-$(".treeview a:contains('Customer Orders')").parent().addClass("active");
-$(".navi a:contains('All Orders')").parent().addClass("active");
+$(".navi a:contains('Customer Orders')").parent().addClass("active");
 </script>
 
 

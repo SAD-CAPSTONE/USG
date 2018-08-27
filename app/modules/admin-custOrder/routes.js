@@ -35,9 +35,27 @@ router.get('/checkNewOrders',(req,res)=>{
 router.get('/allOrders', (req,res)=>{
   db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from
     tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
-    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID`, (err1,results1,fields1)=>{
+    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID `, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
-    res.render('admin-custOrder/views/allOrders', {re: results1, moment: moment});
+    else{
+      db.query(`
+        Select CURDATE() - INTERVAL 5 DAY as DatesFrom, tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+        join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where dateOrdered >= CURDATE() - INTERVAL 5 DAY`, (err2,results2,fiels2)=>{
+        if (err2) console.log(err2);
+        else{
+          db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+            join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where tblOrder.intStatus = 6`, (err3,results3,fields3)=>{
+              if (err3) console.log(err3);
+              else{
+                res.render('admin-custOrder/views/allOrders', {re: results1, re2: results2, re3: results3,  moment: moment});
+
+              }
+
+          });
+        }
+      });
+    }
+
 
   });
 });
