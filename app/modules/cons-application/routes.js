@@ -64,7 +64,7 @@ router.post('/register',(req,res)=>{
                   if (err3){db.rollback(function(){console.log(err3); res.send("error")})}
                   else{
 
-                    db.query(`Insert into tblSupplier (intUserID, intBusinessTypeNo, strBrands, strBusinessName, strBusinessEmail, strBusinessAddress, strSupplierPhone, strSupplierMobile, strBusinessTIN,  intSupplierType, intStatus) values ("${user_no}","${req.body.businessType}","${req.body.brands}","${req.body.businessname}", "${req.body.email}", "${req.body.businessaddress}", "${req.body.phone}","${req.body.mobile}","${req.body.businesstin}",  ${req.body.suppliertype}, 3)`,(err4,supplieri,fields4)=>{
+                    db.query(`Insert into tblSupplier (intUserID, intBusinessTypeNo, strBrands, strBusinessName, strBusinessEmail, strBusinessAddress, strSupplierPhone, strSupplierMobile, strBusinessTIN,  intSupplierType, intStatus) values ("${user_no}","${req.body.businessType}","${req.body.brands}","${req.body.businessname}", "${req.body.email}", "${req.body.businessaddress}", "${req.body.phone.slice(4)}","${req.body.mobile}","${req.body.businesstin}",  ${req.body.suppliertype}, 3)`,(err4,supplieri,fields4)=>{
                       if(err4) {db.rollback(function(){console.log(err4); res.send("error")})}
                       else{
                         // Insert to contract record

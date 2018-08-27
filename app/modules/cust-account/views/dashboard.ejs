@@ -94,7 +94,7 @@
             </div>
             <div class="col">
               <label for="phone"><b>Phone Number</b></label>
-              <input id="phone" type="text" name="phone" value="<%= thisUserContact.strCusPhoneNo%>" class="form-control material mb-3" />
+              <input id="phone" type="text" name="phone" pattern= "^[\(]\d{1,5}[\)]\d{3}-\d{4}$" value="<%= thisUserContact.strCusPhoneNo%>" class="form-control material mb-3" />
             </div>
           </div>
 
