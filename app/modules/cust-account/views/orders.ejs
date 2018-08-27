@@ -7,8 +7,21 @@
 </style>
 
 <!-- main content title -->
-<h4 class="lead pl-1 pb-2"><b>My Orders</b></h4>
+<p id="title">My Orders</p>
 <!-- main content -->
+<div id="order-filter">
+  <p class="m-0 inline">Filter By: </p>
+  <select class="inline" name="">
+    <option value="all" selected>All Orders</option>
+    <option value="0">Pending</option>
+    <option value="1">Processing</option>
+    <option value="2">Shipped</option>
+    <option value="3">Delivered</option>
+    <option value="4">Will not Deliver</option>
+    <option value="5">Returned</option>
+    <option value="6">Cancelled</option>
+  </select>
+</div>
 <div class="tab">
   <table class="table">
     <thead>
@@ -16,59 +29,140 @@
         <th scope="col">Order</th>
         <th scope="col">Status</th>
         <th scope="col">Date of Order</th>
-        <th scope="col">Payment Method</th>
+        <th scope="col">Payment</th>
         <th scope="col">Total Price</th>
       </tr>
     </thead>
     <tbody>
-      <% if (orders == null || orders == undefined){ %>
-
-      <% } else if (orders.length == 0) { %>
-
-      <% } else{ %>
-        <% orders.forEach(function(i){ %>
-          <tr>
-            <td><a href="/summary/order/<%= i.intOrderNo %>">#<%= i.intOrderNo %></a></td>
-            <% let status;
-            switch(i.intStatus){
-              case 0: status = 'Pending'; break;
-              case 1: status = 'Processing'; break;
-              case 2: status = 'Shipped'; break;
-              case 3: status = 'Delivered'; break;
-              case 4: status = 'Will not Deliver'; break;
-              case 5: status = 'Returned'; break;
-              case 6: status = 'Cancelled'; break;
-            } %>
-            <td><%= status %></td>
-            <td><%= i.dateOrdered %></td>
-            <td><%= i.intPaymentMethod == 1 ? 'Cash on Delivery' : 'Bank Deposit' %></td>
-            <td><span class="price-symbol price-color"><%= i.totalPrice %></span></td>
-          </tr>
-        <% }) %>
-      <% } %>
+      <td colspan="6" class="align-center">
+        <p> Loading Orders ... </p>
+        <div class="loader"></div>
+      </td>
     </tbody>
   </table>
 </div>
 <!-- pagination -->
-<div class="row">
-  <div class="col"> </div>
-  <div class="col pt-3">
-    <ul class="pagination">
-      <li class="page-item"><a href="#" aria-label="Previous" class="page-link"><span aria-hidden="true">«</span><span class="sr-only">Previous</span></a></li>
-      <li class="page-item"><a href="#" class="page-link">1</a></li>
-      <li class="page-item"><a href="#" class="page-link">2</a></li>
-      <li class="page-item"><a href="#" class="page-link">3</a></li>
-      <li class="page-item"><a href="#" class="page-link">4</a></li>
-      <li class="page-item"><a href="#" class="page-link">5</a></li>
-      <li class="page-item"><a href="#" class="page-link">6</a></li>
-      <li class="page-item"><a href="#" aria-label="Next" class="page-link"><span aria-hidden="true">»</span><span class="sr-only">Next</span></a></li>
-    </ul>
-  </div>
-  <div class="col"> </div>
+<ul class="pagination pull-right mb-1" id="pagination"></ul>
+<div style="clear: both"></div>
+
+<button id="getOrders" type="button" hidden></button>
 </div>
 
 <%- include('../../../templates/sidebar-closer.ejs') -%>
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
+<script src="/customer-assets/scripts/pagination/jquery.twbsPagination.js" type="text/javascript"></script>
+<script type="text/javascript">
+  let oldUrl = window.location.href;
+  $(() => {
+    const thisUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+    let newUrl, $pagination = $('#pagination'), defaultOpts = { totalPages: 1 };
+    $pagination.twbsPagination(defaultOpts);
+
+    function getParams(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+    function pushParams(status,page){
+      status ? 0 : status = getParams('status');
+      page ? 0 : page = getParams('page');
+      newUrl = `${thisUrl}`;
+
+      newUrl = status ? `${newUrl}?status=${status}` : `${newUrl}?status=all`
+      newUrl = page ? `${newUrl}&page=${page}` : `${newUrl}&page=1`
+
+      window.history.pushState({path:newUrl},'',newUrl);
+    }
+
+    $('#getOrders').on('click', () => {
+      oldUrl = window.location.href
+
+      let status = getParams('status'), page = getParams('page');
+
+      status ? status = status.indexOf("'") == -1 ? status : 'all' : 0
+      page ? page = page.indexOf("'") == -1 ? page : '1' : 0
+
+      $.post('/account/orders/load', {
+        status: status,
+        page: page
+      }).then((res) => {
+        // pushParams(res.config.status,res.config.page);
+
+        let list = $('tbody'), status, payment;
+
+        // Status
+        $('#order-filter > select').val(res.config.status)
+
+        // Orders
+        res.orders.length ? list.html('') : list.html('<td colspan="6" class="align-center text-muted"><em>None</em></td>');
+        res.orders.forEach((data)=>{
+          switch(data.intStatus){
+            case 0: status = 'Pending'; break;
+            case 1: status = 'Processing'; break;
+            case 2: status = 'Shipped'; break;
+            case 3: status = 'Delivered'; break;
+            case 4: status = 'Will not Deliver'; break;
+            case 5: status = 'Returned'; break;
+            case 6: status = 'Cancelled'; break;
+          }
+          payment = data.intPaymentMethod == 1 ? 'Cash on Delivery' : 'Bank Deposit'
+          paymentstatus = data.intPaymentStatus == 1 ?
+            `<i class="fa fa-check-circle mr-2"></i>` : `<i class="fa fa-circle mr-2"></i>`
+
+
+          list.append(`
+            <tr>
+              <td><a href="/summary/order/${data.intOrderNo}">#${data.intOrderNo}</a></td>
+              <td>${status}</td>
+              <td>${data.dateOrdered}</td>
+              <td>${paymentstatus}${payment}</td>
+              <td><span class="price-symbol price-color">${data.totalPrice}</span></td>
+            </tr>
+          `);
+        })
+
+        // pagination
+        let totalPages = res.config.total_pages;
+        let currentPage = res.config.page;
+        $pagination.twbsPagination('destroy');
+        $pagination.twbsPagination($.extend({}, defaultOpts, {
+          startPage: currentPage,
+          totalPages: totalPages,
+          visiblePages: 5,
+          first: '<<',
+          prev: '<',
+          next: '>',
+          last: '>>'
+        })).on('page', function (event, page) {
+          pushParams(null,page);
+          $("html, body").scrollTop(0);
+          $('#getOrders').click();
+        });
+      }).catch((error)=>{
+        console.log(error);
+      })
+    });
+
+    $('#order-filter > select').on('change', function(){
+      pushParams($(this).val());
+      $('#getOrders').click();
+    });
+
+    $('#getOrders').click();
+
+    if (window.history && window.history.pushState) {
+      $(window).on('popstate', function() {
+        window.location.href != oldUrl ? $('#getOrders').click() : 0
+      });
+    }
+
+  });
+
+</script>
 <%- include('../../../templates/closer.ejs') -%>

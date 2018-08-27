@@ -81,7 +81,7 @@
             <th>Qty</th>
             <th>Product</th>
             <th>Product Code</th>
-            <th>Description</th>
+            <th>Size</th>
             <th>Product Price</th>
             <th>Subtotal</th>
           </tr>
@@ -95,7 +95,7 @@
                 <td><%= i.intQuantity %></td>
                 <td><%= i.strProductName %></td>
                 <td><%= i.strProductCode %></td>
-                <td><%= i.strDescription %></td>
+                <td><%= i.intSize %></td>
                 <td>Php <%= i.purchasePrice %></td>
                 <td>Php <%= i.intQuantity * i.purchasePrice %></td>
               </tr>
@@ -154,7 +154,7 @@
     <!-- this row will not appear when printing -->
     <div class="row no-print">
       <div class="col-xs-12">
-        <a href="/customerOrder/invoice-print?order=<%= customer[0].intOrderNo %>" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Print</a>
+        <a href="/customerOrder/invoice-print?order=<%=customer[0].intOrderNo%>" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Print</a>
         <button type="button" disabled class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Submit Payment
         </button>
         <button type="button" disabled class="btn btn-primary pull-right" style="margin-right: 5px;">

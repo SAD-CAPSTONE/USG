@@ -11,7 +11,7 @@ const productQuery = `
   INNER JOIN (SELECT * FROM tblproductinventory)Inv ON tblproductlist.intProductNo= Inv.intProductNo
   INNER JOIN tblsubcategory ON tblproductlist.intSubCategoryNo= tblsubcategory.intSubCategoryNo
   INNER JOIN tblcategory ON tblsubcategory.intCategoryNo= tblcategory.intCategoryNo
-  WHERE Brand.intStatus= 1 AND Inv.intQuantity > 0)A LEFT JOIN (SELECT * FROM tblorderdetails)Orders ON A.intInventoryNo= Orders.intInventoryNo
+  WHERE Brand.intStatus= 1)A LEFT JOIN (SELECT * FROM tblorderdetails)Orders ON A.intInventoryNo= Orders.intInventoryNo
   GROUP BY A.intProductNo)B LEFT JOIN (SELECT * FROM tblproductreview)Review ON B.intProductNo = Review.intProductNo `
 
 function thisCategory(req,res,next){

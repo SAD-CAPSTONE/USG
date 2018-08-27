@@ -7,14 +7,14 @@
 </style>
 
 <!-- main content title -->
-<h4 class="lead pl-1 pb-2"><b>Account Dashboard</b></h4>
+<p id="title">Account Dashboard</p>
 <!-- main content -->
 <div class="row">
   <div class="col-md-6 mb-3">
     <div class="card">
       <div class="card-header"> Personal information</div>
       <div class="card-body">
-        <h5 class="mb-1"><%= thisUser.strFname%> <%= thisUser.strMname%> <%= thisUser.strLname%></h4>
+        <h5 class="mb-1"><%= thisUser.strFname%> <%= thisUser.strMname%> <%= thisUser.strLname%></h5>
         <h6 class="text-muted mb-1">
           <% if(thisUserContact.strCusMobileNo){ %>
             <%= `+63${thisUserContact.strCusMobileNo.slice(1)}`%>
@@ -94,7 +94,7 @@
             </div>
             <div class="col">
               <label for="phone"><b>Phone Number</b></label>
-              <input id="phone" type="text" name="phone" value="<%= thisUserContact.strCusPhoneNo%>" class="form-control material mb-3" />
+              <input id="phone" type="text" name="phone" pattern= "^[\(]\d{1,5}[\)]\d{3}-\d{4}$" value="<%= thisUserContact.strCusPhoneNo%>" class="form-control material mb-3" />
             </div>
           </div>
 

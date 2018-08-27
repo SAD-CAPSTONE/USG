@@ -9,15 +9,13 @@ router.get('/', (req,res)=>{
 });
 
 router.post('/checkNewOrders',(req,res)=>{
-    db.query(`Select CURDATE() - INTERVAL 2 DAY as DatesFrom, tblOrder.intStatus as Stat,
-    tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
-    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where dateOrdered >= CURDATE() - INTERVAL 2 DAY and tblOrder.intStatus = 0`, (err1,results1,fields1)=>{
+    db.query(`Select count(*) as qty from tblOrder where  tblOrder.intStatus = 0`, (err1,results1,fields1)=>{
         if (err1) console.log(err1);
 
         if (results1 == null || results1 == undefined){
           res.send("no");
         }else if(results1.length > 0){
-          res.send("new");
+          res.send(results1);
         }else{
           res.send("no");
         }
@@ -27,7 +25,7 @@ router.post('/checkNewOrders',(req,res)=>{
 router.get('/checkNewOrders',(req,res)=>{
   db.query(`Select CURDATE() - INTERVAL 2 DAY as DatesFrom, tblOrder.intStatus as Stat,
     tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
-    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where dateOrdered >= CURDATE() - INTERVAL 2 DAY and tblOrder.intStatus = 0`,(err1,results1,fields1)=>{
+    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where  tblOrder.intStatus = 0`,(err1,results1,fields1)=>{
       if (err1) console.log(err1);
 
       res.render('admin-custOrder/views/newOrders', {re: results1, moment: moment})
@@ -37,9 +35,27 @@ router.get('/checkNewOrders',(req,res)=>{
 router.get('/allOrders', (req,res)=>{
   db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from
     tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
-    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID`, (err1,results1,fields1)=>{
+    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID `, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
-    res.render('admin-custOrder/views/allOrders', {re: results1, moment: moment});
+    else{
+      db.query(`
+        Select CURDATE() - INTERVAL 5 DAY as DatesFrom, tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+        join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where dateOrdered >= CURDATE() - INTERVAL 5 DAY`, (err2,results2,fiels2)=>{
+        if (err2) console.log(err2);
+        else{
+          db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+            join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where tblOrder.intStatus = 6`, (err3,results3,fields3)=>{
+              if (err3) console.log(err3);
+              else{
+                res.render('admin-custOrder/views/allOrders', {re: results1, re2: results2, re3: results3,  moment: moment});
+
+              }
+
+          });
+        }
+      });
+    }
+
 
   });
 });
@@ -141,7 +157,8 @@ var c = 0;
             if(resw==undefined||resw==null){db.rollback(function(){ res.send("false")})}
             else if(resw.length==0){db.rollback(function(){ res.send("false")})}
             else{
-              db.query(`Update tblproductinventory set intQuantity = intQuantity - ${orders[c].intQuantity}
+              // Update inventory (less quantity , reserved items )
+              db.query(`Update tblproductinventory set intQuantity = intQuantity - ${orders[c].intQuantity}, intReservedItems = intReservedItems - ${orders[c].intQuantity}
                 where (tblproductinventory.intInventoryNo = "${orders[c].intInventoryNo}") and (intQuantity  >= ${orders[c].intQuantity})`,(errx,resultsx,fieldsx)=>{
                   if(errx){db.rollback(function(){console.log(errx); res.send("no");})}
 
@@ -156,8 +173,6 @@ var c = 0;
                         for(var a in batch){
                           if(remaining == 0){
                             break;
-
-
                           }
                           else if(batch[a].intQuantity < remaining || batch[a].intQuantity == remaining){
                             let newValue = 0;
@@ -180,32 +195,6 @@ var c = 0;
                           }
                         }
 
-                          for(var b in batch){
-                            if(remaining2 == 0){
-                            //  console.log('finished');
-                              //c++; callback();
-                              break;
-                            }
-                            else if(batch[b].intReservedItems < remaining2 || batch[b].intReservedItems == remaining2){
-                              let newValue = 0;
-                              remaining2 -= batch[b].intReservedItems;
-                              console.log('newValue2: '+newValue);
-                              console.log('remaining2: '+remaining2);
-                              db.query(`Update tblBatch set intReservedItems = ${newValue} where intBatchNo = "${batch[b].intBatchNo}"`,(e6,r6,f6)=>{
-                                if(e6)console.log(e6);
-                              });
-
-                            }
-                            else{
-                              let newValue = batch[b].intReservedItems - remaining2;
-                              remaining2 = 0;
-                              console.log('newValue2: '+newValue);
-                              console.log('remaining2: '+remaining2);
-                              db.query(`Update tblBatch set intReservedItems = ${newValue} where intBatchNo = "${batch[b].intBatchNo}"`,(e7,r7,f7)=>{
-                                if(e7)console.log(e7);
-                              });
-                            }
-                          }
 
                           c++;
                           callback();
@@ -370,7 +359,7 @@ router.post('/assessOrder',(req,res)=>{
                         }
                         // Insert into order history
                         db.query(`Insert into tblOrderHistory (intOrderHistoryNo, intOrderNo,
-                          strShippingMethod, strCourier, intStatus, intAdminID, intMessageNo) values ("${historynum}", "${req.body.orderNo}", "${req.body.shippingMethod}","${req.body.courier}", ${req.body.orderStatus}, "1000", "${messagenum}")`, (err5,results5,fields5)=>{
+                          strShippingMethod, strCourier, intStatus, intAdminID, intMessageNo, intPaymentStatus) values ("${historynum}", "${req.body.orderNo}", "${req.body.shippingMethod}","${req.body.courier}", ${req.body.orderStatus}, "1000", "${messagenum}", ${req.body.paymentStatus})`, (err5,results5,fields5)=>{
                             if(err5){db.rollback(function(){console.log(err5); res.send("no")})}
                             else{
 
@@ -424,7 +413,7 @@ router.post('/assessOrder',(req,res)=>{
 router.get('/orderHistory',(req,res)=>{
   var orderno = req.query.order;
 
-  db.query(`Select * from tblOrderHistory where intOrderNo = ${orderno}`, (err1,results1,fields1)=>{
+  db.query(`Select tblOrderHistory.intStatus as orderStatus, tblOrderHistory.intPaymentStatus as paymentStatus, tblOrderHistory.*,tblMessages.* from tblOrderHistory join tblMessages on tblOrderHistory.intOrderHistoryNo = tblMessages.intOrderHistoryNo where intOrderNo = ${orderno}`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
 
     res.render('admin-custOrder/views/orderHistory', {re: results1, moment: moment, order: orderno});
@@ -480,8 +469,7 @@ router.get('/cancelledOrders',(req,res)=>{
   db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
     join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where tblOrder.intStatus = 6`, (err1,results1,fields1)=>{
       if (err1) console.log(err1);
-
-      res.render('admin-custOrder/views/cancelledOrders',{re: results1});
+      res.render('admin-custOrder/views/cancelledOrders',{re: results1, moment: moment});
   });
 });
 
@@ -491,7 +479,8 @@ router.get('/invoice-print',(req,res)=>{
   // Order list
   db.query(`Select * from tblOrder
     join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
-    join tblproductlist on tblorderdetails.intproductno = tblproductlist.intproductno
+    join tblproductinventory on tblorderdetails.intinventoryno = tblProductinventory.intinventoryno
+    join tblproductlist on tblproductlist.intproductno = tblProductinventory.intproductno
     where tblOrder.intOrderno = ${orderno}`, (err1,results1,fields1)=>{
       if (err1) console.log(err1);
 
@@ -506,7 +495,8 @@ router.get('/invoice-print',(req,res)=>{
           db.query(`Select SUM(tblorderdetails.intquantity * tblorderdetails.purchaseprice) as
             totalAll from tblOrder
             join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
-            join tblproductlist on tblorderdetails.intproductno = tblproductlist.intproductno
+            join tblproductinventory on tblorderdetails.intinventoryno = tblProductinventory.intinventoryno
+            join tblproductlist on tblproductlist.intproductno = tblProductinventory.intproductno
             where tblOrder.intOrderno = ${orderno}`, (err3,results3,fields3)=>{
               if (err3) console.log(err3);
 

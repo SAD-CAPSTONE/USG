@@ -36,7 +36,7 @@
            </div>
            <a href="/customerOrder/checkNewOrders" class="small-box-footer">
              More info <i class="fa fa-arrow-circle-right"></i>
-           </a> 
+           </a>
          </div>
        </div>
 
@@ -63,7 +63,7 @@
          <div class="small-box bg-red">
            <div class="inner">
              <h3><%= re3%></h3>
-             <p>Products to Expire Within 7 Days</p>
+             <p>Products to Expire</p>
            </div>
            <div class="icon">
              <i class="ion ion-pie-graph"></i>
@@ -117,7 +117,7 @@
                 <% if (re6 == null || re6 == undefined){ %>
 
                 <% }else if (re6.length == 0){ %>
-          
+
                 <% }else{ %>
                     <%  re6.forEach(function(i){ %>
                <li class="item">
@@ -175,7 +175,7 @@
                   <% if (re4 == null || re4 == undefined){ %>
 
                   <% }else if (re4.length == 0){ %>
-    
+
                   <% }else{ %>
                     <%  re4.forEach(function(i){ %>
                   <tr>
@@ -197,7 +197,7 @@
                           <span class="label label-default">Returned</span>
                         <% }else{ %>
                           <span class="label label-danger">Cancelled</span>
-  
+
                         <% } %>
                   </tr>
                   <%  }) %>
@@ -234,7 +234,7 @@
                 <% if (re5 == null || re5 == undefined){ %>
 
                 <% }else if (re5.length == 0){ %>
-        
+
                 <% }else{ %>
                   <%  re5.forEach(function(i){ %>
                <li class="item">
@@ -259,7 +259,7 @@
            <!-- /.box-footer -->
          </div>
          <!-- /.box -->
-      
+
        </div>
 
      </div>

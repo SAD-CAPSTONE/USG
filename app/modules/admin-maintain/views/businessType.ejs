@@ -50,13 +50,15 @@
                         <td><%=i.strBusinessType%></td>
                         <td><%= moment(i.dateCreated).format("MM/DD/YYYY")%></td>
                         <td>
-                          <% if (i.intStatus == 1){ %>
-                            <button data-no="<%=i.intBusinessTypeNo%>" class="ui toggle button active inactivate_type">Active</button>
-
+                          <input type="checkbox"
+                          <% if (i.intStatus == 0){ %>
+                            value="0"
                           <% }else{ %>
-                            <button data-no="<%=i.intBusinessTypeNo%>" class="ui toggle button inactive activate_type">Inactive</button>
-
+                            value="1" checked
                           <% } %>
+
+                           data-no="<%=i.intBusinessTypeNo%>" class="businessType_stat" data-size="mini"  data-on="Active" data-off="Inactive" data-toggle="toggle" data-offstyle="danger" data-onstyle="success">
+
                         </td>
                         <td>
                           <center>
@@ -103,31 +105,25 @@
 			<!-- Horizontal Form -->
 
 					<!-- form start -->
-          <form role="form">
+          <form role="form" id="add_form">
               <div class="box-body">
-                <div id="formgroup" class="form-group">
-                  <% num = "1000" %>
-                  <% if (lasttype == null || lasttype == undefined){ %>
+                <div id="add_group" class="form-group">
 
-                  <% }else if (lasttype.length == 0){ %>
-
-                  <% }else{ %>
-                    <% num = parseInt(lasttype[0].intBusinessTypeNo) + 1; %>
-                  <% } %>
-                  <input type="hidden" id="bno" value="<%=num%>">
                   <label for="bType">Business Type:</label>
-                  <input type="text" class="form-control" id="bType" placeholder="">
-                  <span id="errorhelpBlock" class="help-block">You already have the same record!</span>
+                  <input  required pattern="^[^\s]+.*$" type="text" class="form-control" name="btype" id="bType" placeholder="">
+                  <span id="add_error" class="help-block">You already have the same record!</span>
+                  <small>Same records are not allowed. No whitespaces at the beginning.</small>
                 </div>
 
               </div>
-            </form>
+
 
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-			<button type="button" id="save" class="btn btn-primary">Save</button>
+			<button type="submit" id="add_save"  class="btn btn-primary">Save</button>
 		  </div>
+      </form>
 		</div>
 		<!-- /.modal-content -->
 	</div>
@@ -148,12 +144,14 @@
 					<!-- form start -->
           <form role="form" id="edit_form">
               <div class="box-body">
-                <div id="formgroup_e" class="form-group">
+                <div id="edit_group" class="form-group">
 
                   <input type="hidden" id="no_edit" name="no_edit">
                   <label for="bType">Business Type:</label>
-                  <input type="text" class="form-control" name="type_edit" id="type_edit">
-                  <span id="errorhelpBlock_e" class="help-block">You already have the same record!</span>
+                  <input required type="text" pattern="^[^\s]+.*$" class="form-control" name="type_edit" id="type_edit">
+                  <span id="edit_error" class="help-block">You already have the same record!</span>
+                  <small>Same records are not allowed. No whitespaces at the beginning.</small>
+
                 </div>
 
               </div>
@@ -162,7 +160,7 @@
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-			<button type="submit" id="save_e" class="large ui teal button">Save</button>
+			<button type="submit" id="edit_save" class="large ui teal button">Save</button>
 		  </div>
 		</div>
     </form>
@@ -198,6 +196,9 @@
   $('.editModal').on('click',function(){
     $('#no_edit').val($(this).data('no'));
     $('#type_edit').val($(this).data('name'));
+    $('#edit_group').attr('class','form-group');
+    $('#edit_error').hide();
+    $('#edit_save').attr('disabled',true);
   })
 </script>
 
@@ -248,20 +249,18 @@
 
 <script>
   $(document).ready(function(){
-    $('#save').on('click',function(){
+    $('#add_form').submit(function(e){
+      e.preventDefault();
       $.ajax({
         url: '/maintenance/addBusinessType',
         method: 'POST',
         datatype: "json",
-        data: {
-          bno: $('#bno').val(),
-          btype: $('#bType').val(),
-        },
+        data: $('#add_form').serialize(),
         success: function(response,status,http){
           if (response){
             if (response == "yes"){
-              swal({title:"Success",text:"Business type added!", type:"success"}, function(){
-                  window.location.reload();
+              swal({title:"Success",text:"Business type added!", type:"success"}).then(()=>{
+                location.reload();
               });
 
             }
@@ -273,54 +272,55 @@
 </script>
 
 <script>
-$('.inactivate_type').on('click',function(){
-  $(this).removeClass("ui toggle button active inactivate_type").addClass("ui toggle button  activate_type").html("Inactive");
+  $('.businessType_stat').on('change',function(){
+    var val = $(this).val() == 1 ? 0 : 1;
 
-  $.ajax({
-    url: '/maintenance/inactivateType',
-    method: 'post',
-    datatype: 'json',
-    data: {no: $(this).data('no')},
-    success: function(response,status,http){
-      if (response){
-        swal("Success!", "You have activated Business Type no"+$(this).data('no'), "success");
+    $.post('/maintenance/changeBusinessTypeStat',{no: $(this).data('no'), value: val}, function(data,status){
+      if (data){
+
       }
-    }
-  })
-})
+    })
 
-$('.activate_type').on('click',function(){
-  $(this).removeClass("ui toggle button activate_type").addClass("ui toggle button active inactivate_type").html("Active");
 
-  $.ajax({
-    url: '/maintenance/activateType',
-    method: 'post',
-    datatype: 'json',
-    data: {no: $(this).data('no')},
-    success: function(response,status,http){
-      if (response){
-        swal("Success!", "You have activated Business Type no"+$(this).data('no'), "success");
-      }
-    }
   })
-})
+
 </script>
 
 <script>
-  $('#errorhelpBlock').hide();
-  $('#save').attr('disabled',true);
+  $('#add_error').hide();
+  $('add_save').attr('disabled',true);
   $('#bType').on('keyup',function(){
 
-    $.post('/validate/businessType',{data: $(this).val()},function(data,status){
+    $.post('/maintenance2/businessType',{data: $(this).val()},function(data,status){
       if(data == "yes"){
-        $('#errorhelpBlock').show();
-        $('#formgroup').attr('class', 'form-group has-error');
-        $('#save').attr('disabled',true);
+        $('#add_error').show();
+        $('#add_group').attr('class', 'form-group has-error');
+        $('add_save').attr('disabled',true);
 
       }else{
-        $('#errorhelpBlock').hide();
-        $('#formgroup').attr('class', 'form-group has-success');
-        $('#save').attr('disabled',false);
+        $('#add_error').hide();
+        $('#add_group').attr('class', 'form-group has-success');
+        $('add_save').attr('disabled',false);
+      }
+    });
+  })
+</script>
+
+<script>
+  $('#edit_error').hide();
+  $('#edit_save').attr('disabled',true);
+  $('#type_edit').on('keyup',function(){
+
+    $.post('/maintenance2/businessType',{data: $(this).val()},function(data,status){
+      if(data == "yes"){
+        $('#edit_error').show();
+        $('#edit_group').attr('class', 'form-group has-error');
+        $('#edit_save').attr('disabled',true);
+
+      }else{
+        $('#edit_error').hide();
+        $('#edit_group').attr('class', 'form-group has-success');
+        $('#edit_save').attr('disabled',false);
       }
     });
   })

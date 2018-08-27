@@ -262,7 +262,7 @@
       confirmButtonText: 'Yes, create it!'
     }).then((result) => {
       if (result.value) {
-        $.post('/validate/createAccount',{name: '<%=re[0].strFname%><%=re[0].strLname%>'},function(data,status){
+        $.post('/maintenance2/createAccount',{name: '<%=re[0].strFname%><%=re[0].strLname%>'},function(data,status){
           if(data){
             swal('Success!','Username:'+data.username+' '+'Password:'+data.password,'success')
           }
