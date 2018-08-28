@@ -64,6 +64,9 @@ $(() => {
                   </button>
                   </div>
                 </div>
+                <small class="product-oldprice text-muted">
+                  <span>${data.limit} left</span><br>
+                </small>
                 <p class="product-price price-symbol">${data.curPrice}</p>
               </div>
             </div>

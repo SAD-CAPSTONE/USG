@@ -4,7 +4,7 @@ const db = require('../../lib/database')();
 const firstID = 1000;
 const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
-
+// 
 function newReviewID(req,res,next) {
   db.query(`SELECT * FROM tblproductreview ORDER BY intProductReviewNo DESC LIMIT 1`, (err, results, fields) => {
     if (err) console.log(err);

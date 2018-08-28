@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../lib/database')();
 const passport = require('passport');
-
+// 
 router.get('/', (req,res)=>{
   req.logout();
   console.log('??????????? Session Values');
