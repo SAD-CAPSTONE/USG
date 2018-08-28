@@ -57,9 +57,17 @@ function thisInventory(req,res,next){
     WHERE tblproductlist.intProductNo= ? GROUP BY tblproductinventory.intInventoryNo`
     ,[req.params.prodid], (err, results, fields)=> {
     if (err) console.log(err);
-    results[0] ? results.forEach((data)=>{
-      data.productPrice = priceFormat(data.productPrice.toFixed(2))
-    }) : 0
+    if (results[0]){
+      results.forEach((data)=>{
+        data.productPrice = priceFormat(data.productPrice.toFixed(2))
+      })
+      let curSize = ``;
+      results[0].strVariant ? curSize+= `${results[0].strVariant}`: 0
+      results[0].strVariant && results[0].intSize ? curSize+= ` - `: 0
+      results[0].intSize ? curSize+= `${results[0].intSize}`: 0
+      results[0].strUnitName ? curSize+= `${results[0].strUnitName}`: 0
+      results[0].curSize = curSize
+    }
     req.thisInventory = results;
     return next();
   });
