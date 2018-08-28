@@ -92,8 +92,8 @@
 
                             </button>
                             <ul class="dropdown-menu">
-                              <li><a href="#">Edit Details</a></li>
-                              <li><a href="#">See Batch Products</a></li>
+                              <li><a type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory">Edit Details</a></li>
+                              <li><a href="/inventory/seeBatch?p=<%=i.intInventoryNo%>">See Batch Products</a></li>
                             </ul>
                           </div>
 
