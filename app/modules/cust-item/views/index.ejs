@@ -118,11 +118,7 @@
                   <% thisInventory.forEach((inv, i)=>{ %>
                     <% if(i==0){ %>
                       <option value="<%= inv.intInventoryNo%>" selected>
-                        <% if(inv.strVariant){ %>
-                          <%= inv.strVariant%> - <%= inv.intSize%><%= inv.strUnitName%>
-                        <% }else{ %>
-                          <%= inv.intSize%><%= inv.strUnitName%>
-                        <% } %>
+                        <%= inv.curSize%>
                       </option>
                     <% }else{ %>
                       <option value="<%= inv.intInventoryNo%>">
