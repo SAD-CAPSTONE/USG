@@ -2,7 +2,7 @@ var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
 
-router.get('/consignor-dash', (req,res)=>{
+router.get('/dashboard', (req,res)=>{
   res.render('cons-dashboard/views/cons-dashboard');
 });
 
@@ -10,7 +10,7 @@ router.get('/consignor-dash', (req,res)=>{
   //res.render('cons-dashboard/views/cons-products');
 //});
 
-router.get('/consignor-products', (req,res)=>{
+router.get('/products', (req,res)=>{
   db.query(`
     SELECT * from tblproductinventory join tblproductlist on tblproductinventory.intProductNo = tblproductlist.intproductno
     join tbluser on tbluser.intUserID = tblproductinventory.intUserID
@@ -23,4 +23,9 @@ router.get('/consignor-products', (req,res)=>{
   });
 });
 
+router.get('/orders', (req,res)=>{
+  res.render('cons-dashboard/views/cons-orders');
+});
+
 exports.consignor = router;
+
