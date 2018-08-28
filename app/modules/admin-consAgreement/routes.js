@@ -24,26 +24,55 @@ router.get('/contract',(req,res)=>{
 });
 
 router.post('/renew',(req,res)=>{
-  console.log('renew');
+  var history_no = "1000";
   db.query(`Update tblContract set intContractStatus = 1 where intContractNo = "${req.body.no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     db.query(`Update tblSupplier set intStatus = 1
       where tblSupplier.intUserID = (Select intConsignorID from tblContract where intContractNo = ${req.body.no})`,(err2,res2,fie2)=>{
-        if(err2) console.log(err2);
-        if(!err2) res.send("yes");
+        db.query(`Select * from tblContractHistory order by intContractHistoryNo desc limit 1`,(err3,res3,fie3)=>{
+          if(err3) console.log(err3)
+          else{
+            if(res3==null||res3==undefined){} else if(res3.length==0) {}
+            else{ history_no = parseInt(res3[0].intContractHistoryNo) + 1}
+
+            db.query(`Insert into tblContractHistory (intContractHistoryNo, intContractNo, intContractStatus) values ("${history_no}", "${req.body.no}", 1)`,(err4,res4,fie4)=>{
+              if(err4) console.log(err4);
+              else{
+                res.send("yes");
+              }
+            })
+          }
+        })
+
       });
 
   })
 });
 
 router.post('/terminate',(req,res)=>{
-  console.log('terminate')
+
+  var history_no = "1000";
   db.query(`Update tblContract set intContractStatus = 4 where intContractNo = "${req.body.no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     db.query(`Update tblSupplier set intStatus = 0
       where tblSupplier.intUserID = (Select intConsignorID from tblContract where intContractNo = ${req.body.no})`,(err2,res2,fie2)=>{
         if(err2) console.log(err2);
-        if(!err2) res.send("yes");
+        else{
+          db.query(`Select * from tblContractHistory order by intContractHistoryNo desc limit 1`,(err3,res3,fie3)=>{
+            if(err3) console.log(err3)
+            else{
+              if(res3==null||res3==undefined){} else if(res3.length==0) {}
+              else{ history_no = parseInt(res3[0].intContractHistoryNo) + 1}
+
+              db.query(`Insert into tblContractHistory (intContractHistoryNo, intContractNo, intContractStatus) values ("${history_no}", "${req.body.no}", 4)`,(err4,res4,fie4)=>{
+                if(err4) console.log(err4);
+                else{
+                  res.send("yes");
+                }
+              })
+            }
+          })
+        }
       })
 
   })
@@ -73,6 +102,8 @@ router.get('/contract/load/:id',(req,res)=>{
       }
     });
   }
-})
+});
+
+
 
 exports.consAgreement = router;
