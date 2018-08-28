@@ -1,6 +1,9 @@
 <%- include('../../../templates/cons-master.ejs') -%>
 
 <style>
+  input, select {
+    border-radius: 0px !important;
+  }
   input:disabled, button:disabled {
     background: #ccc !important;
     cursor: default !important;
@@ -13,20 +16,18 @@
     width: 100%;
   }
   span.tip-message::after {
-    content: attr(title);
+    content: attr(mess);
     position: absolute;
     right: 0;
     top: 0;
-    color: black;
+    color: white;
     display: block;
-    background: rgba(248, 215, 218);
+    background: #e74c3c;
     padding: 4.65px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
     font-size: .8em;
   }
-  span.tip-message.passed::after {
-    background: rgba(255, 243, 205);
+  span.tip-message.pass::after {
+    background: #2ecc71;
   }
 
 </style>
@@ -72,7 +73,7 @@
       <div class="form-group">
         <label class="control-label" for="businessname">Business Name</label>
         <div class="">
-        <input id="businessname" name="businessname" placeholder="Your Answer" class="form-control input-md" min="5" max="10" required="" type="text">
+        <input id="businessname" name="businessname" placeholder="Your Answer" class="form-control input-md" min="1" max="50" type="text">
         <span class="help-block">Specify Business Name</span>
         </div>
       </div>
@@ -81,7 +82,7 @@
       <div class="form-group">
         <label class="control-label" for="brandname">Brand Name</label>
         <div class="">
-        <input id="brandname" name="brands" placeholder="Your Answer" class="form-control" required="" min="7" max="15" type="text">
+        <input id="brandname" name="brands" placeholder="Your Answer" class="form-control" min="1" max="100" type="text">
         <span class="help-block">List all if you have multiple brands, separated by a comma</span>
         </div>
       </div>
@@ -109,7 +110,7 @@
       <div class="form-group">
         <label class="control-label" for="businessaddress">Business Address</label>
         <div class="">
-        <input id="businessaddress" name="businessaddress" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+        <input id="businessaddress" name="businessaddress" placeholder="Your Answer" class="form-control input-md" min='1' max='100' type="text">
 
         </div>
       </div>
@@ -123,7 +124,7 @@
       <div class="form-group">
         <label class="control-label" for="businessTIN">Business TIN</label>
         <div class="">
-        <input id="businessTIN" name="businesstin" placeholder="Your Answer" class="form-control input-md"  type="text">
+        <input id="businessTIN" name="businesstin" placeholder="Your Answer" class="form-control input-md" min='1' max='10' type="text">
 
         </div>
       </div>
@@ -171,26 +172,26 @@
         <label class="control-label" for="fname">Supplier Information</label>
       </div>
       <div class="form-group mb-0">
-        <input id="fname" name="fname" placeholder="First Name" class="form-control input-md" required="" min="4" type="text">
+        <input id="fname" name="fname" placeholder="First Name" class="form-control input-md mini" min='1' max='50' type="text">
       </div>
       <div class="form-group mb-0">
-        <input id="mname" name="mname" placeholder="Middle Name" class="form-control input-md" required="" min="12" type="text">
-        </div>
+        <input id="mname" name="mname" placeholder="Middle Name (Optional)" class="form-control input-md optional mini" max='50' type="text">
       </div>
       <div class="form-group">
-        <input id="lname" name="lname" placeholder="Last Name" class="form-control input-md" required="" max="7" type="text">
-        </div>
+        <input id="lname" name="lname" placeholder="Last Name" class="form-control input-md mini" min='1' max='50' type="text">
       </div>
 
       <!-- Text input-->
-      <div class="form-group">
-        <label class="control-label" for="textinput">Contact Number</label>
-        <div class="">
-        <input id="textinput" name="mobile" placeholder="Mobile" class="form-control input-md mobile" required="" type="text">
-        <input id="textinput" name="phone" placeholder="Phone" class="form-control input-md phone" required="" type="text">
-
-        </div>
+      <div class="form-group mb-0">
+        <label class="control-label" for="mobile">Contact Number</label>
       </div>
+      <div class="form-group mb-0">
+        <input id="mobile" name="mobile" placeholder="Mobile(PH): eg. 09236835707 " class="form-control input-md mobile mini" type="text">
+      </div>
+      <div class="form-group">
+        <input id="phone" name="phone" placeholder="Phone: (Area Code)XXX-XXXX" class="form-control input-md phone mini" type="text">
+      </div>
+
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
       <input type="button" name="next" class="next action-button" value="Next" disabled/>
     </fieldset>
@@ -201,7 +202,7 @@
       <div class="form-group">
         <label class="control-label" for="textinput">Best Time &amp; Day to reach you</label>
         <div class="">
-        <input id="textinput" name="besttime" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+        <input id="textinput" name="besttime" placeholder="Your Answer (Optional)" class="form-control input-md optional" max='100' type="text">
 
         </div>
       </div>
@@ -210,7 +211,7 @@
       <div class="form-group">
         <label class="control-label" for="textinput">Email address</label>
         <div class="">
-        <input id="textinput" name="email" placeholder="Your Answer" class="form-control input-md" required="" type="email">
+        <input id="textinput" name="email" placeholder="Your Answer" class="form-control input-md" min='1' max='100' type="email">
 
         </div>
       </div>
@@ -231,20 +232,6 @@
           </label>
         </div>
       </div>
-      <!-- <div class="checkbox">
-          <label for="checkboxes-0">
-            <input name="consignment" id="checkboxes-0" value="40" type="checkbox">
-            We agree with the 40% discount/ commision on all product consignment
-          </label>
-        </div>
-        <div class="checkbox">
-          <label for="checkboxes-1">
-            <input name="consignment" id="checkboxes-1" value="0" type="checkbox">
-            We have a higher offer for Ultra Super Green - (email proposal)
-          </label>
-        </div>
-        </div>
-      </div> -->
 
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
       <input type="button" name="next" class="next action-button" value="Next" disabled/>
@@ -260,9 +247,9 @@
 
           <div class="checkbox">
             <% if (category){ %>
-              <% category.forEach(function(i){ %>
-                <input name="category" id="<%=i.strCategory%>-<%=i.strSubCategory%>" value="<%=i.strCategory%> - <%=i.strSubCategory%>" type="checkbox">
-                <label for="<%=i.strCategory%>-<%=i.strSubCategory%>"><%=i.strCategory%> - <%=i.strSubCategory%></label>
+              <% category.forEach(function(data,i){ %>
+                <input name="category[<%=i%>]" id="<%=data.strCategory%>-<%=data.strSubCategory%>" value="<%=data.strCategory%> - <%=data.strSubCategory%>" type="checkbox">
+                <label for="<%=data.strCategory%>-<%=data.strSubCategory%>"><%=data.strCategory%> - <%=data.strSubCategory%></label>
                 </br>
               <% }) %>
             <% } %>
@@ -278,9 +265,9 @@
           <div class="">
             <div class="input-group">
               <span class="input-group-addon">
-                  <input type="checkbox" class="others">
+                <input type="checkbox" class="others" name="others" value='1'>
               </span>
-              <input id="prependedcheckbox" name="prependedcheckbox" class="form-control others-input optional" placeholder="Other please specify" type="text">
+              <input id="prependedcheckbox" name="specify" class="form-control others-input optional" placeholder="Other please specify" type="text" max='45'>
             </div>
 
           </div>
@@ -291,65 +278,47 @@
 
     <!--STEP 5 Product Details-->
     <fieldset>
-      <!-- Text input-->
-      <!-- certification -->
       <div class="form-group">
-          <label class="control-label" for="checkboxes">Product Certifications / Awards &amp; Recognition </label>
-          <hr>
-          <div class="">
-          <div class="checkbox">
-
-              <% if (certification){ %>
-                <% certification.forEach(function(i){ %>
-                  <input name="certification" id="<%=i.strCertification%>" value="<%=i.strCertification%>" type="checkbox" class="optional">
-                  <label for="<%=i.strCertification%>"><%= i.strCertification %></label>
-                  </br>
-                <% }) %>
-              <% } %>
-          </div>
-
-          </div>
-        </div>
-
-        <!-- Select Basic -->
-        <div class="form-group">
-          <label class="control-label" for="selectbasic">FDA Registration Status</label>
-          <div class="">
-            <select id="selectbasic" name="fdastat" class="form-control">
-
-              <option value="1">Registered</option>
-              <option value="2">In-Process</option>
-              <option value="3">We have not registered but our products have an accreditation or third party lab results as proof of authenticity and efficacy</option>
-              <option value="4">N/A - for non food only except for beauty products and cosmetics</option>
-              <option value="5">None</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Text input-->
-        <div class="form-group">
-          <label class="control-label" for="textinput">FDA Registration ID Number </label>
-          <div class="">
-          <input id="textinput" name="fda" placeholder="Your Answer" class="form-control input-md" required="" type="text">
-
+        <label class="control-label" for="checkboxes">Product Certifications / Awards &amp; Recognition </label>
+        <hr>
+        <div class="checkbox">
+          <% if (certification){ %>
+            <% certification.forEach(function(data,i){ %>
+              <input name="certification[<%=i%>]" id="<%=data.strCertification%>" value="<%=data.strCertification%>" type="checkbox" class="optional">
+              <label for="<%=data.strCertification%>"><%= data.strCertification %></label>
+              </br>
+            <% }) %>
+          <% } %>
         </div>
       </div>
-      <!-- Text input-->
+
       <div class="form-group">
-          <label class="control-label" for="textinput">Proposed Schedule of Product Delivery </label>
-          <div class="">
-          <input id="textinput" name="deliverysched" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+        <label class="control-label" for="fdastat">FDA Registration Status</label>
+        <select id="fdastat" name="fdastat" class="form-control">
 
-        </div>
-      </div
-
-        <div class="form-group">
-            <label class="control-label" for="textinput">Frequency of Delivery </label>
-            <div class="">
-            <input id="textinput" name="freq" placeholder="Your Answer" class="form-control input-md" required="" type="text">
-
-          </div>
+            <option value="1">Registered</option>
+            <option value="2">In-Process</option>
+            <option value="3">We have not registered but our products have an accreditation or third party lab results as proof of authenticity and efficacy</option>
+            <option value="4">N/A - for non food only except for beauty products and cosmetics</option>
+            <option value="5">None</option>
+          </select>
       </div>
+
+      <div class="form-group">
+        <label class="control-label" for="fda">FDA Registration ID Number </label>
+        <input id="fda" name="fda" placeholder="Your Answer (Optional)" class="form-control input-md optional" max='45' type="text">
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" for="deliverysched">Proposed Schedule of Product Delivery </label>
+        <input id="deliverysched" name="deliverysched" placeholder="Your Answer" class="form-control input-md" min='1' max='100' type="text">
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" for="freq">Frequency of Delivery </label>
+        <input id="freq" name="freq" placeholder="Your Answer" class="form-control input-md" min='1' max='100' type="text">
+      </div>
+
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
       <input type="button" name="next" class="next action-button" value="Next" disabled/>
     </fieldset>
@@ -393,6 +362,7 @@
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
       <button type="submit"  class="submit action-button" disabled >Submit</button>
     </fieldset>
+
   </form>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -458,7 +428,6 @@
       });
     });
 
-
     $(".previous").click(function(){
       if(animating) return false;
       animating = true;
@@ -493,17 +462,20 @@
         easing: 'easeInOutBack'
       });
     });
-    </script>
+  </script>
 
 <script>
+  const thisUrlHost = `${window.location.protocol}//${window.location.host}`,
+  testEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i,
+  testMobile = /(\/?09)[0-9]{9}/i,
+  testPhone = /^[\(]\d{1,5}[\)]\d{3}-\d{4}$/i;
+  testSpace = /^[^\s]+(\s+[^\s]+)*$/i
 
-  $(document).keypress(
-    function(event){
-     if (event.which == '13') {
-        event.preventDefault();
-      }
+  $(document).keypress(function(event){
+    if (event.which == '13') {
+      event.preventDefault();
     }
-  );
+  });
 
   $('#msform > fieldset input').keypress(function(key) {
     if ($(this).attr('max')){
@@ -514,10 +486,6 @@
   });
 
   function checkFields(fs,checkVal){
-    let testEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i,
-    testMobile = /(\/?09)[0-9]{9}/i,
-    testPhone = /^[\(]\d{1,5}[\)]\d{3}-\d{4}$/i;
-
     $(fs).find(`input:not([type=button]):not([type=checkbox]):not([type=radio]):not(.optional)`)
     .each(function(){
       $(this).val() == '' ? checkVal = 1 : 0;
@@ -538,6 +506,9 @@
       $(this).hasClass('phone') ?
         !testPhone.test($(this).val()) ? checkVal = 1 : 0
         : 0
+
+      !testSpace.test($(this).val()) ? checkVal = 1 : 0
+
     })
 
     $(fs).find(`input[type=checkbox]:not(.optional)`).length ?
@@ -551,35 +522,87 @@
     return checkVal;
   }
   function lengthMessage(thisInput){
-    // min & max message
-    // min
-    if($(thisInput).val().length < $(thisInput).attr('min')){
+    if (!$(thisInput).val().length){
       $(thisInput).next(`span.tip-message`).remove()
-      $(thisInput).after(`<span class='tip-message'
-      title='minimum of ${$(thisInput).attr('min')} characters'></span>`);
     }
     else{
-      $(thisInput).next(`span.tip-message`).remove()
+      // min & max message
+      // min
+      if($(thisInput).val().length < $(thisInput).attr('min')){
+        $(thisInput).next(`span.tip-message`).remove()
+        $(thisInput).after(`<span class='tip-message'
+        title='minimum of ${$(thisInput).attr('min')} characters' mess='minimum of ${$(thisInput).attr('min')} characters'></span>`);
+      }
+      else{
+        $(thisInput).next(`span.tip-message`).remove()
+      }
+
+      // max
+      if($(thisInput).val().length > $(thisInput).attr('max')){
+        $(thisInput).next(`span.tip-message`).remove()
+        $(thisInput).after(`<span class='tip-message'
+        title='max of ${$(thisInput).attr('max')} characters' mess='max of ${$(thisInput).attr('max')} characters'></span>`);
+      }
+      else if($(thisInput).val().length == $(thisInput).attr('max')){
+        $(thisInput).next(`span.tip-message`).remove()
+        $(thisInput).after(`<span class='tip-message pass'
+        title='max characters reached (${$(thisInput).attr('max')})'
+        mess='max characters reached (${$(thisInput).attr('max')})'></span>`);
+      }
+
+      // !min, !max
+      if($(thisInput).val().length >= $(thisInput).attr('min') && $(thisInput).val().length < $(thisInput).attr('max')){
+        $(thisInput).next(`span.tip-message`).remove()
+      }
+
+      if(!testSpace.test($(thisInput).val())){
+        $(thisInput).next(`span.tip-message`).remove()
+        $(thisInput).after(`<span class='tip-message'
+        title='whitespace at start/end' mess='whitespace at start/end'></span>`);
+      }
+
     }
 
-    // max
-    if($(thisInput).val().length > $(thisInput).attr('max')){
-      $(thisInput).next(`span.tip-message`).remove()
-      $(thisInput).after(`<span class='tip-message'
-      title='max of ${$(thisInput).attr('max')} characters'></span>`);
-    }
-    else if($(thisInput).val().length == $(thisInput).attr('max')){
-      $(thisInput).next(`span.tip-message`).remove()
-      $(thisInput).after(`<span class='tip-message passed'
-      title='max characters reached (${$(thisInput).attr('max')})'></span>`);
+    if( $(thisInput).hasClass('mini') ){
+      $(thisInput).next(`span.tip-message`).attr('mess','*');
     }
 
-    // !min, !max
-    if($(thisInput).val().length >= $(thisInput).attr('min') && $(thisInput).val().length < $(thisInput).attr('max')){
-      $(thisInput).next(`span.tip-message`).remove()
-    }
+    inputColor(thisInput);
 
   }
+  function inputColor(thisInput){
+    let tip = $(thisInput).next(`span.tip-message`)
+    if ( (tip.length && !tip.hasClass(`pass`)) || (!$(thisInput).val().length && !$(thisInput).hasClass(`optional`)) ){
+      $(thisInput).css('border-color', '#e74c3c')
+    }
+    else{
+      $(thisInput).css('border-color', '#2ecc71')
+    }
+
+    $(thisInput).attr('type') == 'email' ?
+      !testEmail.test($(thisInput).val()) ?
+        $(thisInput).css('border-color', '#e74c3c') : 0
+      : 0
+
+    $(thisInput).hasClass('mobile') ?
+      !testMobile.test($(thisInput).val()) ?
+        $(thisInput).css('border-color', '#e74c3c') :
+        $(thisInput).val().length > 11 ?
+          $(thisInput).css('border-color', '#e74c3c') : 0
+      : 0
+
+    $(thisInput).hasClass('phone') ?
+      !testPhone.test($(thisInput).val()) ?
+        $(thisInput).css('border-color', '#e74c3c') : 0
+      : 0
+
+  }
+
+  $('#msform > fieldset input').keypress(function(event){
+    if ($(this).val().length == 0 && event.which == '32'){
+      event.preventDefault();
+    }
+  });
 
   $('#msform > fieldset input').keyup(function(){
     let fs = $(this).closest('fieldset'), checkVal = 0;
@@ -631,18 +654,18 @@
       success: function(response,status,http){
         if(response =="yes"){
           alert("Success");
+          window.location.replace(`${thisUrlHost}/login`)
 
         }else{
           alert("Error","","error");
-
         }
-
       },
       error: function(){
         alert("");
       }
     });
   })
+
 </script>
 
 

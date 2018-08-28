@@ -985,6 +985,16 @@ router.post('/addAdjustment',(req,res)=>{
       })
     }
   })
+});
+
+router.get('/seeBatch',(req,res)=>{
+  db.query(`Select tblBatch.intQuantity as quantity, tblProductInventory.*, tblProductlist.*, tblBatch.* from tblBatch join tblProductInventory on tblBatch.intInventoryNo = tblProductInventory.intInventoryNo join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
+    where tblBatch.intInventoryNo = "${req.query.p}" and tblBatch.intStatus = 1`,(err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+        res.render('admin-inventory/views/seeBatch',{re: res1, moment: moment});
+      }
+    })
 })
 
 

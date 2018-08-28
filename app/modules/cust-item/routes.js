@@ -57,9 +57,17 @@ function thisInventory(req,res,next){
     WHERE tblproductlist.intProductNo= ? GROUP BY tblproductinventory.intInventoryNo`
     ,[req.params.prodid], (err, results, fields)=> {
     if (err) console.log(err);
-    results[0] ? results.forEach((data)=>{
-      data.productPrice = priceFormat(data.productPrice.toFixed(2))
-    }) : 0
+    if (results[0]){
+      results.forEach((data)=>{
+        data.productPrice = priceFormat(data.productPrice.toFixed(2))
+      })
+      let curSize = ``;
+      results[0].strVariant ? curSize+= `${results[0].strVariant}`: 0
+      results[0].strVariant && results[0].intSize ? curSize+= ` - `: 0
+      results[0].intSize ? curSize+= `${results[0].intSize}`: 0
+      results[0].strUnitName ? curSize+= `${results[0].strUnitName}`: 0
+      results[0].curSize = curSize
+    }
     req.thisInventory = results;
     return next();
   });
@@ -145,9 +153,9 @@ function thisUserReview(req,res,next){
       db.query(`SELECT * FROM tblproductlist
       	INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
       	INNER JOIN tblorderdetails ON tblproductinventory.intInventoryNo= tblorderdetails.intInventoryNo
-        INNER JOIN tblorder ON tblorderdetails.intOrderNo= tblorder.intOrderNo
-        INNER JOIN tbluser ON tblorder.intUserID= tbluser.intUserID
-        WHERE tblproductlist.intProductNo= ? AND tblorder.intUserID= ? LIMIT 1`,
+      	INNER JOIN tblorder ON tblorderdetails.intOrderNo= tblorder.intOrderNo
+        INNER JOIN tblorderhistory ON tblorder.intOrderNo= tblorderhistory.intOrderNo
+      	WHERE tblproductlist.intProductNo= ? AND tblorder.intUserID= ? AND tblorderhistory.intStatus= 3 LIMIT 1`,
         [req.params.prodid, req.user.intUserID], (err,results,fields)=> {
         if (err) console.log(err);
         req.thisUserReview= null;
@@ -207,15 +215,10 @@ router.post('/:prodid/add-review', checkUser, newReviewID, (req,res)=>{
   });
 });
 router.post('/:prodid/edit-review', checkUser, newReviewID, (req,res)=>{
-  let stringquery1 = req.body.review ?
-    `UPDATE tblproductreview SET strReview= ?, intStars= ? WHERE intProductReviewNo= ?` :
-    `UPDATE tblproductreview SET intStars= ? WHERE intProductReviewNo= ?`
-  let bodyarray1 = req.body.review ?
-    [req.body.review, req.body.rating, req.body.reviewNo] :
-    [req.body.rating, req.body.reviewNo]
-    console.log(bodyarray1);
+  req.body.review ? 0 : req.body.review = null
 
-  db.query(stringquery1, bodyarray1, (err, results, fields) => {
+  db.query(`UPDATE tblproductreview SET strReview= ?, intStars= ? WHERE intProductReviewNo= ?`,
+    [req.body.review, req.body.rating, req.body.reviewNo], (err, results, fields) => {
     if (err) console.log(err);
     res.redirect(`/item/${req.params.prodid}`);
   });
