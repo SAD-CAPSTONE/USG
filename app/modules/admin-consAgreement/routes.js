@@ -30,7 +30,7 @@ router.post('/renew',(req,res)=>{
     db.query(`Update tblSupplier set intStatus = 1
       where tblSupplier.intUserID = (Select intConsignorID from tblContract where intContractNo = ${req.body.no})`,(err2,res2,fie2)=>{
         db.query(`Select * from tblContractHistory order by intContractHistoryNo desc limit 1`,(err3,res3,fie3)=>{
-          if(err3) console.log(err3)
+          if(err3q) console.log(err3)
           else{
             if(res3==null||res3==undefined){} else if(res3.length==0) {}
             else{ history_no = parseInt(res3[0].intContractHistoryNo) + 1}
