@@ -50,12 +50,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
    <link rel="stylesheet" href="/assets/admin/animate.css">
    <!-- Semantic Buttons -->
    <link rel="stylesheet" href="/assets/admin/UI-Button-master/button.min.css">
-   <!-- Semantic Icons  -->
-   <link rel="stylesheet" href="/assets/admin/UI-Icon-master/icon.min.css">
-   <!-- Semantic Forms -->
-   <link rel="stylesheet" href="/assets/admin/UI-Form-master/form.min.css">
-   <!-- Semantic Label -->
+
    <link rel="stylesheet" href="/assets/admin/UI-Label-master/label.min.css">
+   <!-- Bootstrap toggle -->
+   <link rel="stylesheet" href="/assets/admin/bower_components/bootstrap-toggle/css/bootstrap-toggle.min.css">
 
 </head>
 <!--
@@ -85,7 +83,7 @@ desired effect
   <header class="main-header">
 
     <!-- Logo -->
-    <a href="index2.html" class="logo">
+    <a href="/dashboard" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>USG</b></span>
       <!-- logo for regular state and mobile devices -->
@@ -209,12 +207,17 @@ desired effect
         <li class="navi"><a href="/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard	</span></a></li>
         <li class="navi">
             <a href="/customerOrder/checkNewOrders"><i class="fa fa-cart-arrow-down"></i> <span>Orders</span><span class="pull-right-container">
-            <small id="notiforder" class="label pull-right bg-green">New</small>
+            <small id="notiforder" class="label pull-right bg-green"></small>
 
           </span></a>
         </li>
-        <li class="navi"><a href="/inventory/allStocks"><i class="fa fa-bar-chart"></i> <span>Stocks</span></a></li>
-        <li class="navi"><a href="/receiveDelivery/Form"><i class="fa fa-hand-lizard-o"></i> <span>Receive Delivery</span></a></li>
+        <li class="navi"><a href="/inventory/allStocks"><i class="fa fa-bar-chart"></i> <span>Stocks</span><span class="pull-right-container">
+          <small class="notifExpired label pull-right bg-red"></small>
+
+
+            <small class="notifCritical label pull-right bg-orange"></small>
+            </span>
+        </a></li>
 
 
         <li class="header">Main Tools</li>
@@ -228,8 +231,11 @@ desired effect
           </a>
           <ul class="treeview-menu">
             <li class="navi"><a href="/inventory/allProducts"><i class="fa fa-circle-o"></i>All Products</a></li>
-            <li class="navi"><a href="/inventory/pulledOutStocks"><i class="fa fa-circle-o"></i>Pulled-out Stocks</a></li>
+            <li class="navi"><a href="/inventory/pulledOutStocks"><i class="fa fa-circle-o"></i>Expired Products</a></li>
+            <li class="navi"><a href="/inventory/adjustments"><i class="fa fa-circle-o"></i>Adjustments</a></li>
             <li class="navi"><a href="/inventory/supplierProducts"><i class="fa fa-circle-o"></i>Products per Supplier</a></li>
+            <li class="navi"><a href="/maintenance/package"><i class="fa fa-circle-o"></i>Package Discounts</a></li>
+            <li class="navi"><a href="/maintenance/promotion"><i class="fa fa-circle-o"></i>Promotions</a></li>
 
           </ul>
         </li>
@@ -247,10 +253,9 @@ desired effect
             <li class="navi"><a href="/maintenance/businessType"><i class="fa fa-genderless"></i>Business Types</a></li>
             <li class="navi"><a href="/maintenance/productCertification"><i class="fa fa-genderless"></i>Product Certification</a></li>
             <li class="navi"><a href="/maintenance/productCategory"><i class="fa fa-genderless"></i>Product Category</a></li>
+            <li class="navi"><a href="/maintenance/adjustmentTypes"><i class="fa fa-genderless"></i>Adjustment Types</a></li>
             <li class="navi"><a href="/maintenance/supplier"><i class="fa fa-genderless"></i>Suppliers</a></li>
             <li class="navi"><a href="/maintenance/brand"><i class="fa fa-genderless"></i>Product Brand</a></li>
-            <li class="navi"><a href="/maintenance/promotion"><i class="fa fa-genderless"></i>Promotions</a></li>
-            <li class="navi"><a href="/maintenance/package"><i class="fa fa-genderless"></i>Package Discounts</a></li>
             <li class="navi"><a href="/maintenance/customer"><i class="fa fa-genderless"></i>Customers</a></li>
             <li class="navi"><a href="/maintenance/voucher"><i class="fa fa-genderless"></i>Voucher</a></li>
             <li class="navi"><a href="/maintenance/batch"><i class="fa fa-genderless"></i>Product Batch</a></li>
@@ -271,24 +276,13 @@ desired effect
             </span>
           </a>
           <ul class="treeview-menu">
-              <li class="treeview">
-                <a href="#"><i class="fa fa-shopping-cart"></i>Customer Orders
-                  <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                  </span>
-                </a>
-                <ul class="treeview-menu">
-                  <li class="navi"><a href="/customerOrder/allOrders"><i class="fa fa-circle-o"></i> All Orders</a></li>
-                  <li class="navi"><a href="/customerOrder/recentOrders"><i class="fa fa-circle-o"></i> Recent Orders</a></li>
-                  <li class="navi"><a href="/customerOrder/cancelledOrders"><i class="fa fa-circle-o"></i> Cancelled Orders</a></li>
-                </ul>
-              </li>
-
+              <li class="navi"><a href="/customerOrder/allOrders"><i class="fa fa-genderless"></i>Customer Orders</a></li>
               <li class="navi"><a href="/customerPayment"><i class="fa fa-genderless"></i>Customer Payment</a></li>
-              <li class="navi"><a href="/purchaseOrder"><i class="fa fa-genderless"></i>Orders to Suppliers</a></li>
+              <li class="navi"><a href="/purchaseOrder"><i class="fa fa-genderless"></i>Order to Suppliers</a></li>
               <li class="navi"><a href="/receiveDelivery"><i class="fa fa-genderless"></i>Receive Delivery</a></li>
-              <li  class="navi"><a href="/returnOrder"><i class="fa fa-genderless"></i>Return Products</a></li>
+              <li  class="navi"><a href="/returnOrder"><i class="fa fa-genderless"></i>Return Orders</a></li>
               <li class="navi"><a href="/consApplication"><i class="fa fa-genderless"></i>Consignor Application</a></li>
+              <li class="navi"><a href="/consAgreement"><i class="fa fa-genderless"></i>Consignor Agreement</a></li>
 
           </ul>
         </li>
@@ -305,8 +299,8 @@ desired effect
           </a>
           <ul class="treeview-menu">
             <li class="navi"><a href="/utilities/businessInfo"><i class="fa fa-genderless"></i>Business Information</a></li>
-            <li class="navi"><a href="#"><i class="fa fa-genderless"></i>Order Policies</a></li>
-            <li class="navi"><a href="#"><i class="fa fa-genderless"></i>Stock Information</a></li>
+            <li class="navi"><a href="/utilities/order"><i class="fa fa-genderless"></i>Order Policies</a></li>
+            <li class="navi"><a href="#"><i class="fa fa-genderless"></i>Consignment Information</a></li>
             <li class="navi"><a href="/maintenance/FAQ"><i class="fa fa-genderless"></i>Frequently Asked Questions</a></li>
 
           </ul>

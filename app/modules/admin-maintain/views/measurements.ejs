@@ -46,13 +46,23 @@
 
                     <td><%=i.strUnitName%></td>
                     <td>
-                    <% if (i.intStatus == 1){ %>
-                      <button data-no="<%=i.intUomNo%>" class="ui toggle button active inactivate_uom">Active</button>
-                    <% }else{ %>
-                      <button data-no="<%=i.intUomNo%>" class="ui toggle button inactive activate_uom">Inactive</button>
-                    <% } %>
+                      <input type="checkbox"
+                      <% if (i.intStatus == 0){ %>
+                        value="0"
+                      <% }else{ %>
+                        value="1" checked
+                      <% } %>
+
+                       data-no="<%=i.intUomNo%>" class="uom_stat" data-size="mini"  data-on="Active" data-off="Inactive" data-toggle="toggle" data-offstyle="danger" data-onstyle="success">
+
                     </td>
-                    <td><button data-toggle="modal" data-target="#editMeasurement" data-num="<%=i.intUomNo%>" data-name="<%=i.strUnitName%>" class="edit_modal large ui teal button"><i class="glyphicon glyphicon-edit"></i></button></td>
+                    <td>
+                      <center>
+                      <button data-toggle="modal" data-target="#editMeasurement" data-num="<%=i.intUomNo%>" data-name="<%=i.strUnitName%>" class="edit_modal large ui teal button"><i class="glyphicon glyphicon-edit"></i></button>
+
+                      <button data-no="<%=i.intUomNo%>" onclick="del(<%=i.intUomNo%>)" class="large ui red button"><i class="glyphicon glyphicon-trash"></i></button>
+                    </center>
+                    </td>
                   </tr>
                 <%  }) %>
                 <% } %>
@@ -205,37 +215,18 @@ $(".navi a:contains('Measurements')").parent().addClass("active");
 </script>
 
 <script>
-$('.inactivate_uom').on('click',function(){
-  $(this).removeClass("ui toggle button active inactivate_uom").addClass("ui toggle button  activate_uom").html("Inactive");
+$('.uom_stat').on('change',function(){
+  var val = $(this).val() == 1 ? 0 : 1;
 
-  $.ajax({
-    url: '/maintenance/inactivateUom',
-    method: 'post',
-    datatype: 'json',
-    data: {no: $(this).data('no')},
-    success: function(response,status,http){
-      if (response){
-        swal("Success!", "You have activated Measurement no"+$(this).data('no'), "success");
-      }
+  $.post('/maintenance/changeUomStat',{no: $(this).data('no'), value: val}, function(data,status){
+    if (data){
+
     }
   })
+
+
 })
 
-$('.activate_uom').on('click',function(){
-  $(this).removeClass("ui toggle button activate_uom").addClass("ui toggle button active inactivate_uom").html("Active");
-
-  $.ajax({
-    url: '/maintenance/activateUom',
-    method: 'post',
-    datatype: 'json',
-    data: {no: $(this).data('no')},
-    success: function(response,status,http){
-      if (response){
-        swal("Success!", "You have activated Measurement no"+$(this).data('no'), "success");
-      }
-    }
-  })
-})
 </script>
 
 <script>
@@ -243,7 +234,7 @@ $('.activate_uom').on('click',function(){
   $('#save').attr('disabled',true);
   $('#measure').on('keyup',function(){
 
-    $.post('/validate/measurement',{data: $(this).val()},function(data,status){
+    $.post('/maintenance2/measurement',{data: $(this).val()},function(data,status){
       if(data == "yes"){
         $('#errorhelpBlock').show();
         $('#formgroup').attr('class', 'form-group has-error');
@@ -256,6 +247,36 @@ $('.activate_uom').on('click',function(){
       }
     });
   })
+</script>
+
+<script>
+  function del(value){
+    swal({
+      title: 'Are you sure?',
+      text: "You cannot revert this once you proceed",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+        $.post('/maintenance2/deleteMeasurements',{number: value}, function(data,status){
+          if(data){
+            swal(
+              'Success!',
+              'You have deleted a product measurement',
+              'success'
+            ).then(()=>{
+              location.reload();
+            })
+          }
+        })
+
+      }
+    })
+  }
 </script>
 
 

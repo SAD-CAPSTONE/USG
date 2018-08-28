@@ -1,4 +1,36 @@
 <%- include('../../../templates/cons-master.ejs') -%>
+
+<style>
+  input:disabled, button:disabled {
+    background: #ccc !important;
+    cursor: default !important;
+  }
+  .form-group {
+    position: relative;
+  }
+  span.tip-message {
+    display: block;
+    width: 100%;
+  }
+  span.tip-message::after {
+    content: attr(title);
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: black;
+    display: block;
+    background: rgba(248, 215, 218);
+    padding: 4.65px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-size: .8em;
+  }
+  span.tip-message.passed::after {
+    background: rgba(255, 243, 205);
+  }
+
+</style>
+
 <form id="msform" novalidate>
     <!-- progressbar -->
     <ul id="progressbar">
@@ -12,7 +44,7 @@
     </ul>
     <!-- fieldsets -->
      <!--START-->
-     <fieldset class=" box-shadow-mini">
+    <fieldset class=" box-shadow-mini">
         <img src="/assets/images/static2/img10.jpg" style="padding-left:0px; padding-bottom:30px; width:95%;">
         <h2 class="text-center">USG Supplier Information Sheet (Consignment Application)</h2>
         <hr>
@@ -38,18 +70,18 @@
       <div role="alert" class="alert alert-info text-primary" style=""><i>All fields are required in order to successfully register</i></div>
       <!-- Text input-->
       <div class="form-group">
-        <label class="control-label" for="textinput">Business Name</label>
+        <label class="control-label" for="businessname">Business Name</label>
         <div class="">
-        <input id="textinput" name="businessname" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+        <input id="businessname" name="businessname" placeholder="Your Answer" class="form-control input-md" min="5" max="10" required="" type="text">
         <span class="help-block">Specify Business Name</span>
         </div>
       </div>
 
       <!-- Text input-->
       <div class="form-group">
-        <label class="control-label" for="textinput">Brand Name</label>
+        <label class="control-label" for="brandname">Brand Name</label>
         <div class="">
-        <input id="textinput" name="brands" placeholder="Your Answer" class="form-control" required="" type="text">
+        <input id="brandname" name="brands" placeholder="Your Answer" class="form-control" required="" min="7" max="15" type="text">
         <span class="help-block">List all if you have multiple brands, separated by a comma</span>
         </div>
       </div>
@@ -58,7 +90,7 @@
       <div class="form-group">
         <label class="control-label" for="businesstype">Type of Business</label>
         <div class="">
-          <select id="selectbasic" name="businessType"  class="form-control">
+          <select id="businesstype" name="businessType"  class="form-control">
             <% if (btype == null || btype == undefined){ %>
 
             <% }else if(btype.length == 0){ %>
@@ -75,32 +107,32 @@
 
       <!-- Text input-->
       <div class="form-group">
-        <label class="control-label" for="textinput">Business Address</label>
+        <label class="control-label" for="businessaddress">Business Address</label>
         <div class="">
-        <input id="textinput" name="businessaddress" placeholder="Your Answer" class="form-control input-md" required="" type="text">
+        <input id="businessaddress" name="businessaddress" placeholder="Your Answer" class="form-control input-md" required="" type="text">
 
         </div>
       </div>
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
-      <input type="button" name="next" class="next action-button" value="Next" />
+      <input type="button" name="next" class="next action-button" value="Next" disabled />
     </fieldset>
 
     <!--STEP 2 Supplier Details-->
     <fieldset>
       <!-- Text input-->
       <div class="form-group">
-        <label class="control-label" for="textinput">Business TIN</label>
+        <label class="control-label" for="businessTIN">Business TIN</label>
         <div class="">
-        <input id="textinput" name="businesstin" placeholder="Your Answer" class="form-control input-md"  type="text">
+        <input id="businessTIN" name="businesstin" placeholder="Your Answer" class="form-control input-md"  type="text">
 
         </div>
       </div>
 
       <!-- BIR stats -->
       <div class="form-group">
-        <label class="control-label" for="selectbasic">Is your business BIR registered? If not, we would require a sales invoice</label>
+        <label class="control-label" for="BIRstatus">Is your business BIR registered? If not, we would require a sales invoice</label>
         <div class="">
-          <select id="selectbasic" name="birstat" class="form-control">
+          <select id="BIRstatus" name="birstat" class="form-control">
 
             <option value="1">Yes</option>
             <option value="0">No</option>
@@ -111,9 +143,9 @@
 
       <!-- DTI stats -->
       <div class="form-group">
-        <label class="control-label" for="selectbasic">Is your business DTI registered?</label>
+        <label class="control-label" for="DTIstatus">Is your business DTI registered?</label>
         <div class="">
-          <select id="selectbasic" name="dtistat" class="form-control">
+          <select id="DTIstatus" name="dtistat" class="form-control">
 
             <option value="1">Yes</option>
             <option value="0">No</option>
@@ -122,11 +154,11 @@
         </div>
       </div>
 
-      <!-- Select Basic -->
+      <!-- Supplier Type -->
       <div class="form-group">
-        <label class="control-label" for="selectbasic">Type of Supplier </label>
+        <label class="control-label" for="suppliertype">Type of Supplier </label>
         <div class="">
-          <select id="selectbasic" name="suppliertype" class="form-control">
+          <select id="suppliertype" name="suppliertype" class="form-control">
 
             <option value="1">Consignment</option>
             <option value="2">Kiosk / Booth (500 rental per day / minimum of 3 days)</option>
@@ -135,14 +167,18 @@
       </div>
 
       <!-- Text input-->
+      <div class="form-group mb-0">
+        <label class="control-label" for="fname">Supplier Information</label>
+      </div>
+      <div class="form-group mb-0">
+        <input id="fname" name="fname" placeholder="First Name" class="form-control input-md" required="" min="4" type="text">
+      </div>
+      <div class="form-group mb-0">
+        <input id="mname" name="mname" placeholder="Middle Name" class="form-control input-md" required="" min="12" type="text">
+        </div>
+      </div>
       <div class="form-group">
-        <label class="control-label" for="textinput">Supplier Information</label>
-        <div class="">
-        <input id="textinput" name="fname" placeholder="First Name" class="form-control input-md" required="" type="text">
-        <input id="textinput" name="mname" placeholder="Middle Name" class="form-control input-md" required="" type="text">
-        <input id="textinput" name="lname" placeholder="Last Name" class="form-control input-md" required="" type="text">
-
-
+        <input id="lname" name="lname" placeholder="Last Name" class="form-control input-md" required="" max="7" type="text">
         </div>
       </div>
 
@@ -150,13 +186,13 @@
       <div class="form-group">
         <label class="control-label" for="textinput">Contact Number</label>
         <div class="">
-        <input id="textinput" name="mobile" placeholder="Mobile" class="form-control input-md" required="" type="text">
-        <input id="textinput" name="phone" placeholder="Phone" class="form-control input-md" required="" type="text">
+        <input id="textinput" name="mobile" placeholder="Mobile" class="form-control input-md mobile" required="" type="text">
+        <input id="textinput" name="phone" placeholder="Phone" class="form-control input-md phone" required="" type="text">
 
         </div>
       </div>
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
-      <input type="button" name="next" class="next action-button" value="Next" />
+      <input type="button" name="next" class="next action-button" value="Next" disabled/>
     </fieldset>
 
     <!--STEP 3 Consignment Details-->
@@ -182,8 +218,20 @@
       <!-- Consignment Price -->
       <div class="form-group">
         <label class="control-label" for="checkboxes">Consignment Discount</label>
+        <div class=""></div>
         <div class="">
-        <div class="checkbox">
+          <label class="radio">
+            <input type="radio" name="consignment" value="40">
+            We agree with the 40% discount/ commision on all product consignment
+          </label>
+          <div></div>
+          <label class="radio">
+            <input type="radio" name="consignment" value="0">
+            We have a higher offer for Ultra Super Green - (email proposal)
+          </label>
+        </div>
+      </div>
+      <!-- <div class="checkbox">
           <label for="checkboxes-0">
             <input name="consignment" id="checkboxes-0" value="40" type="checkbox">
             We agree with the 40% discount/ commision on all product consignment
@@ -196,35 +244,29 @@
           </label>
         </div>
         </div>
-      </div>
+      </div> -->
 
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
-      <input type="button" name="next" class="next action-button" value="Next" />
+      <input type="button" name="next" class="next action-button" value="Next" disabled/>
     </fieldset>
 
     <!--STEP 4 Products-->
     <fieldset>
         <!-- Category -->
-        <div class="form-group">
+        <div class="form-group mb-1">
           <label class="control-label" for="checkboxes">Product category</label>
           <hr>
           <div class="">
 
-
           <div class="checkbox">
-            <label for="checkboxes-18">
-              <% if (category == null || category == undefined){ %>
+            <% if (category){ %>
+              <% category.forEach(function(i){ %>
+                <input name="category" id="<%=i.strCategory%>-<%=i.strSubCategory%>" value="<%=i.strCategory%> - <%=i.strSubCategory%>" type="checkbox">
+                <label for="<%=i.strCategory%>-<%=i.strSubCategory%>"><%=i.strCategory%> - <%=i.strSubCategory%></label>
+                </br>
+              <% }) %>
+            <% } %>
 
-              <% }else if(category.length == 0){ %>
-
-              <% }else{ %>
-                <% category.forEach(function(i){ %>
-                  <input name="category" id="checkboxes-18" value="<%=i.strCategory%> - <%=i.strSubCategory%>" type="checkbox">
-                  <%=i.strCategory%> - <%=i.strSubCategory%> </br>
-                <% }) %>
-              <% } %>
-
-            </label>
           </div>
 
           </div>
@@ -236,17 +278,16 @@
           <div class="">
             <div class="input-group">
               <span class="input-group-addon">
-                  <input type="checkbox">
+                  <input type="checkbox" class="others">
               </span>
-              <input id="prependedcheckbox" name="prependedcheckbox" class="form-control" placeholder="Other please specify" type="text">
+              <input id="prependedcheckbox" name="prependedcheckbox" class="form-control others-input optional" placeholder="Other please specify" type="text">
             </div>
 
           </div>
         </div>
         <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
-        <input type="button" name="next" class="next action-button" value="Next" />
+        <input type="button" name="next" class="next action-button" value="Next" disabled/>
     </fieldset>
-
 
     <!--STEP 5 Product Details-->
     <fieldset>
@@ -257,19 +298,14 @@
           <hr>
           <div class="">
           <div class="checkbox">
-            <label for="checkboxes-0">
-              <% if (certification == null || certification == undefined){ %>
 
-              <% }else if(certification.length == 0){ %>
-
-              <% }else{ %>
+              <% if (certification){ %>
                 <% certification.forEach(function(i){ %>
-                  <input name="certification" id="checkboxes-0" value="<%=i.strCertification%>" type="checkbox">
-                  <%= i.strCertification %> </br>
+                  <input name="certification" id="<%=i.strCertification%>" value="<%=i.strCertification%>" type="checkbox" class="optional">
+                  <label for="<%=i.strCertification%>"><%= i.strCertification %></label>
+                  </br>
                 <% }) %>
               <% } %>
-
-            </label>
           </div>
 
           </div>
@@ -315,48 +351,47 @@
           </div>
       </div>
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
-      <input type="button" name="next" class="next action-button" value="Next" />
+      <input type="button" name="next" class="next action-button" value="Next" disabled/>
     </fieldset>
-
-
 
     <!--STEP 6 Agreement-->
     <fieldset>
-        <!-- Text input-->
-        <!-- Multiple Checkboxes -->
-        <div class="form-group">
-            <label class="control-label" for="checkboxes">Product Replacement and Replenishment</label>
-            <div class="">
-            <div class="checkbox">
-              <label for="checkboxes-0">
-                <input name="replacement" id="checkboxes-0" value="1" type="checkbox">
-                I hereby agree to replace any goods/products that are about to expire, non-moving, damaged upon delivery or with valid customer complaints
-              </label>
-            </div>
-            </div>
+      <!-- Text input-->
+      <!-- Multiple Checkboxes -->
+      <div class="form-group">
+        <label class="control-label" for="replacement">Product Replacement and Replenishment</label>
+        <div class="">
+        <div class="checkbox">
+          <input name="replacement" id="replacement" value="1" type="checkbox">
+          <label for="replacement">
+            I hereby agree to replace any goods/products that are about to expire, non-moving, damaged upon delivery or with valid customer complaints
+          </label>
+        </div>
+        </div>
+      </div>
+
+      <!-- Multiple Checkboxes -->
+      <div class="form-group">
+        <label class="control-label" for="marketing">Marketing &amp; Promotions</label>
+        <div class="">
+          <div class="checkbox">
+            <input name="marketing" id="marketing" value="1" type="checkbox" class="optional">
+            <label for="marketing">
+              I / Our company would like to actively participate and support any marketing and promotional activities of Ultra Super Green (e.g. product sampling, special events and other local market events)
+            </label>
           </div>
+        </div>
+      </div>
 
-          <!-- Multiple Checkboxes -->
-          <div class="form-group">
-            <label class="control-label" for="checkboxes">Marketing &amp; Promotions</label>
-            <div class="">
-            <div class="checkbox">
-              <label for="checkboxes-0">
-                <input name="marketing" id="checkboxes-0" value="1" type="checkbox">
-                I / Our company would like to actively participate and support any marketing and promotional activities of Ultra Super Green (e.g. product sampling, special events and other local market events)
-              </label>
-            </div>
-            </div>
-          </div>
-          <p>Kindly allow a maximum of 5 business days for review and approval.  </p>
+      <p>Kindly allow a maximum of 5 business days for review and approval.  </p>
 
-          <p>Once your application has been reviewed and pass our initial requirements, the consignor is required to do an in-store product sampling and/or demo activity to test the market to get instant feedback from our customers.  </p>
+      <p>Once your application has been reviewed and pass our initial requirements, the consignor is required to do an in-store product sampling and/or demo activity to test the market to get instant feedback from our customers.  </p>
 
-          <p>This will be scheduled by appointment. (Monday or Sundays only) 12:00nn to 6:00pm. First come, first served basis.  </p>
+      <p>This will be scheduled by appointment. (Monday or Sundays only) 12:00nn to 6:00pm. First come, first served basis.  </p>
 
-          <p>If everything goes well, we would proceed with our partnership and we can start carrying your brand. </p>
+      <p>If everything goes well, we would proceed with our partnership and we can start carrying your brand. </p>
       <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
-      <button type="submit"  class="submit action-button"  >Submit</button>
+      <button type="submit"  class="submit action-button" disabled >Submit</button>
     </fieldset>
   </form>
 
@@ -461,6 +496,131 @@
     </script>
 
 <script>
+
+  $(document).keypress(
+    function(event){
+     if (event.which == '13') {
+        event.preventDefault();
+      }
+    }
+  );
+
+  $('#msform > fieldset input').keypress(function(key) {
+    if ($(this).attr('max')){
+      if($(this).val().length >= $(this).attr('max')){
+        if(key.charCode <= 8 || key.charCode >= 32) return false;
+      }
+    }
+  });
+
+  function checkFields(fs,checkVal){
+    let testEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i,
+    testMobile = /(\/?09)[0-9]{9}/i,
+    testPhone = /^[\(]\d{1,5}[\)]\d{3}-\d{4}$/i;
+
+    $(fs).find(`input:not([type=button]):not([type=checkbox]):not([type=radio]):not(.optional)`)
+    .each(function(){
+      $(this).val() == '' ? checkVal = 1 : 0;
+
+      if($(this).val().length < $(this).attr('min')) checkVal = 1;
+      if($(this).val().length > $(this).attr('max')) checkVal = 1;
+
+      $(this).attr('type') == 'email' ?
+        !testEmail.test($(this).val()) ? checkVal = 1 : 0
+        : 0
+
+      $(this).hasClass('mobile') ?
+        !testMobile.test($(this).val()) ?
+          checkVal = 1 :
+          $(this).val().length > 11 ? checkVal = 1 : 0
+        : 0
+
+      $(this).hasClass('phone') ?
+        !testPhone.test($(this).val()) ? checkVal = 1 : 0
+        : 0
+    })
+
+    $(fs).find(`input[type=checkbox]:not(.optional)`).length ?
+      !$(fs).find('input[type=checkbox]:checked:not(.optional)').length ? checkVal = 1 : 0
+      : 0
+
+    $(fs).find(`input[type=radio]`).length ?
+      !$(fs).find('input[type=radio]:checked').length ? checkVal = 1 : 0
+      : 0
+
+    return checkVal;
+  }
+  function lengthMessage(thisInput){
+    // min & max message
+    // min
+    if($(thisInput).val().length < $(thisInput).attr('min')){
+      $(thisInput).next(`span.tip-message`).remove()
+      $(thisInput).after(`<span class='tip-message'
+      title='minimum of ${$(thisInput).attr('min')} characters'></span>`);
+    }
+    else{
+      $(thisInput).next(`span.tip-message`).remove()
+    }
+
+    // max
+    if($(thisInput).val().length > $(thisInput).attr('max')){
+      $(thisInput).next(`span.tip-message`).remove()
+      $(thisInput).after(`<span class='tip-message'
+      title='max of ${$(thisInput).attr('max')} characters'></span>`);
+    }
+    else if($(thisInput).val().length == $(thisInput).attr('max')){
+      $(thisInput).next(`span.tip-message`).remove()
+      $(thisInput).after(`<span class='tip-message passed'
+      title='max characters reached (${$(thisInput).attr('max')})'></span>`);
+    }
+
+    // !min, !max
+    if($(thisInput).val().length >= $(thisInput).attr('min') && $(thisInput).val().length < $(thisInput).attr('max')){
+      $(thisInput).next(`span.tip-message`).remove()
+    }
+
+  }
+
+  $('#msform > fieldset input').keyup(function(){
+    let fs = $(this).closest('fieldset'), checkVal = 0;
+    // checkVal 1 = has empty
+
+    checkVal = checkFields(fs,checkVal);
+    lengthMessage(this);
+
+    checkVal ?
+      $(fs).find(`input[type=button]:nth-of-type(2), button[type=submit]`).attr('disabled','disabled') :
+      $(fs).find(`input[type=button]:nth-of-type(2), button[type=submit]`).removeAttr('disabled');
+  });
+
+  $('#msform > fieldset input[type=checkbox]').click(function(){
+    let fs = $(this).closest('fieldset'), checkVal = 0;
+
+    if ($(fs).find(`input[type=checkbox].others:checked`).length){
+      $(fs).find(`input.others-input`).removeClass('optional');
+      checkVal = checkFields(fs,checkVal);
+      lengthMessage($(fs).find(`input.others-input`));
+    }
+    else{
+      $(fs).find(`input.others-input`).addClass('optional')
+      checkVal = checkFields(fs,checkVal)
+    }
+
+    checkVal ?
+      $(fs).find(`input[type=button]:nth-of-type(2), button[type=submit]`).attr('disabled','disabled') :
+      $(fs).find(`input[type=button]:nth-of-type(2), button[type=submit]`).removeAttr('disabled');
+  });
+
+  $('#msform > fieldset input[type=radio]').click(function(){
+    let fs = $(this).closest('fieldset'), checkVal = 0;
+
+    checkVal = checkFields(fs,checkVal);
+
+    checkVal ?
+      $(fs).find(`input[type=button]:nth-of-type(2), button[type=submit]`).attr('disabled','disabled') :
+      $(fs).find(`input[type=button]:nth-of-type(2), button[type=submit]`).removeAttr('disabled');
+  });
+
   $('#msform').submit(function(e){
     e.preventDefault();
 

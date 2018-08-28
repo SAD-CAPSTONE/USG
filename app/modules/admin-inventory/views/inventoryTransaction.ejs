@@ -39,7 +39,7 @@
                     <th>Critical Limit</th>
                     <th>SRP</th>
                     <th>Product Price</th>
-                    <th>Promo Type</th>
+
                     <th>Type of Changes</th>
 
                   </tr>
@@ -55,14 +55,7 @@
                       <td><%=i.intCriticalLimit%></td>
                       <td><%=i.productSRP%></td>
                       <td><%=i.productPrice%></td>
-                      <td><% if (i.intPromoType == 0){ %>
-                        None
-                      <% }else if(i.intPromoType == 1){ %>
-                        Discount
-                      <% }else{ %>
-                        Package
-                      <% } %>
-                      </td>
+                    
                       <td><%=i.strTypeOfChanges%></td>
 
 

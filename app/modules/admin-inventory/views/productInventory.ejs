@@ -18,7 +18,7 @@
   <!-- Main content -->
   <section class="content">
     <div class="row">
-      <div class="col-xs-12">
+      <div class="col-sm-12">
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs">
             <li class="active"><a href="#inventory" data-toggle="tab"><i class="fa fa-bars"></i> Inventory</a></li>
@@ -29,27 +29,6 @@
             <div class="tab-pane active" id="inventory">
 
               <a data-toggle="modal" data-target="#legend_modal"><i style="font-size: 30px" class="glyphicon glyphicon-info-sign"></i> </a>
-
-
-
-                <div class="modal fade" id="legend_modal">
-                  <div style="width: 30%;" class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-body">
-                      <p >
-                      Status Legend <br>
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <a class="ui red circular label"></a> No stock in inventory
-                      </br>
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <a class="ui orange circular label"></a> Reached critical limit
-                    </br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <a class="ui green circular label"></a> Enough stock in inventory
-
-                  </br>
-                </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
 
               </br>
@@ -104,8 +83,19 @@
                       <form>
                       <td>
                         <center>
-                          <button type="button" data-number="<%=i.intInventoryNo%>" data-toggle="modal" data-target="#addStock" class="addStock large ui teal button"><i class="fa fa-plus"></i></button>
-                          <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>" data-promotype="<%=i.intPromoType%>" data-toggle="modal" data-target="#editInventory" class="editbutton large ui blue button" ><i class="fa fa-edit"></i></button>
+                          <button type="button" data-number="<%=i.intInventoryNo%>" data-toggle="modal" data-target="#addStock" class="addStock large ui teal button" data-toggle="tooltip" title="Add Stock"><i class="fa fa-plus"></i></button>
+                          <!-- <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory" class="editbutton large ui blue button" ><i class="fa fa-edit"></i></button> -->
+
+                          <div class="btn-group">
+                            <button type="button" class="large ui blue button" data-toggle="dropdown">
+                              <i class="glyphicon glyphicon-option-horizontal"></i>
+
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><a href="#">Edit Details</a></li>
+                              <li><a href="#">See Batch Products</a></li>
+                            </ul>
+                          </div>
 
                           <a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="large ui button" >Transactions</button></a>
                         </center>
@@ -126,12 +116,14 @@
 
 
             <!-- New product Item-->
-            <div class="tab-pane" id="newProduct">
+            <div class="tab-pane " id="newProduct">
               <div class="row">
-                <div class="col-sm-8">
+                <div class="col-sm-12">
                   <!-- form start -->
                   <form role="form" id="newProductForm" >
                     <div class="box-body">
+
+
 
                       <div class="form-group">
 
@@ -152,47 +144,45 @@
                             </div>
                           </div>
                       </div>
+
                       <div class="form-group">
                         <div class="row">
-                          <div class="col-sm-6">
+                          <div class="col-sm-3">
+                          </br>
+                            <button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
+                          <p>  New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
+                          </div>
+                          <div class="col-sm-4">
                             <label for="add_sname">Supplier Name</label>
                             <input type="hidden" class="form-control"  id="add_sno" name="add_sno" >
-                            <input type="text" class="form-control" disabled id="add_sname" name="add_sname" >
+                            <input type="text" required class="form-control" disabled id="add_sname" name="add_sname" >
                           </div>
-                          <div class="col-sm-6">
-                          </br>
-                            &nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
-                          <p>  &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
-                          </div>
-                        </div>
 
-                      </div>
-                      <div class="form-group">
-                        <div class="row">
-                          <div class="col-sm-6">
+                          <div class="col-sm-4">
                             <label for="add_bname">Business Name</label>
-                            <input type="text" class="form-control" disabled id="add_bname" name="add_bname" >
+                            <input type="text" required class="form-control" disabled id="add_bname" name="add_bname" >
                           </div>
+
                         </div>
+
                       </div>
-                      <div class="form-group">
-                        <label for="add_srp">Product SRP</label>
-                        <input type="number" class="form-control" required id="add_srp" name="add_srp" >
-                      </div>
-                      <div class="form-group">
-                        <label for="add_price">Product Price</label>
-                        <input type="number" class="form-control" required id="add_price" name="add_price" >
-                      </div>
+
                       <div class="form-group">
                         <div class="row">
-
-                          <div class="col-sm-2">
+                          <div class="col-sm-3">
+                            <label for="add_srp">Product SRP</label>
+                            <input type="number" placeholder="Original price" class="form-control" required id="add_srp" name="add_srp" >
+                          </div>
+                          <div class="col-sm-3">
+                            <label for="add_price">Product Price</label>
+                            <input type="number" placeholder="" class="form-control" required id="add_price" name="add_price" >
+                          </div>
+                          <div class="col-sm-3">
                             <label for="add_size">Size</label>
                             <input type="number" class="form-control" required id="add_size" name="add_size" >
                           </div>
-                          <div class="col-sm-2">
-
-                            <label for="add_uom">   </label>
+                          <div class="col-sm-3">
+                            <label for="add_uom">Measure </label>
                             <select class="form-control" required id="add_uom" name="add_uom"  >
                               <% if (uom == null || uom == undefined || uom.length == 0){ %>
                                 <option></option>
@@ -206,19 +196,24 @@
                           </div>
                         </div>
                       </div>
+
                       <div class="form-group">
                         <div class="row">
-                          <div class="col-xs-4">
-                            <label for="add_barcode">Barcode</label>
-                            <input type="number" class="form-control" id="add_barcode" name="add_barcode" >
+                          <div class="col-sm-4">
+                            <label for="add_variant">Variant</label>
+                            <input type="text" class="form-control" id="add_variant" name="add_variant" >
                           </div>
-                          <div class="col-xs-4">
+                          <div class="col-sm-4">
+                            <label for="add_barcode">Barcode</label>
+                            <input type="number" required class="form-control" id="add_barcode" name="add_barcode" >
+                          </div>
+                          <div class="col-sm-2">
                             <label for="shelf">Shelf No</label>
                             <input type="number" class="form-control"id="add_shelf" name="add_shelf" >
                           </div>
-                          <div class="col-xs-4">
+                          <div class="col-sm-2">
                             <label for="add_critical">Critical Limit</label>
-                            <input type="number" class="form-control" required id="add_critical" name="add_critical" >
+                            <input type="number" required class="form-control" required id="add_critical" name="add_critical" >
                           </div>
                         </div>
                       </div>
@@ -279,7 +274,7 @@
           <div class="box-body">
             <div class="form-group">
               <label for="">Batch No:</label>
-              <input type="text" class="form-control" value="<%=num%>" id="batch" placeholder="">
+              <input type="text" class="form-control" value="<%=num%>" name="batch" id="batch" placeholder="">
               <input type="hidden" class="form-control" name="ino" id="ino" placeholder="">
             </div>
 
@@ -443,7 +438,7 @@
      </div>
      <div class="modal-body">
 
-      <div class="dropdown show">
+      <!-- <div class="dropdown show">
         <button class="btn btn-success  dropdown-toggle" type="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Select changes <i class="fa fa-caret-down"></i>
         </button>
@@ -452,9 +447,9 @@
           <li><a class="dropdown-item" id="form2_active" href="#">Shelf No</a></li>
           <li><a class="dropdown-item" id="form3_active" href="#">Critical Limit</a></li>
 
-          <!-- <li><a class="dropdown-item" id="form5_active" href="#">Change Supplier</a></li> -->
+           <li><a class="dropdown-item" id="form5_active" href="#">Change Supplier</a></li>
         </ul>
-      </div>
+      </div> -->
 
       <!-- Update -->
       <div id="form1">
@@ -479,17 +474,14 @@
               <input type="number" value="0" name="critical" class="critical form-control">
             </div>
 
-            <div class="for_promo">
-              <label for="">Promo Type</label>
-              <select name="promotype" class="promotype form-control">
-                <option value="0">None</option>
-                <option value="1">Discount</option>
-                <option value="2">Package</option>
-              </select>
-              <small>Note: You can choose where to add product in the Promotion/Package Discount Section</small>
-            </div>
+
             <div class="for_changes">
-              <input type="hidden" name="changes" class="changes form-control">
+              <label for="">Note your changes</label>
+              <select name="changes" required class="changes form-control">
+                <option value="Price Changes">Price</option>
+                <option value="Critical Limit Changes">Critical Limit</option>
+                <option value="Shelf Number Changes">Shelf</option>
+              </select>
             </div>
           </div>
 
@@ -539,78 +531,65 @@
     })
   </script>
 
-  <script>
-  swal({
-  position: 'top-end',
-  type: 'info',
-  title: 'Click for the information button at the left-top corner to see status legend',
-  showConfirmButton: false,
-  backdrop: '#0000',
-  background: '',
-  timer: 4000
-})
-  </script>
-
-
 
   <script>
-    $('#form1').hide();
-
-
-    $('.for_promo').hide();
-    $('.for_price').hide();
-    $('.for_critical').hide();
-    $('.for_shelf').hide();
+    // $('#form1').hide();
+    //
+    //
+    // $('.for_promo').hide();
+    // $('.for_price').hide();
+    // $('.for_critical').hide();
+    // $('.for_shelf').hide();
 
 
     $('#form1_active').on('click',function(){
-      $('.for_price').show();
-      $('.for_shelf').hide();
-      $('.for_critical').hide();
-      $('.for_promo').hide();
+      // $('.for_price').show();
+      // $('.for_shelf').hide();
+      // $('.for_critical').hide();
+      // $('.for_promo').hide();
       $('.changes').val("Price Changes");
-      $('#form1').show();
+      // $('#form1').show();
 
 
     })
 
     $('#form2_active').on('click',function(){
-      $('.for_shelf').show();
-      $('.for_price').hide();
-      $('.for_critical').hide();
-      $('.for_promo').hide();
+      // $('.for_shelf').show();
+      // $('.for_price').hide();
+      // $('.for_critical').hide();
+      // $('.for_promo').hide();
       $('.changes').val("Changed Shelf Number");
-      $('#form1').show();
+      // $('#form1').show();
 
 
     })
 
     $('#form3_active').on('click',function(){
-      $('.for_critical').show();
-      $('.for_price').hide();
-      $('.for_shelf').hide();
-      $('.for_promo').hide();
+      // $('.for_critical').show();
+      // $('.for_price').hide();
+      // $('.for_shelf').hide();
+      // $('.for_promo').hide();
       $('.changes').val("Changed Critical Limit");
 
-      $('#form1').show();
+      // $('#form1').show();
 
 
     })
 
     $('#form4_active').on('click',function(){
-      $('.for_promo').show();
-      $('.for_price').hide();
-      $('.for_shelf').hide();
-      $('.for_critical').hide();
+      // $('.for_promo').show();
+      // $('.for_price').hide();
+      // $('.for_shelf').hide();
+      // $('.for_critical').hide();
       $('.changes').val("Changed Promo Type");
 
-      $('#form1').show();
+      // $('#form1').show();
 
 
     })
 
     $('#form5_active').on('click',function(){
-      $('#form1').show();
+      // $('#form1').show();
 
 
     })
@@ -624,7 +603,7 @@
       $('.srp').val($(this).data('srp'));
       $('.shelf').val($(this).data('shelf'));
       $('.critical').val($(this).data('critical'));
-      $('.promotype').val($(this).data('promotype'));
+
     })
   </script>
 
@@ -749,6 +728,8 @@
         }
       })
     })
+
+
   </script>
 
 

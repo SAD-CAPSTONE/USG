@@ -7,7 +7,7 @@
     <section class="content-header">
       <h1>
 
-        <small>Note: .</small>
+        <small>Note: You are only allowed to block and edit customer information.</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -46,8 +46,8 @@
                   <% }else{ %>
                    <%  re.forEach(function(i){ %>
                       <tr>
-                        
-                        <td><%= i.strFname%> <%=i.strMname %> <%=i.strLname %></td>
+
+                        <td><%= i.strFname%> <%=i.strMname%> <%=i.strLname%></td>
                         <td><%= i.strUsername %></td>
                         <td>
                           <% if (i.Stats == 1){ %>
@@ -57,11 +57,16 @@
                           <% }else{ %>
                           <% } %>
                           </td>
-                        <td><button type="button" data-toggle="modal" data-target="#viewDetails" class="viewDetailsButton btn btn-default btn-sm" data-custno="<%=i.intUserID%>" data-custsaddress="<%=i.strShippingAddress%>" data-custbaddress="<%=i.strBillingAddress%>" data-custphoneno="<%=i.strCusPhoneNo%>" data-custmobileno="<%=i.strCusMobileNo%>" data-custemail="<%=i.strEmail%>">View Details</button></a>
-                        <button type="button" data-toggle="modal" data-target="#" class="viewDetailsButton btn btn-default btn-sm" data-custno="<%=i.intUserID%>" data-custsaddress="<%=i.strShippingAddress%>" data-custbaddress="<%=i.strBillingAddress%>" data-custphoneno="<%=i.strCusPhoneNo%>" data-custmobileno="<%=i.strCusMobileNo%>" data-custemail="<%=i.strEmail%>">Edit Info</button></a></td>
+                        <td>
+                          <center>
+                            <button type="button" data-toggle="modal" data-target="#viewDetails" class="viewDetailsButton large ui teal button" data-custno="<%=i.intUserID%>" data-custsaddress="<%=i.strShippingAddress%>" data-custbaddress="<%=i.strBillingAddress%>" data-custphoneno="<%=i.strCusPhoneNo%>" data-custmobileno="<%=i.strCusMobileNo%>" data-custemail="<%=i.strEmail%>">View</button>
+                            <button type="button" data-toggle="modal" data-target="#editDetails" class="editDetailsButton large ui button blue" data-custno="<%=i.intUserID%>" data-custfname="<%=i.strFname%>" data-custmname="<%=i.strMname%>" data-custlname="<%=i.strLname%>" data-custsaddress="<%=i.strShippingAddress%>" data-custbaddress="<%=i.strBillingAddress%>" data-custphoneno="<%=i.strCusPhoneNo%>" data-custmobileno="<%=i.strCusMobileNo%>" data-custemail="<%=i.strEmail%>" data-custuname="<%=i.strUsername%>">Edit</button>
+                            <button data-no="<%=i.intUserID%>" onclick="del(<%=i.intUserID%>)" class="large ui red button">Ban</button>
+                          </center>
+                        </td>
                       </tr>
                     <%  }) %>
-                    <% } %>
+                  <% } %>
                 </tbody>
 
               </table>
@@ -108,32 +113,89 @@
                     <td id="view_custphoneno"></td>
                     <td id="view_custmobileno"></td>
                     <td id="view_custemail"></td>
-
-
-
-
-
-
                   </tr>
                 </tbody>
               </table>
-
-
         </div>
       </div>
     </div>
   </div>
 
 
-<!-- Main Footer -->
-<footer class="main-footer">
-  <!-- To the right -->
-  <div class="pull-right hidden-xs">
-    Ultra Super Green
+  <div class="modal fade" id="editDetails">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+      <!-- Horizontal Form -->
+          <!-- form start -->
+          <form role="form" id="editCustomerDetails">
+              <div class="box-body">
+                <div class="col-xs-4">
+
+                  <input type="hidden" id="c_no" name="c_no">
+                  <label for="cfname">First Name:</label>
+                  <input type="text"  class="form-control" name="c_fname" id="c_fname"  >
+                </div>
+
+                <div class="col-md-4">
+                  <label for="cmname">Middle Name:</label>
+                  <input type="text"  class="form-control" id="c_mname" name="c_mname">
+                </div>
+
+                <div class="col-md-4">
+                  <label for="clname">Last Name:</label>
+                  <input type="text"  class="form-control" id="c_lname" name="c_lname">
+                </div>
+
+                <div class="form-group input-group col-xs-8">
+                  <label for="cuname">Username:</label>
+                  <input type="text"  class="form-control" id="c_uname" name="c_uname">
+                </div>
+
+                <div class="form-group input-group col-xs-8">
+                    <label for="cuname">Email:</label>
+                    <input type="text"  class="form-control" id="c_email" name="c_email">
+                </div>
+  
+                <div class="input-group col-xs-4">
+                  <label for="cumno">Mobile Number:</label>
+                  <input type="text" id="c_mno" name="c_mno" class="form-control">
+                </div>
+
+                <div class="input-group col-xs-4">
+                  <label for="cupno">Telephone Number:</label>
+                  <input type="text" id="c_pno" name="c_pno" class="form-control">
+                </div>
+
+                <div class="form-group input-group col-xs-8">
+                  <label for="csaddress">Shipping Address :</label>
+                  <input type="text"  class="form-control" id="c_saddress" name="c_saddress">
+                </div>
+
+                
+                <div class="form-group input-group col-xs-8">
+                  <label for="cbaddress">Billing Address :</label>
+                  <input type="text"  class="form-control" id="c_baddress" name="c_baddress">
+                </div>
+
+              </div>
+
+
+      </div>
+      <div class="modal-footer">
+      <button type="button" class="big ui button" data-dismiss="modal">Close</button>
+      <button type="submit" class="big ui teal button">Save</button>
+      </div>
+      </form>
+    </div>
   </div>
-  <!-- Default to the left -->
-  <strong>Copyright &copy; 2016 <a href="#">AdminLTE template</a>.</strong> All rights reserved.
-</footer>
+<!-- Main Footer -->
+<%- include('../../../templates/admin-aside.ejs') -%>
 
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
@@ -214,27 +276,8 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- REQUIRED JS SCRIPTS -->
 
-<!-- jQuery 3 -->
-<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- DataTables (new added)	 -->
-<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/assets/admin/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="/assets/admin/dist/js/adminlte.min.js"></script>
-<!-- sweetalert  -->
-<script src="/assets/bootstrap-sweetalert-master/dist/sweetalert.min.js"></script>
-<!-- Notification  -->
-<script src="/assets/admin/notification.js"></script>
-
-<!-- page script (new added) -->
+<%- include('../../../templates/admin-footer.ejs') -%>
 <script>
   $(function () {
     $('#example2').DataTable({
@@ -265,6 +308,62 @@ $(".navi a:contains('Customer')").parent().addClass("active");
       $('#view_custemail').html($(this).data('custemail'));
   });
 </script>
+
+<script>
+  function del(value){
+    swal({
+      title: 'Are you sure?',
+      text: "You cannot revert this once you proceed",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+        $.post('/maintenance2/banCustomer',{number: value}, function(data,status){
+          if(data){
+            swal(
+              'Success!',
+              'You have banned a customer',
+              'success'
+            ).then(()=>{
+              location.reload();
+            })
+          }
+        })
+
+      }
+    })
+  }
+</script>
+
+<script>
+    $('#editCustomerDetails').submit(function(e){
+      e.preventDefault();
+      $.post('/maintenance/editCustomer',$('#editCustomerDetails').serialize(),(data,success)=>{
+        if(data){
+          confirm_alert();
+        }
+      });
+    })
+</script>
+<script>
+  $('.editDetailsButton').on('click', function(){
+    $('#c_no').val($(this).data('custno'));
+    $('#c_fname').val($(this).data('custfname'));   
+    $('#c_mname').val($(this).data('custmname'));   
+    $('#c_lname').val($(this).data('custlname'));    
+    $('#c_uname').val($(this).data('custuname'));
+    $('#c_email').val($(this).data('custemail'));
+    $('#c_mno').val($(this).data('custmobileno'));
+    $('#c_pno').val($(this).data('custphoneno'));
+    $('#c_saddress').val($(this).data('custsaddress'));
+    $('#c_baddress').val($(this).data('custbaddress'));
+  });
+</script>
+
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the

@@ -1,0 +1,219 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+
+ <!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+
+      <h1>
+
+        <small></small>
+
+		<small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Utilities</a></li>
+        <li class="active">Order Policies</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+
+    <section class="content">
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h4 align="center">USG Order Policies</h4>
+            </div>
+
+            <div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Shipping Fee:</h5>
+				</div>
+				<div class="col-md-5">
+				<h6>Php <%= (re[0].shippingFee).toFixed(2) %></h6>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Delivery Period:</h5>
+				</div>
+				<div class="col-md-5">
+				<h6><%= re[0].deliveryPeriod %> day/s</h6>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Payment Voucher Validity:</h5>
+				</div>
+				<div class="col-md-5">
+				<h6><%= re[0].paymentVoucherValidity %> day/s</h6>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Business Bank Account No.:</h5>
+				</div>
+				<div class="col-md-5">
+				<h6><%= re[0].bankAccountNo %></h6>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Bank Service Fee:</h5>
+				</div>
+				<div class="col-md-5">
+				<h6>Php <%= (re[0].bankServiceFee).toFixed(2) %></h6>
+				</div>
+			</div>
+
+      <div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+				<h5>Business Bank:</h5>
+				</div>
+				<div class="col-md-5">
+				<h6><%= re[0].businessBank %></h6>
+				</div>
+			</div>
+
+			<div class="box-footer">
+      <a href=""><button class="large ui button" >Back</button></a>
+
+				<button type="button" data-toggle="modal" data-target="#edit" class="large ui teal button pull-right" style="margin-right: 5px;">
+				Edit
+				</button>
+			</div>
+			<!-- /.box-footer -->
+
+
+
+      </div>
+      <!-- /.box -->
+
+
+	    </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+  <!-- /.content-wrapper -->
+
+  <!-- Modals -->
+
+
+<div class="modal fade" id="edit">
+  <div class="modal-dialog">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		  <span aria-hidden="true">&times;</span></button>
+		<h4 class="modal-title">Order Policies</h4>
+	  </div>
+	  <div class="modal-body">
+		<!-- Horizontal Form -->
+
+				<!-- form start -->
+      <form id="orderPolicies_form" role="form">
+          <div class="box-body">
+            <div class="form-group">
+              <label for="name">Shipping Fee:</label>
+              <input type="text" value="<%= re[0].shippingFee %>" required class="form-control" name="shippingFee" placeholder="">
+            </div>
+
+            <div class="form-group">
+              <label for="address">Delivery Period:</label>
+              <input class="form-control" value="<%= re[0].deliveryPeriod %>" name="deliveryPeriod" placeholder="">
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Payment Voucher Validity:</label>
+              <input type="text" value="<%= re[0].paymentVoucherValidity %>" required class="form-control" name="paymentVoucherValidity" placeholder="">
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Bank Account No:</label>
+              <input type="text" value="<%= re[0].bankAccountNo %>" required class="form-control" name="bankAccountNo" placeholder="">
+            </div>
+
+            <div class="form-group">
+              <label for="email">Bank Service Fee:</label>
+              <input type="text" value="<%= re[0].bankServiceFee %>" required class="form-control" name="bankServiceFee" placeholder="">
+            </div>
+
+            <div class="form-group">
+              <label for="email">Business Bank:</label>
+              <input type="text" value="<%= re[0].businessBank %>" required class="form-control" name="businessBank" placeholder="">
+            </div>
+
+
+
+          </div>
+
+
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
+			<button type="submit"  class="large ui teal button pull-right">Save changes</button>
+		  </div>
+      </form>
+	</div>
+	<!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+<!-- page script (new added) -->
+
+<script>
+$(document).ready(function(){
+  $('#orderPolicies_form').submit(function(e){
+    e.preventDefault();
+    $.post('/utilities/updateOrderPolicies',$('#orderPolicies_form').serialize(),function(data,status){
+      if(data == 'success'){
+        swal({title: 'Success!',text:'You updated the order policies', type: 'success'}).then(()=>{
+          location.reload();
+        })
+      }
+    })
+  })
+});
+</script>
+
+<script>
+$('#title').html("USG | Order Policies");
+$(".treeview a:contains('Utilities')").parent().addClass("active");
+$(".navi a:contains('Order Policies')").parent().addClass("active");
+</script>
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>

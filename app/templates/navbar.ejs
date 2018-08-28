@@ -1,6 +1,7 @@
 <%- include('master.ejs') -%>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css"> -->
+<link rel="stylesheet" href="/customer-assets/custom/static/mCustomScrollbar.css" />
 <!-- CUSTOMER STYLES -->
 <link rel="stylesheet" href="/customer-assets/custom/cart.css" type="text/css" />
 <link rel="stylesheet" href="/customer-assets/custom/cart-cards.css" type="text/css" />
@@ -29,7 +30,30 @@
 
 <nav id="cart-sidebar">
   <div id="cart-container">
-    <div id="dismiss">
+    <div id="reload" class="cart-header-button">
+      <i class="zmdi zmdi-rotate-right" style="font-size: 20px; font-weight: 500"></i>
+      <svg version="1.1" id="SVG_refreshCart" hidden>
+        <rect x="2" y="0" width="3" height="8">
+          <animateTransform attributeType="xml"
+            attributeName="transform" type="translate"
+            values="0 0; 0 10; 0 0"
+            begin="0" dur="0.6s" repeatCount="indefinite" />
+        </rect>
+        <rect x="8" y="0" width="3" height="8">
+          <animateTransform attributeType="xml"
+            attributeName="transform" type="translate"
+            values="0 0; 0 10; 0 0"
+            begin="0.2s" dur="0.6s" repeatCount="indefinite" />
+        </rect>
+        <rect x="14" y="0" width="3" height="8">
+          <animateTransform attributeType="xml"
+            attributeName="transform" type="translate"
+            values="0 0; 0 10; 0 0"
+            begin="0.4s" dur="0.6s" repeatCount="indefinite" />
+        </rect>
+      </svg>
+    </div>
+    <div id="dismiss" class="cart-header-button">
       <i class="zmdi zmdi-arrow-right" style="font-size: 20px; font-weight: 500"></i>
     </div>
     <div class="cart-sidebar-header">
@@ -74,13 +98,14 @@
           <a id="cartSidebarCollapse" class="nav-link"><i class="fa d-inline fa-lg fa-shopping-cart"></i>  Cart</a></li>
         <li class="nav-item dropdown cursor-pointer">
           <a id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-top: 12px;" class="nav-link dropdown-toggle"><i class="fa fa-fw fa-cog"></i></a>
-          <div id="nav-setting-dropdown" aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
+          <div id="nav-setting-dropdown" aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu dropdown-menu-right">
             <% if (thisUser){ %>
-              <a href="/account/dashboard" class="dropdown-item"><i class="fa d-inline fa-lg fa-user pr-2"></i>&nbsp<%= thisUser.strFname %></a>
+              <a href="/account/dashboard" class="dropdown-item"><%= thisUser.strFname %></a>
             <% }else{ %>
-              <a href="/account/dashboard" class="dropdown-item"><i class="fa d-inline fa-lg fa-user pr-2"></i>&nbspAccount</a>
+              <a href="/account/dashboard" class="dropdown-item">Account</a>
             <% } %>
-            <a href="/home/faq" class="dropdown-item"><i class="fa d-inline fa-lg fa-question-circle pr-2"></i>FAQs</a>
+            <a href="/account/messages" class="dropdown-item">Messages</a>
+            <a href="/home/faq" class="dropdown-item">FAQs</a>
             <hr id="hzline" />
             <a href="/login" class="dropdown-item"><i class="fa d-inline fa-lg fa-sign-out pr-2"></i>Logout</a>
           </div>

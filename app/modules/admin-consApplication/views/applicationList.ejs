@@ -5,7 +5,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        <small> </small>
+        <small> Consignment Applications </small>
 
       </h1>
       <ol class="breadcrumb">
@@ -18,67 +18,121 @@
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <div class="col-xs-12">
-          <div class="box">
-            <div class="box-header">
-              <h4 align="center">Consignor Applications</h4>
-            </br>
-              <h5>Note: Consignors have agreed to the terms and conditions upon application.</h5>
+        <div class="col-sm-12">
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#pending_consignors" data-toggle="tab"><i class="fa fa-bars"></i> Pending Consignors</a></li>
+              <li ><a href="#rejected_consignors" data-toggle="tab"><i class="fa fa-bars"></i> Rejected Consignors</a></li>
+              <!-- <li><a href="#quantity" data-toggle="tab"><i class=""></i>Quantity</a></li> -->
+            </ul>
 
-              <h5>Note: Pending status are not evaluated yet.</h5>
+            <div class="tab-content">
+              <div class="tab-pane active" id="pending_consignors">
+
+                </br>
+                <h5>Note: Consignors have agreed to the terms and conditions upon application.</h5>
+
+                <h5>Note: Pending status are not evaluated yet.</h5>
+
+                <!-- /.box-header -->
+                <div class="box-body table-responsive">
+                  <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Business Name</th>
+                      <th>Consignor Name</th>
+                      <th>Application Date</th>
+    				          <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% if (list == undefined || list == null || list.length < 0 ){ %>
+
+                    <% }else{ %>
+                    <%  list.forEach(function(i){ %>
+                      <tr>
+                        <td><%=i.intContractNo%></td>
+                        <td><%=i.strBusinessName%></td>
+                        <td><%=i.strFname%>&nbsp;<%=i.strMname%>&nbsp;<%=i.strLname%></td>
+                        <td><%= moment(i.applicationDate).format("MMMM Do YYYY")%></td>
+                        <td>
+                          <% if (i.stats == 0){ %>
+                            <span class="label label-warning">Pending</span>
+                          <% }else if(i.stats == 1){ %>
+                            <span class="label label-success">Accepted</span>
+                          <% }else if(i.stats == 2){ %>
+                            <span class="label label-danger">Rejected</span>
+                          <% }else if(i.stats == 3){ %>
+                            <span class="label label-info">For Product Sampling</span>
+                          <% }else{ %>
+                            <span class="label label-danger">Terminated</span>
+                          <% } %>
+                        </td>
+                        <td>
+                          <a href="/consApplication/details?contract=<%=i.intContractNo%>"><button class="btn btn-default btn-sm">View Details</button></a>
+                        </td>
+                      </tr>
+                    <%  }) %>
+                    <% } %>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.box-body -->
+              </div>
+
+              <div class="tab-pane" id="rejected_consignors">
+                <!-- /.box-header -->
+                <div class="box-body table-responsive">
+                  <table id="example3" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Business Name</th>
+                      <th>Consignor Name</th>
+                      <th>Application Date</th>
+    				          <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% if (list2.length < 0 ){ %>
+
+                    <% }else{ %>
+                    <%  list2.forEach(function(i){ %>
+                      <tr>
+                        <td><%=i.intContractNo%></td>
+                        <td><%=i.strBusinessName%></td>
+                        <td><%=i.strFname%>&nbsp;<%=i.strMname%>&nbsp;<%=i.strLname%></td>
+                        <td><%= moment(i.applicationDate).format("MMMM Do YYYY")%></td>
+                        <td>
+                          <% if (i.stats == 0){ %>
+                            <span class="label label-warning">Pending</span>
+                          <% }else if(i.stats == 1){ %>
+                            <span class="label label-success">Accepted</span>
+                          <% }else if(i.stats == 2){ %>
+                            <span class="label label-danger">Rejected</span>
+                          <% }else if(i.stats == 3){ %>
+                            <span class="label label-info">For Product Sampling</span>
+                          <% }else{ %>
+                            <span class="label label-danger">Terminated</span>
+                          <% } %>
+                        </td>
+                        <td>
+                          <button data-contract="<%=i.intContractNo%>" class="evaluate large ui teal button">Re-evaluate</button>
+                        </td>
+                      </tr>
+                    <%  }) %>
+                    <% } %>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.box-body -->
+              </div>
+
             </div>
 
-            <!-- /.box-header -->
-            <div class="box-body table-responsive">
-              <table id="example2" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Business Name</th>
-                  <th>Consignor Name</th>
-                  <th>Application Date</th>
-				          <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <% if (list == undefined || list == null || list.length < 0 ){ %>
-
-                <% }else{ %>
-                <%  list.forEach(function(i){ %>
-                  <tr>
-                    <td><%=i.intContractNo%></td>
-                    <td><%=i.strBusinessName%></td>
-                    <td><%=i.strFname%>&nbsp;<%=i.strMname%>&nbsp;<%=i.strLname%></td>
-                    <td><%= moment(i.applicationDate).format("MMMM Do YYYY")%></td>
-                    <td>
-                      <% if (i.stats == 0){ %>
-                        <span class="label label-warning">Pending</span>
-                      <% }else if(i.stats == 1){ %>
-                        <span class="label label-success">Accepted</span>
-                      <% }else if(i.stats == 2){ %>
-                        <span class="label label-danger">Rejected</span>
-                      <% }else if(i.stats == 3){ %>
-                        <span class="label label-info">For Product Sampling</span>
-                      <% }else{ %>
-                        <span class="label label-danger">Terminated</span>
-                      <% } %>
-                    </td>
-                    <td>
-                      <a href="/consApplication/details?contract=<%=i.intContractNo%>"><button class="btn btn-default btn-sm">View Details</button></a>
-                    </td>
-                  </tr>
-                <%  }) %>
-                <% } %>
-
-
-
-
-                </tbody>
-
-              </table>
-            </div>
-            <!-- /.box-body -->
           </div>
           <!-- /.box -->
 
@@ -115,6 +169,45 @@
       'autoWidth'   : true,
 	  'select'		: true,
 	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $(function () {
+    $('#example3').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $('.evaluate').on('click',function(){
+    swal({
+      title: "Are you sure?",
+      text: "You are about to re-evaluate this consignor",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Proceed",
+      cancelButtonText: "Back",
+      reverseButtons: true
+    }).then((result)=>{
+      if(result.value){
+        $.post('/consApplication/reevaluate',{no: $(this).data('contract')},function(data,success){
+          if(data){
+            swal({title:'Success!',text: 'You have re-evaluated ', type: 'success'}).then(()=>{
+              window.location.href = '/consApplication/details?contract='+$('.evaluate').data('contract');
+            })
+          }
+        })
+      }
     })
   })
 </script>

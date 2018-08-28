@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../lib/database')();
-const firstID = 1000;
 const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
+const firstID = 1000;
+const quantLimit = 50;
 
 function newOrderNo (req, res, next){
   db.query(`SELECT * FROM tblorder ORDER BY intOrderNo DESC LIMIT 1`, (err, results, fields) => {
@@ -100,6 +101,34 @@ function orderProductQty (req, res, next){
     return next();
   });
 }
+function cartCheck (req, res, next){
+  function cartLimitLoop(i){
+    let cart = req.session.cart;
+    db.query(`SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`
+      , [req.session.cart[i].inv], (err, results, fields) => {
+      if (err) console.log(err);
+      req.session.cart[i].limit = results[0].stock > quantLimit ?
+        quantLimit : results[0].stock;
+      req.session.cart[i].curQty > req.session.cart[i].limit ?
+        req.session.cart[i].curQty = req.session.cart[i].limit : 0;
+      results[0].stock < 1 ? req.session.cart.splice(i,1) : 0
+      ++i;
+      if (cart.length > i){
+        cartLimitLoop(i);
+      }
+      else{
+        if (req.session.cart.length){
+          return next();
+        }
+        else{
+          res.redirect('/summary/checkout');
+        }
+      }
+    });
+  }
+  req.session.cart.length ? cartLimitLoop(0) : res.redirect('/summary/checkout');
+
+}
 
 router.get('/checkout', checkUser, contactDetails, (req,res)=>{
   res.render('cust-summary/views/checkout', {thisUser: req.user, thisUserContact: req.contactDetails});
@@ -156,8 +185,55 @@ router.get('/voucher/:orderNo', orderTotal, (req,res)=>{
     });
   }
 })
+router.get('/receipt/:orderNo', (req,res)=>{
+  if (!req.user){
+    res.send('none')
+  }
+  else{
+    db.query(`SELECT (customer.strFname)customerF, (customer.strMname)customerM, (customer.strLname)customerL, orders.*, tblorder.*
+    FROM tblorder
+    INNER JOIN (SELECT * FROM tbluser)customer ON tblorder.intUserID= customer.intUserID
+    INNER JOIN (SELECT tblorderdetails.*, strBrand, strProductName, intSize, strUnitName, (purchasePrice*tblorderdetails.intQuantity)amount, (purchasePrice-(purchasePrice*0.12))priceNonVAT, ((purchasePrice-(purchasePrice*0.12))*tblorderdetails.intQuantity)amountNonVAT
+    FROM tblorderdetails INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
+    INNER JOIN tblproductlist ON tblproductinventory.intProductNo= tblproductlist.intProductNo
+    INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
+    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno)orders ON orders.intOrderNo= tblorder.intOrderNo
+    WHERE tblorder.intOrderNo= ? AND customer.intUserID= ? ORDER BY orders.intOrderDetailsNo`
+    ,[req.params.orderNo, req.user.intUserID], (err, results, fields) => {
+      if (err) console.log(err);
+      if (results[0]){
+        let totalNonVAT = results.reduce((data, obj)=>{
+          return data + obj.amountNonVAT
+          console.log(data)
+        }, 0);
+        let totalPrice = results.reduce((data, obj)=>{
+          return data + obj.amount
+        }, 0);
+        let vat = totalPrice - totalNonVAT;
+        results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('MM/DD/YY') );
+        results.map( obj => obj.priceNonVAT = priceFormat(obj.priceNonVAT.toFixed(2)) );
+        results.map( obj => obj.amountNonVAT = priceFormat(obj.amountNonVAT.toFixed(2)) );
+        totalNonVAT = priceFormat(totalNonVAT.toFixed(2));
+        totalPrice = priceFormat(totalPrice.toFixed(2));
+        vat = priceFormat(vat.toFixed(2));
 
-router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsNo, (req,res)=>{
+        res.send({
+          receipt: results,
+          receiptNonVAT: totalNonVAT,
+          vat: vat,
+          receiptTotal: totalPrice,
+        })
+        // console.log(results)
+      }
+      else{
+        res.send('none')
+      }
+    });
+  }
+})
+
+router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsNo, cartCheck, (req,res)=>{
+  console.log(`length: ${req.session.cart.length}`)
   db.beginTransaction(function(err) {
     if (err) console.log(err);
     let thisOrderNo = req.newOrderNo;
@@ -169,30 +245,12 @@ router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsN
         db.query(`INSERT INTO tblorderdetails (intOrderDetailsNo, intOrderNo, intInventoryNo, intStatus, purchasePrice, intQuantity)
           VALUES (?,?,?,?,?,?)`,[req.newOrderDetailsNo + i, thisOrderNo, cart[i].inv, 1, cart[i].curPrice, cart[i].curQty], (err, results, fields) => {
           if (err) console.log(err);
-          stockControl(cart,i,0)
-
-        });
-      }
-      function stockControl(cart,i,j){
-        db.query(`SELECT * FROM(SELECT intBatchNo, (intQuantity - intReservedItems)stock, intQuantity, intReservedItems, created_at FROM tblbatch
-          WHERE intInventoryNo= ? ORDER BY created_at LIMIT ?)A ORDER BY A.created_at DESC LIMIT 1 `,[cart[i].inv, j+1], (err, results, fields) => {
-          if (err) console.log(err);
-          ++j;
-          let thisBatchNo = results[0].intBatchNo;
-          if (results[0].stock == 0){
-            stockControl(cart,i,j);
-          }
-          else{
-            let newQty = cart[i].curQty >= results[0].stock ?
-              results[0].intQuantity : cart[i].curQty + results[0].intReservedItems;
-            cart[i].curQty -= results[0].stock;
-
-            db.query(`UPDATE tblbatch SET intReservedItems= ? WHERE intBatchNo= ?`,[newQty, thisBatchNo], (err, results1, fields) => {
-              if (err) console.log(err);
-              if (cart[i].curQty > 0){
-                stockControl(cart,i,j);
-              }
-              else{
+          db.query(`SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblproductinventory
+            WHERE intInventoryNo = ?`,[cart[i].inv], (err, results, fields) => {
+            if (results[0].stock){
+              newQty = parseInt(results[0].intReservedItems) + parseInt(cart[i].curQty);
+              db.query(`UPDATE tblproductinventory SET intReservedItems= ? WHERE intInventoryNo= ?`,[newQty, cart[i].inv], (err, results1, fields) => {
+                if (err) console.log(err);
                 ++i;
                 if (cart.length > i){
                   multiInsert(i);
@@ -204,12 +262,61 @@ router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsN
                     res.redirect(`/summary/success/${thisOrderNo}`);
                   });
                 }
+              });
+            }
+            else{
+              ++i;
+              if (cart.length > i){
+                multiInsert(i);
               }
-            });
-          }
-
+              else{
+                db.commit(function(err) {
+                  if (err) console.log(err);
+                  req.session.cart = null;
+                  res.redirect(`/summary/success`);
+                });
+              }
+            }
+          });
         });
       }
+      // function stockControl(cart,i,j){
+      //   db.query(`SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblproductinventory
+      //     WHERE intInventoryNo = ?`,[cart[i].inv, j+1], (err, results, fields) => {
+      //     if (err) console.log(err);
+      //     ++j;
+      //     let thisBatchNo = results[0].intBatchNo;
+      //     if (results[0].stock == 0){
+      //       stockControl(cart,i,j);
+      //     }
+      //     else{
+      //       let newQty = cart[i].curQty >= results[0].stock ?
+      //         results[0].intQuantity : cart[i].curQty + results[0].intReservedItems;
+      //       cart[i].curQty -= results[0].stock;
+      //
+      //       db.query(`UPDATE tblbatch SET intReservedItems= ? WHERE intBatchNo= ?`,[newQty, thisBatchNo], (err, results1, fields) => {
+      //         if (err) console.log(err);
+      //         if (cart[i].curQty > 0){
+      //           stockControl(cart,i,j);
+      //         }
+      //         else{
+      //           ++i;
+      //           if (cart.length > i){
+      //             multiInsert(i);
+      //           }
+      //           else{
+      //             db.commit(function(err) {
+      //               if (err) console.log(err);
+      //               req.session.cart = null;
+      //               res.redirect(`/summary/success/${thisOrderNo}`);
+      //             });
+      //           }
+      //         }
+      //       });
+      //     }
+      //
+      //   });
+      // }
 
       req.session.cart ? multiInsert(0) : res.redirect(`/summary/success`);
     });

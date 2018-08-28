@@ -1,3 +1,5 @@
+
+// for all confirm alert
 function confirm_alert(){
   // changed font size .swal-popup because not compatible of bootstrap 3
   swal({
@@ -9,8 +11,34 @@ function confirm_alert(){
 }
   $(document).ready(function(){
 
+    // check expired
+    $('.notifExpired').hide();
+    $.post('/inventory/checkExpired','',function(data,status){
+      if(data == 'no'){
+        $('.notifExpired').hide();
+      }else if(data[0].allExp == 0){
+        $('.notifExpired').hide();
+      }else{
+        $('.notifExpired').show();
+        $('.notifExpired').html(data[0].allExp);
+      }
+    });
+
+    // check expired
+    $('.notifCritical').hide();
+    $.post('/inventory/checkCritical','',function(data,status){
+      if(data == 'no'){
+        $('.notifCritical').hide();
+      }else if(data[0].allCrit == 0){
+        $('.notifCritical').hide();
+      }else{
+        $('.notifCritical').show();
+        $('.notifCritical').html(data[0].allCrit);
+      }
+    });
+
     // new order notification
-    $('#notiforder').hide();
+
 
     $.ajax({
       url: '/customerOrder/checkNewOrders',
@@ -21,10 +49,13 @@ function confirm_alert(){
             },
       success: function(response,status,http){
         if (response){
-          if (response == "new"){
-            $('#notiforder').show();
+          if (response == "no"){
 
+          }else if(response[0].qty ==0){
+            $('#notiforder').hide();
           }else{
+            $('#notiforder').show();
+            $('#notiforder').html(response[0].qty);
 
           }
         }
