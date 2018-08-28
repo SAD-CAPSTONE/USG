@@ -3,7 +3,7 @@
 <div id="summary-container" class="container">
   <div id="summary-main-pane" class="fl-l">
     <div>
-      <p id="notice" class="m-0 fs-08em fw-400 inline-block">Products will be delivered within 7 working days</p>
+      <p id="notice" class="m-0 fs-08em fw-400 inline-block">Products will be delivered within <%= admin.deliveryPeriod%> working days</p>
       <% if (orderOne.orderStatus == 0 || orderOne.orderStatus == 1){ %>
         <a class="inline-block fl-r" href data-toggle='modal' data-target='#CancelModal'><p class="m-0 fs-08em fw-400">Cancel Order</p></a>
       <% }else if(orderOne.orderStatus == 6){ %>
@@ -356,7 +356,9 @@
       })
     })
     $('#bs-print-btn').on('click', ()=>{
-      download_voucher();
+      let bankAccountNo = `<%= admin.bankAccountNo%>`,
+      bankServiceFee = `<%= admin.bankServiceFee%>`;
+      download_voucher(bankAccountNo,bankServiceFee);
     })
     $('select').on('change', function(){
       if($(this).val()=='other'){
@@ -388,7 +390,7 @@
     let text = [
       "Bank deposit slips are valid for 24 hours, failure to pay cancels order",
       "Online receipt is available after payment",
-      "Products will be delivered within 7 working days"],
+      "Products will be delivered within <%= admin.deliveryPeriod%> working days"],
     notice = $('#notice'), counter = 0, iNotice1 = setInterval(change, 8000), tNotice1;
     function change() {
       notice.css('opacity','0');

@@ -201,6 +201,12 @@ router.post('/item-post', (req, res)=>{
     , [req.body.inv], (err,results,fields)=>{
     if (err) console.log(err);
 
+    let curSize = ``;
+    results[0].strVariant ? curSize+= `${results[0].strVariant}`: 0
+    results[0].strVariant && results[0].intSize ? curSize+= ` - `: 0
+    results[0].intSize ? curSize+= `${results[0].intSize}`: 0
+    results[0].strUnitName ? curSize+= `${results[0].strUnitName}`: 0
+
     results[0].productPrice = priceFormat(results[0].productPrice.toFixed(2));
     let this_item = {
       inv: req.body.inv,
@@ -208,7 +214,7 @@ router.post('/item-post', (req, res)=>{
       brand: results[0].strBrand,
       name: results[0].strProductName,
       img: `/assets/images/products/${results[0].strProductPicture}`,
-      curSize: `${results[0].strVariant} - ${results[0].intSize}${results[0].strUnitName}`,
+      curSize: curSize,
       curPrice: results[0].productPrice,
       curQty: parseInt(req.body.qty)
     }
