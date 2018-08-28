@@ -330,6 +330,9 @@ input#mobile {
 .radius-0 {
   border-radius: 0px;
 }
+.border-none{
+  border: 0 !important;
+}
 
 /* Div */
 .x-scrolling-div {
