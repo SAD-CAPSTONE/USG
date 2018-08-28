@@ -136,8 +136,7 @@ router.post('/addImage', (req,res)=>{
 router.get('/supplierProducts', (req,res)=>{
   db.query(`
     SELECT * from tblproductinventory join tblproductlist on tblproductinventory.intProductNo = tblproductlist.intproductno
-    join tblsupplier on tblsupplier.intUserID = tblproductinventory.intUserID
-    where tblproductinventory.intProductNo = ${product}`,(err1,results1)=>{
+    join tblsupplier on tblsupplier.intUserID = tblproductinventory.intUserID`,(err1,results1)=>{
     if (err1) console.log(err1);
     res.render('admin-inventory/views/supplierProducts', {re: results1});
   });

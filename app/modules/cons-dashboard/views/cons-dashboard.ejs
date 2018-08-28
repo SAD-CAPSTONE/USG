@@ -1,43 +1,20 @@
 <%- include('../../../templates/consignor-dashboard.ejs') -%>
   <nav class="navbar navbar-expand-lg bg-custom-primary navbar-dark pt-0">
     <div class="container">
-      <a class="navbar-brand" href="consignor-dash.html"><i class="fa d-inline fa-lg fa-shopping-cart"></i><b>&nbsp;UltraSuperGreen</b></a>
+      <a class="navbar-brand" href="consignor-dash"><i class="fa d-inline fa-lg fa-shopping-cart"></i><b>&nbsp;UltraSuperGreen</b></a>
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent"
         aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
       <div class="collapse navbar-collapse text-center justify-content-end pt-1" id="navbar2SupportedContent">
         <ul class="navbar-nav">
           <li class="nav-item mr-2">
-            <a class="nav-link" href="" style="padding-bottom: 16px;"><i class="fa d-inline fa-lg fa-leaf"></i>&nbsp; My Products</a>
-          </li>
-          <li class="nav-item drop-menu mr-2">
-             <a class="nav-link" href=""><i class="fa d-inline fa-lg  fa-money"></i>&nbsp; Payments</a>
+            <a class="nav-link" href="consignor-products" style="padding-bottom: 16px;"><i class="fa d-inline fa-lg fa-leaf"></i>&nbsp; My Products</a>
           </li>
           <li class="nav-item mr-1">
             <a class="nav-link" href=""><i class="fa d-inline fa-lg fa-bar-chart"></i>&nbsp; Sales</a>
           </li>
 		  <li class="nav-item drop-menu mr-2">
-            <a class="nav-link dropdown-toggle pb-3" href="" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa d-inline fa-lg fa-cart-arrow-down"></i>&nbsp; Orders</a>
-            <div class="drop-menu-content-con">
-				<p>
-				  <a href="">All Orders</a>
-				</p>
-				<div class="dropdown-divider"></div>
-				<p>
-				  <a href="">Confirmed Orders</a>
-				</p>
-				<div class="dropdown-divider"></div>
-				<p>
-				  <a href="">Rejected Orders</a>
-				</p>
-            </div>
-          </li>
-		  <li class="nav-item drop-menu mr-2">
             <a class="nav-link dropdown-toggle pb-3" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa d-inline fa-lg fa-gear"></i>&nbsp;</a>
             <div class="drop-menu-content-con">
-				<p>
-				  <a href="">Account</a>
-				</p>
-				<div class="dropdown-divider"></div>
 				<p>
 				  <a href="">Log Out</a>
 				</p>
@@ -60,7 +37,7 @@
 							<span><i class="fa fa-usd f-s-40 color-primary"></i></span>
 						</div>
 						<div class="media-body media-text-right">
-							<h2>568120</h2>
+							<h2>6805</h2>
 							<p class="m-b-0">Total Revenue</p>
 						</div>
 					</div>
@@ -86,21 +63,21 @@
 							<span><i class="fa fa-archive f-s-40 color-warning"></i></span>
 						</div>
 						<div class="media-body media-text-right">
-							<h2>25</h2>
-							<p class="m-b-0">Remaining Stock</p>
+							<h2>437</h2>
+							<p class="m-b-0">Overall Stock</p>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="col-md-3">
-				<div class="card p-30" style="padding-bottom: 15px !important;">
+				<div class="card p-30">
 					<div class="media">
 						<div class="media-left meida media-middle">
 							<span><i class="fa fa-suitcase f-s-40 color-danger"></i></span>
 						</div>
 						<div class="media-body media-text-right">
-							<h2>847</h2>
-							<p class="m-b-0">Packages and Promos</p>
+							<h2>8</h2>
+							<p class="m-b-0">Products</p>
 						</div>
 					</div>
 				</div>
@@ -108,7 +85,7 @@
 	<div class="col-lg-12">
 		<div class="card">
 			<div class="card-title">
-				<h4>Recent Orders </h4>
+				<h4>New Products</h4>
 			</div>
 			<div class="card-body">
 				<div class="table-responsive">
@@ -131,9 +108,9 @@
 									</div>
 								</td>
 								<td>Keto Loaf</td>
-								<td><span>456 pcs</span></td>
-								<td><span>03-19-18</span></td>
-								<td><span class="badge badge-warning">Pending</span></td>
+								<td><span>0 pcs</span></td>
+								<td><span>10-19-18</span></td>
+								<td><span class="badge badge-warning">Out of Stock</span></td>
 							</tr>
 							<tr>
 								<td>
@@ -142,9 +119,9 @@
 									</div>
 								</td>
 								<td>Kala Milk Soap</td>
-								<td><span>248 pcs</span></td>
-								<td><span>03-18-18</span></td>
-								<td><span class="badge badge-success">Done</span></td>
+								<td><span>48 pcs</span></td>
+								<td><span>09-18-18</span></td>
+								<td><span class="badge badge-success">Stocked</span></td>
 							</tr>
 							<tr>
 								<td>
@@ -153,9 +130,9 @@
 									</div>
 								</td>
 								<td>Dugos Wild Forest Honey</td>
-								<td><span>300 pcs</span></td>
-								<td><span>03-10-18</span></td>
-								<td><span class="badge badge-success">Done</span></td>
+								<td><span>110 pcs</span></td>
+								<td><span>09-10-18</span></td>
+								<td><span class="badge badge-success">Stocked</span></td>
 							</tr>
 							<tr>
 								<td>
@@ -164,9 +141,9 @@
 									</div>
 								</td>
 								<td>Coco Keto MCT Oil</td>
-								<td><span>389 pcs</span></td>
+								<td><span>0 pcs</span></td>
 								<td><span>03-09-18</span></td>
-								<td><span class="badge badge-warning">Pending</span></td>
+								<td><span class="badge badge-warning">Out of Stock</span></td>
 							</tr>
 						</tbody>
 					</table>
