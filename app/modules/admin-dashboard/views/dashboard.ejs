@@ -133,11 +133,14 @@
                 <!-- /.item -->
                 <%  }) %>
                 <% } %>
+                <% if (re6 == 0 || re6 == null){ %>
+                    <span class ="label label-danger">No products to expire for now.</span>
+                <%} %>
              </ul>
            </div>
            <!-- /.box-body -->
            <div class="box-footer text-center">
-             <a href="/inventory/pulledOutStocks" class="uppercase">View All Products</a>
+              <a href="/inventory/pulledOutStocks" class="uppercase">View All Products</a>
            </div>
            <!-- /.box-footer -->
          </div>
@@ -203,6 +206,9 @@
                   <%  }) %>
                   <% } %>
                  </tbody>
+                 <% if (re4 == 0 || re4 == null){ %>
+                  <span class ="label label-danger">No latest orders for now.</span>
+                 <%} %>
                </table>
              </div>
              <!-- /.table-responsive -->
@@ -250,6 +256,9 @@
                <!-- /.item -->
                <%  }) %>
                <% } %>
+               <% if (re5 == 0 || re5 == null){ %>
+                <span class ="label label-danger">No recently added products for now.</span>
+               <%} %>
              </ul>
            </div>
            <!-- /.box-body -->
