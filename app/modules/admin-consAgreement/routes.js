@@ -102,6 +102,8 @@ router.get('/contract/load/:id',(req,res)=>{
       }
     });
   }
-})
+});
+
+
 
 exports.consAgreement = router;
