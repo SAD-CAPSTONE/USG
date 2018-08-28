@@ -39,28 +39,6 @@
             <!-- Inventory -->
             <div class="tab-pane active " id="stock">
 
-              <a data-toggle="modal" data-target="#legend_modal"><i style="font-size: 30px" class="glyphicon glyphicon-info-sign"></i> </a>
-
-
-
-        <div class="modal fade" id="legend_modal">
-          <div style="width: 30%;" class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-body">
-              <p >
-              Status Legend <br>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <a class="ui red empty circular label"></a> No stock in inventory
-              </br>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <a class="ui orange empty circular label"></a> Reached critical limit
-            </br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <a class="ui green empty circular label"></a> Enough stock in inventory
-
-                  </br>
-                </p>
-                    </div>
-                  </div>
-                </div>
-              </div> -->
 
               </br>
               <!-- /.box-header -->
@@ -220,7 +198,7 @@
                           <td><%=i.strProductName%></td>
                           <td><%=i.intQuantity%></td>
                           <td><%=i.strBrand%></td>
-                          <td></td>
+                          <td><%=i.strBusinessName%></td>
                           <td><%=moment(i.expirationDate).format('MM/DD/YYYY')%></td>
                         </tr>
                       <% }) %>
@@ -244,7 +222,7 @@
                       <th>Size</th>
                       <th>Quantity</th>
                       <th>Critical Limit</th>
-                      <th>Actions</th>
+
                     </tr>
                   </thead>
                   <tbody>
@@ -260,7 +238,7 @@
                           <td><%=i.intSize%> <%=i.strUnitName%></td>
                           <td><%=i.intQuantity%></td>
                           <td><%=i.intCriticalLimit%></td>
-                          <td></td>
+                        
                         </tr>
                       <% }) %>
                     <% } %>

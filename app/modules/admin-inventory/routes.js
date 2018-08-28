@@ -279,14 +279,16 @@ router.get('/allStocks', (req,res)=>{
                   db.query(`Select * from tblbatch order by intbatchno desc limit 1`,(err8,results8, fields8)=>{
                     if (err8) console.log(err8);
 
+                    // query expired
                     db.query(`Select * from tblbatch
                       join tblproductinventory on tblbatch.intinventoryno = tblproductinventory.intinventoryno
                       join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
                       join tblProductBrand on tblproductlist.intbrandno = tblproductbrand.intBrandNo
                       join tblSupplier on tblProductInventory.intuserID = tblSupplier.intUserID
-                      where (tblbatch.expirationDate between NOW() and DATE_ADD(NOW(), INTERVAL 14 DAY)) and tblbatch.intStatus = 1`,(err9,res9,fie9)=>{
+                      where ((tblbatch.expirationDate between NOW() and DATE_ADD(NOW(), INTERVAL 14 DAY)) or tblBatch.expirationDate <= CURDATE()) and tblbatch.intStatus = 1`,(err9,res9,fie9)=>{
                         if(err9) console.log(err9);
 
+                        // query critical
                         db.query(`Select * from tblProductinventory
                           join tblproductlist on tblproductinventory.intproductno = tblproductlist.intproductno
                           join tbluom on tblproductinventory.intuomno = tbluom.intuomno
@@ -659,7 +661,7 @@ router.post('/checkCritical',(req,res)=>{
 
 router.post('/checkExpired',(req,res)=>{
   db.query(`Select count(*) as allExp from tblbatch
-    where (tblbatch.expirationDate between NOW() and DATE_ADD(NOW(), INTERVAL 14 DAY)) and tblbatch.intStatus = 1`,(err1,res1,fie1)=>{
+    where ((tblbatch.expirationDate between NOW() and DATE_ADD(NOW(), INTERVAL 14 DAY)) or tblbatch.expirationDate <= CURDATE() ) and tblbatch.intStatus = 1`,(err1,res1,fie1)=>{
       if(err1) console.log(err1);
       if(!err1){
         if(res1==null||res1==undefined){res.send("no");} else if(res1.length==0){ res.send("no");}
