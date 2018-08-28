@@ -28,6 +28,26 @@ $(() => {
         $(this).css('background-color','var(--cart-button-color)');
       });
   }
+  function allQtyValidate(qty,stock,i){
+    $('#cart-pad .cart-product-container').each(function(index){
+      if (index == i){
+        $(this).find(`.quantity-input`).val() <= 1 ?
+          $(this).find(`.minus`).attr('disabled','disabled') :
+          $(this).find(`.minus`).removeAttr('disabled')
+        $(this).find(`.quantity-input`).val() >= stock ?
+          $(this).find(`.plus`).attr('disabled','disabled') :
+          $(this).find(`.plus`).removeAttr('disabled')
+      }
+    })
+  }
+  function thisQtyValidate(qty,stock,thisDiv){
+    $(thisDiv).find(`.quantity-input`).val() <= 1 ?
+      $(thisDiv).find(`.minus`).attr('disabled','disabled') :
+      $(thisDiv).find(`.minus`).removeAttr('disabled')
+    $(thisDiv).find(`.quantity-input`).val() >= stock ?
+      $(thisDiv).find(`.plus`).attr('disabled','disabled') :
+      $(thisDiv).find(`.plus`).removeAttr('disabled')
+  }
 
   // GET - Load cart
   $('#getCart').on('click', () => {
@@ -42,7 +62,7 @@ $(() => {
             </em>
           </div>
           `)
-      res.cart.forEach((data) => {
+      res.cart.forEach((data,i) => {
         list.append(`
           <div class="cart-product-container">
             <div class="product-card">
@@ -72,6 +92,7 @@ $(() => {
             </div>
             <div class="product-remove"><i class="fa fa-remove product-remove-icon"></i></div>
           </div>`);
+        allQtyValidate(data.curQty,data.limit,i)
         // <small class="product-oldprice text-muted">
         //   <span><s class="price-symbol">0</s></span><span> (-0%)</span><br>
         // </small>
@@ -147,6 +168,7 @@ $(() => {
         res.cart != null ?
           $(this).closest('.product-card').find('.quantity-input').val(res.cart.curQty) :
           $(this).closest('.product-card').remove()
+        thisQtyValidate(res.cart.curQty,res.cart.limit,$(this).closest('.product-card'))
         $('#subtotal-btn').click();
       }
     });
@@ -168,6 +190,7 @@ $(() => {
         res.cart != null ?
           $(this).closest('.product-card').find('.quantity-input').val(res.cart.curQty) :
           $(this).closest('.product-card').remove()
+        thisQtyValidate(res.cart.curQty,res.cart.limit,$(this).closest('.product-card'))
         $('#subtotal-btn').click();
       }
     });
