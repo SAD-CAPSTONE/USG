@@ -1,0 +1,345 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+ <!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Transactions</a></li>
+        <li class="active">All Returns</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#allReturns" data-toggle="tab"> All Returns</a></li>
+              <li><a href="#badDeliveries" data-toggle="tab"> Bad Deliveries</a></li>
+              <li><a href="#newRecord" data-toggle="tab"> New Return Record</a></li>
+
+            </ul>
+            <div class="tab-content">
+              <!-- All Returns -->
+              <div class="tab-pane active" id="allReturns">
+
+                <div class="box-body table-responsive">
+                  <table id="example1" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Business Name</th>
+                      <th>Return Date</th>
+                      <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.box-body -->
+
+              </div>
+
+              <!-- Bad Deliveries -->
+              <div class="tab-pane" id="badDeliveries">
+                <div class="box-body table-responsive">
+                  <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Delivery No</th>
+                      <th>Business Name</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      <% if (bad==null||bad==undefined){ %>
+
+                      <% }else if(bad.length==0){ %>
+
+                      <% }else{ %>
+                      <%  bad.forEach(function(i){ %>
+                          <tr>
+                            <td><%=i.intBadOrdersNo%></td>
+                            <td><%=i.rno%></td>
+                            <td><%=i.strBusinessName%></td>
+                            <td>
+                              <% if(i.stat == 2 ){ %>
+                                <span class="label label-warning">Waiting</span>
+
+                              <% }if(i.stat == 1){ %>
+                                <span class="label label-success">Received</span>
+
+                              <% } %>
+                            </td>
+                            <td><button class="large ui button">View Details</button></td>
+                          </tr>
+                      <%  }) %>
+                      <% } %>
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- New Return Record -->
+              <div class="tab-pane" id="newRecord">
+                <div class="row">
+                  <div class="col-sm-1">
+                  </div>
+
+                  <form>
+                  <div class="col-sm-10">
+                    <div class="box box-success">
+                     <div class="box-header with-border">
+                       <h3 class="box-title">Purchase Order Form</h3>
+                     </div>
+
+                     <!-- purchase order body -->
+                     <div class="box-body">
+
+                       <small><b>Business Address:</b> 0002 G/F Elizabeth Hall BLDG. 371 Katipunan Ave., Loyola Heights </br>
+                       Quezon City 1108</small> </br>
+                       <small><b>Phone Number:</b> (02) 738-1202</small> </br>
+                       <small><b>Mobile Number:</b> (0955) 904-4744</small> </br>
+                       </br>
+
+                       <form class="form-horizontal" id="purchaseForm" >
+                       <div align="center" class="row">
+                         <div class="col-sm-1">
+                         </div>
+                         <div class="col-sm-4">
+                           <div class="form-group">
+                             <label for="purcNo">P.O Number:</label>
+
+                               <input type="text" disabled value="" name="POnum" id="purcNo" class="form-control">
+
+                           </div>
+                         </div>
+
+                         <div class="col-sm-2">
+                         </div>
+
+                         <div class="col-sm-4">
+                           <div class="form-group">
+                             <label for="purcNo">P.O Date:</label>
+                             <input type="date" disabled id="today" value="<%= moment().format("YYYY-MM-DD")%>" name="date" class="form-control">
+
+                           </div>
+                         </div>
+                         <div class="col-sm-1">
+                         </div>
+                       </div>
+
+                       <div class="row">
+                         <div class="col-sm-3">
+                           <h4> &nbsp; Supplier </h4>
+                         </div>
+
+                       </div>
+                       <div class="row">
+                         &nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
+                       <p>  &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
+                       </div>
+                     </br>
+                       <div>
+
+                           <div class="form-group">
+                             <input type="hidden" class="input-sm form-control" name="supplier" id="suppid" placeholder="">
+                             <label for="businessName" class="col-sm-2 control-label"> Company Name</label>
+
+                             <div class="col-sm-6">
+                               <input type="text" disabled class="input-sm form-control" id="businessName" placeholder="">
+                             </div>
+                           </div>
+
+                           <div class="form-group">
+
+
+                             <label for="contract" class="col-sm-2 control-label"> Contract No.</label>
+
+                             <div class="col-sm-6">
+
+                               <input type="text" disabled class="input-sm form-control" id="contract" placeholder="">
+                             </div>
+                           </div>
+
+                           <div class="form-group">
+
+                             <label for="address" class="col-sm-2 control-label">Address</label>
+
+                             <div class="col-sm-6">
+                               <input type="text" disabled class="input-sm form-control" id="address" placeholder="">
+                             </div>
+                           </div>
+
+
+
+                       </div>
+
+                       <div class="row">
+                         <div class="col-sm-3">
+                           <h4> &nbsp;  </h4>
+                         </div>
+                       </div>
+
+                       <div class="row">
+                         <div class="col-sm-12">
+                         <div class="box">
+                           <div class="box-header">
+                             <h3 class="box-title">Order List</h3>
+
+
+                           </div>
+
+                           <!-- buttons -->
+
+
+                           &nbsp; &nbsp;<button type="button" id="addButton" disabled class="addRow small ui green button" ><i class="fa fa-plus"></i> Add Product</button>
+                           &nbsp; &nbsp; <a href="" data-toggle="modal" id="searchProduct"  data-target="#selectProduct" hidden>Click here to view products of supplier</a>
+
+                           <!-- /.box-header -->
+
+                           <div class="box-body table-responsive">
+                             <table id="example" class="table table-bordered table-hover">
+                             <thead>
+                               <th style="width: 10px">#</th>
+                               <th>Product Name</th>
+                               <th>Quantity</th>
+                               <th>Variant</th>
+                               <th>Size</th>
+                             </thead>
+
+                             <tbody>
+
+                           </tbody>
+
+                             </table>
+                           </div>
+                           <!-- /.box-body -->
+
+                         </div>
+                           <!-- /.box -->
+                         </div>
+                       </div>
+
+                       <div class="row">
+                         <div class="col-sm-8">
+                           <label for="note">Special Note:</label>
+                           <textarea class="form-control" name="specialnote" id="note"></textarea>
+                        </div>
+                      </div>
+
+
+                     </div>
+
+                     <div class="box-footer">
+                          <a href="/purchaseOrder"><button type="button" class="large ui button">Back</button></a>
+                          <a href=""><button type="submit" id="sub" class="btn large ui teal button">Submit Order Form</button></a>
+                      </div>
+                        <!-- /.box-footer -->
+                      </form>
+                    </div>
+                  </div>
+                </form>
+                  <!-- End of New Record div form -->
+
+                  <div class="col-sm-1">
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+
+
+
+	    </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+  <!-- /.content-wrapper -->
+
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+<!-- page script (new added) -->
+<script>
+  $(function () {
+    $('#example1').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $(function () {
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $(function () {
+    $('#example3').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+$('#title').html("USG | All Customer Orders");
+$(".treeview a:contains('Transactions')").parent().addClass("active");
+$(".navi a:contains('Customer Orders')").parent().addClass("active");
+</script>
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>
