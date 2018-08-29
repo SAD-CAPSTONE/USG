@@ -139,9 +139,16 @@
              </ul>
            </div>
            <!-- /.box-body -->
+           
            <div class="box-footer text-center">
-              <a href="/inventory/pulledOutStocks" class="uppercase">View All Products</a>
+              <% if (re6 == 0 || re6 == null){ %>
+               
+              <% }else if (re6 != 0 || re6 == null){ %> 
+                <a href="/inventory/pulledOutStocks" class="uppercase">View All Products</a>
+              <%} %>
+
            </div>
+           
            <!-- /.box-footer -->
          </div>
          <!-- /.box -->
@@ -215,7 +222,11 @@
            </div>
            <!-- /.box-body -->
            <div class="box-footer clearfix">
-             <a href="customerOrder/allOrders" class="btn btn-sm btn-primary btn-flat pull-right">View All Orders</a>
+              <% if (re4 == 0 || re4 == null){ %>
+               
+                <% }else if (re4 != 0 || re4 == null){ %> 
+                  <a href="customerOrder/allOrders" class="btn btn-sm btn-primary btn-flat pull-right">View All Orders</a>
+                <%} %>
            </div>
            <!-- /.box-footer -->
          </div>
@@ -263,7 +274,13 @@
            </div>
            <!-- /.box-body -->
            <div class="box-footer text-center">
-             <a href="inventory/allProducts" class="uppercase">View All Products</a>
+              <% if (re5 == 0 || re5 == null){ %>
+               
+                <% }else if (re5 != 0 || re5 == null){ %> 
+                  <a href="inventory/allProducts" class="uppercase">View All Products</a>
+                <%} %>
+
+             
            </div>
            <!-- /.box-footer -->
          </div>
