@@ -716,16 +716,16 @@ router.post('/addMeasurement', (req,res)=>{
       num = parseInt(results1[0].intUomNo)+1;
     }
 
-    db.query(`Insert into tblUom (intUomNo,intUserID,strUnitName) values ("${num}", "1000", "${req.body.measurement}")`, (err2,results2,fields2)=>{
+    db.query(`Insert into tblUom (intUomNo,intUserID,strUnitName, strDescription) values ("${num}", "1000", "${req.body.measurement}", "${req.body.description}")`, (err2,results2,fields2)=>{
       if (err2) console.log(err2);
 
-      res.redirect('/maintenance/measurements');
+      res.send("yes")
     });
   });
 });
 
 router.post('/editMeasurement',(req,res)=>{
-  db.query(`Update tblUom set strUnitName = "${req.body.measure}" where intUomNo = "${req.body.no}"`,(err,results,fields)=>{
+  db.query(`Update tblUom set strUnitName = "${req.body.measure}", strDescription = "${req.body.description}" where intUomNo = "${req.body.no}"`,(err,results,fields)=>{
     if(err) console.log(err);
     else{
       res.send("yes");
