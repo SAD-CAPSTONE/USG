@@ -192,9 +192,13 @@ router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, admin, (r
     if (results[0]){
       results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('ll') );
       results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) );
+      let orderLength = results.reduce((temp, obj)=>{
+        return temp += obj.orderQty
+      },0)
       res.render('cust-summary/views/order', {
         thisUser: req.user,
         order: results,
+        orderLength: orderLength,
         orderOne: results[0],
         orderNumber: req.params.orderNo,
         orderTotal: req.orderTotal.totalPrice,

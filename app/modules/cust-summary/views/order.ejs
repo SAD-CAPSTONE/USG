@@ -42,8 +42,8 @@
           </div>
           <div class="inline-block va-t mt-2">
             <p class="mb-1 fs-1em fw-400 lh-p3em price-symbol"><%= data.productPrice%></p>
-            <p class="mb-1 fs-09em lh-p3em text-muted price-symbol"><s>0</s></p>
-            <p class="mb-1 fs-09em lh-p3em text-muted">0% off</p>
+            <!-- <p class="mb-1 fs-09em lh-p3em text-muted price-symbol"><s>0</s></p>
+            <p class="mb-1 fs-09em lh-p3em text-muted">0% off</p> -->
           </div>
           <div class="inline-block va-t mt-2">
             <p class="m-0 fs-09em fw-400 lh-p3em"><%= data.orderQty%></p>
@@ -71,7 +71,7 @@
       <p class="m-0 mb-1 fl-l">Order Summary</p>
       <p class="fl-r mb-0 fw-400">#<%= orderNumber%></p>
       <div style="clear: both"></div>
-      <small class="label">Subtotal (<%= order.length%>)</small>
+      <small class="label">Subtotal (<%= orderLength%>)</small>
       <small class="price price-symbol"><%= orderTotal%></small>
       <br>
       <small class="label">Shipping Fee</small>

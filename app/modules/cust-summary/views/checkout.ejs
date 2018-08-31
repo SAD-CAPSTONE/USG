@@ -228,8 +228,6 @@
               </div>
               <div class="inline-block va-t mt-2">
                 <p class="mb-1 fs-1em fw-400 lh-p3em price-symbol">${data.curPrice}</p>
-                <p class="mb-1 fs-09em lh-p3em text-muted price-symbol"><s>0</s></p>
-                <p class="mb-1 fs-09em lh-p3em text-muted">0% off</p>
               </div>
               <div class="inline-block va-t mt-2">
                 <p class="m-0 fs-09em fw-400 lh-p3em quantity">${data.curQty}</p>
@@ -237,6 +235,8 @@
               </div>
             </div>`)
         });
+        // <p class="mb-1 fs-09em lh-p3em text-muted price-symbol"><s>0</s></p>
+        // <p class="mb-1 fs-09em lh-p3em text-muted">0% off</p>
         if (res.cart.length){
           $('#place-order').hasClass('sb-1') ?
             OrderActive() :

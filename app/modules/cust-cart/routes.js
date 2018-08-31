@@ -203,7 +203,9 @@ router.get('/list/total/:type', (req, res)=>{
       return temp + (obj.curPrice * obj.curQty);
     },0) : 0
   let fee = 0.00;
-  length = req.session.cart.length;
+  length = req.session.cart.reduce((temp, obj)=>{
+    return temp += obj.curQty
+  },0);
   req.params.type == 'total' ?
     res.send({
       cartLength: length,
