@@ -910,9 +910,9 @@ table th, table td {
 :root{
   --summary-details-pane-width: 300px;
 
-  --products-col-width: calc(100% - 278.4px);
-  --price-col-width: 190px;
-  --quantity-col-width: 80px;
+  --summary-products-col-width: calc(100% - 278.4px);
+  --summary-price-col-width: 190px;
+  --summary-quantity-col-width: 80px;
 
 }
 #summary-container {
@@ -934,13 +934,13 @@ table th, table td {
   background: #ECEFF0;
 }
 #summary-main-pane .products-col {
-  width: var(--products-col-width);
+  width: var(--summary-products-col-width);
 }
 #summary-main-pane .price-col {
-  width: var(--price-col-width);
+  width: var(--summary-price-col-width);
 }
 #summary-main-pane .quantity-col {
-  width: var(--quantity-col-width);
+  width: var(--summary-quantity-col-width);
 }
 
 #summary-main-pane .product-div {
@@ -951,7 +951,7 @@ table th, table td {
 }
 #summary-main-pane .product-div > div:first-child {
   min-height: 100px;
-  width: var(--products-col-width);
+  width: var(--summary-products-col-width);
 }
 #summary-main-pane .product-div img {
   position: absolute;
@@ -975,7 +975,7 @@ table th, table td {
 }
 
 #summary-main-pane .product-div > div:nth-child(2) {
-  width: var(--price-col-width);
+  width: var(--summary-price-col-width);
 
 }
 #summary-main-pane .product-div > div:nth-child(2) p:first-of-type{
@@ -983,7 +983,7 @@ table th, table td {
 }
 
 #summary-main-pane .product-div > div:nth-child(3) {
-  width: var(--quantity-col-width);
+  width: var(--summary-quantity-col-width);
 }
 #summary-main-pane .product-div > div:nth-child(3) i.fa {
   display: none;
@@ -1135,10 +1135,10 @@ table th, table td {
 
 /* Consignor ---------------------------------------------------------------- */
 :root {
-  --products-col-width: calc(100% - 339px);
-  --price-col-width: 120px;
-  --quantity-col-width: 80px;
-  --sales-col-width: 120px;
+  --sales-products-col-width: calc(100% - 339px);
+  --sales-price-col-width: 120px;
+  --sales-quantity-col-width: 80px;
+  --sales-sales-col-width: 120px;
 }
 
 #sales-container {
@@ -1172,16 +1172,16 @@ table th, table td {
   background: #ECEFF0;
 }
 #sales-main-pane .products-col {
-  width: var(--products-col-width);
+  width: var(--sales-products-col-width);
 }
 #sales-main-pane .price-col {
-  width: var(--price-col-width);
+  width: var(--sales-price-col-width);
 }
 #sales-main-pane .quantity-col {
-  width: var(--quantity-col-width);
+  width: var(--sales-quantity-col-width);
 }
 #sales-main-pane .sales-col {
-  width: var(--sales-col-width);
+  width: var(--sales-sales-col-width);
 }
 
 #sales-main-pane .product-div {
@@ -1203,16 +1203,16 @@ table th, table td {
 
 #sales-main-pane .product-div > .prod-row > div:first-child {
   padding-left: 110px;
-  width: var(--products-col-width);
+  width: var(--sales-products-col-width);
 }
 #sales-main-pane .product-div > .prod-row > div:nth-child(2) {
-  width: var(--price-col-width);
+  width: var(--sales-price-col-width);
 }
 #sales-main-pane .product-div > .prod-row > div:nth-child(3) {
-  width: var(--quantity-col-width);
+  width: var(--sales-quantity-col-width);
 }
 #sales-main-pane .product-div > .prod-row > div:nth-child(4) {
-  width: var(--sales-col-width);
+  width: var(--sales-sales-col-width);
 }
 
 /*Responsive Sizes------------------------------------------------------------*/

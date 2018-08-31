@@ -1,5 +1,9 @@
 /* Quantity */
 
+.quantity.input-group .form-control:focus {
+  z-index: 0 !important;
+}
+
 .quantity {
   width: 75px;
   height: 20px;

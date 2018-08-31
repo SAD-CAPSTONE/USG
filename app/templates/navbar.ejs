@@ -99,15 +99,19 @@
         <li class="nav-item dropdown cursor-pointer">
           <a id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding-top: 12px;" class="nav-link dropdown-toggle"><i class="fa fa-fw fa-cog"></i></a>
           <div id="nav-setting-dropdown" aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu dropdown-menu-right">
-            <% if (thisUser){ %>
-              <a href="/account/dashboard" class="dropdown-item"><%= thisUser.strFname %></a>
-            <% }else{ %>
-              <a href="/account/dashboard" class="dropdown-item">Account</a>
-            <% } %>
+
+            <a href="/account/dashboard" class="dropdown-item">
+              <%= thisUser ? thisUser.intUserTypeNo == 3 ? thisUser.strFname : 'Account' : 'Account' %>
+            </a>
+
             <a href="/account/messages" class="dropdown-item">Messages</a>
             <a href="/home/faq" class="dropdown-item">FAQs</a>
             <hr id="hzline" />
-            <a href="/login" class="dropdown-item"><i class="fa d-inline fa-lg fa-sign-out pr-2"></i>Logout</a>
+
+            <a href="/login" class="dropdown-item"><i class="fa d-inline fa-lg fa-sign-out pr-2"></i>
+              <%= thisUser ? thisUser.intUserTypeNo == 3 ? 'Logout' : 'Login' : 'Login' %>
+            </a>
+
           </div>
         </li>
       </ul>

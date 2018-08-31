@@ -5,32 +5,8 @@
     <div class="col"></div>
     <div class="col-sm-8 col-md-7 col-lg-5" style="margin-top: 60px;">
       <div class="container text-center"><br/><img src="/customer-assets/images/static/usg-green.png" onContextMenu="return false"/>
-        <h1>Sample Page</h1>
+        <h1><%=message%></h1>
         <a href="/home" role="button" aria-pressed="true" class="btn btn-secondary btn-md" style="width: 110px">Home</a>
-        <br>
-        <br>
-        <svg version="1.1" id="SVG_loadList">
-            <rect x="0" y="0" width="4" height="10">
-              <animateTransform attributeType="xml"
-                attributeName="transform" type="translate"
-                values="0 0; 0 20; 0 0"
-                begin="0" dur="0.6s" repeatCount="indefinite" />
-            </rect>
-            <rect x="10" y="0" width="4" height="10">
-              <animateTransform attributeType="xml"
-                attributeName="transform" type="translate"
-                values="0 0; 0 20; 0 0"
-                begin="0.2s" dur="0.6s" repeatCount="indefinite" />
-            </rect>
-            <rect x="20" y="0" width="4" height="10">
-              <animateTransform attributeType="xml"
-                attributeName="transform" type="translate"
-                values="0 0; 0 20; 0 0"
-                begin="0.4s" dur="0.6s" repeatCount="indefinite" />
-            </rect>
-        </svg>
-        <br><br>
-        <p id="notice">Products will be delivered within 7 working days</p>
       </div>
     </div>
     <div class="col"></div>
@@ -45,508 +21,508 @@
 <script type="text/javascript">
 // let iNotice1, iNotice2, tNotice1, tNotice2;
 
-$(() => {
-  let text = [
-    "Remember to refresh list before placing order",
-    "Only one discount voucher per order is allowed",
-    "Products will be delivered within 7 working days"],
-  notice = $('#notice'), counter = 0, inst = setInterval(change, 5000), tNotice1;
-
-  function change() {
-    notice.css('opacity','0');
-    tNotice1 = setTimeout(()=>{
-      notice.css('opacity','1');
-      notice.text(text[counter])
-      counter++;
-      if (counter >= text.length) {
-        counter = 0;
-      }
-    },400);
-  }
-
-  // let doc = new jsPDF(), img = new Image;
-  //
-  // function pdfContent(){
-  //   doc.addFont('Poppins-Regular.ttf', 'Poppins-Regular', 'normal');
-  //   doc.addFont('Poppins-Light.ttf', 'Poppins-Light', 'normal');
-  //   doc.addFont('Poppins-ExtraLight.ttf', 'Poppins-ExtraLight', 'normal');
-  //
-  //   // BANK
-  //   // Borders
-  //   doc.setDrawColor(112, 112, 112);
-  //   doc.rect(18, 15, 174, 72.5); // main box
-  //   doc.rect(110, 22, 77, 25); // summary box
-  //   doc.line(22, 50, 187, 50); // horizontal line top
-  //   doc.line(22, 74, 187, 74); // horizontal line bottom
-  //   doc.setDrawColor(18, 187, 173);
-  //   doc.setFillColor(18, 187, 173);
-  //   doc.rect(18, 15, 174, 3, 'FD'); // topbar
-  //
-  //   // Brand Title
-  //   doc.setFont('Poppins-Regular');
-  //   doc.setFontSize('18');
-  //   doc.text(22, 27, `ULTRA SUPER GREEN`);
-  //   // Brand Subtitle
-  //   doc.setFont('Poppins-ExtraLight');
-  //   doc.setFontSize('9');
-  //   doc.text(22, 31.3, `Katipunan Ave. Quezon City`);
-  //   doc.text(22, 35.8, `0955 9044744  |  (02)738 1202`);
-  //
-  //   // Summary
-  //   // Labels
-  //   doc.setFont('Poppins-Light');
-  //   doc.setFontSize('9');
-  //   doc.text(112, 28.5, `Order Number:`);
-  //   doc.text(112, 35.5, `Total Amount Due:`);
-  //   doc.text(112, 42.5, `Bank Service Fee:`);
-  //   // Values
-  //   doc.setFont('Poppins-Regular');
-  //   doc.setFontSize('12');
-  //   doc.text(185, 28.8, '#2745', 'right' );
-  //   doc.text(185, 35.8, 'PHP 1,000.00', 'right' );
-  //   doc.text(185, 42.8, '25.00', 'right' );
-  //
-  //   // Title
-  //   doc.setFont('Poppins-Regular');
-  //   doc.setFontSize('18');
-  //   doc.text(22, 46, `BANK'S COPY`);
-  //
-  //   // Content
-  //   doc.setFont('Poppins-Light');
-  //   doc.setFontSize('10');
-  //   doc.text(22, 56, `Name:`);
-  //   doc.text(22, 63, `Account Number:`);
-  //   doc.text(22, 70, `Clearing Account No:`);
-  //
-  //   doc.setFont('Poppins-Regular');
-  //   doc.setFontSize('12');
-  //   doc.text(70, 56.2, `BALMACEDA, JON ERVIN B.`);
-  //   doc.text(70, 63.2, `#1743`);
-  //   doc.text(70, 70.2, `0682-2220-14`);
-  //
-  //   // Foot Note
-  //   doc.setFont('Poppins-ExtraLight');
-  //   doc.setFontSize('9');
-  //   doc.text(22, 79, `This is the Bank’s copy. Detach this part and present to the Bank Teller (together with the Bank’s fully-`);
-  //   doc.text(22, 83, `accomplished Deposit Slip). This document is valid until`);
-  //   doc.setFont('Poppins-Regular');
-  //   doc.text(109, 83, `NOVEMBER 22, 2016.`);
-  //
-  //   // --------------------------------------------------
-  //   doc.setDrawColor(0, 0, 0);
-  //   let x=18, w=23
-  //   for(i=0; i<=24; i++){ // broken lines
-  //     doc.line(x, 92, w, 92);
-  //     x+=7.04; w+=7.04;
-  //   }
-  //   doc.setTextColor(82, 86, 89);
-  //   doc.setFont('Poppins-Light');
-  //   doc.setFontSize('9');
-  //   doc.text(18, 96.5, `Cut Here`);
-  //   doc.setTextColor(0);
-  //
-  //   // --------------------------------------------------
-  //
-  //   // CUSTOMER
-  //   let ext= 85;
-  //
-  //   doc.setDrawColor(112, 112, 112);
-  //   doc.rect(18, 15+ext, 174, 68.5); // main box
-  //   doc.rect(110, 22+ext, 77, 25); // summary box
-  //   doc.line(22, 50+ext, 187, 50+ext); // horizontal line top
-  //   doc.line(22, 74+ext, 187, 74+ext); // horizontal line bottom
-  //   doc.setDrawColor(18, 187, 173);
-  //   doc.setFillColor(18, 187, 173);
-  //   doc.rect(18, 15+ext, 174, 3, 'FD'); // topbar
-  //
-  //   // Brand Title
-  //   doc.setFont('Poppins-Regular');
-  //   doc.setFontSize('18');
-  //   doc.text(22, 27+ext, `ULTRA SUPER GREEN`);
-  //   // Brand Subtitle
-  //   doc.setFont('Poppins-ExtraLight');
-  //   doc.setFontSize('9');
-  //   doc.text(22, 31.3+ext, `Katipunan Ave. Quezon City`);
-  //   doc.text(22, 35.8+ext, `0955 9044744  |  (02)738 1202`);
-  //
-  //   // Summary
-  //   // Labels
-  //   doc.setFont('Poppins-Light');
-  //   doc.setFontSize('9');
-  //   doc.text(112, 28.5+ext, `Order Number:`);
-  //   doc.text(112, 35.5+ext, `Total Amount Due:`);
-  //   doc.text(112, 42.5+ext, `Bank Service Fee:`);
-  //   // Values
-  //   doc.setFont('Poppins-Regular');
-  //   doc.setFontSize('12');
-  //   doc.text(185, 28.8+ext, '#2745', 'right' );
-  //   doc.text(185, 35.8+ext, 'PHP 1,000.00', 'right' );
-  //   doc.text(185, 42.8+ext, '25.00', 'right' );
-  //
-  //   // Title
-  //   doc.setFont('Poppins-Regular');
-  //   doc.setFontSize('18');
-  //   doc.text(22, 46+ext, `CUSTOMER'S COPY`);
-  //
-  //   // Content
-  //   doc.setFont('Poppins-Light');
-  //   doc.setFontSize('10');
-  //   doc.text(22, 56+ext, `Name:`);
-  //   doc.text(22, 63+ext, `Account Number:`);
-  //   doc.text(22, 70+ext, `Date of Order:`);
-  //
-  //   doc.setFont('Poppins-Regular');
-  //   doc.setFontSize('12');
-  //   doc.text(70, 56.2+ext, `BALMACEDA, JON ERVIN B.`);
-  //   doc.text(70, 63.2+ext, `#1743`);
-  //   doc.text(70, 70.2+ext, `NOVEMBER 15, 2016`);
-  //
-  //   // Foot Note
-  //   doc.setFont('Poppins-ExtraLight');
-  //   doc.setFontSize('9');
-  //   doc.text(22, 79+ext, `This is your copy. Keep this part in a safe place. This document is valid until`);
-  //   doc.setFont('Poppins-Regular');
-  //   doc.text(138.5, 79+ext, `NOVEMBER 22, 2016.`);
-  //
-  // }
-  //
-  // img.onload = function() {
-  //   pdfContent();
-  //   doc.addImage(this, 5, 5, 20, 20);
-  //   doc.save('UltraSuperGreen Deposit Slip.pdf');
-  // };
-  // img.crossOrigin = "";
-  // img.src = "/customer-assets/images/static/usg-green.png";
-
-  // let doc = new jsPDF();
-  //
-  // doc.addFont('Poppins-Regular.ttf', 'Poppins-Regular', 'normal');
-  // doc.addFont('Poppins-Light.ttf', 'Poppins-Light', 'normal');
-  // doc.addFont('Poppins-ExtraLight.ttf', 'Poppins-ExtraLight', 'normal');
-  //
-  // // Brand Title
-  // doc.setFont('Poppins-Regular');
-  // doc.setFontSize('25');
-  // doc.text(62.5, 22, `ULTRA SUPER GREEN`);
-  // // Brand Subtitle
-  // doc.setFont('Poppins-Light');
-  // doc.setFontSize('10');
-  // doc.text(64, 26.5, `Elizabeth Hall Bldg., Katipunan Ave. Quezon City`);
-  // doc.text(78, 31, `0955 9044744  |  (02)738 1202`);
-  // doc.text(91, 35.5, `Official Receipt`);
-  //
-  // // Receipt Details
-  // let firstX = 10, firstY = 48, gap = 4.5 , newY, maxY;
-  // // Order
-  // newY = firstY;
-  // doc.setFont('Poppins-Regular');
-  // doc.text(firstX, newY, `Order`); newY+= gap;
-  // doc.setFont('Poppins-Light');
-  // doc.text(firstX, newY, `No: #1436`); newY+= gap;
-  // doc.text(firstX, newY, `Date: 08/11/18`);
-  // firstX += 32;
-  // maxY = newY;
-  // // Cashier
-  // newY = firstY;
-  // doc.setFont('Poppins-Regular');
-  // doc.text(firstX, newY, `Cashier/`); newY+= gap;
-  // doc.text(firstX, newY, `Personnel:`); newY+= gap;
-  // doc.setFont('Poppins-Light');
-  // doc.text(firstX, newY, `Gustle Agulto`);
-  // firstX += 36;
-  // maxY < newY ? maxY = newY : 0;
-  // // Customer
-  // newY = firstY;
-  // doc.setFont('Poppins-Regular');
-  // doc.text(firstX, newY, `Customer:`); newY+= gap;
-  // doc.setFont('Poppins-Light');
-  // doc.text(firstX, newY, `Jon Ervin`); newY+= gap;
-  // doc.text(firstX, newY, `Balmaceda`);
-  // firstX += 36;
-  // maxY < newY ? maxY = newY : 0;
-  // // Billing
-  // newY = firstY;
-  // doc.setFont('Poppins-Regular');
-  // doc.text(firstX, newY, `Billing Address:`); newY+= gap;
-  // doc.setFont('Poppins-Light');
-  // doc.text(firstX, newY, `A125 El Pueblo Manila,`); newY+= gap;
-  // doc.text(firstX, newY, `8010 Anonas, Santa`); newY+= gap;
-  // doc.text(firstX, newY, `Mesa, Maynila`);
-  // firstX += 45;
-  // maxY < newY ? maxY = newY : 0;
-  // // Shipping
-  // newY = firstY;
-  // doc.setFont('Poppins-Regular');
-  // doc.text(firstX, newY, `Shipping Address:`); newY+= gap;
-  // doc.setFont('Poppins-Light');
-  // doc.text(firstX, newY, `C928 Anonas, Santa`); newY+= gap;
-  // doc.text(firstX, newY, `Mesa, Maynila, 1016`); newY+= gap;
-  // doc.text(firstX, newY, `Kalakhang Maynila`);
-  // maxY < newY ? maxY = newY : 0;
-  //
-  // // Products
-  // firstX = 16, firstY = maxY + 15, gap = 6;
-  // // Qty
-  // newY = firstY;
-  // doc.setFont('Poppins-Regular');
-  // doc.text(firstX, newY, `Qty`, 'right'); newY+= gap*1.4;
-  // doc.setFont('Poppins-Light');
-  // doc.text(firstX, newY, `4`, 'right'); newY+= gap;
-  // doc.text(firstX, newY, `2`, 'right'); newY+= gap;
-  // doc.text(firstX, newY, `7`, 'right'); newY+= gap;
-  // doc.text(firstX, newY, `5`, 'right');
-  // firstX += 8;
-  // // Description
-  // newY = firstY;
-  // doc.setFont('Poppins-Regular');
-  // doc.text(firstX, newY, `Description`); newY+= gap*1.4;
-  // doc.setFont('Poppins-Light');
-  // doc.text(firstX, newY, `Coco Natura Coco Seasoning`); newY+= gap;
-  // doc.text(firstX, newY, `eHarvest Artisanal Dulong`); newY+= gap;
-  // doc.text(firstX, newY, `Chili King Chili Sauce Mushroom Tidbits `); newY+= gap;
-  // doc.text(firstX, newY, `Basic Juicery Black UT Juice`);
-  // firstX += 138;
-  // // Unit Price
-  // newY = firstY;
-  // doc.setFont('Poppins-Regular');
-  // doc.text(firstX, newY, `Unit Price`, 'right'); newY+= gap*1.4;
-  // doc.setFont('Poppins-Light');
-  // doc.text(firstX, newY, `130.00`, 'right'); newY+= gap;
-  // doc.text(firstX, newY, `70.00`, 'right'); newY+= gap;
-  // doc.text(firstX, newY, `130.00`, 'right'); newY+= gap;
-  // doc.text(firstX, newY, `250.00`, 'right');
-  // // Summary Labels
-  // newY+= gap*1.4;
-  // doc.setFont('Poppins-Regular');
-  // doc.text(firstX, newY, `Subtotal`, 'right'); newY+= gap;
-  // doc.text(firstX, newY, `VAT(12%)`, 'right'); newY+= gap;
-  // doc.text(firstX, newY, `Total`, 'right');
-  // firstX += 37;
-  // // Amount
-  // newY = firstY;
-  // doc.setFont('Poppins-Regular');
-  // doc.text(firstX, newY, `Amount`, 'right'); newY+= gap*1.4;
-  // doc.setFont('Poppins-Light');
-  // doc.text(firstX, newY, `520.00`, 'right'); newY+= gap;
-  // doc.text(firstX, newY, `140.00`, 'right'); newY+= gap;
-  // doc.text(firstX, newY, `910.00`, 'right'); newY+= gap;
-  // doc.text(firstX, newY, `1,250.00`, 'right');
-  // // Summary Values
-  // newY+= gap*1.4;
-  // doc.setFont('Poppins-Regular');
-  // doc.text(firstX, newY, `2,820.00`, 'right'); newY+= gap;
-  // doc.text(firstX, newY, `338.40`, 'right'); newY+= gap;
-  // doc.text(firstX, newY, `3,158.40`, 'right');
-  // firstX += 40;
-  // newY += 17;
-  //
-  // doc.setFontSize('9');
-  // doc.text(88.1, newY-4, `© Ultra Super Green`);
-  //
-  // doc.setDrawColor(0, 0, 0);
-  // let x=10, w=15
-  // for(i=0; i<=26; i++){ // broken lines
-  //   doc.line(x, newY, w, newY);
-  //   x+=7.065; w+=7.065;
-  // }
-  // doc.save('UltraSuperGreen Order Receipt.pdf');
-
-  let doc = new jsPDF(), img = new Image;
-
-  doc.addFont('Poppins-Regular.ttf', 'Poppins-Regular', 'normal');
-  doc.addFont('Poppins-Light.ttf', 'Poppins-Light', 'normal');
-  doc.addFont('Poppins-ExtraLight.ttf', 'Poppins-ExtraLight', 'normal');
-  doc.addFont('Poppins-SemiBold.ttf', 'Poppins-SemiBold', 'normal');
-
-  function pdfContent(img){
-    let firstX = 25, newY, gap = 5;
-    doc.addImage(img, 42, 7, 125, 32);
-
-    // title
-    doc.setFont('Poppins-SemiBold');
-    doc.setFontSize('15');
-    doc.text(71, 53, `Consignment Agreement`);
-    doc.line(71, 54, 139.5, 54);
-
-    // Labels & Inputs
-    newY = 68
-    doc.setFont('Poppins-SemiBold');
-    doc.setFontSize('10');
-    doc.text(firstX, newY, `Business Name:`); newY+= gap;
-    doc.text(firstX, newY, `Brand Name:`); newY+= gap;
-    doc.text(firstX, newY, `TIN:`); newY+= gap;
-    doc.text(firstX, newY, `Consignor Commission Rate:`); newY+= gap;
-    doc.text(firstX, newY, `Contact Person:`); newY+= gap;
-    doc.text(firstX, newY, `Contact Numbers:`); newY+= gap;
-    doc.text(firstX, newY, `Email Address:`); newY+= gap;
-    doc.text(firstX, newY, `Delivery Schedule:`); newY+= gap;
-    doc.text(firstX, newY, `Frequency of Delivery:`); newY+= gap;
-    doc.text(firstX, newY, `Consignee’s Remittance Schedule:`); newY+= gap;
-    doc.text(firstX, newY, `Consigned List Products/brand names including full ingredients list and shelf life:`);
-
-    newY = 68
-    doc.setFont('Poppins-Light');
-    doc.text(firstX+30, newY, `Clan Milan's Lutoan`); newY+= gap;
-    doc.text(firstX+25, newY, `Milan`); newY+= gap;
-    doc.text(firstX+8, newY, `P97349360`); newY+= gap;
-    doc.text(firstX+54, newY, `30%`); newY+= gap;
-    doc.text(firstX+30, newY, `Milan`); newY+= gap;
-    doc.text(firstX+34, newY, `911`); newY+= gap;
-    doc.text(firstX+28, newY, `Milan@milan.com`); newY+= gap;
-    doc.text(firstX+34, newY, `August 25, 2018`); newY+= gap;
-    doc.text(firstX+41, newY, `Monthly`); newY+= gap;
-    doc.text(firstX+64, newY, `Monthly`); newY+= gap*2;
-    // doc.text(firstX+147, newY, `Milan`); newY+= gap;
-    doc.text(firstX, newY, `Please attach a separate sheet for product information and price list`); newY+= gap*2;
-
-    let indent1 = 12.5, indent2 = 25;
-    // Consignment Provisions
-    doc.setFont('Poppins-SemiBold');
-    doc.text(firstX, newY, `Consignment Provisions:`); newY+= gap;
-    // 1
-    doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
-    doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
-    doc.setFont('Poppins-Light');
-    doc.text(firstX+indent1, newY, `Consignor hereby agrees to replace any goods that are about to expire, any`); newY+= gap;
-    doc.text(firstX+indent1, newY, `non-moving products, any product found damaged upon delivery or any`); newY+= gap;
-    doc.text(firstX+indent1, newY, `product with valid customer complaints`); newY+= gap;
-    // 2
-    doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
-    doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
-    doc.text(firstX+indent1, newY, `All labels should include full ingredients list, expiration, manufacturing date`); newY+= gap;
-    // 3
-    doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
-    doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
-    doc.setFont('Poppins-Light');
-    doc.text(firstX+indent1, newY, `If your product has no certification, you must indicate in your label that your`); newY+= gap;
-    doc.text(firstX+indent1, newY, `product is either All Natural, homemade or herbal`); newY+= gap;
-    // 4
-    doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
-    doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
-    doc.text(firstX+indent1, newY, `Consignor must provide 2 copies of delivery receipt`); newY+= gap;
-    // 5
-    doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
-    doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
-    doc.setFont('Poppins-Light');
-    doc.text(firstX+indent1, newY, `In-store product sampling launch must be scheduled 1 week prior to the event`); newY+= gap;
-    // 6
-    doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
-    doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
-    doc.text(firstX+indent1, newY, `Delivery Receipt format:`); newY+= gap;
-    // 6.x
-    doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
-    doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
-    doc.setFont('Poppins-Light'); doc.setFontSize('10');
-    doc.text(firstX+indent2, newY, `Item (product name)`); newY+= gap;
-
-    doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
-    doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
-    doc.setFont('Poppins-Light'); doc.setFontSize('10');
-    doc.text(firstX+indent2, newY, `Variant (if any)`); newY+= gap;
-
-    doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
-    doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
-    doc.setFont('Poppins-Light'); doc.setFontSize('10');
-    doc.text(firstX+indent2, newY, `Size / Product Content (e.g. 500ml / 100 grams, etc.)`); newY+= gap;
-
-    doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
-    doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
-    doc.setFont('Poppins-Light'); doc.setFontSize('10');
-    doc.text(firstX+indent2, newY, `Quantity`); newY+= gap;
-
-    doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
-    doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
-    doc.setFont('Poppins-Light'); doc.setFontSize('10');
-    doc.text(firstX+indent2, newY, `List price (discounted price)`); newY+= gap;
-
-    doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
-    doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
-    doc.setFont('Poppins-Light'); doc.setFontSize('10');
-    doc.text(firstX+indent2, newY, `SRP`); newY+= gap;
-
-    doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
-    doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
-    doc.setFont('Poppins-Light'); doc.setFontSize('10');
-    doc.text(firstX+indent2, newY, `Total amount based on list price`); newY+= gap;
-
-    doc.addPage();
-    doc.addImage(img, 42, 7, 125, 32);
-    newY = 46
-
-    // Documents for Submission
-    doc.setFont('Poppins-SemiBold');
-    doc.text(firstX, 46, `Documents for submission: (digital and printed copy required)`); newY+= gap;
-    //
-    doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
-    doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
-    doc.setFont('Poppins-Light');
-    doc.text(firstX+indent1, newY, `Company profile`); newY+= gap;
-    //
-    doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
-    doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
-    doc.setFont('Poppins-Light');
-    doc.text(firstX+indent1, newY, `Product information Sheet – full and specified ingredients list, usage, and other`); newY+= gap;
-    doc.text(firstX+indent1, newY, `useful information to drive sales and product awareness`); newY+= gap;
-    //
-    doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
-    doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
-    doc.setFont('Poppins-Light');
-    doc.text(firstX+indent1, newY, `DTI /SEC Registration`); newY+= gap;
-    //
-    doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
-    doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
-    doc.setFont('Poppins-Light');
-    doc.text(firstX+indent1, newY, `Official Receipt / BIR Registration`); newY+= gap;
-    //
-    doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
-    doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
-    doc.setFont('Poppins-Light');
-    doc.text(firstX+indent1, newY, `Sales Invoice and Delivery receipt (upon product delivery)`); newY+= gap;
-    //
-    doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
-    doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
-    doc.setFont('Poppins-Light');
-    doc.text(firstX+indent1, newY, `FDA Registration (if any)`); newY+= gap;
-    //
-    doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
-    doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
-    doc.setFont('Poppins-Light');
-    doc.text(firstX+indent1, newY, `Eco Certification or Third Party Laboratory Results for product safety and efficacy`); newY+= gap;
-    doc.text(firstX+indent1, newY, `(Required for personal and beauty products)`); newY+= gap*3;
-
-    // Conforme
-    doc.setFont('Poppins-SemiBold');
-    doc.text(firstX, newY, `CONFORME:`); newY+= gap;
-    newY+= 25;
-    doc.line(firstX, newY-4, firstX+38, newY-4);
-    doc.line(firstX+110, newY-4, firstX+148, newY-4);
-
-    doc.text(firstX, newY, `Gustle Agulto`);
-
-    doc.setFont('Poppins-Light');
-    doc.text(firstX+110, newY, `Signature over printed`); newY+= gap;
-
-    doc.text(firstX, newY, `Operations Manager`);
-    doc.text(firstX+110, newY, `Name`); newY+= gap;
-
-    doc.text(firstX, newY, `Ultra Super Green Trading Corporation`); newY+= gap;
-
-    newY+= 25;
-    doc.setFont('Poppins-SemiBold');
-    doc.text(firstX, newY, `Date:`);
-    doc.line(firstX+10, newY+0.5, 63, newY+0.5);
-
-  }
-
-  img.onload = function() {
-    pdfContent(this);
-    doc.save('UltraSuperGreen Consignment Agreement.pdf');
-    console.log('PDF Downloaded!');
-  };
-  img.crossOrigin = "";
-  img.src = "/customer-assets/images/static/usg-contract.png";
-
-});
+// $(() => {
+//   let text = [
+//     "Remember to refresh list before placing order",
+//     "Only one discount voucher per order is allowed",
+//     "Products will be delivered within 7 working days"],
+//   notice = $('#notice'), counter = 0, inst = setInterval(change, 5000), tNotice1;
+//
+//   function change() {
+//     notice.css('opacity','0');
+//     tNotice1 = setTimeout(()=>{
+//       notice.css('opacity','1');
+//       notice.text(text[counter])
+//       counter++;
+//       if (counter >= text.length) {
+//         counter = 0;
+//       }
+//     },400);
+//   }
+//
+//   // let doc = new jsPDF(), img = new Image;
+//   //
+//   // function pdfContent(){
+//   //   doc.addFont('Poppins-Regular.ttf', 'Poppins-Regular', 'normal');
+//   //   doc.addFont('Poppins-Light.ttf', 'Poppins-Light', 'normal');
+//   //   doc.addFont('Poppins-ExtraLight.ttf', 'Poppins-ExtraLight', 'normal');
+//   //
+//   //   // BANK
+//   //   // Borders
+//   //   doc.setDrawColor(112, 112, 112);
+//   //   doc.rect(18, 15, 174, 72.5); // main box
+//   //   doc.rect(110, 22, 77, 25); // summary box
+//   //   doc.line(22, 50, 187, 50); // horizontal line top
+//   //   doc.line(22, 74, 187, 74); // horizontal line bottom
+//   //   doc.setDrawColor(18, 187, 173);
+//   //   doc.setFillColor(18, 187, 173);
+//   //   doc.rect(18, 15, 174, 3, 'FD'); // topbar
+//   //
+//   //   // Brand Title
+//   //   doc.setFont('Poppins-Regular');
+//   //   doc.setFontSize('18');
+//   //   doc.text(22, 27, `ULTRA SUPER GREEN`);
+//   //   // Brand Subtitle
+//   //   doc.setFont('Poppins-ExtraLight');
+//   //   doc.setFontSize('9');
+//   //   doc.text(22, 31.3, `Katipunan Ave. Quezon City`);
+//   //   doc.text(22, 35.8, `0955 9044744  |  (02)738 1202`);
+//   //
+//   //   // Summary
+//   //   // Labels
+//   //   doc.setFont('Poppins-Light');
+//   //   doc.setFontSize('9');
+//   //   doc.text(112, 28.5, `Order Number:`);
+//   //   doc.text(112, 35.5, `Total Amount Due:`);
+//   //   doc.text(112, 42.5, `Bank Service Fee:`);
+//   //   // Values
+//   //   doc.setFont('Poppins-Regular');
+//   //   doc.setFontSize('12');
+//   //   doc.text(185, 28.8, '#2745', 'right' );
+//   //   doc.text(185, 35.8, 'PHP 1,000.00', 'right' );
+//   //   doc.text(185, 42.8, '25.00', 'right' );
+//   //
+//   //   // Title
+//   //   doc.setFont('Poppins-Regular');
+//   //   doc.setFontSize('18');
+//   //   doc.text(22, 46, `BANK'S COPY`);
+//   //
+//   //   // Content
+//   //   doc.setFont('Poppins-Light');
+//   //   doc.setFontSize('10');
+//   //   doc.text(22, 56, `Name:`);
+//   //   doc.text(22, 63, `Account Number:`);
+//   //   doc.text(22, 70, `Clearing Account No:`);
+//   //
+//   //   doc.setFont('Poppins-Regular');
+//   //   doc.setFontSize('12');
+//   //   doc.text(70, 56.2, `BALMACEDA, JON ERVIN B.`);
+//   //   doc.text(70, 63.2, `#1743`);
+//   //   doc.text(70, 70.2, `0682-2220-14`);
+//   //
+//   //   // Foot Note
+//   //   doc.setFont('Poppins-ExtraLight');
+//   //   doc.setFontSize('9');
+//   //   doc.text(22, 79, `This is the Bank’s copy. Detach this part and present to the Bank Teller (together with the Bank’s fully-`);
+//   //   doc.text(22, 83, `accomplished Deposit Slip). This document is valid until`);
+//   //   doc.setFont('Poppins-Regular');
+//   //   doc.text(109, 83, `NOVEMBER 22, 2016.`);
+//   //
+//   //   // --------------------------------------------------
+//   //   doc.setDrawColor(0, 0, 0);
+//   //   let x=18, w=23
+//   //   for(i=0; i<=24; i++){ // broken lines
+//   //     doc.line(x, 92, w, 92);
+//   //     x+=7.04; w+=7.04;
+//   //   }
+//   //   doc.setTextColor(82, 86, 89);
+//   //   doc.setFont('Poppins-Light');
+//   //   doc.setFontSize('9');
+//   //   doc.text(18, 96.5, `Cut Here`);
+//   //   doc.setTextColor(0);
+//   //
+//   //   // --------------------------------------------------
+//   //
+//   //   // CUSTOMER
+//   //   let ext= 85;
+//   //
+//   //   doc.setDrawColor(112, 112, 112);
+//   //   doc.rect(18, 15+ext, 174, 68.5); // main box
+//   //   doc.rect(110, 22+ext, 77, 25); // summary box
+//   //   doc.line(22, 50+ext, 187, 50+ext); // horizontal line top
+//   //   doc.line(22, 74+ext, 187, 74+ext); // horizontal line bottom
+//   //   doc.setDrawColor(18, 187, 173);
+//   //   doc.setFillColor(18, 187, 173);
+//   //   doc.rect(18, 15+ext, 174, 3, 'FD'); // topbar
+//   //
+//   //   // Brand Title
+//   //   doc.setFont('Poppins-Regular');
+//   //   doc.setFontSize('18');
+//   //   doc.text(22, 27+ext, `ULTRA SUPER GREEN`);
+//   //   // Brand Subtitle
+//   //   doc.setFont('Poppins-ExtraLight');
+//   //   doc.setFontSize('9');
+//   //   doc.text(22, 31.3+ext, `Katipunan Ave. Quezon City`);
+//   //   doc.text(22, 35.8+ext, `0955 9044744  |  (02)738 1202`);
+//   //
+//   //   // Summary
+//   //   // Labels
+//   //   doc.setFont('Poppins-Light');
+//   //   doc.setFontSize('9');
+//   //   doc.text(112, 28.5+ext, `Order Number:`);
+//   //   doc.text(112, 35.5+ext, `Total Amount Due:`);
+//   //   doc.text(112, 42.5+ext, `Bank Service Fee:`);
+//   //   // Values
+//   //   doc.setFont('Poppins-Regular');
+//   //   doc.setFontSize('12');
+//   //   doc.text(185, 28.8+ext, '#2745', 'right' );
+//   //   doc.text(185, 35.8+ext, 'PHP 1,000.00', 'right' );
+//   //   doc.text(185, 42.8+ext, '25.00', 'right' );
+//   //
+//   //   // Title
+//   //   doc.setFont('Poppins-Regular');
+//   //   doc.setFontSize('18');
+//   //   doc.text(22, 46+ext, `CUSTOMER'S COPY`);
+//   //
+//   //   // Content
+//   //   doc.setFont('Poppins-Light');
+//   //   doc.setFontSize('10');
+//   //   doc.text(22, 56+ext, `Name:`);
+//   //   doc.text(22, 63+ext, `Account Number:`);
+//   //   doc.text(22, 70+ext, `Date of Order:`);
+//   //
+//   //   doc.setFont('Poppins-Regular');
+//   //   doc.setFontSize('12');
+//   //   doc.text(70, 56.2+ext, `BALMACEDA, JON ERVIN B.`);
+//   //   doc.text(70, 63.2+ext, `#1743`);
+//   //   doc.text(70, 70.2+ext, `NOVEMBER 15, 2016`);
+//   //
+//   //   // Foot Note
+//   //   doc.setFont('Poppins-ExtraLight');
+//   //   doc.setFontSize('9');
+//   //   doc.text(22, 79+ext, `This is your copy. Keep this part in a safe place. This document is valid until`);
+//   //   doc.setFont('Poppins-Regular');
+//   //   doc.text(138.5, 79+ext, `NOVEMBER 22, 2016.`);
+//   //
+//   // }
+//   //
+//   // img.onload = function() {
+//   //   pdfContent();
+//   //   doc.addImage(this, 5, 5, 20, 20);
+//   //   doc.save('UltraSuperGreen Deposit Slip.pdf');
+//   // };
+//   // img.crossOrigin = "";
+//   // img.src = "/customer-assets/images/static/usg-green.png";
+//
+//   // let doc = new jsPDF();
+//   //
+//   // doc.addFont('Poppins-Regular.ttf', 'Poppins-Regular', 'normal');
+//   // doc.addFont('Poppins-Light.ttf', 'Poppins-Light', 'normal');
+//   // doc.addFont('Poppins-ExtraLight.ttf', 'Poppins-ExtraLight', 'normal');
+//   //
+//   // // Brand Title
+//   // doc.setFont('Poppins-Regular');
+//   // doc.setFontSize('25');
+//   // doc.text(62.5, 22, `ULTRA SUPER GREEN`);
+//   // // Brand Subtitle
+//   // doc.setFont('Poppins-Light');
+//   // doc.setFontSize('10');
+//   // doc.text(64, 26.5, `Elizabeth Hall Bldg., Katipunan Ave. Quezon City`);
+//   // doc.text(78, 31, `0955 9044744  |  (02)738 1202`);
+//   // doc.text(91, 35.5, `Official Receipt`);
+//   //
+//   // // Receipt Details
+//   // let firstX = 10, firstY = 48, gap = 4.5 , newY, maxY;
+//   // // Order
+//   // newY = firstY;
+//   // doc.setFont('Poppins-Regular');
+//   // doc.text(firstX, newY, `Order`); newY+= gap;
+//   // doc.setFont('Poppins-Light');
+//   // doc.text(firstX, newY, `No: #1436`); newY+= gap;
+//   // doc.text(firstX, newY, `Date: 08/11/18`);
+//   // firstX += 32;
+//   // maxY = newY;
+//   // // Cashier
+//   // newY = firstY;
+//   // doc.setFont('Poppins-Regular');
+//   // doc.text(firstX, newY, `Cashier/`); newY+= gap;
+//   // doc.text(firstX, newY, `Personnel:`); newY+= gap;
+//   // doc.setFont('Poppins-Light');
+//   // doc.text(firstX, newY, `Gustle Agulto`);
+//   // firstX += 36;
+//   // maxY < newY ? maxY = newY : 0;
+//   // // Customer
+//   // newY = firstY;
+//   // doc.setFont('Poppins-Regular');
+//   // doc.text(firstX, newY, `Customer:`); newY+= gap;
+//   // doc.setFont('Poppins-Light');
+//   // doc.text(firstX, newY, `Jon Ervin`); newY+= gap;
+//   // doc.text(firstX, newY, `Balmaceda`);
+//   // firstX += 36;
+//   // maxY < newY ? maxY = newY : 0;
+//   // // Billing
+//   // newY = firstY;
+//   // doc.setFont('Poppins-Regular');
+//   // doc.text(firstX, newY, `Billing Address:`); newY+= gap;
+//   // doc.setFont('Poppins-Light');
+//   // doc.text(firstX, newY, `A125 El Pueblo Manila,`); newY+= gap;
+//   // doc.text(firstX, newY, `8010 Anonas, Santa`); newY+= gap;
+//   // doc.text(firstX, newY, `Mesa, Maynila`);
+//   // firstX += 45;
+//   // maxY < newY ? maxY = newY : 0;
+//   // // Shipping
+//   // newY = firstY;
+//   // doc.setFont('Poppins-Regular');
+//   // doc.text(firstX, newY, `Shipping Address:`); newY+= gap;
+//   // doc.setFont('Poppins-Light');
+//   // doc.text(firstX, newY, `C928 Anonas, Santa`); newY+= gap;
+//   // doc.text(firstX, newY, `Mesa, Maynila, 1016`); newY+= gap;
+//   // doc.text(firstX, newY, `Kalakhang Maynila`);
+//   // maxY < newY ? maxY = newY : 0;
+//   //
+//   // // Products
+//   // firstX = 16, firstY = maxY + 15, gap = 6;
+//   // // Qty
+//   // newY = firstY;
+//   // doc.setFont('Poppins-Regular');
+//   // doc.text(firstX, newY, `Qty`, 'right'); newY+= gap*1.4;
+//   // doc.setFont('Poppins-Light');
+//   // doc.text(firstX, newY, `4`, 'right'); newY+= gap;
+//   // doc.text(firstX, newY, `2`, 'right'); newY+= gap;
+//   // doc.text(firstX, newY, `7`, 'right'); newY+= gap;
+//   // doc.text(firstX, newY, `5`, 'right');
+//   // firstX += 8;
+//   // // Description
+//   // newY = firstY;
+//   // doc.setFont('Poppins-Regular');
+//   // doc.text(firstX, newY, `Description`); newY+= gap*1.4;
+//   // doc.setFont('Poppins-Light');
+//   // doc.text(firstX, newY, `Coco Natura Coco Seasoning`); newY+= gap;
+//   // doc.text(firstX, newY, `eHarvest Artisanal Dulong`); newY+= gap;
+//   // doc.text(firstX, newY, `Chili King Chili Sauce Mushroom Tidbits `); newY+= gap;
+//   // doc.text(firstX, newY, `Basic Juicery Black UT Juice`);
+//   // firstX += 138;
+//   // // Unit Price
+//   // newY = firstY;
+//   // doc.setFont('Poppins-Regular');
+//   // doc.text(firstX, newY, `Unit Price`, 'right'); newY+= gap*1.4;
+//   // doc.setFont('Poppins-Light');
+//   // doc.text(firstX, newY, `130.00`, 'right'); newY+= gap;
+//   // doc.text(firstX, newY, `70.00`, 'right'); newY+= gap;
+//   // doc.text(firstX, newY, `130.00`, 'right'); newY+= gap;
+//   // doc.text(firstX, newY, `250.00`, 'right');
+//   // // Summary Labels
+//   // newY+= gap*1.4;
+//   // doc.setFont('Poppins-Regular');
+//   // doc.text(firstX, newY, `Subtotal`, 'right'); newY+= gap;
+//   // doc.text(firstX, newY, `VAT(12%)`, 'right'); newY+= gap;
+//   // doc.text(firstX, newY, `Total`, 'right');
+//   // firstX += 37;
+//   // // Amount
+//   // newY = firstY;
+//   // doc.setFont('Poppins-Regular');
+//   // doc.text(firstX, newY, `Amount`, 'right'); newY+= gap*1.4;
+//   // doc.setFont('Poppins-Light');
+//   // doc.text(firstX, newY, `520.00`, 'right'); newY+= gap;
+//   // doc.text(firstX, newY, `140.00`, 'right'); newY+= gap;
+//   // doc.text(firstX, newY, `910.00`, 'right'); newY+= gap;
+//   // doc.text(firstX, newY, `1,250.00`, 'right');
+//   // // Summary Values
+//   // newY+= gap*1.4;
+//   // doc.setFont('Poppins-Regular');
+//   // doc.text(firstX, newY, `2,820.00`, 'right'); newY+= gap;
+//   // doc.text(firstX, newY, `338.40`, 'right'); newY+= gap;
+//   // doc.text(firstX, newY, `3,158.40`, 'right');
+//   // firstX += 40;
+//   // newY += 17;
+//   //
+//   // doc.setFontSize('9');
+//   // doc.text(88.1, newY-4, `© Ultra Super Green`);
+//   //
+//   // doc.setDrawColor(0, 0, 0);
+//   // let x=10, w=15
+//   // for(i=0; i<=26; i++){ // broken lines
+//   //   doc.line(x, newY, w, newY);
+//   //   x+=7.065; w+=7.065;
+//   // }
+//   // doc.save('UltraSuperGreen Order Receipt.pdf');
+//
+//   let doc = new jsPDF(), img = new Image;
+//
+//   doc.addFont('Poppins-Regular.ttf', 'Poppins-Regular', 'normal');
+//   doc.addFont('Poppins-Light.ttf', 'Poppins-Light', 'normal');
+//   doc.addFont('Poppins-ExtraLight.ttf', 'Poppins-ExtraLight', 'normal');
+//   doc.addFont('Poppins-SemiBold.ttf', 'Poppins-SemiBold', 'normal');
+//
+//   function pdfContent(img){
+//     let firstX = 25, newY, gap = 5;
+//     doc.addImage(img, 42, 7, 125, 32);
+//
+//     // title
+//     doc.setFont('Poppins-SemiBold');
+//     doc.setFontSize('15');
+//     doc.text(71, 53, `Consignment Agreement`);
+//     doc.line(71, 54, 139.5, 54);
+//
+//     // Labels & Inputs
+//     newY = 68
+//     doc.setFont('Poppins-SemiBold');
+//     doc.setFontSize('10');
+//     doc.text(firstX, newY, `Business Name:`); newY+= gap;
+//     doc.text(firstX, newY, `Brand Name:`); newY+= gap;
+//     doc.text(firstX, newY, `TIN:`); newY+= gap;
+//     doc.text(firstX, newY, `Consignor Commission Rate:`); newY+= gap;
+//     doc.text(firstX, newY, `Contact Person:`); newY+= gap;
+//     doc.text(firstX, newY, `Contact Numbers:`); newY+= gap;
+//     doc.text(firstX, newY, `Email Address:`); newY+= gap;
+//     doc.text(firstX, newY, `Delivery Schedule:`); newY+= gap;
+//     doc.text(firstX, newY, `Frequency of Delivery:`); newY+= gap;
+//     doc.text(firstX, newY, `Consignee’s Remittance Schedule:`); newY+= gap;
+//     doc.text(firstX, newY, `Consigned List Products/brand names including full ingredients list and shelf life:`);
+//
+//     newY = 68
+//     doc.setFont('Poppins-Light');
+//     doc.text(firstX+30, newY, `Clan Milan's Lutoan`); newY+= gap;
+//     doc.text(firstX+25, newY, `Milan`); newY+= gap;
+//     doc.text(firstX+8, newY, `P97349360`); newY+= gap;
+//     doc.text(firstX+54, newY, `30%`); newY+= gap;
+//     doc.text(firstX+30, newY, `Milan`); newY+= gap;
+//     doc.text(firstX+34, newY, `911`); newY+= gap;
+//     doc.text(firstX+28, newY, `Milan@milan.com`); newY+= gap;
+//     doc.text(firstX+34, newY, `August 25, 2018`); newY+= gap;
+//     doc.text(firstX+41, newY, `Monthly`); newY+= gap;
+//     doc.text(firstX+64, newY, `Monthly`); newY+= gap*2;
+//     // doc.text(firstX+147, newY, `Milan`); newY+= gap;
+//     doc.text(firstX, newY, `Please attach a separate sheet for product information and price list`); newY+= gap*2;
+//
+//     let indent1 = 12.5, indent2 = 25;
+//     // Consignment Provisions
+//     doc.setFont('Poppins-SemiBold');
+//     doc.text(firstX, newY, `Consignment Provisions:`); newY+= gap;
+//     // 1
+//     doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+//     doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+//     doc.setFont('Poppins-Light');
+//     doc.text(firstX+indent1, newY, `Consignor hereby agrees to replace any goods that are about to expire, any`); newY+= gap;
+//     doc.text(firstX+indent1, newY, `non-moving products, any product found damaged upon delivery or any`); newY+= gap;
+//     doc.text(firstX+indent1, newY, `product with valid customer complaints`); newY+= gap;
+//     // 2
+//     doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+//     doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+//     doc.text(firstX+indent1, newY, `All labels should include full ingredients list, expiration, manufacturing date`); newY+= gap;
+//     // 3
+//     doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+//     doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+//     doc.setFont('Poppins-Light');
+//     doc.text(firstX+indent1, newY, `If your product has no certification, you must indicate in your label that your`); newY+= gap;
+//     doc.text(firstX+indent1, newY, `product is either All Natural, homemade or herbal`); newY+= gap;
+//     // 4
+//     doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+//     doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+//     doc.text(firstX+indent1, newY, `Consignor must provide 2 copies of delivery receipt`); newY+= gap;
+//     // 5
+//     doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+//     doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+//     doc.setFont('Poppins-Light');
+//     doc.text(firstX+indent1, newY, `In-store product sampling launch must be scheduled 1 week prior to the event`); newY+= gap;
+//     // 6
+//     doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+//     doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+//     doc.text(firstX+indent1, newY, `Delivery Receipt format:`); newY+= gap;
+//     // 6.x
+//     doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
+//     doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
+//     doc.setFont('Poppins-Light'); doc.setFontSize('10');
+//     doc.text(firstX+indent2, newY, `Item (product name)`); newY+= gap;
+//
+//     doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
+//     doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
+//     doc.setFont('Poppins-Light'); doc.setFontSize('10');
+//     doc.text(firstX+indent2, newY, `Variant (if any)`); newY+= gap;
+//
+//     doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
+//     doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
+//     doc.setFont('Poppins-Light'); doc.setFontSize('10');
+//     doc.text(firstX+indent2, newY, `Size / Product Content (e.g. 500ml / 100 grams, etc.)`); newY+= gap;
+//
+//     doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
+//     doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
+//     doc.setFont('Poppins-Light'); doc.setFontSize('10');
+//     doc.text(firstX+indent2, newY, `Quantity`); newY+= gap;
+//
+//     doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
+//     doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
+//     doc.setFont('Poppins-Light'); doc.setFontSize('10');
+//     doc.text(firstX+indent2, newY, `List price (discounted price)`); newY+= gap;
+//
+//     doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
+//     doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
+//     doc.setFont('Poppins-Light'); doc.setFontSize('10');
+//     doc.text(firstX+indent2, newY, `SRP`); newY+= gap;
+//
+//     doc.setFont('Poppins-ExtraLight'); doc.setFontSize('8');
+//     doc.text(firstX+(indent2*0.75), newY-0.5, `o`);
+//     doc.setFont('Poppins-Light'); doc.setFontSize('10');
+//     doc.text(firstX+indent2, newY, `Total amount based on list price`); newY+= gap;
+//
+//     doc.addPage();
+//     doc.addImage(img, 42, 7, 125, 32);
+//     newY = 46
+//
+//     // Documents for Submission
+//     doc.setFont('Poppins-SemiBold');
+//     doc.text(firstX, 46, `Documents for submission: (digital and printed copy required)`); newY+= gap;
+//     //
+//     doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+//     doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+//     doc.setFont('Poppins-Light');
+//     doc.text(firstX+indent1, newY, `Company profile`); newY+= gap;
+//     //
+//     doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+//     doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+//     doc.setFont('Poppins-Light');
+//     doc.text(firstX+indent1, newY, `Product information Sheet – full and specified ingredients list, usage, and other`); newY+= gap;
+//     doc.text(firstX+indent1, newY, `useful information to drive sales and product awareness`); newY+= gap;
+//     //
+//     doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+//     doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+//     doc.setFont('Poppins-Light');
+//     doc.text(firstX+indent1, newY, `DTI /SEC Registration`); newY+= gap;
+//     //
+//     doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+//     doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+//     doc.setFont('Poppins-Light');
+//     doc.text(firstX+indent1, newY, `Official Receipt / BIR Registration`); newY+= gap;
+//     //
+//     doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+//     doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+//     doc.setFont('Poppins-Light');
+//     doc.text(firstX+indent1, newY, `Sales Invoice and Delivery receipt (upon product delivery)`); newY+= gap;
+//     //
+//     doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+//     doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+//     doc.setFont('Poppins-Light');
+//     doc.text(firstX+indent1, newY, `FDA Registration (if any)`); newY+= gap;
+//     //
+//     doc.setFont('Poppins-SemiBold'); doc.setFontSize('25');
+//     doc.text(firstX+(indent1/2), newY-0.5, `.`); doc.setFontSize('10');
+//     doc.setFont('Poppins-Light');
+//     doc.text(firstX+indent1, newY, `Eco Certification or Third Party Laboratory Results for product safety and efficacy`); newY+= gap;
+//     doc.text(firstX+indent1, newY, `(Required for personal and beauty products)`); newY+= gap*3;
+//
+//     // Conforme
+//     doc.setFont('Poppins-SemiBold');
+//     doc.text(firstX, newY, `CONFORME:`); newY+= gap;
+//     newY+= 25;
+//     doc.line(firstX, newY-4, firstX+38, newY-4);
+//     doc.line(firstX+110, newY-4, firstX+148, newY-4);
+//
+//     doc.text(firstX, newY, `Gustle Agulto`);
+//
+//     doc.setFont('Poppins-Light');
+//     doc.text(firstX+110, newY, `Signature over printed`); newY+= gap;
+//
+//     doc.text(firstX, newY, `Operations Manager`);
+//     doc.text(firstX+110, newY, `Name`); newY+= gap;
+//
+//     doc.text(firstX, newY, `Ultra Super Green Trading Corporation`); newY+= gap;
+//
+//     newY+= 25;
+//     doc.setFont('Poppins-SemiBold');
+//     doc.text(firstX, newY, `Date:`);
+//     doc.line(firstX+10, newY+0.5, 63, newY+0.5);
+//
+//   }
+//
+//   img.onload = function() {
+//     pdfContent(this);
+//     doc.save('UltraSuperGreen Consignment Agreement.pdf');
+//     console.log('PDF Downloaded!');
+//   };
+//   img.crossOrigin = "";
+//   img.src = "/customer-assets/images/static/usg-contract.png";
+//
+// });
 </script>
 
 <%- include('../../../templates/closer.ejs') -%>

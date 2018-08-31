@@ -3,6 +3,8 @@ const router = express.Router();
 const db = require('../../lib/database')();
 const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_cust = userTypeAuth.cust;
 const firstID = 1000;
 const quantLimit = 50;
 
@@ -46,6 +48,17 @@ function checkUser (req, res, next){
     return next();
   }
 }
+function checkUserAccount(req, res, next){
+  if(!req.user){
+    req.session.pendRoute = 1;
+    req.flash('regSuccess', 'Login to view Account Information');
+    res.redirect('/login');
+  }
+  else{
+    req.session.pendRoute = 0;
+    return next();
+  }
+}
 function checkUserOrder (req, res, next){
   if(!req.user){
     req.session.pendRoute = 3;
@@ -66,35 +79,35 @@ function contactDetails (req, res, next){
     return next();
   });
 }
-function checkUpdateOrder (req, res, next){
-  if (!req.user){
-    res.redirect('/home');
-  }
-  else{
-    db.beginTransaction(function(err) {
-      if (err) console.log(err);
-      db.query(`SELECT * FROM tblorder WHERE intOrderNo= ? AND intStatus IS NULL AND intUserID= ?`,[req.params.orderNo, req.user.intUserID], (err,results,fields)=> {
-        if (err) console.log(err);
-        if (results[0]){
-          req.checkUpdateOrder = results[0].intPaymentMethod;
-          db.query(`UPDATE tblorder SET intStatus= 0 WHERE intOrderNo= ?`,[req.params.orderNo], (err,results,fields)=>{
-            if (err) console.log(err);
-            db.commit(function(err) {
-              if (err) console.log(err);
-              return next();
-            });
-          });
-        }
-        else{
-          db.commit(function(err) {
-            if (err) console.log(err);
-            res.redirect('/summary/success')
-          });
-        }
-      });
-    });
-  }
-}
+// function checkUpdateOrder (req, res, next){
+//   if (!req.user){
+//     res.redirect('/home');
+//   }
+//   else{
+//     db.beginTransaction(function(err) {
+//       if (err) console.log(err);
+//       db.query(`SELECT * FROM tblorder WHERE intOrderNo= ? AND intStatus IS NULL AND intUserID= ?`,[req.params.orderNo, req.user.intUserID], (err,results,fields)=> {
+//         if (err) console.log(err);
+//         if (results[0]){
+//           req.checkUpdateOrder = results[0].intPaymentMethod;
+//           db.query(`UPDATE tblorder SET intStatus= 0 WHERE intOrderNo= ?`,[req.params.orderNo], (err,results,fields)=>{
+//             if (err) console.log(err);
+//             db.commit(function(err) {
+//               if (err) console.log(err);
+//               return next();
+//             });
+//           });
+//         }
+//         else{
+//           db.commit(function(err) {
+//             if (err) console.log(err);
+//             res.redirect('/summary/success')
+//           });
+//         }
+//       });
+//     });
+//   }
+// }
 function orderTotal (req, res, next){
   db.query(`SELECT SUM(purchasePrice*intQuantity)totalPrice FROM tblorder
   INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
@@ -160,10 +173,14 @@ function thisOrder (req, res, next){
   });
 }
 
-router.get('/checkout', checkUser, contactDetails, (req,res)=>{
-  res.render('cust-summary/views/checkout', {thisUser: req.user, thisUserContact: req.contactDetails});
+router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>{
+  res.render('cust-summary/views/checkout', {
+    thisUser: req.user,
+    thisUserContact: req.contactDetails,
+    admin: req.admin
+  });
 });
-router.get('/order/:orderNo', orderTotal, admin, (req,res)=>{
+router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, admin, (req,res)=>{
   db.query(`SELECT *, (tblorder.intStatus)orderStatus, (tblorderdetails.intQuantity)orderQty FROM tblorder
     INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
     INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
@@ -175,9 +192,13 @@ router.get('/order/:orderNo', orderTotal, admin, (req,res)=>{
     if (results[0]){
       results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('ll') );
       results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) );
+      let orderLength = results.reduce((temp, obj)=>{
+        return temp += obj.orderQty
+      },0)
       res.render('cust-summary/views/order', {
         thisUser: req.user,
         order: results,
+        orderLength: orderLength,
         orderOne: results[0],
         orderNumber: req.params.orderNo,
         orderTotal: req.orderTotal.totalPrice,
@@ -189,15 +210,15 @@ router.get('/order/:orderNo', orderTotal, admin, (req,res)=>{
     }
   });
 });
-router.get('/success/:orderNo', checkUpdateOrder, admin, (req,res)=>{
-  res.render('cust-summary/views/orderSuccess', {
-    thisUser: req.user,
-    orderNumber: req.params.orderNo,
-    checkUpdateOrder: req.checkUpdateOrder,
-    admin: req.admin
-  });
-});
-router.get('/voucher/:orderNo', orderTotal, (req,res)=>{
+// router.get('/success/:orderNo', checkUpdateOrder, checkUserAccount, auth_cust, admin, (req,res)=>{
+//   res.render('cust-summary/views/orderSuccess', {
+//     thisUser: req.user,
+//     orderNumber: req.params.orderNo,
+//     checkUpdateOrder: req.checkUpdateOrder,
+//     admin: req.admin
+//   });
+// });
+router.get('/voucher/:orderNo', checkUserAccount, auth_cust, orderTotal, (req,res)=>{
   if (!req.user){
     res.send('none')
   }
@@ -217,7 +238,7 @@ router.get('/voucher/:orderNo', orderTotal, (req,res)=>{
     });
   }
 })
-router.get('/receipt/:orderNo', (req,res)=>{
+router.get('/receipt/:orderNo', checkUserAccount, auth_cust, (req,res)=>{
   if (!req.user){
     res.send('none')
   }
@@ -264,7 +285,10 @@ router.get('/receipt/:orderNo', (req,res)=>{
   }
 })
 
-router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsNo, newOrderHistoryNo, newMessageNo, cartCheck, (req,res)=>{
+router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOrderDetailsNo, newOrderHistoryNo, newMessageNo, cartCheck, admin, (req,res)=>{
+  req.session.cart.forEach((data,i)=>{
+    data.curQty == 0 ? req.session.cart.splice(i,1) : 0
+  })
   db.beginTransaction(function(err) {
     if (err) console.log(err);
     let thisOrderNo = req.newOrderNo, thisOrderHistoryNo = req.newOrderHistoryNo, thisMessageNo = req.newMessageNo;
@@ -296,7 +320,12 @@ router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsN
                       db.commit(function(err) {
                         if (err) console.log(err);
                         req.session.cart = null;
-                        res.redirect(`/summary/success/${thisOrderNo}`);
+                        res.render('cust-summary/views/orderSuccess', {
+                          thisUser: req.user,
+                          orderNumber: thisOrderNo,
+                          checkUpdateOrder: req.body.paymentMethod,
+                          admin: req.admin
+                        });
                       });
                     }
                   });
@@ -310,7 +339,7 @@ router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsN
                     db.commit(function(err) {
                       if (err) console.log(err);
                       req.session.cart = null;
-                      res.redirect(`/summary/success`);
+                      res.redirect(`/summary/sample`,{message: 'Something went wrong'});
                     });
                   }
                 }
