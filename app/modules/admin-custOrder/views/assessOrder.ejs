@@ -332,6 +332,21 @@
 
   }
 
+  // Pending
+  if(<%= customer[0].Stat %> == 0){
+    $('#order_pending').attr('disabled',true);
+    $('#order_delivered').attr('disabled',true);
+
+  }
+
+  // Processing
+  if(<%= customer[0].Stat %> == 1){
+    $('#order_pending').attr('disabled',true);
+    $('#order_processing').attr('disabled',true);
+  
+
+  }
+
   // delivered
   if(<%= customer[0].Stat %> == 3){
     $('#order_pending').attr('disabled',true);
