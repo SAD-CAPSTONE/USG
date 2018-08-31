@@ -46,13 +46,13 @@
                       <td><%=i.intContractHistoryNo%></td>
                       <td><%=moment(i.historyDate).format("MM/DD/YYYY")%></td>
                       <td>
-                        <% if(i.intContractStatus == 4){ %>
+                        <% if(i.stat == 4){ %>
                           <span class="label label-danger">Terminated</span>
 
-                        <% }else if(i.intContractStatus == 1){ %>
+                        <% }else if(i.stat == 1){ %>
                           <span class="label label-success">Accepted</span>
 
-                        <% }else if(i.intContractStatus == 0){ %>
+                        <% }else if(i.stat == 0){ %>
                           <span class="label label-warning">Pending</span>
 
                         <% }else{ %>
@@ -111,7 +111,7 @@
 </script>
 
 <script>
-$('#title').html("USG | Batch");
+$('#title').html("USG | Contract History");
 $(".treeview a:contains('Transactions')").parent().addClass("active");
 $(".navi a:contains('Consignment Agreement')").parent().addClass("active");
 </script>

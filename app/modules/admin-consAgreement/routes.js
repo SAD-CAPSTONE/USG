@@ -105,7 +105,7 @@ router.get('/contract/load/:id',(req,res)=>{
 });
 
 router.get('/history',(req,res)=>{
-  db.query(`Select * from tblContractHistory join tblContract on tblContractHistory.intContractNo = tblContract.intContractNo join tblSupplier on tblContract.intConsignorID = tblSupplier.intUserID where tblSupplier.intUserID = "${req.query.q}"`,(err1,res1,fie1)=>{
+  db.query(`Select tblContractHistory.intContractStatus as stat, tblContract.*, tblContractHistory.* from tblContractHistory join tblContract on tblContractHistory.intContractNo = tblContract.intContractNo join tblSupplier on tblContract.intConsignorID = tblSupplier.intUserID where tblSupplier.intUserID = "${req.query.q}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1)
     else{
       res.render('admin-consAgreement/views/history',{re: res1, moment: moment})
