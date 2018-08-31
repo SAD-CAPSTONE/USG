@@ -286,7 +286,7 @@ router.post('/editCategory',(req,res)=>{
 });
 
 router.post('/editSubCategory',(req,res)=>{
-  db.query(`Update tblSubCategory set strSubCategory = "${req.body.subcategory_e}", intCategoryNo = "${req.body.categ_e}" where intSubCategoryNo = "${req.body.no_e}"`,(err,results,fieldds)=>{
+  db.query(`Update tblSubCategory set strSubCategory = "${req.body.subcateg_e}", intCategoryNo = "${req.body.categ_e}" where intSubCategoryNo = "${req.body.no_e}"`,(err,results,fieldds)=>{
     if(err) console.log(err);
     else{
       res.send("yes")
@@ -342,7 +342,7 @@ router.post('/addSubCategory', (req,res)=>{
       num = parseInt(results1[0].intSubCategoryNo) + 1;
     }
 
-    db.query(`Insert into tblSubCategory (intSubCategoryNo, intCategoryNo, strSubCategory) values ("${num}", "${req.body.categ}", "${req.body.subcategory}")`,(err3,results3,fields3)=>{
+    db.query(`Insert into tblSubCategory (intSubCategoryNo, intCategoryNo, strSubCategory) values ("${num}", "${req.body.categ_a}", "${req.body.subcategory}")`,(err3,results3,fields3)=>{
       if (err3) console.log(err3);
 
       res.redirect('/maintenance/productCategory');

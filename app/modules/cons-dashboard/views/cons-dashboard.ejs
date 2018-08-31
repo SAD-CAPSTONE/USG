@@ -75,58 +75,37 @@
 							</tr>
 						</thead>
 						<tbody>
+              <% if (re == null || re == undefined){ %>
+
+                <% }else if (re.length == 0){ %>
+
+                <% }else{ %>
+                  <%  re.forEach(function(i){ %>
 
 							<tr>
 								<td>
 									<div class="round-img">
-										<a href=""><img src="/assets/images/static2/imgs1.jpg"></a>
+										<a href=""><img src="/assets/images/products/<%=i.strProductPicture%>"></a>
 									</div>
 								</td>
-								<td>Keto Loaf</td>
-								<td><span>0 pcs</span></td>
-								<td><span>10-19-18</span></td>
+								<td><%= i.strProductName%></td>
+								<td><span><%= i.intQuantity%></span></td>
+								<td><span><%= i.dateRecorded%></span></td>
+                <% if (i.intStatus == 0 ){ %>
 								<td><span class="badge badge-warning">Out of Stock</span></td>
+                <% }else if (i.intStatus == 1) { %>
+                  <td><span class="badge badge-success">Stocked</span></td>
+                <%} %>
 							</tr>
-							<tr>
-								<td>
-									<div class="round-img">
-										<a href=""><img src="/assets/images/static2/img4.jpg" alt=""></a>
-									</div>
-								</td>
-								<td>Kala Milk Soap</td>
-								<td><span>48 pcs</span></td>
-								<td><span>09-18-18</span></td>
-								<td><span class="badge badge-success">Stocked</span></td>
-							</tr>
-							<tr>
-								<td>
-									<div class="round-img">
-										<a href=""><img src="/assets/images/static2/img5.jpg" alt=""></a>
-									</div>
-								</td>
-								<td>Dugos Wild Forest Honey</td>
-								<td><span>110 pcs</span></td>
-								<td><span>09-10-18</span></td>
-								<td><span class="badge badge-success">Stocked</span></td>
-							</tr>
-							<tr>
-								<td>
-									<div class="round-img">
-										<a href=""><img src="/assets/images/static2/imgs2.jpg" alt=""></a>
-									</div>
-								</td>
-								<td>Coco Keto MCT Oil</td>
-								<td><span>0 pcs</span></td>
-								<td><span>03-09-18</span></td>
-								<td><span class="badge badge-warning">Out of Stock</span></td>
-							</tr>
+              <%  }) %>
+              <% } %>
 						</tbody>
 					</table>
 				</div>
 			</div>
 		</div>
 	</div>
-          
+
   </div>
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
