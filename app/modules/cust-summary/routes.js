@@ -79,35 +79,6 @@ function contactDetails (req, res, next){
     return next();
   });
 }
-// function checkUpdateOrder (req, res, next){
-//   if (!req.user){
-//     res.redirect('/home');
-//   }
-//   else{
-//     db.beginTransaction(function(err) {
-//       if (err) console.log(err);
-//       db.query(`SELECT * FROM tblorder WHERE intOrderNo= ? AND intStatus IS NULL AND intUserID= ?`,[req.params.orderNo, req.user.intUserID], (err,results,fields)=> {
-//         if (err) console.log(err);
-//         if (results[0]){
-//           req.checkUpdateOrder = results[0].intPaymentMethod;
-//           db.query(`UPDATE tblorder SET intStatus= 0 WHERE intOrderNo= ?`,[req.params.orderNo], (err,results,fields)=>{
-//             if (err) console.log(err);
-//             db.commit(function(err) {
-//               if (err) console.log(err);
-//               return next();
-//             });
-//           });
-//         }
-//         else{
-//           db.commit(function(err) {
-//             if (err) console.log(err);
-//             res.redirect('/summary/success')
-//           });
-//         }
-//       });
-//     });
-//   }
-// }
 function orderTotal (req, res, next){
   db.query(`SELECT SUM(purchasePrice*intQuantity)totalPrice FROM tblorder
   INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
@@ -210,14 +181,6 @@ router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, admin, (r
     }
   });
 });
-// router.get('/success/:orderNo', checkUpdateOrder, checkUserAccount, auth_cust, admin, (req,res)=>{
-//   res.render('cust-summary/views/orderSuccess', {
-//     thisUser: req.user,
-//     orderNumber: req.params.orderNo,
-//     checkUpdateOrder: req.checkUpdateOrder,
-//     admin: req.admin
-//   });
-// });
 router.get('/voucher/:orderNo', checkUserAccount, auth_cust, orderTotal, (req,res)=>{
   if (!req.user){
     res.send('none')
