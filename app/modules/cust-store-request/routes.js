@@ -6,9 +6,9 @@ const pageLimit = 16;
 const productQuery = `
   SELECT B.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating,
   COUNT(Review.strReview)AS cntReview FROM(SELECT A.*, Orders.intOrderDetailsNo, COUNT(Orders.intOrderDetailsNo)AS OrderCNT FROM(
-  SELECT tblproductlist.*, tblcategory.strCategory, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.productPrice, Inv.intQuantity, Brand.strBrand FROM tblproductlist
+  SELECT tblproductlist.*, tblcategory.strCategory, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.minPrice, Inv.maxPrice, Brand.strBrand FROM tblproductlist
   INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
-  INNER JOIN (SELECT * FROM tblproductinventory)Inv ON tblproductlist.intProductNo= Inv.intProductNo
+  INNER JOIN (SELECT intInventoryNo,intProductNo,intStatus,min(productPrice)minPrice,max(productPrice)maxPrice FROM tblproductinventory GROUP BY intProductNo)Inv ON tblproductlist.intProductNo= Inv.intProductNo
   INNER JOIN tblsubcategory ON tblproductlist.intSubCategoryNo= tblsubcategory.intSubCategoryNo
   INNER JOIN tblcategory ON tblsubcategory.intCategoryNo= tblcategory.intCategoryNo
   WHERE Brand.intStatus= 1)A LEFT JOIN (SELECT * FROM tblorderdetails)Orders ON A.intInventoryNo= Orders.intInventoryNo
@@ -126,11 +126,11 @@ router.post('/load', thisCategory, subcategories, categories, (req,res)=>{
   let price = store.price;
   price.min != null ?
     price.max != null ?
-      filterQuery = filterQuery.concat(`AND productPrice BETWEEN ${price.min} AND ${price.max} `) :
-      filterQuery = filterQuery.concat(`AND productPrice >= ${price.min} `)
+      filterQuery = filterQuery.concat(`AND ((minPrice BETWEEN ${price.min} AND ${price.max}) OR (maxPrice BETWEEN ${price.min} AND ${price.max})) `) :
+      filterQuery = filterQuery.concat(`AND (minPrice >= ${price.min} OR maxPrice >= ${price.min}) `)
     :
     price.max != null ?
-      filterQuery = filterQuery.concat(`AND productPrice <= ${price.max} `) : 0
+      filterQuery = filterQuery.concat(`AND (minPrice <= ${price.max} OR maxPrice <= ${price.max}) `) : 0
 
   // products group by
   filterQuery = filterQuery.concat(`GROUP BY B.intProductNo `);
@@ -143,8 +143,8 @@ router.post('/load', thisCategory, subcategories, categories, (req,res)=>{
   switch(store.sort){
     case '1' : filterQuery = filterQuery.concat(`ORDER BY OrderCNT DESC `); break; // popularity
     case '2' : filterQuery = filterQuery.concat(`ORDER BY aveRating DESC `); break; // highest rating
-    case '3' : filterQuery = filterQuery.concat(`ORDER BY productPrice `); break; // lowest to highest price
-    case '4' : filterQuery = filterQuery.concat(`ORDER BY productPrice DESC `); break; // highest to lowest price
+    case '3' : filterQuery = filterQuery.concat(`ORDER BY minPrice `); break; // lowest to highest price
+    case '4' : filterQuery = filterQuery.concat(`ORDER BY minPrice DESC `); break; // highest to lowest price
     case '5' : filterQuery = filterQuery.concat(`ORDER BY strBrand, strProductName `); break; // a-z
     default : filterQuery = filterQuery.concat(`ORDER BY OrderCNT DESC `); store.sort = 1 ; break;
   }
@@ -179,7 +179,10 @@ router.post('/load', thisCategory, subcategories, categories, (req,res)=>{
       // console.log(limitQuery)
       db.query(limitQuery, (err,results1,fields)=>{
         if (err) console.log(err);
-        results1[0] ? results1.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) ) : 0
+        results1[0] ? results1.forEach((obj)=>{
+          obj.minPrice = priceFormat(obj.minPrice.toFixed(2)) ;
+          obj.maxPrice = priceFormat(obj.maxPrice.toFixed(2)) ;
+        }) : 0
         db.commit(function(err) {
           if (err) console.log(err);
           console.log(store)

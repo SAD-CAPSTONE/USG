@@ -53,7 +53,13 @@
         <div class="card-desc">
 
           <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
-          <p class="card-price price-symbol"><%= prod.productPrice%></p>
+          <p class="card-price price-symbol">
+            <% if(prod.minPrice == prod.maxPrice){ %>
+              <%= prod.minPrice %>
+            <% }else{ %>
+              <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
+            <% } %>
+          </p>
           <!-- <small class="card-oldprice text-muted">
             <span><s class="price-symbol">0</s></span> (-0%)<br>
           </small> -->
@@ -98,7 +104,13 @@
 
         <div class="card-desc">
           <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
-          <p class="card-price price-symbol"><%= prod.productPrice%></p>
+          <p class="card-price price-symbol">
+            <% if(prod.minPrice == prod.maxPrice){ %>
+              <%= prod.minPrice %>
+            <% }else{ %>
+              <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
+            <% } %>
+          </p>
           <!-- <small class="card-oldprice text-muted">
             <span><s class="price-symbol">0</s></span> (-0%)<br>
           </small> -->

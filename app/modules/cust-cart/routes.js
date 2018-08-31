@@ -116,6 +116,9 @@ router.post('/modal', (req, res)=>{
 router.get('/list', (req, res)=>{
   // req.session.cart = null;
   req.session.cart ? 0 : req.session.cart = [];
+  // req.session.cart.forEach((data,i)=>{
+  //   data.curQty == 0 ? req.session.cart.splice(i,1) : 0
+  // })
   modal = req.session.modal_cart;
   if (modal){
     req.session.modal_cart.curSize = modal.sizes[0][0];
@@ -156,15 +159,28 @@ router.put('/list', (req, res)=>{
   req.session.cart[index].limit > quantLimit ?
     req.session.cart[index].limit = quantLimit : 0
   if (index != null){
-    let curQty = req.session.cart[index].curQty;
+    let curQty = req.session.cart[index].curQty,
+    blank = 0;
     // Limit
-    req.body.action == 'plus' ?
-      curQty < req.session.cart[index].limit ?
-        ++curQty : 0
-      : curQty > 1 ?
-        --curQty : 0
+
+    req.body.action == 'change' ?
+      req.body.value ?
+        req.body.value < req.session.cart[index].limit ?
+          curQty = req.body.value
+          :
+          req.body.value > 1 ?
+            curQty = req.session.cart[index].limit
+            : curQty = 1
+        : blank = 1
+      :
+      req.body.action == 'plus' ?
+        curQty < req.session.cart[index].limit ?
+          ++curQty : 0
+        : curQty > 1 ?
+          --curQty : 0
     req.session.cart[index].curQty = curQty;
-    res.send({cart: req.session.cart[index]});
+    res.send({cart: req.session.cart[index], blank: blank});
+
   }
   else{
     res.send({cart: null});

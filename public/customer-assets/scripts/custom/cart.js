@@ -77,7 +77,7 @@ $(() => {
                     <small class="quantity-text quantity-text-minus">-</small>
                   </button>
                   </div>
-                  <input class="form-control quantity-input" type="text" readonly="" value="${data.curQty}">
+                  <input class="form-control quantity-input" type="text" value="${data.curQty}">
                   <div class="input-group-append addon">
                     <button class="btn btn-primary quantity-buttons plus" type="button">
                     <small class="quantity-text quantity-text-plus">+</small>
@@ -85,7 +85,7 @@ $(() => {
                   </div>
                 </div>
                 <small class="product-oldprice text-muted">
-                  <span>${data.limit} left</span><br>
+                  <span>${data.limit} max</span><br>
                 </small>
                 <p class="product-price price-symbol">${data.curPrice}</p>
               </div>
@@ -97,6 +97,35 @@ $(() => {
         //   <span><s class="price-symbol">0</s></span><span> (-0%)</span><br>
         // </small>
       });
+
+      $('.quantity .quantity-input').bind("cut copy paste",function(e) { e.preventDefault(); });
+      $('.quantity-input').keypress(function(key) {
+        if(key.charCode < 48 || key.charCode > 57) return false;
+      });
+      $('.quantity-input').keyup(function() {
+        let inv = $(this).closest('.product-card').find('.inventory-id').val(),
+        val = parseInt($(this).val()) == 0 ? 1 : $(this).val();
+
+        $.ajax({
+          url: `/cart/list`,
+          method: 'PUT',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            inv: inv,
+            action: 'change',
+            value: val
+          }),
+          success: (res) => {
+            res.cart != null ?
+              res.blank ? 0 :
+                $(this).closest('.product-card').find('.quantity-input').val(res.cart.curQty)
+              : $(this).closest('.product-card').remove()
+            thisQtyValidate(res.cart.curQty,res.cart.limit,$(this).closest('.product-card'))
+            $('#subtotal-btn').click();
+          }
+        });
+      });
+
       if(!res.cart.length){
         res.thisUser ?
           list.append(`
@@ -124,6 +153,9 @@ $(() => {
       $('#subtotal-btn').click();
     });
   });
+
+  //
+
 
   // DELETE - Remove product
   $('#cart-pad').on('click', '.product-remove', function() {

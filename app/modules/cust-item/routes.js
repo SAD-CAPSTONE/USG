@@ -4,7 +4,7 @@ const db = require('../../lib/database')();
 const firstID = 1000;
 const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
-// 
+//
 function newReviewID(req,res,next) {
   db.query(`SELECT * FROM tblproductreview ORDER BY intProductReviewNo DESC LIMIT 1`, (err, results, fields) => {
     if (err) console.log(err);
@@ -77,27 +77,33 @@ function relatedProducts(req,res,next){
   *(tblproductlist)*(tblproductbrand)*(tblproductinventory)*(tblproductreview)*/
   db.query(`SELECT B.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating,
     COUNT(Review.strReview)AS cntReview FROM( SELECT A.*, Orders.intOrderDetailsNo, COUNT(Orders.intOrderDetailsNo)AS OrderCNT FROM(
-		SELECT tblproductlist.*, Cat.intCategoryNo, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.productPrice, Inv.intQuantity, Brand.strBrand FROM tblproductlist
+		SELECT tblproductlist.*, Cat.intCategoryNo, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.minPrice, Inv.maxPrice, Brand.strBrand FROM tblproductlist
 		INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
-    INNER JOIN (SELECT * FROM tblproductinventory)Inv ON tblproductlist.intProductNo= Inv.intProductNo
+    INNER JOIN (SELECT intInventoryNo,intProductNo,intStatus,min(productPrice)minPrice,max(productPrice)maxPrice FROM tblproductinventory GROUP BY intProductNo)Inv ON tblproductlist.intProductNo= Inv.intProductNo
 		INNER JOIN (SELECT * FROM tblsubcategory)Cat ON tblproductlist.intSubCategoryNo= Cat.intSubCategoryNo
 		WHERE Brand.intStatus= 1)A LEFT JOIN (SELECT * FROM tblorderdetails)Orders ON A.intInventoryNo= Orders.intInventoryNo
   	GROUP BY A.intProductNo)B LEFT JOIN (SELECT * FROM tblproductreview)Review ON B.intProductNo = Review.intProductNo
     WHERE B.intCategoryNo= ? AND B.intProductNo != ? GROUP BY B.intProductNo ORDER BY intSubCategoryNo!= ?, OrderCNT DESC LIMIT 10`
     , [req.thisProduct.intCategoryNo, req.params.prodid, req.thisProduct.intSubCategoryNo], function (err,  results, fields) {
     if (err) console.log(err);
-    results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) );
+    results[0] ? results.forEach((obj)=>{
+      obj.minPrice = priceFormat(obj.minPrice.toFixed(2)) ;
+      obj.maxPrice = priceFormat(obj.maxPrice.toFixed(2)) ;
+    }) : 0
     if (!results[0]){
       db.query(`SELECT A.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating, COUNT(Review.strReview)AS cntReview FROM(
-        SELECT tblproductlist.*, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.productPrice, Inv.intQuantity, Brand.strBrand FROM tblproductlist
+        SELECT tblproductlist.*, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.minPrice, Inv.maxPrice, Brand.strBrand FROM tblproductlist
         INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
-        INNER JOIN (SELECT * FROM tblproductinventory)Inv ON tblproductlist.intProductNo= Inv.intProductNo
+        INNER JOIN (SELECT intInventoryNo,intProductNo,intStatus,min(productPrice)minPrice,max(productPrice)maxPrice FROM tblproductinventory GROUP BY intProductNo)Inv ON tblproductlist.intProductNo= Inv.intProductNo
     		WHERE Brand.intStatus= 1 GROUP BY tblproductlist.intProductNo)A
         LEFT JOIN (SELECT * FROM tblproductreview)Review ON A.intProductNo = Review.intProductNo
         WHERE A.intProductNo != ? GROUP BY A.intProductNo LIMIT 10`
         , [req.params.prodid], function (err,  results, fields) {
         if (err) console.log(err);
-        results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) );
+        results[0] ? results.forEach((obj)=>{
+          obj.minPrice = priceFormat(obj.minPrice.toFixed(2)) ;
+          obj.maxPrice = priceFormat(obj.maxPrice.toFixed(2)) ;
+        }) : 0
 
         req.catProducts= 0;
         req.relatedProducts= results;
@@ -116,14 +122,17 @@ function popularProducts(req,res,next){
   *(tblproductlist)*(tblproductbrand)*(tblproductinventory)*(tblorderdetails)*(tblproductreview)*/
   db.query(`SELECT B.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating,
     COUNT(Review.strReview)AS cntReview FROM(SELECT A.*, Orders.intOrderDetailsNo, COUNT(Orders.intOrderDetailsNo)AS OrderCNT FROM(
-		SELECT tblproductlist.*, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.productPrice, Inv.intQuantity, Brand.strBrand, stock FROM tblproductlist
+    SELECT tblproductlist.*, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.minPrice, Inv.maxPrice, Brand.strBrand FROM tblproductlist
 		INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
-    INNER JOIN (SELECT *, (intQuantity - intReservedItems)stock FROM tblproductinventory)Inv ON tblproductlist.intProductNo= Inv.intProductNo
+    INNER JOIN (SELECT intInventoryNo,intProductNo,intStatus,min(productPrice)minPrice,max(productPrice)maxPrice FROM tblproductinventory GROUP BY intProductNo)Inv ON tblproductlist.intProductNo= Inv.intProductNo
     WHERE Brand.intStatus= 1)A LEFT JOIN (SELECT * FROM tblorderdetails)Orders ON A.intInventoryNo= Orders.intInventoryNo GROUP BY A.intProductNo)B
     LEFT JOIN (SELECT * FROM tblproductreview)Review ON B.intProductNo = Review.intProductNo
     GROUP BY B.intProductNo ORDER BY OrderCNT DESC LIMIT 10`, function (err,  results, fields) {
     if (err) console.log(err);
-    results[0] ? results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) ) : 0
+    results[0] ? results.forEach((obj)=>{
+      obj.minPrice = priceFormat(obj.minPrice.toFixed(2)) ;
+      obj.maxPrice = priceFormat(obj.maxPrice.toFixed(2)) ;
+    }) : 0
     req.popularProducts= results;
     return next();
   });

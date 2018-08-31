@@ -170,7 +170,13 @@
 
               <div class="card-desc">
                 <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
-                <p class="card-price price-symbol"><%= prod.productPrice%></p>
+                <p class="card-price price-symbol">
+                  <% if(prod.minPrice == prod.maxPrice){ %>
+                    <%= prod.minPrice %>
+                  <% }else{ %>
+                    <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
+                  <% } %>
+                </p>
                 <!-- <small class="card-oldprice text-muted">
                   <span><s class="price-symbol">0</s></span> (-0%)<br>
                 </small> -->
@@ -211,7 +217,13 @@
 
               <div class="card-desc">
                 <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
-                <p class="card-price price-symbol"><%= prod.productPrice%></p>
+                <p class="card-price price-symbol">
+                  <% if(prod.minPrice == prod.maxPrice){ %>
+                    <%= prod.minPrice %>
+                  <% }else{ %>
+                    <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
+                  <% } %>
+                </p>
                 <!-- <small class="card-oldprice text-muted">
                   <span><s class="price-symbol">0</s></span> (-0%)<br>
                 </small> -->
@@ -411,18 +423,6 @@
     qtyValidate(1,$(`#thisprod_stock span`).text())
   })
 
-  // $('.quantity .quantity-input').bind("cut copy paste",function(e) {
-  //   e.preventDefault();
-  // });
-
-  $('.quantity-input').keypress(function(key) {
-    console.log('x')
-    if(key.charCode < 48 || key.charCode > 57){
-      console.log('1')
-      return false;
-    }
-  });
-
   function qtyValidate(qty,stock){
     $('#item-options .quantity-input').val() <= 1 ?
       $(`#item-options .minus-btn`).attr('disabled','disabled') :
@@ -464,6 +464,7 @@
     let stock = parseInt($('#thisprod_stock span').text()),
     qty = parseInt($('#item-options input.quantity-input').val());
     qty < stock ? $('#item-options input.quantity-input').val(qty+1) : 0
+    qty ? 0 : $('#item-options input.quantity-input').val(1);
     qtyValidate(qty,stock)
   });
   // GET - Minus Button
@@ -471,12 +472,14 @@
     let stock = parseInt($('#thisprod_stock span').text()),
     qty = parseInt($('#item-options input.quantity-input').val());
     qty > 1 ? $('#item-options input.quantity-input').val(qty-1) : 0
+    qty ? 0 : $('#item-options input.quantity-input').val(1);
     qtyValidate(qty,stock)
   });
   // GET & POST to Cart
   $('#item-options').on('click', '#thisItemBtn', function(){
     let inv = $('#item-options .select-size').val(),
     qty = parseInt($('#item-options input.quantity-input').val());
+    qty ? 0 : qty = 1;
     $.post(`/cart/modal`, {
       inv: inv, qty: qty
     }).then((res) => {
