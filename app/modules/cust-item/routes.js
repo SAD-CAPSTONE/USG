@@ -65,7 +65,7 @@ function thisInventory(req,res,next){
       results[0].strVariant ? curSize+= `${results[0].strVariant}`: 0
       results[0].strVariant && results[0].intSize ? curSize+= ` - `: 0
       results[0].intSize ? curSize+= `${results[0].intSize}`: 0
-      results[0].strUnitName ? curSize+= `${results[0].strUnitName}`: 0
+      results[0].strUnitName ? curSize+= ` ${results[0].strUnitName}`: 0
       results[0].curSize = curSize
     }
     req.thisInventory = results;
