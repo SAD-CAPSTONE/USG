@@ -216,6 +216,9 @@ textarea {
 .text-brand {
   color: #2980b9;
 }
+.text-package {
+  color: rgba(204, 49, 2, .8)
+}
 
 /* Text Align */
 .align-left {

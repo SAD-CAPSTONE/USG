@@ -84,7 +84,7 @@
       <%})%>
   </div>
 </div>
-<div class="mb-4 mb-2">
+<div class="mb-2">
   <div class="container">
     <div>
       <h3 class="feature-title lead fl-l light-bold mb-2"><b>New Products</b></h3>
@@ -135,7 +135,7 @@
       <%})%>
   </div>
 </div>
-<div class="mb-4">
+<div class="mb-3">
   <div class="container">
     <div>
       <h3 class="feature-title lead fl-l light-bold mb-2"><b>Packages</b></h3>
@@ -143,44 +143,23 @@
     </div>
   </div>
   <div class="container x-scrolling-div products-container" data-simplebar="">
-    <% newProducts.forEach((prod)=>{ %>
+    <% packages.forEach((pack)=>{ %>
       <div class="custom-card card-list this-product my-1">
-        <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
+        <div class="card-img"><img src="/customer-assets/images/static/package.jpg"></div>
         <div class="cart-button-div">
-          <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
+          <input type="number" class="product-id" value="" hidden />
           <button type="button" class="cart-btn btn p-0 no-focus" data-toggle="modal"
-          data-target="#modal-product-to-cart">
+          data-target="">
           Add to Cart</button>
         </div>
 
         <div class="card-desc">
-          <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
-          <p class="card-price price-symbol">
-            <% if(prod.minPrice == prod.maxPrice){ %>
-              <%= prod.minPrice %>
-            <% }else{ %>
-              <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
-            <% } %>
-          </p>
+          <p class="card-title text-package"><%= pack.strPackageName%></p>
+          <p class="card-price price-symbol"><%= pack.packagePrice %></p>
           <!-- <small class="card-oldprice text-muted">
             <span><s class="price-symbol">0</s></span> (-0%)<br>
           </small> -->
-          <small class="card-rating">
-            <%
-            rating = prod.aveRating;
-            for(i=0; i<5; i++){
-              if (rating < 1 && rating >= 0.5) {
-              %> <i class="fa fa-star-half-o"></i> <%
-              } else if (rating < 0.5) {
-              %> <i class="fa fa-star-o"></i> <%
-              } else {
-              %> <i class="fa fa-star"></i> <%
-              }
-              --rating;
-            }%>
-            <span class="fs-08em fw-400">(<%= prod.cntRating%>)</span>
-          </small>
-          <small class="card-reviews"><%= prod.cntReview%> reviews</small>
+          <small class="card-rating fs-07em text-muted">Contains <%= pack.Qty %> items</small>
         </div>
       </div>
       <%})%>
