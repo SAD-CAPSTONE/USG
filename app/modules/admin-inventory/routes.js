@@ -774,7 +774,7 @@ router.post('/addBatchAdjust',(req,res)=>{
                     if(err3) console.log(err3);
                     else{
 
-                      db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentTypeNo, strAdjustmentNote, intAdminID, intQuantity) values ("${adj}", "${res2[0].intInventoryNo}","${req.body.type}","${req.body.details}",1000,${req.body.quantity})`,(errq,resq,fieq)=>{
+                      db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentTypeNo, strAdjustmentNote, intAdminID, intQuantity) values ("${adj}", "${res2[0].intInventoryNo}","${req.body.types}","${req.body.details}",1000,${req.body.quantity})`,(errq,resq,fieq)=>{
                         if(errq) console.log(errq);
                         else{
 
