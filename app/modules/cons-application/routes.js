@@ -12,7 +12,7 @@ router.get('/register-consignor', (req,res)=>{
         if (err2){
           console.log(err2);
         }else{
-          db.query(`Select * from tblProductCertification`,(err3,results3,fields3)=>{
+          db.query(`Select * from tblProductCertification where intStatus = 1`,(err3,results3,fields3)=>{
             if (err3){
               console.log(err3)
             }else{

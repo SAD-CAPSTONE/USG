@@ -37,9 +37,9 @@
                   </div>
                   <!-- /.box-header -->
                   <div class="box-body">
-                    <i class="fa fa-shopping-cart"></i> Store: Ultra Super Green, Quezon City Branch </br>
-                    <i class="fa fa-calendar"></i> Order Date: <%= moment(customer[0].dateOrdered).format("MM/DD/YYYY") %> </br>
-                    <i class="fa fa-credit-card"></i> Payment Method:
+                    <i class="fa fa-shopping-cart"></i> <strong>Store:</strong> Ultra Super Green, Quezon City Branch </br>
+                    <i class="fa fa-calendar"></i> <strong>Order Date: </strong> <%= moment(customer[0].dateOrdered).format("MM/DD/YYYY") %> </br>
+                    <i class="fa fa-credit-card"></i> <strong>Payment Method: </strong>
                      <% if (customer[0].intPaymentMethod == 1) { %>
                        Cash on Delivery
                        <% }else { %>
@@ -68,10 +68,10 @@
                   </div>
                   <!-- /.box-header -->
                   <div class="box-body">
-                    <i class=""></i>Name: <%= customer[0].strFname %>&nbsp;<%= customer[0].strLname %></br>
-                    <i class=""></i>Mobile No.: <%= customer[0].strCusMobileNo %>  </br>
-                    <i class=""></i>Phone no.: <%= customer[0].strCusPhoneNo %></br>
-                    <i class=""></i>Email Address: <%= customer[0].strEmail %></br>
+                    <i class=""></i><strong>Name: </strong> <%= customer[0].strFname %>&nbsp;<%= customer[0].strLname %></br>
+                    <i class=""></i><strong>Mobile No.: </strong><%= customer[0].strCusMobileNo %>  </br>
+                    <i class=""></i><strong>Phone no.: </strong><%= customer[0].strCusPhoneNo %></br>
+                    <i class=""></i><strong>Email Address: </strong><%= customer[0].strEmail %></br>
 
 
                   </div>
@@ -86,15 +86,14 @@
               <div class="col-md-12">
                 <div class="box">
                     <div class="box-header with-border">
-                      <h3 class="box-title">Order Details</h3>
                     </div>
                     <!-- /.box-header -->
                     <div class="row">
                       <div class="box-body">
                         <table class="table table-bordered">
                           <tr>
-                            <th>Shipping Address</th>
-                            <th>Billing Address</th>
+                            <th class ="bg-success">Shipping Address</th>
+                            <th class ="bg-success">Billing Address</th>
 
                           </tr>
                           <tr>
@@ -111,7 +110,7 @@
                     <div class="row">
                       <div class="box-body">
                         <table class="table table-bordered">
-                          <thead>
+                          <thead class ="bg-success">
                             <tr>
                               <th>Product Code</th>
                               <th>Product Name</th>
@@ -139,9 +138,8 @@
                       </div>
                     </div>
 
-                  </br>
                     <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-8">
                     </div>
                     <div class="col-sm-4">
                       <div class="box-body">
@@ -151,17 +149,17 @@
                             <th style="width: 100px"></th>
                           </tr>
                           <tr>
-                            <td>Discount:</td>
+                            <td><strong>Discount:</strong></td>
                             <td  align="right"> 0%</td>
 
                           </tr>
                           <tr>
-                            <td>Total: </td>
+                            <td><strong>Total: </strong></td>
                             <td  align="right">₱ <%= (total).toFixed(2) %></td>
                           </tr>
 
                           <tr>
-                            <td>Amount Due: </td>
+                            <td><strong>Amount Due:</strong></td>
                             <td align="right">₱ <%= (total - payment).toFixed(2) %></td>
                           </tr>
 
@@ -331,6 +329,21 @@
     $('#order_pending').attr('disabled',true);
     $('#order_processing').attr('disabled',true);
     $('#order_shipped').attr('disabled',true);
+
+  }
+
+  // Pending
+  if(<%= customer[0].Stat %> == 0){
+    $('#order_pending').attr('disabled',true);
+    $('#order_delivered').attr('disabled',true);
+
+  }
+
+  // Processing
+  if(<%= customer[0].Stat %> == 1){
+    $('#order_pending').attr('disabled',true);
+    $('#order_processing').attr('disabled',true);
+  
 
   }
 

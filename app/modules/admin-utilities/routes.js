@@ -1,7 +1,7 @@
 var router = require('express').Router();
 var db = require('../../lib/database')();
 
-var adminUser = 1006;
+var adminUser = 1000;
 
 router.get('/businessInfo', (req,res)=>{
   db.query(`Select * from tblAdmin where intUserID = "${adminUser}"`, (err1,results1,fields1)=>{

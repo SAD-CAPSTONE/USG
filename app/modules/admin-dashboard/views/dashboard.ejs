@@ -127,18 +127,28 @@
                  <div class="product-info">
                    <a href="javascript:void(0)" class="product-title"><%= i.strProductName%>(<%=i.intSize%><%=i.strUnitName%>)
                      <span class="label label-warning pull-right">₱<%=i.productSRP%></span></a>
-                   <span class="product-description"><%=i.strDescription%></span>
+                   <span class="product-description"><%=i.proddesc%></span>
                  </div>
                </li>
                 <!-- /.item -->
                 <%  }) %>
                 <% } %>
+                <% if (re6 == 0 || re6 == null){ %>
+                    <span class ="label label-danger">No products to expire for now.</span>
+                <%} %>
              </ul>
            </div>
            <!-- /.box-body -->
+
            <div class="box-footer text-center">
-             <a href="/inventory/pulledOutStocks" class="uppercase">View All Products</a>
+              <% if (re6 == 0 || re6 == null){ %>
+
+              <% }else if (re6 != 0 || re6 == null){ %>
+                <a href="/inventory/pulledOutStocks" class="uppercase">View All Products</a>
+              <%} %>
+
            </div>
+
            <!-- /.box-footer -->
          </div>
          <!-- /.box -->
@@ -203,13 +213,20 @@
                   <%  }) %>
                   <% } %>
                  </tbody>
+                 <% if (re4 == 0 || re4 == null){ %>
+                  <span class ="label label-danger">No latest orders for now.</span>
+                 <%} %>
                </table>
              </div>
              <!-- /.table-responsive -->
            </div>
            <!-- /.box-body -->
            <div class="box-footer clearfix">
-             <a href="customerOrder/allOrders" class="btn btn-sm btn-primary btn-flat pull-right">View All Orders</a>
+              <% if (re4 == 0 || re4 == null){ %>
+
+                <% }else if (re4 != 0 || re4 == null){ %>
+                  <a href="customerOrder/allOrders" class="btn btn-sm btn-primary btn-flat pull-right">View All Orders</a>
+                <%} %>
            </div>
            <!-- /.box-footer -->
          </div>
@@ -250,11 +267,20 @@
                <!-- /.item -->
                <%  }) %>
                <% } %>
+               <% if (re5 == 0 || re5 == null){ %>
+                <span class ="label label-danger">No recently added products for now.</span>
+               <%} %>
              </ul>
            </div>
            <!-- /.box-body -->
            <div class="box-footer text-center">
-             <a href="inventory/allProducts" class="uppercase">View All Products</a>
+              <% if (re5 == 0 || re5 == null){ %>
+
+                <% }else if (re5 != 0 || re5 == null){ %>
+                  <a href="inventory/allProducts" class="uppercase">View All Products</a>
+                <%} %>
+
+
            </div>
            <!-- /.box-footer -->
          </div>
