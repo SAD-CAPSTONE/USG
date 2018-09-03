@@ -255,7 +255,7 @@ router.post('/addSupplier', (req,res)=>{
 
 router.get('/findProducts/:pid',(req,res)=>{
 
-  db.query(`Select * from tblproductownership where intUserID = "${req.params.pid}" and intstatus = 1`,(err1,results1,fields1)=>{
+  db.query(`Select * from tblProductList join tblProductInventory on tblProductList.intProductNo = tblProductInventory.intProductNo where tblProductInventory.intUserID = "${req.params.pid}" and tblProductList.intstatus = 1`,(err1,results1,fields1)=>{
     if (err1) console.log(err1);
     if (!err1) res.render('admin-purchOrder/views/productLoader', {re: results1});
   });

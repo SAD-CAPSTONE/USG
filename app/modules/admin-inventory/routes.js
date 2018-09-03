@@ -200,7 +200,7 @@ router.post('/addProductItem', (req,res)=>{
   // Change to transaction
   var url = `/inventory/productInventory?product=${req.body.add_productno}`;
   db.query(`
-    Insert into tblProductInventory (intInventoryNo, intProductNo, intUserID, productSRP, intUOMno, intSize, productPrice, strBarcode, intCriticalLimit, strVariant) values ("${req.body.add_inventoryno}","${req.body.add_productno}", "${req.body.add_sno}", ${req.body.add_srp}, "${req.body.add_uom}", ${req.body.add_size}, ${req.body.add_price}, "${req.body.add_barcode}", ${req.body.add_critical}, "${req.body.variant}")`, (err1,results1,fields1)=>{
+    Insert into tblProductInventory (intInventoryNo, intProductNo, intUserID, productSRP, intUOMno, intSize, productPrice, strBarcode, intCriticalLimit, strVariant, intShelfNo) values ("${req.body.add_inventoryno}","${req.body.add_productno}", "${req.body.add_sno}", ${req.body.add_srp}, "${req.body.add_uom}", ${req.body.add_size}, ${req.body.add_price}, "${req.body.add_barcode}", ${req.body.add_critical}, "${req.body.add_variant}", ${req.body.add_shelf})`, (err1,results1,fields1)=>{
       if (err1) console.log(err1);
       db.query(`Select * from tblinventorytransactions order by intTransactionID desc limit 1`, (err2,results2,fields2)=>{
         if (err2) console.log(err2);
@@ -441,7 +441,7 @@ router.post('/addStock', (req,res)=>{
             if (err2){
               console.log(err2);
               db.rollback(function(){
-                throw err2;
+                console.log(err2);
               });
             }
 
@@ -450,7 +450,7 @@ router.post('/addStock', (req,res)=>{
               if (err3){
                 console.log(err3);
                 db.rollback(function(){
-                  throw err3;
+                  console.log(err3);
                 })
               }
 
@@ -459,17 +459,17 @@ router.post('/addStock', (req,res)=>{
                 if (err5){
                   console.log(err5);
                   db.rollback(function(){
-                    throw err5;
+                    console.log(err5);
                   });
                 }
 
                 db.commit(function(err4){
                   if (err4){
                     db.rollback(function(){
-                      throw err4
+                      console.log(err4)
                     })
                   }
-                  console.log('connection complete');
+
                   res.send("yes");
                 });
               });
@@ -559,20 +559,18 @@ router.post('/pullOutItem',(req,res)=>{
     if (err){
       console.log(err);
     }else{
-      db.query(`Update tblbatch set intStatus = 0 where intBatchNo = "${batch}"`,(err1,results1,fields1)=>{
-        if (err1){db.rollback(function(){console.log(err1)})
-        }else{
+
           db.query(`Select * from tblbatch where intBatchNo = "${batch}" `,(err2,results2,fields2)=>{
             if (err2){db.rollback(function(){console.log(err2)});
             }else{
-              console.log(batch);
+
               db.query(`Update tblProductInventory set intQuantity = intQuantity - ${results2[0].intQuantity} where intInventoryNo = "${results2[0].intInventoryNo}"`,(err3,results3,fields3)=>{
                 if (err3){db.rollback(function(){console.log(err3)})
                 }else{
                   db.query(`Select * from tblstockpullout order by intPullOutNo desc limit 1`, (err4,results4,fields4)=>{
                     if (err4){db.rollback(function(){console.log(err4)})}
                     else{
-                      if (results4 == null || results4 == undefined){final_commit()}else if(results4.length == 0){final_commit()}
+                      if (results4 == null || results4 == undefined){}else if(results4.length == 0){}
                       else{
                         pullOutNo = parseInt(results4[0].intPullOutNo) + 1;
                       }
@@ -580,7 +578,7 @@ router.post('/pullOutItem',(req,res)=>{
                           if (err5){
                             db.rollback(function(){console.log(err5)});
                           }else{
-                            db.query(`Update tblBatch set intQuantity = 0 where intBatchNo = "${batch}"`,(err6,res6,fie6)=>{
+                            db.query(`Update tblBatch set intQuantity = 0, intStatus = 0 where intBatchNo = "${batch}"`,(err6,res6,fie6)=>{
                               if(err6) db.rollback(function(){console.log(err5)});
                               else{
                                 db.commit(function(e1){
@@ -602,8 +600,8 @@ router.post('/pullOutItem',(req,res)=>{
               });
             }
           });
-        }
-      });
+
+
     }
   });
 
@@ -693,63 +691,32 @@ router.get('/pulledOutStocks',(req,res)=>{
 });
 
 router.post('/update',(req,res)=>{
-
-  // select last transaction id
-  var num = "1000";
-  db.query(`Select * from tblInventoryTransactions order by intTransactionID desc limit
-    1`,(err2,results2,fields2)=>{
-    if (err2) console.log(err2);
-
-    if (results2 == null || results2 == undefined){}else if (results2.length == 0){}
+  var transact_no = "1000";
+  db.query(`Update tblProductInventory set intCriticalLimit = ${req.body.critical}, intShelfNo = ${req.body.shelf}, strVariant = "${req.body.variant}" where intInventoryNo = "${req.body.ino}"`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1)
     else{
-      num = parseInt(results2[0].intTransactionID) + 1;
-    }
+      db.query(`Select * from tblInventoryTransactions order by intTransactionID desc limit 1`,(err2,res2,fie2)=>{
+        if(err2) console.log(err2)
+        else{
+          if(res2==null||res2==undefined){} else if(res2.length==0){}
+          else{transact_no = parseInt(res2[0].intTransactionID) + 1}
 
-    // transaction
-    db.beginTransaction(function(erra){
-      if (erra) console.log(erra);
-
-      // Update productInventory
-      db.query(`Update tblProductInventory set productSRP = ${req.body.srp}, productPrice =
-        ${req.body.price}, intShelfNo = ${req.body.shelf}, intCriticalLimit = ${req.body.critical} where intInventoryno = "${req.body.ino}"`,(err1,results1,fields1)=>{
-        if (err1){
-
-          db.rollback(function(){
-            console.log(err1);
-          });
-        }
-
-        // Insert to inventory transaction
-        db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intUserID, productSRP, productPrice, intShelfNo, intCriticalLimit,  strTypeOfChanges) values ("${num}","${req.body.ino}", "1000",${req.body.srp},${req.body.price}, ${req.body.shelf}, ${req.body.critical}, "${req.body.changes}")`, (err3,results3,fields3)=>{
-          if (err3){
-            db.rollback(function(){
-              console.log(err3);
-
-            });
-          }
-
-          db.commit(function(err){
-            if (err){
-              db.rollback(function(){
-                console.log(err);
-              });
-            }else{
-              var url = `/inventory/productInventory?product=${req.body.pno}`;
-              res.redirect(url);
+          db.query(`Select * from tblProductInventory where intInventoryNo = "${req.body.ino}"`,(err3,inv,fie3)=>{
+            if(err3) console.log(err3);
+            else{
+              db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intUserID, intShelfNo, intCriticalLimit, productSRP, productPrice, strTypeOfChanges) values("${transact_no}", "${req.body.ino}", "1000", ${req.body.shelf}, ${req.body.critical}, ${inv[0].productSRP}, ${inv[0].productPrice}, "Update Inventory Details")`,(err4,res4,fie4)=>{
+                if(err4) console.log(err4);
+                else{
+                  res.send("yes");
+                }
+              })
             }
           })
-        });
-
-
-      });
-
-
-    }) // end of transaction
-
-  });
-
-
-});
+        }
+      })
+    }
+  })
+})
 
 router.get('/adjustments',(req,res)=>{
   db.query(`Select tblAdjustments.intQuantity as qty, tblProductInventory.*, tblProductList.*, tblAdjustments.*, tblAdjustmentTypes.* from tblAdjustments join tblProductInventory on tblAdjustments.intInventoryNo = tblProductInventory.intInventoryNo join tblProductList on tblProductlist.intProductNo = tblProductInventory.intProductNo join tblAdjustmentTypes on tblAdjustmentTypes.intAdjustmentTypeNo = tblAdjustments.intAdjustmentTypeNo`,(err1,res1,fie1)=>{
@@ -807,7 +774,7 @@ router.post('/addBatchAdjust',(req,res)=>{
                     if(err3) console.log(err3);
                     else{
 
-                      db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentTypeNo, strAdjustmentNote, intAdminID, intQuantity) values ("${adj}", "${res2[0].intInventoryNo}","${req.body.type}","${req.body.details}",1000,${req.body.quantity})`,(errq,resq,fieq)=>{
+                      db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentTypeNo, strAdjustmentNote, intAdminID, intQuantity) values ("${adj}", "${res2[0].intInventoryNo}","${req.body.types}","${req.body.details}",1000,${req.body.quantity})`,(errq,resq,fieq)=>{
                         if(errq) console.log(errq);
                         else{
 
@@ -997,6 +964,34 @@ router.get('/seeBatch',(req,res)=>{
         res.render('admin-inventory/views/seeBatch',{re: res1, moment: moment});
       }
     })
+});
+
+router.post('/updatePrice',(req,res)=>{
+  var transact_no = "1000";
+  db.query(`Update tblProductInventory set productSRP = ${req.body.srp}, productPrice = ${req.body.price} where intInventoryNo = "${req.body.ino}"`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1)
+    else{
+      db.query(`Select * from tblInventoryTransactions order by intTransactionID desc limit 1`,(err2,res2,fie2)=>{
+        if(err2) console.log(err2)
+        else{
+          if(res2==null||res2==undefined){} else if(res2.length==0){}
+          else{transact_no = parseInt(res2[0].intTransactionID) + 1}
+
+          db.query(`Select * from tblProductInventory where intInventoryNo = "${req.body.ino}"`,(err3,inv,fie3)=>{
+            if(err3) console.log(err3);
+            else{
+              db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intUserID, intShelfNo, intCriticalLimit, productSRP, productPrice, strTypeOfChanges) values("${transact_no}", "${req.body.ino}", "1000", ${inv[0].intShelfNo}, ${inv[0].intCriticalLimit}, ${req.body.srp}, ${req.body.price}, "Price Changes")`,(err4,res4,fie4)=>{
+                if(err4) console.log(err4);
+                else{
+                  res.send("yes");
+                }
+              })
+            }
+          })
+        }
+      })
+    }
+  })
 })
 
 

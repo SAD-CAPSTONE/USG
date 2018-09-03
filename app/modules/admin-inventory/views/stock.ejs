@@ -66,21 +66,12 @@
                       <td><%=i.strProductName%></td>
                       <td><%=i.strBrand%></td>
                       <td><%=i.quantity%></td>
-                      <!-- <td>
-                        <% if(i.quantity == 0){ %>
-                          <a class="ui red circular label"></a>
-                        <% }else if(i.quantity < i.intCriticalLimit || i.quantity == i.intCriticalLimit){ %>
-                          <a class="ui orange circular label"></a>
-                        <% }else{ %>
-                          <a class="ui green circular label"></a>
-                        <% } %>
-
-                      </td> -->
+                    
                       <td>
                         <center>
                         <% var url = i.intProductNo %>
                           <a href="/inventory/productInventory?product=<%=url%>"><button type="button" class="large ui teal button">Inventory</button> </a>
-                          <button class="large ui red button"><i class="glyphicon glyphicon-trash"></i></button>
+
                         </center>
                       </td>
 
@@ -238,7 +229,7 @@
                           <td><%=i.intSize%> <%=i.strUnitName%></td>
                           <td><%=i.intQuantity%></td>
                           <td><%=i.intCriticalLimit%></td>
-                        
+
                         </tr>
                       <% }) %>
                     <% } %>

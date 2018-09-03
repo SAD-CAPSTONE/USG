@@ -6,8 +6,7 @@
    <!-- Content Header (Page header) -->
    <section class="content-header">
      <h1>
-
-       <small>Note: Please monitor stocks regularly, check if there is damaged products.</small>
+       <small>&nbsp;</small>
      </h1>
      <ol class="breadcrumb">
        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -22,118 +21,78 @@
        <div class="col-xs-12">
          <div class="box">
            <div class="box-header">
-             <h4 align="center">Delivery Transmittal Receipt</h4>
+             <h2 align="center"><strong>Delivery Transmittal Receipt</strong></h4>
 
            </div>
-
-           <center>
-           <a href="/receiveDelivery/print?ro=<%=delivery_no%>" target="_blank" class="large ui button"> <i class="fa fa-print"></i> Print</a>
-           <a href="/receiveDelivery/returnBadOrders?ro=<%=delivery_no%>" class="large ui teal button">Return Bad Orders</a>
-         </center>
-
            <br>
            <br>
            <div class="row">
-             <div class="col-sm-2">
+             <div class="col-sm-1">
              </div>
              <div class="col-sm-4">
-               <h5><strong>Received From:</strong></h5>
+               <h4><strong>Shipped From:</strong></h4>
                <h5><%=from[0].strBusinessName%></h5>
                <h5><%=from[0].strBusinessAddress%></h5>
                <h5><%=from[0].strBusinessEmail%></h5>
                <h5><%=from[0].strSupplierMobile%></h5>
              </div>
-             <div class="col-sm-2">
-             </div>
              <div class="col-sm-4">
-               <h5><strong>Received By:</strong></h5>
+               <h4><strong>Delivered To:</strong></h4>
                <h5>Gustle Agulto - Operations Manager</h5>
                <h5>Ultra Super Green Trading Corp.</h5>
                <h5>Katipunan Ave., Quezon City</h5>
                <h5>info.ultrasupergreen@gmail.com</h5>
              </div>
-             <div class="col-sm-2">
+             <div class="col-sm-3">
+                <h4><strong>Delivery Receipt No: </strong><%=delivery_no%></h4> 
              </div>
            </div>
 
-           <br>
-           <br>
-           <h4 align="center"><strong>&nbsp;&nbsp;&nbsp;Good Orders</strong></h4>
-           <!-- /.box-header -->
-           <div class="box-body table-responsive">
-             <table id="example2" class="table table-bordered table-hover">
-               <thead>
-               <tr>
-                 <th>Product Name</th>
-                 <th>Size</th>
-                 <th>Variant</th>
-                 <th>Quantity</th>
-                 <th>Date Expiration</th>
 
-               </tr>
-               </thead>
-               <tbody>
-                 <% if (re_good == null || re_good == undefined){ %>
-
-                 <% }else if (re_good.length == 0){ %>
-
-                 <% }else{ %>
-                   <% re_good.forEach(function(i){ %>
-                     <tr>
-                       <td><%=i.strProduct%></td>
-                       <td><%=i.strSize%></td>
-                       <td><%=i.strVariant%></td>
-                       <td><%=i.intQuantity%></td>
-                       <td><%= moment(i.dateExpiration).format("MM/DD/YYYY") %></td>
-
-                     </tr>
-                   <% }) %>
-                 <% } %>
-
-
-
-               </tbody>
-
-             </table>
-           </div>
            <hr>
-           <h4 align="center"><strong>&nbsp;&nbsp;&nbsp;Bad Orders</strong></h4>
            <!-- /.box-header -->
            <div class="box-body table-responsive">
-             <table id="example3" class="table table-bordered table-hover">
-               <thead>
-               <tr>
-                 <th>Product Name</th>
-                 <th>Size</th>
-                 <th>Variant</th>
-                 <th>Quantity</th>
-                 <th>Date Expiration</th>
-
-               </tr>
+             <table id="example2" class="table table-bordered table-hover ">
+               <thead class="bg-success">
+                <tr>
+                  <th>Product Name</th>
+                  <th>Size</th>
+                  <th>Variant</th>
+                  <th>Quantity</th>
+                  <th>Status</th>
+                  <th>Expiration Date</th>
+                </tr>
                </thead>
                <tbody>
-                 <% if (re_bad == null || re_bad == undefined){ %>
+                 <% if (re == null || re == undefined){ %>
 
-                 <% }else if (re_bad.length == 0){ %>
+                 <% }else if (re.length == 0){ %>
 
                  <% }else{ %>
-                   <% re_bad.forEach(function(i){ %>
+                   <% re.forEach(function(i){ %>
                      <tr>
                        <td><%=i.strProduct%></td>
                        <td><%=i.strSize%></td>
                        <td><%=i.strVariant%></td>
                        <td><%=i.intQuantity%></td>
+                       <td>
+                          <%if (i.intOrderStatus == 'Good'){ %>
+                            <span class="label label-success">Good</span>
+                          <% } else{ %>
+                            <span class="label label-danger">Bad</span>
+                          <% } %>
+                        </td>
                        <td><%= moment(i.dateExpiration).format("MM/DD/YYYY") %></td>
 
                      </tr>
                    <% }) %>
                  <% } %>
 
-
-
                </tbody>
 
              </table>
+            <a href="/receiveDelivery/print?ro=<%=delivery_no%>" target="_blank" class="large ui button pull-right"> <i class="fa fa-print"></i> Print</a>
+            <a href="/receiveDelivery/returnBadOrders?ro=<%=delivery_no%>" class="large ui teal button pull-right">Return Bad Orders</a>
            </div>
            <!-- /.box-body -->
          </div>

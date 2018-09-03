@@ -381,7 +381,7 @@ router.post('/assessOrder',(req,res)=>{
                               }
                               else if(req.body.orderStatus == 4){
                                 // execute will not deliver function
-                                delivered(req,res);
+                                notDeliver(req,res);
                               }
                               else if(req.body.orderStatus == 5){
                                 // execute returned function

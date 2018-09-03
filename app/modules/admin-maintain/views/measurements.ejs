@@ -33,6 +33,7 @@
                 <tr>
 
                   <th>Measurement</th>
+                  <th>Prefix</th>
 				          <th style="width: 40%">Status</th>
                   <th style="width: 20%">Actions</th>
                 </tr>
@@ -44,6 +45,7 @@
                 <%  re.forEach(function(i){ %>
                   <tr>
 
+                    <td><%=i.strDescription%></td>
                     <td><%=i.strUnitName%></td>
                     <td>
                       <input type="checkbox"
@@ -58,7 +60,7 @@
                     </td>
                     <td>
                       <center>
-                      <button data-toggle="modal" data-target="#editMeasurement" data-num="<%=i.intUomNo%>" data-name="<%=i.strUnitName%>" class="edit_modal large ui teal button"><i class="glyphicon glyphicon-edit"></i></button>
+                      <button data-toggle="modal" data-target="#editMeasurement" data-num="<%=i.intUomNo%>" data-name="<%=i.strUnitName%>" data-desc="<%=i.strDescription%>" class="edit_modal large ui teal button"><i class="glyphicon glyphicon-edit"></i></button>
 
                       <button data-no="<%=i.intUomNo%>" onclick="del(<%=i.intUomNo%>)" class="large ui red button"><i class="glyphicon glyphicon-trash"></i></button>
                     </center>
@@ -99,12 +101,15 @@
 			<!-- Horizontal Form -->
 
 					<!-- form start -->
-          <form role="form" method="post" action="/maintenance/addMeasurement">
+          <form role="form" id="add_form">
               <div class="box-body">
-                <div id="formgroup" class="form-group">
-                  <label for="measure">Measurement:</label>
-                  <input type="text" class="form-control" name="measurement" id="measure" placeholder="ex. ml (miligrams)">
-                  <span id="errorhelpBlock" class="help-block">You already have the same record!</span>
+
+                <div id="add_group" class="form-group">
+                  <label for="desc">Measurement: </label>
+                  <input pattern="^[^\s]+.*$" type="text" required class="form-control" name="description">
+                  <label for="measure">Prefix:</label>
+                  <input type="text" pattern="^[^\s]+.*$" required class="form-control" name="measurement" id="measure" placeholder="ex. ml (miligrams)">
+                  <span id="add_error" class="help-block">You already have the same record!</span>
 
                 </div>
 
@@ -114,7 +119,7 @@
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-			<button type="submit" id="save" class="btn btn-primary">Save</button>
+			<button type="submit" id="add_save" class="btn btn-primary">Save</button>
 		  </div>
       </form>
 		</div>
@@ -135,14 +140,16 @@
     <!-- Horizontal Form -->
 
         <!-- form start -->
-        <form role="form" id="form1_edit">
+        <form role="form" id="edit_form">
             <div class="box-body">
-              <div id="formgroup" class="form-group">
-                <label for="measure">Measurement:</label>
-                <input type="text" class="form-control" name="no" id="no_e" >
+              <div id="edit_group" class="form-group">
+                <label for="desc">Measurement: </label>
+                <input pattern="^[^\s]+.*$" id="desc_e" type="text" class="form-control" name="description" required>
+                <label for="measure">Prefix:</label>
+                <input type="hidden" class="form-control" name="no" id="no_e" >
 
-                <input type="text" class="form-control" name="measure" id="measure_e" >
-                <span id="errorhelpBlock" class="help-block">You already have the same record!</span>
+                <input pattern="^[^\s]+.*$" type="text" required class="form-control" name="measure" id="measure_e" >
+                <span id="edit_error" class="help-block">You already have the same record!</span>
 
               </div>
 
@@ -152,7 +159,7 @@
     </div>
     <div class="modal-footer">
     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-    <button type="submit" id="save" class="btn btn-primary">Save</button>
+    <button type="submit" id="edit_save" class="btn btn-primary">Save</button>
     </div>
     </form>
   </div>
@@ -193,21 +200,37 @@ $(".navi a:contains('Measurements')").parent().addClass("active");
 
 <script>
   $('.edit_modal').on('click',function(){
-    $('#no_e').val($(this).val('num'));
-    $('#measure_e').val($(this).val('name'));
+
+    $('#no_e').val($(this).data('num'));
+    $('#measure_e').val($(this).data('name'));
+    $('#desc_e').val($(this).data('desc'));
   })
 </script>
 
 <script>
-  $('#form1_edit').submit(function(e){
+
+  $('#add_form').submit(function(e){
     e.preventDefault();
-    $.post('/maintenance/editMeasurement',$('#form1_edit').serialize(),function(data,success){
-      if(data == yes){
-        swal({title:"Success!",text:"You successfully edit a measurement",type"success"},function(){
+    $.post('/maintenance/addMeasurement', $('#add_form').serialize(), function(data,status){
+      if(data=='yes'){
+        swal({title:"Success!",text:"You successfully added a measurement",type:"success"}).then(()=>{
           location.reload();
         })
       }else{
-        swal({title:"Error!",text:"",type"error"})
+        swal('Error!','','error');
+      }
+    })
+  });
+
+  $('#edit_form').submit(function(e){
+    e.preventDefault();
+    $.post('/maintenance/editMeasurement',$('#edit_form').serialize(),function(data,success){
+      if(data == 'yes'){
+        swal({title:"Success!",text:"You successfully edit a measurement",type:"success"}).then(()=>{
+          location.reload();
+        })
+      }else{
+        swal('Error!','','error');
 
       }
     })
@@ -230,20 +253,38 @@ $('.uom_stat').on('change',function(){
 </script>
 
 <script>
-  $('#errorhelpBlock').hide();
-  $('#save').attr('disabled',true);
+  $('#add_error').hide();
+  $('#add_save').attr('disabled',true);
   $('#measure').on('keyup',function(){
 
     $.post('/maintenance2/measurement',{data: $(this).val()},function(data,status){
       if(data == "yes"){
-        $('#errorhelpBlock').show();
-        $('#formgroup').attr('class', 'form-group has-error');
-        $('#save').attr('disabled',true);
+        $('#add_error').show();
+        $('#add_group').attr('class', 'form-group has-error');
+        $('#add_save').attr('disabled',true);
 
       }else{
-        $('#errorhelpBlock').hide();
-        $('#formgroup').attr('class', 'form-group has-success');
-        $('#save').attr('disabled',false);
+        $('#add_error').hide();
+        $('#add_group').attr('class', 'form-group has-success');
+        $('#add_save').attr('disabled',false);
+      }
+    });
+  })
+
+  $('#edit_error').hide();
+  $('#edit_save').attr('disabled',true);
+  $('#measure_e').on('keyup',function(){
+
+    $.post('/maintenance2/measurement',{data: $(this).val()},function(data,status){
+      if(data == "yes"){
+        $('#edit_error').show();
+        $('#edit_group').attr('class', 'form-group has-error');
+        $('#edit_save').attr('disabled',true);
+
+      }else{
+        $('#edit_error').hide();
+        $('#edit_group').attr('class', 'form-group has-success');
+        $('#edit_save').attr('disabled',false);
       }
     });
   })

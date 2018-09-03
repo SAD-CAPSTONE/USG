@@ -1,8 +1,7 @@
 function download_voucher(bankAccountNo, bankServiceFee){
   let orderNo = $('#orderNo').val();
   $.get(`/summary/voucher/${orderNo}`).then((res)=>{
-    let doc = new jsPDF(), order = res.order;
-    console.log(order)
+    let doc = new jsPDF(), order = res.order
 
     doc.addFont('Poppins-Regular.ttf', 'Poppins-Regular', 'normal');
     doc.addFont('Poppins-Light.ttf', 'Poppins-Light', 'normal');

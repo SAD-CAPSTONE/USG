@@ -59,21 +59,17 @@ router.get('/loadOrderList',(req,res)=>{
 });
 
 router.get('/deliveryDetails',(req,res)=>{
-  db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.delivery}" and tblReceiveOrderlist.intOrderStatus = "Good"`,(err1,good,fields1)=>{
+  db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.delivery}"`,(err1,results,fields1)=>{
     if(err1) console.log(err1);
-
-    db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.delivery}" and tblReceiveOrderlist.intOrderStatus = "Bad"`,(err2,bad,fields2)=>{
-      if(err2) console.log(err2);
-
-      db.query(`Select * from tblReceiveOrder join tblPurchaseOrder on tblReceiveOrder.intPurchaseOrderNo = tblPurchaseOrder.intPurchaseOrderNo join tblSupplier on tblSupplier.intUserID = tblPurchaseOrder.intSupplierID join tblUser on tblSupplier.intUserID = tblUser.intUserID where intReceiveOrderNo = "${req.query.delivery}"`,(err3,r3,f3)=>{
+      db.query(`Select * from tblReceiveOrder join tblPurchaseOrder on tblReceiveOrder.intPurchaseOrderNo = tblPurchaseOrder.intPurchaseOrderNo join tblSupplier on tblSupplier.intUserID = tblPurchaseOrder.intSupplierID join tblUser on tblSupplier.intUserID = tblUser.intUserID where intReceiveOrderNo = "${req.query.delivery}"`,(err3,results2,f3)=>{
         if(err3) console.log(err3);
-        if (!err3) res.render('admin-receiveDelivery/views/deliveryDetails',{re_good: good, re_bad: bad, delivery_no: req.query.delivery, moment:moment, from: r3});
+        if (!err3) res.render('admin-receiveDelivery/views/deliveryDetails',{re: results, delivery_no: req.query.delivery, moment:moment, from: results2});
+        console.log(results)
       });
 
     });
 
   });
-});
 
 router.post('/newDeliveryRecord', (req,res)=>{
 
