@@ -5,8 +5,11 @@ const generatePassword = require('password-generator');
 const nodemailer = require('nodemailer');
 const xoauth2 = require('xoauth2');
 var mailAccountUse = "imjanellealag@gmail.com";
-const user_name     = 'imjanellealag@gmail.com';
+const user_name     = 'test.ultrasupergreen@gmail.com';
 const email_to = 'imjanellealag@gmail.com';
+const passw = 'testusg123';
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 
 router.post('/createAccount',(req,res)=>{
@@ -19,35 +22,45 @@ router.post('/createAccount',(req,res)=>{
    port: 465,
    secure: true,
    auth: {
-       type: 'OAuth2',
-       user: user_name,
-       clientId: '992501111737-qhi235s1dma1cksa1n2r14m9uul6b33j.apps.googleusercontent.com',
-       clientSecret: '0DgRehIAZWKBg3rIjuTbaW0h',
-       refreshToken: '1/gRa-PZ-HiOcUHF1T7O2gfkwA7-rWIMXnm2nlSWKDqJw',
-       accessToken: 'ya29.Glv9BZ29u-p2vcTTV2BTXpT1R6COUG39LUdfql8SE3PwoH-yGcUuRkVNh_KS6hDeCy1W6d1PEUKqLy7YjHJSfnB6LYp_NNrFFQiqCQqA7E83u4lti-GoBh5lPibY'
+     user: user_name,
+     pass: passw
    }
 });
 
 
-  let mailOptions = {
-      from    : user_name, // sender address
-      to      : email_to, // list of receivers
-      subject : 'USG Consignor Account', // Subject line
-      text    : `Username: ${req.body.name}    Password: ${password}`, // plaintext body
-      html    : '<b>Just sign-in </b>', // html body
+      bcrypt.hash(password,saltRounds,function(err,hash){
+        if(err) console.log(err);
+        console.log(req.body.no);
+        db.query(`Update tblUser set strUsername = "${req.body.name}", strPassword = "${hash}" where intUserID = "${req.body.no}"`,(err1,res1,fie1)=>{
+          if(err1) res.send("error")
+          else{
 
-  };
+            let mailOptions = {
+                from    : user_name, // sender address
+                to      : email_to, // list of receivers
+                subject : 'USG Consignor Account', // Subject line
+                text    : `Username: ${req.body.name}    Password: ${password}`, // plaintext body
+                html    : `<b>Username: ${req.body.name}    Password: ${password} </b>`, // html body
 
-  // send mail with defined transport object
-  transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-          return console.log(error);
-      }
-      console.log('Message sent: ' + info.response);
-      res.send({username: req.body.name, password: password});
+            };
+
+            // send mail with defined transport object
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    res.send("error");
+                }
+                console.log('Message sent: ' + info.response);
+
+                res.send({username: req.body.name, password: hash});
+              });
+
+          }
+        })
+      })
+
+
+
   });
-
-});
 
 router.post('/adjustmentType',(req,res)=>{
   db.query(`Select * from tblAdjustmentTypes where strAdjustment = "${req.body.data}" and intStatus <> 2`,(err,results,fields)=>{

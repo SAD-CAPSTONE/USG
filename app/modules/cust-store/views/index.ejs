@@ -12,8 +12,8 @@
       </div>
       <div class="price-range-div">
         <p class="m-0 mb-1"><b>Price Range</b></p>
-        <input type="number" class="inline-block material min-range" placeholder="min"/> -
-        <input type="number" class="inline-block material max-range" placeholder="max"/>
+        <input type="text" class="inline-block material min-range input-number" placeholder="min"/> -
+        <input type="text" class="inline-block material max-range input-number" placeholder="max"/>
         <div class="align-right">
           <button class="btn btn-custom-primary btn-sm mt-3 priceRangeBtn">Apply</button>
         </div>
@@ -149,8 +149,8 @@
           <div class="col">
             <div class="mb-3 price-range-div">
               <p class="m-0"><b>Price Range</b></p>
-              <input type="number" class="inline-block min-range" placeholder="min"/> -
-              <input type="number" class="inline-block max-range" placeholder="max"/>
+              <input type="text" class="inline-block min-range input-number" placeholder="min"/> -
+              <input type="text" class="inline-block max-range input-number" placeholder="max"/>
               <div class="align-right">
                 <button class="btn btn-custom-primary btn-sm mt-3 priceRangeBtn">Apply</button>
               </div>
@@ -392,6 +392,7 @@
 
           // products
           res.products.forEach((data) => {
+            let productPrice = data.minPrice == data.maxPrice ? data.minPrice : `${data.minPrice}<span class="fs-08em text-muted"> - ${data.maxPrice}</span>`
             list.append(`
               <div class="custom-card this-product my-2">
                 <div class="card-img"><a href="/item/${data.intProductNo}"><img src="/assets/images/products/${data.strProductPicture}"></a></div>
@@ -404,7 +405,7 @@
 
                 <div class="card-desc">
                   <p class="card-title"><span class="text-brand">${data.strBrand}</span> ${data.strProductName}</p>
-                  <p class="card-price price-symbol">${data.productPrice}</p>
+                  <p class="card-price price-symbol">${productPrice}</p>
                   <small class="card-rating">
 
                   </small>
@@ -508,7 +509,9 @@
     $('.priceRangeBtn').on('click', function(){
       let min = $(this).closest($('.price-range-div')).find($('.min-range')).val(),
       max = $(this).closest($('.price-range-div')).find($('.max-range')).val()
-      pushParams(null,null,null,min,max,null,1);
+      parseInt(max) < parseInt(min) ?
+        pushParams(null,null,null,min,min,null,1):
+        pushParams(null,null,null,min,max,null,1)
       $('#getStore').click();
     });
 

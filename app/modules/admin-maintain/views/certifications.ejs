@@ -200,9 +200,9 @@
     $('#edit_error').hide();
   })
 
-  $('#form_edit').submit(function(e){
+  $('#edit_form').submit(function(e){
     e.preventDefault();
-    $.post('/maintenance/editCertification',$('#form_edit').serialize(),function(data,status){
+    $.post('/maintenance/editCertification',$('#edit_form').serialize(),function(data,status){
       if(data){
         confirm_alert();
       }

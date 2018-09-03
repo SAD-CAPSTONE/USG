@@ -216,6 +216,9 @@ textarea {
 .text-brand {
   color: #2980b9;
 }
+.text-package {
+  color: rgba(204, 49, 2, .8)
+}
 
 /* Text Align */
 .align-left {
@@ -329,6 +332,9 @@ input#mobile {
 /* Border */
 .radius-0 {
   border-radius: 0px;
+}
+.border-none{
+  border: 0 !important;
 }
 
 /* Div */
@@ -673,7 +679,7 @@ table th, table td {
     top: 3.3px;
   }
 
-  #store-sidebar input[type=number], #filters-div input[type=number] {
+  #store-sidebar .price-range-div input, #filters-div .price-range-div input {
     width: 87px;
     font-size: .9em;
   }
@@ -907,9 +913,9 @@ table th, table td {
 :root{
   --summary-details-pane-width: 300px;
 
-  --products-col-width: calc(100% - 278.4px);
-  --price-col-width: 190px;
-  --quantity-col-width: 80px;
+  --summary-products-col-width: calc(100% - 278.4px);
+  --summary-price-col-width: 190px;
+  --summary-quantity-col-width: 80px;
 
 }
 #summary-container {
@@ -931,13 +937,13 @@ table th, table td {
   background: #ECEFF0;
 }
 #summary-main-pane .products-col {
-  width: var(--products-col-width);
+  width: var(--summary-products-col-width);
 }
 #summary-main-pane .price-col {
-  width: var(--price-col-width);
+  width: var(--summary-price-col-width);
 }
 #summary-main-pane .quantity-col {
-  width: var(--quantity-col-width);
+  width: var(--summary-quantity-col-width);
 }
 
 #summary-main-pane .product-div {
@@ -948,7 +954,7 @@ table th, table td {
 }
 #summary-main-pane .product-div > div:first-child {
   min-height: 100px;
-  width: var(--products-col-width);
+  width: var(--summary-products-col-width);
 }
 #summary-main-pane .product-div img {
   position: absolute;
@@ -972,7 +978,7 @@ table th, table td {
 }
 
 #summary-main-pane .product-div > div:nth-child(2) {
-  width: var(--price-col-width);
+  width: var(--summary-price-col-width);
 
 }
 #summary-main-pane .product-div > div:nth-child(2) p:first-of-type{
@@ -980,7 +986,7 @@ table th, table td {
 }
 
 #summary-main-pane .product-div > div:nth-child(3) {
-  width: var(--quantity-col-width);
+  width: var(--summary-quantity-col-width);
 }
 #summary-main-pane .product-div > div:nth-child(3) i.fa {
   display: none;
@@ -1130,12 +1136,53 @@ table th, table td {
 
 }
 
+/* Package Modal */
+#package-modal .modal-dialog {
+  width: 420px;
+}
+#package-modal .package-title{
+  font-size: 1.3em
+}
+#package-modal hr{
+  margin: 10px 0px 8px
+}
+#package-modal .close{
+  position: absolute;
+  right: 15;
+  top: 17.5;
+}
+
+#package-modal .price-pane > p:first-child {
+  margin-top: 5px;
+  font-size: 1.1em;
+}
+#package-modal .price-pane > p:nth-child(2) {
+  margin-top: 5px;
+  font-size: 1.6em;
+}
+
+#package-modal .quantity{
+  width: 98px;
+  height: 24px;
+  margin-bottom: 7px !important;
+}
+#package-modal .quantity-text {
+  top: 2.8px !important;
+}
+#package-modal .quantity .input-group-prepend,
+#package-modal .quantity .input-group-append{
+  margin-left: 0px !important;
+}
+#package-modal button.add-btn{
+  border-radius: 0;
+}
+
 /* Consignor ---------------------------------------------------------------- */
 :root {
-  --products-col-width: calc(100% - 339px);
-  --price-col-width: 120px;
-  --quantity-col-width: 80px;
-  --sales-col-width: 120px;
+  --sales-products-col-width: calc(100% - 339px);
+  --sales-price-col-width: 120px;
+  --sales-quantity-col-width: 80px;
+  --sales-sales-col-width: 120px;
 }
 
 #sales-container {
@@ -1169,16 +1216,16 @@ table th, table td {
   background: #ECEFF0;
 }
 #sales-main-pane .products-col {
-  width: var(--products-col-width);
+  width: var(--sales-products-col-width);
 }
 #sales-main-pane .price-col {
-  width: var(--price-col-width);
+  width: var(--sales-price-col-width);
 }
 #sales-main-pane .quantity-col {
-  width: var(--quantity-col-width);
+  width: var(--sales-quantity-col-width);
 }
 #sales-main-pane .sales-col {
-  width: var(--sales-col-width);
+  width: var(--sales-sales-col-width);
 }
 
 #sales-main-pane .product-div {
@@ -1200,16 +1247,16 @@ table th, table td {
 
 #sales-main-pane .product-div > .prod-row > div:first-child {
   padding-left: 110px;
-  width: var(--products-col-width);
+  width: var(--sales-products-col-width);
 }
 #sales-main-pane .product-div > .prod-row > div:nth-child(2) {
-  width: var(--price-col-width);
+  width: var(--sales-price-col-width);
 }
 #sales-main-pane .product-div > .prod-row > div:nth-child(3) {
-  width: var(--quantity-col-width);
+  width: var(--sales-quantity-col-width);
 }
 #sales-main-pane .product-div > .prod-row > div:nth-child(4) {
-  width: var(--sales-col-width);
+  width: var(--sales-sales-col-width);
 }
 
 /*Responsive Sizes------------------------------------------------------------*/
@@ -1477,6 +1524,17 @@ table th, table td {
     float: right;
   }
 
+  #package-modal .modal-dialog {
+    width: 295px;
+    left: 48%;
+    transform: translate(-50%);
+  }
+  #package-modal .price-pane-small {
+    display: block;
+  }
+  #package-modal .price-pane {
+    display: none;
+  }
 }
 @media (max-width: 450px) {
   .search>input {

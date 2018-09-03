@@ -1,5 +1,6 @@
 <%- include('../../../templates/navbar.ejs') -%>
 <%- include('../../../templates/modals/cart-modal.ejs') -%>
+<%- include('../../../templates/modals/package-modal.ejs') -%>
 
 <style>
   .x-scrolling-div .simplebar-content {
@@ -23,9 +24,9 @@
             <li data-target="#carouselArchitecture" data-slide-to="2"><i></i></li>
           </ol>
           <div id="banner-carousel" role="listbox" class="carousel-inner">
-            <div class="carousel-item active"><img src="/customer-assets/images/static/organic1.jpg" data-holder-rendered="true" class="d-block img-fluid banner-img" /></div>
-            <div class="carousel-item"><img src="/customer-assets/images/static/organic2.jpg" data-holder-rendered="true" class="d-block img-fluid banner-img" /></div>
-            <div class="carousel-item"><img src="/customer-assets/images/static/organic3.jpg" data-holder-rendered="true" class="d-block img-fluid banner-img" /></div>
+            <div class="carousel-item active"><img src="/assets/images/static/organic1.jpg" data-holder-rendered="true" class="d-block img-fluid banner-img" /></div>
+            <div class="carousel-item"><img src="/assets/images/static/organic2.jpg" data-holder-rendered="true" class="d-block img-fluid banner-img" /></div>
+            <div class="carousel-item"><img src="/assets/images/static/organic3.jpg" data-holder-rendered="true" class="d-block img-fluid banner-img" /></div>
           </div>
         </div>
       </div>
@@ -53,7 +54,13 @@
         <div class="card-desc">
 
           <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
-          <p class="card-price price-symbol"><%= prod.productPrice%></p>
+          <p class="card-price price-symbol">
+            <% if(prod.minPrice == prod.maxPrice){ %>
+              <%= prod.minPrice %>
+            <% }else{ %>
+              <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
+            <% } %>
+          </p>
           <!-- <small class="card-oldprice text-muted">
             <span><s class="price-symbol">0</s></span> (-0%)<br>
           </small> -->
@@ -78,7 +85,7 @@
       <%})%>
   </div>
 </div>
-<div class="mb-4">
+<div class="mb-2">
   <div class="container">
     <div>
       <h3 class="feature-title lead fl-l light-bold mb-2"><b>New Products</b></h3>
@@ -98,7 +105,13 @@
 
         <div class="card-desc">
           <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
-          <p class="card-price price-symbol"><%= prod.productPrice%></p>
+          <p class="card-price price-symbol">
+            <% if(prod.minPrice == prod.maxPrice){ %>
+              <%= prod.minPrice %>
+            <% }else{ %>
+              <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
+            <% } %>
+          </p>
           <!-- <small class="card-oldprice text-muted">
             <span><s class="price-symbol">0</s></span> (-0%)<br>
           </small> -->
@@ -118,6 +131,36 @@
             <span class="fs-08em fw-400">(<%= prod.cntRating%>)</span>
           </small>
           <small class="card-reviews"><%= prod.cntReview%> reviews</small>
+        </div>
+      </div>
+      <%})%>
+  </div>
+</div>
+<div class="mb-3">
+  <div class="container">
+    <div>
+      <h3 class="feature-title lead fl-l light-bold mb-2"><b>Packages</b></h3>
+      <h3 class="store-link lead fl-r mb-2"><a href="/store">Go To Store ></a></h3>
+    </div>
+  </div>
+  <div class="container x-scrolling-div products-container" data-simplebar="">
+    <% packages.forEach((pack)=>{ %>
+      <div class="custom-card card-list this-product my-1">
+        <div class="card-img"><img src="/customer-assets/images/static/package.jpg"></div>
+        <div class="cart-button-div">
+          <input type="number" class="product-id" value="" hidden />
+          <button type="button" class="cart-btn btn p-0 no-focus" data-toggle="modal"
+          data-target="#package-modal">
+          Add to Cart</button>
+        </div>
+
+        <div class="card-desc">
+          <p class="card-title text-package"><%= pack.strPackageName%></p>
+          <p class="card-price price-symbol"><%= pack.packagePrice %></p>
+          <!-- <small class="card-oldprice text-muted">
+            <span><s class="price-symbol">0</s></span> (-0%)<br>
+          </small> -->
+          <small class="card-rating fs-07em text-muted">Contains <%= pack.Qty %> items</small>
         </div>
       </div>
       <%})%>

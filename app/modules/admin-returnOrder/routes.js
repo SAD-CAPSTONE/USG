@@ -19,7 +19,13 @@ router.get('/', (req,res)=>{
 router.get('/form', (req,res)=>{
   db.query(`Select * from tblReturnOrder order by intReturnOrderNo desc limit 1`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
-    res.render('admin-returnOrder/views/returnOrderForm',{resu: res1, moment:moment});
+    db.query(`Select * from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID where tblOrder.intStatus = 2 or tblOrder.intStatus = 3`,(err2,res2,fie2)=>{
+      if(err2) console.log(err2);
+      else{
+        res.render('admin-returnOrder/views/returnOrderForm',{resu: res1, moment:moment, orders: res2});
+
+      }
+    })
 
   })
 });
@@ -43,6 +49,8 @@ router.get('/loadOrderList',(req,res)=>{
     }
   })
 });
+
+
 
 router.post('/newReturn',(req,res)=>{
   console.log(req.body.order_no)

@@ -3,6 +3,8 @@ const router = express.Router();
 const db = require('../../lib/database')();
 const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_cust = userTypeAuth.cust;
 const firstID = 1000;
 const quantLimit = 50;
 
@@ -20,11 +22,36 @@ function newOrderDetailsNo (req, res, next){
     return next();
   });
 }
+function newOrderHistoryNo (req, res, next){
+  db.query(`SELECT * FROM tblorderhistory ORDER BY intOrderHistoryNo DESC LIMIT 1`, (err, results, fields) => {
+    if (err) console.log(err);
+    req.newOrderHistoryNo = results[0] ? parseInt(results[0].intOrderHistoryNo)+1 : firstID;
+    return next();
+  });
+}
+function newMessageNo (req, res, next){
+  db.query(`SELECT * FROM tblmessages ORDER BY intMessageNo DESC LIMIT 1`, (err, results, fields) => {
+    if (err) console.log(err);
+    req.newMessageNo = results[0] ? parseInt(results[0].intMessageNo)+1 : firstID;
+    return next();
+  });
+}
 
 function checkUser (req, res, next){
   if(!req.user){
     req.session.pendRoute = 2;
     req.flash('regSuccess', 'Login to proceed to Checkout');
+    res.redirect('/login');
+  }
+  else{
+    req.session.pendRoute = 0;
+    return next();
+  }
+}
+function checkUserAccount(req, res, next){
+  if(!req.user){
+    req.session.pendRoute = 1;
+    req.flash('regSuccess', 'Login to view Account Information');
     res.redirect('/login');
   }
   else{
@@ -51,35 +78,6 @@ function contactDetails (req, res, next){
     req.contactDetails = results[0];
     return next();
   });
-}
-function checkUpdateOrder (req, res, next){
-  if (!req.user){
-    res.redirect('/home');
-  }
-  else{
-    db.beginTransaction(function(err) {
-      if (err) console.log(err);
-      db.query(`SELECT * FROM tblorder WHERE intOrderNo= ? AND intStatus IS NULL AND intUserID= ?`,[req.params.orderNo, req.user.intUserID], (err,results,fields)=> {
-        if (err) console.log(err);
-        if (results[0]){
-          req.checkUpdateOrder = results[0].intPaymentMethod;
-          db.query(`UPDATE tblorder SET intStatus= 0 WHERE intOrderNo= ?`,[req.params.orderNo], (err,results,fields)=>{
-            if (err) console.log(err);
-            db.commit(function(err) {
-              if (err) console.log(err);
-              return next();
-            });
-          });
-        }
-        else{
-          db.commit(function(err) {
-            if (err) console.log(err);
-            res.redirect('/summary/success')
-          });
-        }
-      });
-    });
-  }
 }
 function orderTotal (req, res, next){
   db.query(`SELECT SUM(purchasePrice*intQuantity)totalPrice FROM tblorder
@@ -127,13 +125,33 @@ function cartCheck (req, res, next){
     });
   }
   req.session.cart.length ? cartLimitLoop(0) : res.redirect('/summary/checkout');
+}
+function admin (req, res, next){
+  db.query(`SELECT * FROM tbladmin WHERE intUserID= 1000`, (err, results, fields) => {
+    if (err) console.log(err);
+    results[0].totalPrice ? results.map( obj => obj.totalPrice = priceFormat(obj.totalPrice.toFixed(2)) ) : 0
 
+    results[0] ? results[0].bankServiceFee = priceFormat(results[0].bankServiceFee.toFixed(2)) : 0
+    req.admin = results[0];
+    return next();
+  });
+}
+function thisOrder (req, res, next){
+  db.query(`SELECT * FROM tblorder WHERE intOrderNo= ?`, [req.body.orderNo], (err, results, fields) => {
+    if (err) console.log(err);
+    req.thisOrder = results[0];
+    return next();
+  });
 }
 
-router.get('/checkout', checkUser, contactDetails, (req,res)=>{
-  res.render('cust-summary/views/checkout', {thisUser: req.user, thisUserContact: req.contactDetails});
+router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>{
+  res.render('cust-summary/views/checkout', {
+    thisUser: req.user,
+    thisUserContact: req.contactDetails,
+    admin: req.admin
+  });
 });
-router.get('/order/:orderNo', orderTotal, (req,res)=>{
+router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, admin, (req,res)=>{
   db.query(`SELECT *, (tblorder.intStatus)orderStatus, (tblorderdetails.intQuantity)orderQty FROM tblorder
     INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
     INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
@@ -144,13 +162,18 @@ router.get('/order/:orderNo', orderTotal, (req,res)=>{
     if (err) console.log(err);
     if (results[0]){
       results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('ll') );
-      results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) );
+      results.map( obj => obj.purchasePrice = priceFormat(obj.purchasePrice.toFixed(2)) );
+      let orderLength = results.reduce((temp, obj)=>{
+        return temp += obj.orderQty
+      },0)
       res.render('cust-summary/views/order', {
         thisUser: req.user,
         order: results,
+        orderLength: orderLength,
         orderOne: results[0],
         orderNumber: req.params.orderNo,
-        orderTotal: req.orderTotal.totalPrice
+        orderTotal: req.orderTotal.totalPrice,
+        admin: req.admin
       });
     }
     else{
@@ -158,14 +181,7 @@ router.get('/order/:orderNo', orderTotal, (req,res)=>{
     }
   });
 });
-router.get('/success/:orderNo', checkUpdateOrder, (req,res)=>{
-  res.render('cust-summary/views/orderSuccess', {
-    thisUser: req.user,
-    orderNumber: req.params.orderNo,
-    checkUpdateOrder: req.checkUpdateOrder
-  });
-});
-router.get('/voucher/:orderNo', orderTotal, (req,res)=>{
+router.get('/voucher/:orderNo', checkUserAccount, auth_cust, orderTotal, (req,res)=>{
   if (!req.user){
     res.send('none')
   }
@@ -185,7 +201,7 @@ router.get('/voucher/:orderNo', orderTotal, (req,res)=>{
     });
   }
 })
-router.get('/receipt/:orderNo', (req,res)=>{
+router.get('/receipt/:orderNo', checkUserAccount, auth_cust, (req,res)=>{
   if (!req.user){
     res.send('none')
   }
@@ -232,93 +248,108 @@ router.get('/receipt/:orderNo', (req,res)=>{
   }
 })
 
-router.post('/checkout', checkUser, contactDetails, newOrderNo, newOrderDetailsNo, cartCheck, (req,res)=>{
-  console.log(`length: ${req.session.cart.length}`)
+router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOrderDetailsNo, newOrderHistoryNo, newMessageNo, cartCheck, admin, (req,res)=>{
+  req.session.cart.forEach((data,i)=>{
+    data.curQty == 0 ? req.session.cart.splice(i,1) : 0
+  })
   db.beginTransaction(function(err) {
     if (err) console.log(err);
-    let thisOrderNo = req.newOrderNo;
+    let thisOrderNo = req.newOrderNo, thisOrderHistoryNo = req.newOrderHistoryNo, thisMessageNo = req.newMessageNo;
     db.query(`INSERT INTO tblorder (intOrderNo, intUserID, intPaymentMethod, strShippingAddress, strBillingAddress, paymentDue)
       VALUES (?,?,?,?,?,CURDATE() + INTERVAL 1 DAY)`,[thisOrderNo, req.user.intUserID, req.body.paymentMethod, req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress ], (err, results, fields) => {
       if (err) console.log(err);
-      function multiInsert(i){
-        let cart = req.session.cart;
-        db.query(`INSERT INTO tblorderdetails (intOrderDetailsNo, intOrderNo, intInventoryNo, intStatus, purchasePrice, intQuantity)
-          VALUES (?,?,?,?,?,?)`,[req.newOrderDetailsNo + i, thisOrderNo, cart[i].inv, 1, cart[i].curPrice, cart[i].curQty], (err, results, fields) => {
+      db.query(`INSERT INTO tblorderhistory (intOrderHistoryNo, intOrderNo, intAdminID, intMessageNo, strShippingAddress, strBillingAddress)
+        VALUES (?,?,?,0,?,?)`,[thisOrderHistoryNo, thisOrderNo, 1000, req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress ], (err, results, fields) => {
+        if (err) console.log(err);
+        db.query(`INSERT INTO tblmessages (intMessageNo, intOrderHistoryNo, strMessage, intAdminID)
+          VALUES (?,?,?,?)`,[thisMessageNo, thisOrderHistoryNo, `Order #${thisOrderNo} has been placed`, 1000], (err, results, fields) => {
           if (err) console.log(err);
-          db.query(`SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblproductinventory
-            WHERE intInventoryNo = ?`,[cart[i].inv], (err, results, fields) => {
-            if (results[0].stock){
-              newQty = parseInt(results[0].intReservedItems) + parseInt(cart[i].curQty);
-              db.query(`UPDATE tblproductinventory SET intReservedItems= ? WHERE intInventoryNo= ?`,[newQty, cart[i].inv], (err, results1, fields) => {
-                if (err) console.log(err);
-                ++i;
-                if (cart.length > i){
-                  multiInsert(i);
-                }
-                else{
-                  db.commit(function(err) {
+          function multiInsert(i){
+            let cart = req.session.cart;
+            db.query(`INSERT INTO tblorderdetails (intOrderDetailsNo, intOrderNo, intInventoryNo, intStatus, purchasePrice, intQuantity)
+              VALUES (?,?,?,?,?,?)`,[req.newOrderDetailsNo + i, thisOrderNo, cart[i].inv, 1, cart[i].curPrice, cart[i].curQty], (err, results, fields) => {
+              if (err) console.log(err);
+              db.query(`SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblproductinventory
+                WHERE intInventoryNo = ?`,[cart[i].inv], (err, results, fields) => {
+                if (results[0].stock){
+                  newQty = parseInt(results[0].intReservedItems) + parseInt(cart[i].curQty);
+                  db.query(`UPDATE tblproductinventory SET intReservedItems= ? WHERE intInventoryNo= ?`,[newQty, cart[i].inv], (err, results1, fields) => {
                     if (err) console.log(err);
-                    req.session.cart = null;
-                    res.redirect(`/summary/success/${thisOrderNo}`);
+                    ++i;
+                    if (cart.length > i){
+                      multiInsert(i);
+                    }
+                    else{
+                      db.commit(function(err) {
+                        if (err) console.log(err);
+                        req.session.cart = null;
+                        res.render('cust-summary/views/orderSuccess', {
+                          thisUser: req.user,
+                          orderNumber: thisOrderNo,
+                          checkUpdateOrder: req.body.paymentMethod,
+                          admin: req.admin
+                        });
+                      });
+                    }
                   });
                 }
+                else{
+                  ++i;
+                  if (cart.length > i){
+                    multiInsert(i);
+                  }
+                  else{
+                    db.commit(function(err) {
+                      if (err) console.log(err);
+                      req.session.cart = null;
+                      res.redirect(`/summary/sample`,{message: 'Something went wrong'});
+                    });
+                  }
+                }
               });
-            }
-            else{
-              ++i;
-              if (cart.length > i){
-                multiInsert(i);
-              }
-              else{
-                db.commit(function(err) {
-                  if (err) console.log(err);
-                  req.session.cart = null;
-                  res.redirect(`/summary/success`);
-                });
-              }
-            }
-          });
-        });
-      }
-      // function stockControl(cart,i,j){
-      //   db.query(`SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblproductinventory
-      //     WHERE intInventoryNo = ?`,[cart[i].inv, j+1], (err, results, fields) => {
-      //     if (err) console.log(err);
-      //     ++j;
-      //     let thisBatchNo = results[0].intBatchNo;
-      //     if (results[0].stock == 0){
-      //       stockControl(cart,i,j);
-      //     }
-      //     else{
-      //       let newQty = cart[i].curQty >= results[0].stock ?
-      //         results[0].intQuantity : cart[i].curQty + results[0].intReservedItems;
-      //       cart[i].curQty -= results[0].stock;
-      //
-      //       db.query(`UPDATE tblbatch SET intReservedItems= ? WHERE intBatchNo= ?`,[newQty, thisBatchNo], (err, results1, fields) => {
-      //         if (err) console.log(err);
-      //         if (cart[i].curQty > 0){
-      //           stockControl(cart,i,j);
-      //         }
-      //         else{
-      //           ++i;
-      //           if (cart.length > i){
-      //             multiInsert(i);
-      //           }
-      //           else{
-      //             db.commit(function(err) {
-      //               if (err) console.log(err);
-      //               req.session.cart = null;
-      //               res.redirect(`/summary/success/${thisOrderNo}`);
-      //             });
-      //           }
-      //         }
-      //       });
-      //     }
-      //
-      //   });
-      // }
+            });
+          }
+          // function stockControl(cart,i,j){
+          //   db.query(`SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblproductinventory
+          //     WHERE intInventoryNo = ?`,[cart[i].inv, j+1], (err, results, fields) => {
+          //     if (err) console.log(err);
+          //     ++j;
+          //     let thisBatchNo = results[0].intBatchNo;
+          //     if (results[0].stock == 0){
+          //       stockControl(cart,i,j);
+          //     }
+          //     else{
+          //       let newQty = cart[i].curQty >= results[0].stock ?
+          //         results[0].intQuantity : cart[i].curQty + results[0].intReservedItems;
+          //       cart[i].curQty -= results[0].stock;
+          //
+          //       db.query(`UPDATE tblbatch SET intReservedItems= ? WHERE intBatchNo= ?`,[newQty, thisBatchNo], (err, results1, fields) => {
+          //         if (err) console.log(err);
+          //         if (cart[i].curQty > 0){
+          //           stockControl(cart,i,j);
+          //         }
+          //         else{
+          //           ++i;
+          //           if (cart.length > i){
+          //             multiInsert(i);
+          //           }
+          //           else{
+          //             db.commit(function(err) {
+          //               if (err) console.log(err);
+          //               req.session.cart = null;
+          //               res.redirect(`/summary/success/${thisOrderNo}`);
+          //             });
+          //           }
+          //         }
+          //       });
+          //     }
+          //
+          //   });
+          // }
 
-      req.session.cart ? multiInsert(0) : res.redirect(`/summary/success`);
+          req.session.cart ? multiInsert(0) : res.redirect(`/summary/success`);
+        });
+      });
     });
   });
 });
@@ -329,37 +360,31 @@ router.post('/checkout/address', checkUser, (req,res)=>{
     res.redirect('/summary/checkout');
   });
 })
-router.post('/order/cancel', checkUserOrder, orderProductQty, (req,res)=>{
-  let reason = req.body.cancelreason == 'other' ? req.body.canceldesc : req.body.cancelreason
+router.post('/order/cancel', checkUserOrder, orderProductQty, newOrderHistoryNo, newMessageNo, thisOrder, (req,res)=>{
+  let reason = req.body.cancelreason == 'other' ? req.body.canceldesc : req.body.cancelreason,
+  thisOrderHistoryNo = req.newOrderHistoryNo, thisMessageNo = req.newMessageNo, thisOrder = req.thisOrder;
   db.beginTransaction(function(err) {
     if (err) console.log(err);
     db.query(`UPDATE tblorder SET intStatus= 6, strCancellationReason= ? WHERE intOrderNo= ?`,
       [reason, req.body.orderNo], (err, results, fields) => {
       if (err) console.log(err);
-      function stockReturn(i,j){
-        db.query(`SELECT * FROM(SELECT intBatchNo, intQuantity, intReservedItems, created_at FROM tblbatch
-          WHERE intInventoryNo= ? ORDER BY created_at DESC LIMIT ?)A ORDER BY A.created_at ASC LIMIT 1`,
-          [req.orderProductQty[i].Inv, j+1], (err, results, fields) => {
+      db.query(`INSERT INTO tblorderhistory (intOrderHistoryNo, intOrderNo, intStatus, intAdminID, intMessageNo, strShippingAddress, strBillingAddress)
+        VALUES (?,?,6,?,0,?,?)`,[thisOrderHistoryNo, req.body.orderNo, 1000, thisOrder.strShippingAddress, thisOrder.strBillingAddress ], (err, results, fields) => {
+        if (err) console.log(err);
+        db.query(`INSERT INTO tblmessages (intMessageNo, intOrderHistoryNo, strMessage, intAdminID)
+          VALUES (?,?,?,?)`,[thisMessageNo, thisOrderHistoryNo, `Order #${req.body.orderNo} has been cancelled`, 1000], (err, results, fields) => {
           if (err) console.log(err);
-          ++j;
-          let thisBatchNo = results[0].intBatchNo;
-          if (results[0].intReservedItems == 0){
-            stockReturn(i,j);
-          }
-          else {
-            let newQty = req.orderProductQty[i].Qty >= results[0].intReservedItems ?
-              0 : results[0].intReservedItems - req.orderProductQty[i].Qty;
-            req.orderProductQty[i].Qty -= results[0].intReservedItems;
-
-            db.query(`UPDATE tblbatch SET intReservedItems= ? WHERE intBatchNo= ?`,[newQty, thisBatchNo], (err, results1, fields) => {
+          function stockReturn(i){
+            db.query(`SELECT intReservedItems FROM tblproductinventory WHERE intInventoryNo = ?`,
+              [req.orderProductQty[i].Inv], (err, results, fields) => {
               if (err) console.log(err);
-              if (req.orderProductQty[i].Qty > 0){
-                stockReturn(i,0);
-              }
-              else {
+              let newQty = results[0].intReservedItems - req.orderProductQty[i].Qty;
+
+              db.query(`UPDATE tblproductinventory SET intReservedItems= ? WHERE intInventoryNo= ?`,[newQty, req.orderProductQty[i].Inv], (err, results1, fields) => {
+                if (err) console.log(err);
                 ++i;
                 if (req.orderProductQty.length > i){
-                  stockReturn(i,0);
+                  stockReturn(i);
                 }
                 else{
                   db.commit(function(err) {
@@ -367,13 +392,13 @@ router.post('/order/cancel', checkUserOrder, orderProductQty, (req,res)=>{
                     res.redirect('/account/orders');
                   });
                 }
-              }
+              });
             });
           }
-        });
-      }
 
-      req.session.cart ? stockReturn(0,0) : res.redirect(`/summary/success`);
+          stockReturn(0);
+        });
+      });
     });
   });
 })

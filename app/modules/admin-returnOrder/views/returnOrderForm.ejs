@@ -80,8 +80,7 @@
                       <span id="starthelpBlock" class="help-block">Press enter to check number</span>
                       <span id="successhelpBlock" class="help-block">Order number found!</span>
 
-                      <input type="checkbox" name="active"  id="active" class="">
-                        No purchase order record
+
 
                     </div>
                     <div class="col-sm-4">
@@ -167,9 +166,11 @@
       <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title">Purchase Order List</h4>
+      <h4 class="modal-title">List of all orders</h4>
       </div>
       <div class="modal-body">
+        <h5 class="text-aqua">* These are orders that are already shipped or delivered.</h5>
+
 
       <!-- /.box-header -->
       <div class="box-body table-responsive">
@@ -178,16 +179,24 @@
 
           <tr>
             <th>Order No</th>
-            <th>Business Name</th>
+            <th>Customer Name</th>
             <th>Date Ordered</th>
 
           </tr>
           </thead>
 
           <tbody>
-
-
-
+            <% if(orders==null||orders==undefined){ %>
+            <% }else if(orders.length==0){ %>
+            <% }else{ %>
+            <%  orders.forEach(function(i){ %>
+                <tr>
+                  <td><%=i.intOrderNo%></td>
+                  <td><%=i.strFname%>&nbsp;<%=i.strLname%></td>
+                  <td><%=moment(i.dateOrdered).format("MM/DD/YYYY")%></td>
+                </tr>
+            <%  }) %>
+            <% } %>
           </tbody>
 
         </table>
@@ -231,8 +240,8 @@
 <script>
   $(function () {
     $('#example2').DataTable({
-      'paging'      : true,
-      'lengthChange': true,
+      'paging'      : false,
+      'lengthChange': false,
       'info'        : false,
       'autoWidth'   : true,
       'searching'   : false,
@@ -340,9 +349,9 @@ $(document).ready(function(){
 
 
 <script>
-$('#title').html("USG | Receive Delivery");
+$('#title').html("USG | Return Orders");
 $(".treeview a:contains('Transactions')").parent().addClass("active");
-$(".navi a:contains('Receive Delivery')").parent().addClass("active");
+$(".navi a:contains('Return Orders')").parent().addClass("active");
 </script>
 
 <script>

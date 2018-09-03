@@ -286,7 +286,7 @@ router.post('/editCategory',(req,res)=>{
 });
 
 router.post('/editSubCategory',(req,res)=>{
-  db.query(`Update tblSubCategory set strSubCategory = "${req.body.subcategory_e}", intCategoryNo = "${req.body.categ_e}" where intSubCategoryNo = "${req.body.no_e}"`,(err,results,fieldds)=>{
+  db.query(`Update tblSubCategory set strSubCategory = "${req.body.subcateg_e}", intCategoryNo = "${req.body.categ_e}" where intSubCategoryNo = "${req.body.no_e}"`,(err,results,fieldds)=>{
     if(err) console.log(err);
     else{
       res.send("yes")
@@ -342,7 +342,7 @@ router.post('/addSubCategory', (req,res)=>{
       num = parseInt(results1[0].intSubCategoryNo) + 1;
     }
 
-    db.query(`Insert into tblSubCategory (intSubCategoryNo, intCategoryNo, strSubCategory) values ("${num}", "${req.body.categ}", "${req.body.subcategory}")`,(err3,results3,fields3)=>{
+    db.query(`Insert into tblSubCategory (intSubCategoryNo, intCategoryNo, strSubCategory) values ("${num}", "${req.body.categ_a}", "${req.body.subcategory}")`,(err3,results3,fields3)=>{
       if (err3) console.log(err3);
 
       res.redirect('/maintenance/productCategory');
@@ -716,16 +716,16 @@ router.post('/addMeasurement', (req,res)=>{
       num = parseInt(results1[0].intUomNo)+1;
     }
 
-    db.query(`Insert into tblUom (intUomNo,intUserID,strUnitName) values ("${num}", "1000", "${req.body.measurement}")`, (err2,results2,fields2)=>{
+    db.query(`Insert into tblUom (intUomNo,intUserID,strUnitName, strDescription) values ("${num}", "1000", "${req.body.measurement}", "${req.body.description}")`, (err2,results2,fields2)=>{
       if (err2) console.log(err2);
 
-      res.redirect('/maintenance/measurements');
+      res.send("yes")
     });
   });
 });
 
 router.post('/editMeasurement',(req,res)=>{
-  db.query(`Update tblUom set strUnitName = "${req.body.measure}" where intUomNo = "${req.body.no}"`,(err,results,fields)=>{
+  db.query(`Update tblUom set strUnitName = "${req.body.measure}", strDescription = "${req.body.description}" where intUomNo = "${req.body.no}"`,(err,results,fields)=>{
     if(err) console.log(err);
     else{
       res.send("yes");

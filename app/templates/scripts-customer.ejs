@@ -5,3 +5,14 @@
 <script src="/customer-assets/scripts/custom/cart-design.js" type="text/javascript"></script>
 <script src="/customer-assets/scripts/custom/cart-modal.js" type="text/javascript"></script>
 <script src="/customer-assets/scripts/custom/cart.js" type="text/javascript"></script>
+<script type="text/javascript">
+  $('.quantity .quantity-input, .input-number').bind("cut copy paste",function(e) {
+    e.preventDefault();
+  });
+
+  $('.quantity-input, .input-number').keypress(function(key) {
+    if(key.charCode < 48 || key.charCode > 57){
+      return false;
+    }
+  });
+</script>

@@ -34,7 +34,7 @@
                   <th>No</th>
                   <th>Order No</th>
                   <th>Return Date</th>
-                  <th>Items</th>
+
                   <th>Actions</th>
                 </tr>
                 </thead>
@@ -49,8 +49,8 @@
                       <td><%=i.intReturnOrderNo%></td>
                       <td><%=i.intOrderNo%></td>
                       <td><%=moment(i.dateReturned).format("MM/DD/YYYY")%></td>
-                      <td></td>
-                      <td></td>
+
+                      <td><button class="large ui teal button">View</button></td>
                     </tr>
                   <%  }) %>
                   <% } %>
