@@ -10,7 +10,7 @@ function sizeString(obj){
   obj.strVariant ? curSize+= `${obj.strVariant}`: 0
   obj.strVariant && obj.intSize ? curSize+= ` - `: 0
   obj.intSize ? curSize+= `${obj.intSize}`: 0
-  obj.strUnitName ? curSize+= `${obj.strUnitName}`: 0
+  obj.strUnitName ? curSize+= ` ${obj.strUnitName}`: 0
   return curSize;
 }
 

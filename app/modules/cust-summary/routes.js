@@ -162,7 +162,7 @@ router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, admin, (r
     if (err) console.log(err);
     if (results[0]){
       results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('ll') );
-      results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) );
+      results.map( obj => obj.purchasePrice = priceFormat(obj.purchasePrice.toFixed(2)) );
       let orderLength = results.reduce((temp, obj)=>{
         return temp += obj.orderQty
       },0)

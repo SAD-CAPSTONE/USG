@@ -13,16 +13,22 @@ router.get('/', (req,res)=>{
             if(err1) console.log(err1)
             db.query(`SELECT * FROM tblproductinventory JOIN tblproductlist ON tblproductinventory.intProductNo = tblproductlist.intProductNo JOIN tbluom ON tblproductinventory.intUOMno = tbluom.intUomNo WHERE dateRecorded <= NOW() ORDER BY dateRecorded DESC LIMIT 4`,(err1,results5)=>{
               if(err1) console.log(err1)
-              db.query(`SELECT * FROM tblbatch JOIN tblproductinventory ON tblproductinventory.intInventoryNo = tblbatch.intInventoryNo JOIN tblproductlist ON tblproductinventory.intProductNo = tblproductlist.intProductNo JOIN tbluom ON tblproductinventory.intUOMno = tbluom.intUomNo WHERE tblbatch.intStatus = 1 AND expirationDate >= NOW() AND expirationDate <= NOW() + INTERVAL 7 DAY ORDER BY expirationDate ASC LIMIT 4`, (err1,results6)=>{
+              db.query(`SELECT *,(tblproductlist.strDescription)proddesc FROM tblbatch
+                        JOIN tblproductinventory ON tblproductinventory.intInventoryNo = tblbatch.intInventoryNo
+                        JOIN tblproductlist ON tblproductinventory.intProductNo = tblproductlist.intProductNo
+                        JOIN tbluom ON tblproductinventory.intUOMno = tbluom.intUomNo
+                        WHERE tblbatch.intStatus = 1 AND expirationDate >= NOW()
+                        AND expirationDate <= NOW() + INTERVAL 7 DAY ORDER BY expirationDate ASC LIMIT 4`, (err1,results6)=>{
                 if(err1) console.log(err1)
+          console.log(results6)
       res.render('admin-dashboard/views/dashboard', {
-        re1: results1[0].cnt, 
-        re2: results2[0].cnt, 
+        re1: results1[0].cnt,
+        re2: results2[0].cnt,
         re3: results3[0].cnt,
         re4: results4,
         re5: results5,
         re6: results6,
-        moment: moment, 
+        moment: moment,
         name: "name"
       });
                 })

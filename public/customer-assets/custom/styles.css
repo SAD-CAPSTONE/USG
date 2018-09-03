@@ -679,7 +679,7 @@ table th, table td {
     top: 3.3px;
   }
 
-  #store-sidebar input[type=number], #filters-div input[type=number] {
+  #store-sidebar .price-range-div input, #filters-div .price-range-div input {
     width: 87px;
     font-size: .9em;
   }
@@ -1136,6 +1136,47 @@ table th, table td {
 
 }
 
+/* Package Modal */
+#package-modal .modal-dialog {
+  width: 420px;
+}
+#package-modal .package-title{
+  font-size: 1.3em
+}
+#package-modal hr{
+  margin: 10px 0px 8px
+}
+#package-modal .close{
+  position: absolute;
+  right: 15;
+  top: 17.5;
+}
+
+#package-modal .price-pane > p:first-child {
+  margin-top: 5px;
+  font-size: 1.1em;
+}
+#package-modal .price-pane > p:nth-child(2) {
+  margin-top: 5px;
+  font-size: 1.6em;
+}
+
+#package-modal .quantity{
+  width: 98px;
+  height: 24px;
+  margin-bottom: 7px !important;
+}
+#package-modal .quantity-text {
+  top: 2.8px !important;
+}
+#package-modal .quantity .input-group-prepend,
+#package-modal .quantity .input-group-append{
+  margin-left: 0px !important;
+}
+#package-modal button.add-btn{
+  border-radius: 0;
+}
+
 /* Consignor ---------------------------------------------------------------- */
 :root {
   --sales-products-col-width: calc(100% - 339px);
@@ -1483,6 +1524,17 @@ table th, table td {
     float: right;
   }
 
+  #package-modal .modal-dialog {
+    width: 295px;
+    left: 48%;
+    transform: translate(-50%);
+  }
+  #package-modal .price-pane-small {
+    display: block;
+  }
+  #package-modal .price-pane {
+    display: none;
+  }
 }
 @media (max-width: 450px) {
   .search>input {
