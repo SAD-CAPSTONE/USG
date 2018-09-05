@@ -3,7 +3,9 @@ const router = express.Router();
 const db = require('../../lib/database')();
 const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
-const pageLimit = 2;
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_cust = userTypeAuth.cust;
+const pageLimit = 10;
 const orderQuery = `SELECT tblorder.intStatus AS Status, tblorder.*, Price.totalPrice FROM tbluser
   INNER JOIN tblorder ON tbluser.intUserID= tblorder.intUserID INNER JOIN (
 	SELECT SUM(purchasePrice*intQuantity)totalPrice, tblorder.intOrderNo FROM tblorder
@@ -32,17 +34,32 @@ function contactDetails (req, res, next){
   });
 }
 
-router.get('/dashboard', checkUser, contactDetails, (req,res)=>{
+router.get('/dashboard', checkUser, auth_cust, contactDetails, (req,res)=>{
   res.render('cust-account/views/dashboard', {thisUser: req.user, thisUserContact: req.contactDetails});
 });
-router.get('/orders', checkUser, (req,res)=>{
+router.get('/orders', checkUser, auth_cust, (req,res)=>{
   res.render('cust-account/views/orders', {thisUser: req.user});
 });
-router.get('/messages', checkUser, (req,res)=>{
-  res.render('cust-account/views/messages', {thisUser: req.user});
+router.get('/messages', checkUser, auth_cust, (req,res)=>{
+  db.query(`SELECT * FROM tblmessages
+    INNER JOIN tblorderhistory ON tblmessages.intOrderHistoryNo= tblorderhistory.intOrderHistoryNo
+    INNER JOIN tblorder ON tblorderhistory.intOrderNo= tblorder.intOrderNo
+    WHERE intUserID = ? ORDER BY tblmessages.intMessageNo DESC`,[req.user.intUserID], (err, results, fields) => {
+    if (err) console.log(err);
+    results[0] ? results.map( obj => obj.historyDate = moment(obj.historyDate).format('MM - DD - YYYY') ) : 0;
+    db.query(`UPDATE tblmessages INNER JOIN tblorderhistory ON tblmessages.intOrderHistoryNo= tblorderhistory.intOrderHistoryNo
+      INNER JOIN tblorder ON tblorderhistory.intOrderNo= tblorder.intOrderNo
+      SET seenStatus= 1 WHERE tblmessages.seenStatus= 0 AND tblorder.intUserID= ?`,[req.user.intUserID], (err, update, fields) => {
+      if (err) console.log(err);
+      res.render('cust-account/views/messages', {
+        thisUser: req.user,
+        messages: results
+      });
+    });
+  });
 });
 
-router.post('/dashboard/info', checkUser, (req,res)=>{
+router.post('/dashboard/info', checkUser, auth_cust, (req,res)=>{
   db.beginTransaction(function(err) {
     if (err) console.log(err);
     db.query(`UPDATE tbluser SET strFname= ?, strMname= ?, strLname= ?, strEmail= ? WHERE intUserID= ?`,
@@ -119,7 +136,6 @@ router.post('/orders/load', checkUser, (req,res)=>{
         results[0] ? results.map( obj => obj.totalPrice = priceFormat(obj.totalPrice.toFixed(2)) ) : 0;
         db.commit(function(err) {
           if (err) console.log(err);
-          console.log(config)
           res.send({config: config, orders: results})
         });
       });

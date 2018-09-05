@@ -163,7 +163,7 @@
            </div>
 
            <div class="row">
-             <div class="col-sm-8">
+             <div class="col-sm-12">
                <label for="note">Special Note:</label>
                <textarea class="form-control" name="specialnote" id="note"></textarea>
             </div>
@@ -379,8 +379,8 @@
 <script>
   $(function () {
     $('#example').DataTable({
-      'paging'      : true,
-      'lengthChange': true,
+      'paging'      : false,
+      'lengthChange': false,
       'searching'   : true,
       'ordering'    : false,
       'info'        : false,
@@ -403,7 +403,7 @@ $('.setter').on('click', function(){
   $('#address').val($(this).data('baddress'));
   if ($(this).data('contractno') == null || $(this).data('contractno') == ""){
     $('#contract').val("No contract available / Outright supplier");
-    $('#searchProduct').attr('hidden', true);
+    $('#searchProduct').attr('hidden', false);
 
   }else{
     $('#contract').val($(this).data('contractno'));
@@ -415,7 +415,7 @@ $('.setter').on('click', function(){
   var productRes = "";
   var prodTable = $('#productTable').DataTable();
 
-  $('#productLoader').load(`/purchaseOrder/findProducts/${1004}`);
+  $('#productLoader').load(`/purchaseOrder/findProducts/${text}`);
 
   $('#addButton').attr('disabled', false);
 })
@@ -453,7 +453,7 @@ $(document).ready(function() {
 <script>
 $('#title').html("USG | Purchase Order");
 $(".treeview a:contains('Transactions')").parent().addClass("active");
-$(".navi a:contains('Orders to Suppliers')").parent().addClass("active");
+$(".navi a:contains('Order to Suppliers')").parent().addClass("active");
 </script>
 
 

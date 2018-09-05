@@ -1,8 +1,13 @@
 <%- include('../../../templates/navbar.ejs') -%>
 <%- include('../../../templates/modals/cart-modal.ejs') -%>
-
+<!--  -->
 <link rel="stylesheet" href="/customer-assets/scripts/bar-rating/dist/themes/fontawesome-stars-o.css">
 <style>
+  /* input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+  } */
   #main-desc .simplebar-content {
     height: auto !important;
     overflow-x: hidden !important;
@@ -82,7 +87,7 @@
                       <small class="quantity-text quantity-text-minus">-</small>
                     </button>
                   </div>
-                  <input class="form-control quantity-input" type="text" readonly="" value="1">
+                  <input class="form-control quantity-input border-none" type="text" value="1">
                   <div class="input-group-append addon">
                     <button class="btn btn-primary quantity-buttons plus-btn" type="button">
                       <small class="quantity-text quantity-text-plus">+</small>
@@ -118,11 +123,7 @@
                   <% thisInventory.forEach((inv, i)=>{ %>
                     <% if(i==0){ %>
                       <option value="<%= inv.intInventoryNo%>" selected>
-                        <% if(inv.strVariant){ %>
-                          <%= inv.strVariant%> - <%= inv.intSize%><%= inv.strUnitName%>
-                        <% }else{ %>
-                          <%= inv.intSize%><%= inv.strUnitName%>
-                        <% } %>
+                        <%= inv.curSize%>
                       </option>
                     <% }else{ %>
                       <option value="<%= inv.intInventoryNo%>">
@@ -169,7 +170,13 @@
 
               <div class="card-desc">
                 <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
-                <p class="card-price price-symbol"><%= prod.productPrice%></p>
+                <p class="card-price price-symbol">
+                  <% if(prod.minPrice == prod.maxPrice){ %>
+                    <%= prod.minPrice %>
+                  <% }else{ %>
+                    <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
+                  <% } %>
+                </p>
                 <!-- <small class="card-oldprice text-muted">
                   <span><s class="price-symbol">0</s></span> (-0%)<br>
                 </small> -->
@@ -210,7 +217,13 @@
 
               <div class="card-desc">
                 <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
-                <p class="card-price price-symbol"><%= prod.productPrice%></p>
+                <p class="card-price price-symbol">
+                  <% if(prod.minPrice == prod.maxPrice){ %>
+                    <%= prod.minPrice %>
+                  <% }else{ %>
+                    <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
+                  <% } %>
+                </p>
                 <!-- <small class="card-oldprice text-muted">
                   <span><s class="price-symbol">0</s></span> (-0%)<br>
                 </small> -->
@@ -406,6 +419,19 @@
 <script src="/customer-assets/scripts/bar-rating/dist/jquery.barrating.min.js"></script>
 <script type="text/javascript">
   // GET - InvNo + Display Price
+  $(()=>{
+    qtyValidate(1,$(`#thisprod_stock span`).text())
+  })
+
+  function qtyValidate(qty,stock){
+    $('#item-options .quantity-input').val() <= 1 ?
+      $(`#item-options .minus-btn`).attr('disabled','disabled') :
+      $(`#item-options .minus-btn`).removeAttr('disabled')
+    $('#item-options .quantity-input').val() >= stock ?
+      $(`#item-options .plus-btn`).attr('disabled','disabled') :
+      $(`#item-options .plus-btn`).removeAttr('disabled')
+  }
+
   $('#item-options .select-size').on('change', function() {
     $.get(`/cart/item-inv/${this.value}`).then((res) => {
       $('#thisprod_price').text(res.inventory.productPrice);
@@ -427,6 +453,8 @@
         $('#item-options input.quantity-input').val(stock);
       }
 
+      qtyValidate(qty,stock)
+
     }).catch((error) => {
       console.log(error);
     });
@@ -436,22 +464,26 @@
     let stock = parseInt($('#thisprod_stock span').text()),
     qty = parseInt($('#item-options input.quantity-input').val());
     qty < stock ? $('#item-options input.quantity-input').val(qty+1) : 0
+    qty ? 0 : $('#item-options input.quantity-input').val(1);
+    qtyValidate(qty,stock)
   });
   // GET - Minus Button
   $('#item-options').on('click', '.minus-btn', ()=>{
     let stock = parseInt($('#thisprod_stock span').text()),
     qty = parseInt($('#item-options input.quantity-input').val());
     qty > 1 ? $('#item-options input.quantity-input').val(qty-1) : 0
+    qty ? 0 : $('#item-options input.quantity-input').val(1);
+    qtyValidate(qty,stock)
   });
   // GET & POST to Cart
   $('#item-options').on('click', '#thisItemBtn', function(){
     let inv = $('#item-options .select-size').val(),
     qty = parseInt($('#item-options input.quantity-input').val());
-    $.post(`/cart/item-post`, {
+    qty ? 0 : qty = 1;
+    $.post(`/cart/modal`, {
       inv: inv, qty: qty
     }).then((res) => {
       let modal = $('#modal-product-to-cart'), data = res.cart;
-      console.log(res)
       postToCart(modal, data, res, 0);
     })
     .catch((error) => {

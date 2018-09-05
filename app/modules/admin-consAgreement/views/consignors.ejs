@@ -37,7 +37,7 @@
                   <tr>
                     <th>Business Name</th>
                     <th>Email</th>
-                    <th>Active Contracts</th>
+
                     <th>Status</th>
                     <th>Actions</th>
 
@@ -54,7 +54,7 @@
                         <tr>
                           <td><%=i.strBusinessName%></td>
                           <td><%=i.strBusinessEmail%></td>
-                          <td>Not sure</td>
+
                           <td>
                             <% if (i.intStatus == 0){ %>
                               <span class="label label-danger">Inactive</span>
@@ -63,8 +63,8 @@
                             <% } %>
                           </td>
                           <td>
-                            <a href="/consAgreement/contract?q=<%=i.intUserID%>"<button class="large ui teal button">View Contract</button>
-                            <a href="/consAgreement/history?q=<%=i.intUserID%>"<button class="large ui button">History</button>
+                            <a href="/consAgreement/contract?q=<%=i.intUserID%>"><button class="large ui teal button">View Contract</button></a>
+                            <a href="/consAgreement/history?q=<%=i.intUserID%>"><button class="large ui button">History</button></a>
 
                           </td>
                         </tr>
@@ -90,7 +90,7 @@
                   <tr>
                     <th>Business Name</th>
                     <th>Email</th>
-                    <th>Active Contracts</th>
+
                     <th>Status</th>
                     <th>Actions</th>
 
@@ -107,7 +107,7 @@
                         <tr>
                           <td><%=i.strBusinessName%></td>
                           <td><%=i.strBusinessEmail%></td>
-                          <td>Not sure</td>
+                          
                           <td>
                             <% if (i.intStatus == 0){ %>
                               <span class="label label-danger">Inactive</span>

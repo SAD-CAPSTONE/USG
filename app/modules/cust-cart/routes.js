@@ -5,49 +5,49 @@ const priceFormat = require('../cust-0extras/priceFormat');
 const copy = require('../cust-0extras/copy');
 const quantLimit = 50;
 
-router.get('/modal/:pid', (req, res)=>{
-  req.session.modal_cart ? 0 :
-    req.session.modal_cart = {
-      id: ''
-    }
-  if (req.params.pid == req.session.modal_cart.id){
-    res.send({product: req.session.modal_cart});
-  }
-  else{
-    db.query(`SELECT * FROM tblproductlist
-      INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
-  	  INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
-      INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno
-      WHERE tblproductlist.intProductNo= ?`
-      , [req.params.pid], (err,results,fields)=>{
-      if (err) console.log(err);
-      results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) );
-      let sizes = results.reduce((arr, obj)=>{
-        arr.push([`${obj.intSize.toString()} ${obj.strUnitName}`,obj.productPrice]); return arr;
-      },[]);
-      req.session.modal_cart = {
-        id: results[0].intProductNo,
-        brand: results[0].strBrand,
-        name: results[0].strProductName,
-        img: `/assets/images/products/${results[0].strProductPicture}`,
-        sizes: sizes,
-        curSize: sizes[0][0],
-        curPrice: sizes[0][1],
-        curQty: 1
-      }
-      res.send({product: req.session.modal_cart});
-    });
-  }
-});
-router.get('/modal-price/:size', (req, res)=>{
-  let size = req.params.size, price = 0, session = req.session.modal_cart;
-  session.sizes.forEach((arr, i)=>{
-    price = size == arr[0] ? arr[1] : price ;
-  })
-  req.session.modal_cart.curSize = size;
-  req.session.modal_cart.curPrice = price;
+function sizeString(obj){
+  let curSize = ``;
+  obj.strVariant ? curSize+= `${obj.strVariant}`: 0
+  obj.strVariant && obj.intSize ? curSize+= ` - `: 0
+  obj.intSize ? curSize+= `${obj.intSize}`: 0
+  obj.strUnitName ? curSize+= ` ${obj.strUnitName}`: 0
+  return curSize;
+}
 
-  res.send({price: price});
+router.get('/modal/:pid', (req, res)=>{
+  db.query(`SELECT * FROM tblproductlist
+    INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
+	  INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
+    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno
+    WHERE tblproductlist.intProductNo= ?`
+    , [req.params.pid], (err,results,fields)=>{
+    if (err) console.log(err);
+    results.map( obj => obj.productPrice = priceFormat(obj.productPrice.toFixed(2)) );
+    let sizes = results.reduce((arr, obj)=>{
+      arr.push([obj.intInventoryNo,sizeString(obj)]); return arr;
+    },[]);
+    let modal = {
+      id: results[0].intProductNo,
+      brand: results[0].strBrand,
+      name: results[0].strProductName,
+      img: `/assets/images/products/${results[0].strProductPicture}`,
+      sizes: sizes,
+      curInv: sizes[0][0],
+      curSize: sizes[0][1],
+      curPrice: results[0].productPrice,
+      curQty: 1
+    }
+    res.send({product: modal});
+  });
+});
+router.get('/modal-inv/:inv', (req, res)=>{
+  db.query(`SELECT productPrice, (intQuantity - intReservedItems)stock FROM tblproductinventory
+    WHERE intInventoryNo = ?`
+    , [req.params.inv], (err,results,fields)=>{
+    if (err) console.log(err);
+    results[0] ? results[0].productPrice = priceFormat(results[0].productPrice.toFixed(2)): 0;
+    res.send({inventory: results[0]});
+  });
 });
 router.get('/modal-qty/:action', (req, res)=>{
   let curQty = req.session.modal_cart.curQty;
@@ -59,50 +59,66 @@ router.get('/modal-qty/:action', (req, res)=>{
 
   res.send({qty: curQty});
 });
-router.post('/modal/:type', (req, res)=>{
-  req.session.cart ? 0 : req.session.cart = [];
-  let cart = req.session.cart,
-  modal = req.params.type == 'modal' ?
-    req.session.modal_cart : req.session.item;
-  db.query(`SELECT * FROM tblproductinventory WHERE intProductNo= ? AND intSize= ?`
-    , [modal.id, modal.curSize], (err,results,fields)=>{
+router.post('/modal', (req, res)=>{
+  db.query(`SELECT * FROM tblproductlist
+    INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
+    INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
+    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno WHERE intInventoryNo= ?`
+    , [req.body.inv], (err,results,fields)=>{
     if (err) console.log(err);
-    modal.inv = results[0].intInventoryNo;
+    let curSize = sizeString(results[0])
+
+    results[0].productPrice = priceFormat(results[0].productPrice.toFixed(2));
+    let this_item = {
+      inv: req.body.inv,
+      id: results[0].intProductNo,
+      brand: results[0].strBrand,
+      name: results[0].strProductName,
+      img: `/assets/images/products/${results[0].strProductPicture}`,
+      curSize: curSize,
+      curPrice: results[0].productPrice,
+      curQty: parseInt(req.body.qty),
+      type: 1
+    }
 
     db.query(`SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`
-      , [modal.inv], (err,results,fields)=>{
+      , [this_item.inv], (err,results,fields)=>{
       if (err) console.log(err);
-      modal.limit = results[0].stock < quantLimit ?
+      req.session.cart ? 0 : req.session.cart = [];
+      let cart = req.session.cart;
+
+      this_item.limit = results[0].stock < quantLimit ?
         results[0].stock : quantLimit;
-      modal.curQty = modal.curQty > results[0].stock ?
-        results[0].stock : modal.curQty ;
+      this_item.curQty = this_item.curQty > results[0].stock ?
+        results[0].stock : this_item.curQty;
 
       let compare = cart.reduce((temp, obj)=>{
-        return obj.inv == modal.inv ? obj.inv : temp;
+        return obj.inv == this_item.inv ? obj.inv : temp;
       },0)
       compare ?
         cart.forEach((data)=>{
           data.inv == compare ?
             // Limit
-            data.curQty + modal.curQty > modal.limit ?
-              data.curQty = modal.limit : data.curQty += modal.curQty
+            data.curQty + this_item.curQty > this_item.limit ?
+              data.curQty = this_item.limit : data.curQty += this_item.curQty
             : 0
         }) :
-        req.session.cart.push(modal)
+        req.session.cart.push(this_item)
       let latest = cart.reduce((temp, obj, i)=>{
         return obj.inv == compare ? i : temp;
       },cart.length-1)
 
-      res.send({cart: req.session.cart, latest: latest, limit: modal.limit})
+      res.send({cart: req.session.cart, latest: latest, limit: this_item.limit})
     });
-
   });
-
 });
 
 router.get('/list', (req, res)=>{
   // req.session.cart = null;
   req.session.cart ? 0 : req.session.cart = [];
+  // req.session.cart.forEach((data,i)=>{
+  //   data.curQty == 0 ? req.session.cart.splice(i,1) : 0
+  // })
   modal = req.session.modal_cart;
   if (modal){
     req.session.modal_cart.curSize = modal.sizes[0][0];
@@ -143,15 +159,28 @@ router.put('/list', (req, res)=>{
   req.session.cart[index].limit > quantLimit ?
     req.session.cart[index].limit = quantLimit : 0
   if (index != null){
-    let curQty = req.session.cart[index].curQty;
+    let curQty = req.session.cart[index].curQty,
+    blank = 0;
     // Limit
-    req.body.action == 'plus' ?
-      curQty < req.session.cart[index].limit ?
-        ++curQty : 0
-      : curQty > 1 ?
-        --curQty : 0
+
+    req.body.action == 'change' ?
+      req.body.value ?
+        req.body.value < req.session.cart[index].limit ?
+          curQty = req.body.value
+          :
+          req.body.value > 1 ?
+            curQty = req.session.cart[index].limit
+            : curQty = 1
+        : blank = 1
+      :
+      req.body.action == 'plus' ?
+        curQty < req.session.cart[index].limit ?
+          ++curQty : 0
+        : curQty > 1 ?
+          --curQty : 0
     req.session.cart[index].curQty = curQty;
-    res.send({cart: req.session.cart[index]});
+    res.send({cart: req.session.cart[index], blank: blank});
+
   }
   else{
     res.send({cart: null});
@@ -174,7 +203,9 @@ router.get('/list/total/:type', (req, res)=>{
       return temp + (obj.curPrice * obj.curQty);
     },0) : 0
   let fee = 0.00;
-  length = req.session.cart.length;
+  length = req.session.cart.reduce((temp, obj)=>{
+    return temp += obj.curQty
+  },0);
   req.params.type == 'total' ?
     res.send({
       cartLength: length,
@@ -191,57 +222,6 @@ router.get('/item-inv/:inv', (req, res)=>{
     if (err) console.log(err);
     results[0] ? results[0].productPrice = priceFormat(results[0].productPrice.toFixed(2)): 0;
     res.send({inventory: results[0]});
-  });
-});
-router.post('/item-post', (req, res)=>{
-  db.query(`SELECT * FROM tblproductlist
-    INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
-    INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
-    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno WHERE intInventoryNo= ?`
-    , [req.body.inv], (err,results,fields)=>{
-    if (err) console.log(err);
-
-    results[0].productPrice = priceFormat(results[0].productPrice.toFixed(2));
-    let this_item = {
-      inv: req.body.inv,
-      id: results[0].intProductNo,
-      brand: results[0].strBrand,
-      name: results[0].strProductName,
-      img: `/assets/images/products/${results[0].strProductPicture}`,
-      curSize: `${results[0].strVariant} - ${results[0].intSize}${results[0].strUnitName}`,
-      curPrice: results[0].productPrice,
-      curQty: parseInt(req.body.qty)
-    }
-
-    db.query(`SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`
-      , [this_item.inv], (err,results,fields)=>{
-      if (err) console.log(err);
-      req.session.cart ? 0 : req.session.cart = [];
-      let cart = req.session.cart;
-
-      this_item.limit = results[0].stock < quantLimit ?
-        results[0].stock : quantLimit;
-      this_item.curQty = this_item.curQty > results[0].stock ?
-        results[0].stock : this_item.curQty ;
-
-      let compare = cart.reduce((temp, obj)=>{
-        return obj.inv == this_item.inv ? obj.inv : temp;
-      },0)
-      compare ?
-        cart.forEach((data)=>{
-          data.inv == compare ?
-            // Limit
-            data.curQty + this_item.curQty > this_item.limit ?
-              data.curQty = this_item.limit : data.curQty += this_item.curQty
-            : 0
-        }) :
-        req.session.cart.push(this_item)
-      let latest = cart.reduce((temp, obj, i)=>{
-        return obj.inv == compare ? i : temp;
-      },cart.length-1)
-
-      res.send({cart: req.session.cart, latest: latest, limit: this_item.limit})
-    });
   });
 });
 
