@@ -8,12 +8,13 @@
     <section class="content-header">
       <h1>
 
-        <small>Note: Input products if there is no contract available</small>
+        <small></small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Transaction</a></li>
-        <li class="active">Purchase Order</li>
+        <li><a href="#">Return to Supplier</a></li>
+        <li class="active">Form</li>
       </ol>
     </section>
 
@@ -26,32 +27,28 @@
       <div class="col-sm-10">
         <div class="box box-success">
          <div class="box-header with-border">
-           <h3 class="box-title">Purchase Order Form</h3>
+           <h3 class="box-title">Return Products Form</h3>
          </div>
 
          <!-- purchase order body -->
          <div class="box-body">
 
+           <small><b>Business Name:</b> Ultra Super Green Trading Corporation</small> </br>
            <small><b>Business Address:</b> 0002 G/F Elizabeth Hall BLDG. 371 Katipunan Ave., Loyola Heights </br>
            Quezon City 1108</small> </br>
-           <small><b>Phone Number:</b> (02) 738-1202</small> </br>
-           <small><b>Mobile Number:</b> (0955) 904-4744</small> </br>
+           <small><b>Contact No:</b> (02) 738-1202 |  (0955) 904-4744</small> </br>
+           <small><b>Email:</b> info.ultrasupergreen@gmail.com</small> </br>
            </br>
 
-           <form class="form-horizontal" id="purchaseForm" >
+           <form class="form-horizontal" id="returnProductsForm" >
            <div align="center" class="row">
              <div class="col-sm-1">
              </div>
              <div class="col-sm-4">
                <div class="form-group">
-                 <label for="purcNo">P.O Number:</label>
-                 <% var P = "1000"; %>
-                 <% if( POno == null || POno == undefined || POno.length == 0){ %>
+                 <label for="purcNo">R.P Number:</label>
 
-                 <% }else{ %>
-                 <%  P = parseInt(POno[0].intPurchaseOrderNo) + 1 %>
-                 <% } %>
-                   <input type="text" disabled value="<%=P%>" name="POnum" id="purcNo" class="form-control">
+                   <input type="text" disabled value="<%=lastRecord%>" name="RPnum" id="RPNo" class="form-control">
 
                </div>
              </div>
@@ -62,7 +59,7 @@
              <div class="col-sm-4">
                <div class="form-group">
                  <label for="purcNo">P.O Date:</label>
-                 <input type="date" disabled id="today" value="<%= moment().format("YYYY-MM-DD")%>" name="date" class="form-control">
+                 <input type="date" disabled id="today" value="" name="date" class="form-control">
 
                </div>
              </div>
@@ -70,50 +67,43 @@
              </div>
            </div>
 
-           <div class="row">
+           <br>
+           <!-- <div class="row">
              <div class="col-sm-3">
                <h4> &nbsp; Supplier </h4>
              </div>
 
-           </div>
+           </div> -->
+
            <div class="row">
              &nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
            <p>  &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
            </div>
+
          </br>
            <div>
 
                <div class="form-group">
                  <input type="hidden" class="input-sm form-control" name="supplier" id="suppid" placeholder="">
-                 <label for="businessName" class="col-sm-2 control-label"> Company Name</label>
-
+                 <label for="businessName" class="col-sm-2 control-label"> Business Name: </label>
                  <div class="col-sm-6">
                    <input type="text" disabled class="input-sm form-control" id="businessName" placeholder="">
                  </div>
                </div>
 
                <div class="form-group">
-
-
-                 <label for="contract" class="col-sm-2 control-label"> Contract No.</label>
-
+                 <label for="contract" class="col-sm-2 control-label"> Contact Person: </label>
                  <div class="col-sm-6">
-
-                   <input type="text" disabled class="input-sm form-control" id="contract" placeholder="">
+                   <input type="text" disabled class="input-sm form-control" id="contactPerson" placeholder="">
                  </div>
                </div>
 
                <div class="form-group">
-
-                 <label for="address" class="col-sm-2 control-label">Address</label>
-
+                 <label for="address" class="col-sm-2 control-label">Email: </label>
                  <div class="col-sm-6">
-                   <input type="text" disabled class="input-sm form-control" id="address" placeholder="">
+                   <input type="text"  class="input-sm form-control" name="email" id="email" placeholder="">
                  </div>
                </div>
-
-
-
            </div>
 
            <div class="row">
@@ -126,17 +116,13 @@
              <div class="col-sm-12">
              <div class="box">
                <div class="box-header">
-                 <h3 class="box-title">Order List</h3>
+                 <h4 align="center">Product List</h4>
 
 
                </div>
 
                <!-- buttons -->
-
-
-               &nbsp; &nbsp;<button type="button" id="addButton" disabled class="addRow small ui green button" ><i class="fa fa-plus"></i> Add Product</button>
-               &nbsp; &nbsp; <a href="" data-toggle="modal" id="searchProduct"  data-target="#selectProduct" hidden>Click here to view products of supplier</a>
-
+               &nbsp; &nbsp;<button type="button" data-toggle="modal" id="searchProduct"  data-target="#selectProduct"  class=" small ui green button" ><i class="fa fa-plus"></i> Add Product</button>
                <!-- /.box-header -->
 
                <div class="box-body table-responsive">
@@ -145,15 +131,16 @@
                    <tr>
                      <th style="width: 10px">#</th>
                      <th>Product Name</th>
-                     <th>Quantity</th>
                      <th>Variant</th>
                      <th>Size</th>
+                     <th style="width: 90px">Quantity</th>
+                     <th>Return Reason</th>
                    </tr>
                  </thead>
 
                  <tbody>
 
-               </tbody>
+                 </tbody>
 
                  </table>
                </div>
@@ -170,13 +157,11 @@
                <textarea class="form-control" name="specialnote" id="note"></textarea>
             </div>
           </div>
-
-
          </div>
 
          <div class="box-footer">
               <a href="/purchaseOrder"><button type="button" class="large ui button">Back</button></a>
-              <a href=""><button type="submit" id="sub" class="btn large ui teal button">Submit Order Form</button></a>
+              <a href=""><button type="submit" id="sub" class="btn large ui teal button">Submit Form</button></a>
           </div>
             <!-- /.box-footer -->
           </form>
@@ -186,10 +171,6 @@
       <div class="col-sm-1">
       </div>
     </div>
-
-
-
-
  </section>
 
 </div>
@@ -209,45 +190,39 @@
     </div>
     <div class="modal-body">
 
-    <!-- /.box-header -->
+    <h5 class="text-aqua">* These are the list of consignors.</h5>
+
     <div class="box-body table-responsive">
       <table id="example1" class="table table-bordered table-hover">
         <thead>
-          <% if (su == null || su == undefined || su.length == 0){ %>
-            <h4> No records of Suppliers </h4>
-          <% } else { %>
-        <tr>
-          <th>Supplier No</th>
-          <th>Supplier Name</th>
-          <th>Business Name</th>
-          <th></th>
-        </tr>
+          <tr>
+            <th>Business Name</th>
+            <th>Contact Person</th>
+            <th>Action</th>
+          </tr>
         </thead>
+
         <tbody>
+          <% if(suppliers==null|| suppliers==undefined){ %>
 
-          <% su.forEach(function(i){ %>
-        <tr>
-              <td><%=i.intUserID%></td>
-              <td><%=i.strFname%>&nbsp;<%=i.strLname%></td>
-              <td><%=i.strBusinessName%></td>
-              <td><button data-dismiss="modal" data-supplierid="<%=i.intUserID%>" data-business="<%=i.strBusinessName%>" data-baddress="<%=i.strBusinessAddress%>" data-contractno="<%=i.intContractNo%>" class="setter btn btn-info btn-sm">Select</button></td>
+          <% }else if(suppliers.length==0){ %>
 
-        </tr>
-        <% }) %>
-      <% } %>
-
-
+          <% }else{ %>
+          <%  suppliers.forEach(function(i){ %>
+              <tr>
+                <td><%=i.strBusinessName%></td>
+                <td><%=i.strFname%> <%=i.strLname%></td>
+                <td><button data-dismiss="modal" data-no="<%=i.intUserID%>" data-bname="<%=i.strBusinessName%>" data-contact="<%=i.strFname%> <%=i.strLname%>" data-email="<%=i.strBusinessEmail%>" class="supplierSetter large ui teal button">Select</button></td>
+              </tr>
+          <%  }) %>
+          <% } %>
         </tbody>
 
       </table>
     </div>
-    <!-- /.box-body -->
 
      </div>
-      <div class="modal-footer">
-      <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-      <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+
   </div>
   <!-- /.modal-content -->
 </div>
@@ -325,27 +300,23 @@
 </div>
 
 <div class="modal fade" id="selectProduct">
- <div class="modal-dialog">
- <div class="modal-content">
-   <div class="modal-header">
-   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-     <span aria-hidden="true">&times;</span></button>
-   <h4 class="modal-title">Product List</h4>
-   </div>
-   <div class="modal-body">
+  <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span></button>
+         <h4 class="modal-title">Product List</h4>
+       </div>
+       <div class="modal-body">
 
+         <div id="productLoader" class="box-body table-responsive">
+         </div>
 
+        </div>
 
-   <!-- /.box-header -->
-   <div id="productLoader" class="box-body table-responsive">
-   </div>
-   <!-- /.box-body -->
-
-    </div>
-
- </div>
- <!-- /.modal-content -->
-</div>
+     </div>
+   <!-- /.modal-content -->
+  </div>
 <!-- /.modal-dialog -->
 </div>
 
@@ -359,7 +330,6 @@
 
 
 <!-- page script (new added) -->
-
 
 <script>
   $(function () {
@@ -376,7 +346,6 @@
     })
   })
 </script>
-
 
 <script>
   $(function () {
@@ -395,51 +364,36 @@
 </script>
 
 
-
-
 <script>
 
-$('.setter').on('click', function(){
-  $('#suppid').val($(this).data('supplierid'));
-  $('#businessName').val($(this).data('business'));
-  $('#address').val($(this).data('baddress'));
-  if ($(this).data('contractno') == null || $(this).data('contractno') == ""){
-    $('#contract').val("No contract available / Outright supplier");
-    $('#searchProduct').attr('hidden', false);
+$('.supplierSetter').on('click', function(){
+  $('#suppid').val($(this).data('no'));
+  $('#businessName').val($(this).data('bname'));
+  $('#contactPerson').val($(this).data('contact'));
+  $('#email').val($(this).data('email'));
 
-  }else{
-    $('#contract').val($(this).data('contractno'));
-    $('#searchProduct').attr('hidden', false);
-  }
+  $('#productLoader').load(`/returnProducts/findProducts/${$(this).data('no')}`);
 
-  var text = $(this).data('supplierid');
-
-  var productRes = "";
-  var prodTable = $('#productTable').DataTable();
-
-  $('#productLoader').load(`/purchaseOrder/findProducts/${text}`);
-
-  $('#addButton').attr('disabled', false);
 })
 
 
 $(document).ready(function() {
 
-   $('#purchaseForm').submit(function(e){
+   $('#returnProductsForm').submit(function(e){
      e.preventDefault();
      $.ajax({
-       url: '/purchaseOrder/submit',
+       url: '/returnProducts/submitForm',
        type: 'post',
-       data: $('#purchaseForm').serialize(),
+       data: $('#returnProductsForm').serialize(),
        success: function(response,status,http){
          if (response == "yes"){
-           swal({title: "Success!", text: "You have created an purchase order record", type: "success"}).then(()=>{
-             window.location.href = '/purchaseOrder'
+           swal({title: "Success!", text: "You have created a record for return products to supplier", type: "success"}).then(()=>{
+             window.location.href = '/returnProducts/form'
            })
          }
        },
        error: function(response){
-         swal("Error",response,"error");
+         swal("Error","","error");
        }
      });
    })
@@ -453,9 +407,9 @@ $(document).ready(function() {
 
 
 <script>
-$('#title').html("USG | Purchase Order");
+$('#title').html("USG | Return Products");
 $(".treeview a:contains('Transactions')").parent().addClass("active");
-$(".navi a:contains('Order to Suppliers')").parent().addClass("active");
+$(".navi a:contains('Return Products')").parent().addClass("active");
 </script>
 
 
