@@ -1,4 +1,4 @@
-let t1, t2;
+let t1, t2, productModal = $('#modal-product-to-cart'), packageModal = $('#package-modal'), limit;
 
 function postToCart(modal, data, res, tog){
   clearTimeout(t1);
@@ -36,19 +36,19 @@ function postToCart(modal, data, res, tog){
 
   $('#getCart').click();
 }
-function stockDisplay(inv){
+function stockDisplay(modal,inv){
   $.get(`/cart/modal-inv/${inv}`).then((res) => {
-    let inv = res.inventory, qty = $('#modal-product-to-cart .quantity-input');
-    $('.price').html(`${inv.productPrice}`);
-    $('#stock-display').text(`${inv.stock} Items Left`);
+    let inv = res.inventory, qty = modal.find('.quantity-input');
+    modal.find('.price').html(`${inv.productPrice}`);
+    modal.find('#stock-display > span').text(inv.stock);
 
     if (inv.stock > 0){
-      $('#stock-display').text(`${inv.stock} Items Left`);
-      $('#modal-product-to-cart .add-button').removeAttr('disabled');
+      modal.find('#stock-display > span').text(inv.stock);
+      modal.find('.add-button').removeAttr('disabled');
     }
     else{
-      $('#stock-display').text(`0 Items Left`);
-      $('#modal-product-to-cart .add-button').attr('disabled','disabled');
+      modal.find('#stock-display > span').text(0);
+      modal.find('.add-button').attr('disabled','disabled');
     }
 
     if(inv.stock < 1){
@@ -58,28 +58,55 @@ function stockDisplay(inv){
       qty.val(inv.stock)
     }
 
-    qtyValidate(qty.val(),inv.stock)
+    qtyValidate(modal,qty.val(),inv.stock)
 
   }).catch((error) => {
     console.log(error);
   });
 }
-function qtyValidate(qty,stock){
-  $('#modal-product-to-cart .quantity-input').val() <= 1 ?
-    $(`#modal-product-to-cart .minus-btn`).attr('disabled','disabled') :
-    $(`#modal-product-to-cart .minus-btn`).removeAttr('disabled')
-  $('#modal-product-to-cart .quantity-input').val() >= stock ?
-    $(`#modal-product-to-cart .plus-btn`).attr('disabled','disabled') :
-    $(`#modal-product-to-cart .plus-btn`).removeAttr('disabled')
+function qtyValidate(modal,qty,stock){
+  modal.find(`.quantity-input`).val() <= 1 ?
+    modal.find(`.minus-btn`).attr('disabled','disabled') :
+    modal.find(`.minus-btn`).removeAttr('disabled')
+  modal.find(`.quantity-input`).val() >= stock ?
+    modal.find(`.plus-btn`).attr('disabled','disabled') :
+    modal.find(`.plus-btn`).removeAttr('disabled')
+}
+function qtyControl(modal,type){
+  let stock = parseInt(modal.find('#stock-display > span').text()),
+  qtyInput = modal.find('.quantity-input'), qty = parseInt(qtyInput.val());
+
+  stock > limit ? stock = limit : 0
+  qty == 0 ? qtyInput.val(1) : 0
+
+  if(type == 'change'){
+    qty > stock ? qtyInput.val(stock) : 0
+  }
+  else if(type == 'plus'){
+    qty < stock ? qtyInput.val(qty+1) : 0
+  }
+  else if(type == 'minus'){
+    qty > 1 ? qtyInput.val(qty-1) : 0
+  }
+  qtyValidate(modal,qty,stock);
 }
 
+$(()=>{
+  $.get(`/cart/limit`).then((res) => {
+    console.log(res)
+    limit = res.quantLimit
+    $('i.limit-info').attr(`title`,`Maximum of ${limit} of the same product variation per order`)
+  })
+})
+
 // GET - Cart Button, Get Modal
-$('.products-container').on('click', '.cart-btn', function(){
+$('.products-container').on('click', '.cart-btn:not(.package-btn)', function(){
   let pid = $(this).closest('.this-product').find('.product-id').val();
   console.log(pid);
   $.get(`/cart/modal/${pid}`).then((res) => {
-    let data = res.product, modal = $('#modal-product-to-cart');
+    let data = res.product, modal = productModal;
     modal.find('img').attr("src", data.img);
+    modal.find('img').parent().attr("href", `/item/${data.id}`);
     modal.find('.title').html(`<span class="text-brand">${data.brand}</span> ${data.name}`);
     modal.find('.price').text(data.curPrice);
     modal.find('.quantity-input').val(data.curQty);
@@ -89,45 +116,93 @@ $('.products-container').on('click', '.cart-btn', function(){
     })
     modal.find('.select-size').val(data.curInv);
 
-    stockDisplay(data.sizes[0][0])
+    stockDisplay(modal,data.sizes[0][0])
   }).catch((error) => {
     console.log(error);
   });
 });
 
-// GET - Select Option onchange, Get Price
+// Select Option onchange, Get Price
 $('.select-size').on('change', function(){
-  stockDisplay(this.value)
+  stockDisplay(productModal,this.value)
 });
 
-// GET - Plus Button, Get New Quantity
-$('#modal-product-to-cart').on('click', '.plus-btn', ()=>{
-  let stock = parseInt($('#stock-display').text()),
-  qty = parseInt($('#modal-product-to-cart .quantity-input').val());
-  qty < stock ? $('#modal-product-to-cart .quantity-input').val(qty+1) : 0
-  qtyValidate(qty,stock);
-
+// Change Quantity
+productModal.find('.quantity-input').keyup(function() {
+  qtyControl(productModal,'change')
 });
 
-// GET - Minus Button, Get New Quantity
-$('#modal-product-to-cart').on('click', '.minus-btn', ()=>{
-  let stock = parseInt($('#stock-display').text()),
-  qty = parseInt($('#modal-product-to-cart .quantity-input').val());
-  qty > 1 ? $('#modal-product-to-cart .quantity-input').val(qty-1) : 0
-  qtyValidate(qty,stock);
+// Plus Button, Get New Quantity
+productModal.on('click', '.plus-btn', ()=>{
+  qtyControl(productModal,'plus')
+});
+
+// Minus Button, Get New Quantity
+productModal.on('click', '.minus-btn', ()=>{
+  qtyControl(productModal,'minus')
 });
 
 // POST - Add to Cart
-$('#modal-product-to-cart').on('click', '.add-button', ()=>{
-  let inv = $('#modal-product-to-cart .select-size').val(),
-  qty = parseInt($('#modal-product-to-cart input.quantity-input').val());
+productModal.on('click', '.add-button', ()=>{
+  let modal = productModal, inv = modal.find('.select-size').val(),
+  qty = parseInt(modal.find('input.quantity-input').val());
+  qty ? 0 : qty = 1
   $.post(`/cart/modal`, {
     inv: inv, qty: qty
   }).then((res) => {
-    let modal = $('#modal-product-to-cart'), data = res.cart;
+    let data = res.cart;
     postToCart(modal, data, res, 1);
   })
   .catch((error) => {
     console.log(error);
   });
+});
+
+// PACKAGE
+
+// GET - Cart Button, Get Modal
+$('.products-container').on('click', '.cart-btn.package-btn', function(){
+  let pid = $(this).closest('.this-package').find('.package-id').val();
+  console.log(pid);
+  $.get(`/cart/package/${pid}`).then((res) => {
+    let data = res.package, modal = packageModal;
+    modal.find('.package-title').text(data[0].strPackageName);
+    modal.find('.package-description').text(data[0].strPackageDescription);
+
+    modal.find('#products-list').html('')
+    data.forEach((prod)=>{
+      modal.find('#products-list').append(`
+        <p class="fs-1em fw-300">
+          ${prod.intProductQuantity} x
+          <span class="text-brand">${prod.strBrand}</span>
+          ${prod.strProductName}
+          <span class="text-variant">${prod.intSize}</span>
+        </p>`)
+    })
+
+    modal.find('#stock-display > span').text(data[0].stock);
+    modal.find('.expire-date > span').text(data[0].dateCreated);
+    modal.find('p.discount > span').text(res.options.discount);
+    modal.find('p.price-symbol').text(data[0].packagePrice);
+
+    qtyValidate(modal,1,data[0].stock);
+
+  }).catch((error) => {
+    console.log(error);
+  });
+});
+
+// Change Quantity
+packageModal.find('.quantity-input').keyup(function() {
+  qtyControl(packageModal,'change')
+});
+
+// Plus Button, Get New Quantity
+packageModal.on('click', '.plus-btn', ()=>{
+  qtyControl(packageModal,'plus')
+});
+
+// Minus Button, Get New Quantity
+packageModal.on('click', '.minus-btn', ()=>{
+  qtyControl(packageModal,'minus')
 });

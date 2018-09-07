@@ -102,7 +102,7 @@ $(() => {
       $('.quantity-input').keypress(function(key) {
         if(key.charCode < 48 || key.charCode > 57) return false;
       });
-      $('.quantity-input').keyup(function() {
+      $('#cart-pad .quantity-input').keyup(function() {
         let inv = $(this).closest('.product-card').find('.inventory-id').val(),
         val = parseInt($(this).val()) == 0 ? 1 : $(this).val();
 
@@ -153,9 +153,6 @@ $(() => {
       $('#subtotal-btn').click();
     });
   });
-
-  //
-
 
   // DELETE - Remove product
   $('#cart-pad').on('click', '.product-remove', function() {

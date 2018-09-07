@@ -113,6 +113,4 @@ router.get('/history',(req,res)=>{
   })
 })
 
-
-
 exports.consAgreement = router;

@@ -145,11 +145,13 @@
   </div>
   <div class="container x-scrolling-div products-container" data-simplebar="">
     <% packages.forEach((pack)=>{ %>
-      <div class="custom-card card-list this-product my-1">
-        <div class="card-img"><img src="/customer-assets/images/static/package.jpg"></div>
+      <div class="custom-card card-list this-package my-1">
+        <div class="card-img cursor-pointer" data-toggle="modal" data-target="#package-modal">
+          <img src="/customer-assets/images/static/package.jpg">
+        </div>
         <div class="cart-button-div">
-          <input type="number" class="product-id" value="" hidden />
-          <button type="button" class="cart-btn btn p-0 no-focus" data-toggle="modal"
+          <input type="number" class="package-id" value="<%= pack.intPackageNo%>" hidden />
+          <button type="button" class="cart-btn package-btn btn p-0 no-focus" data-toggle="modal"
           data-target="#package-modal">
           Add to Cart</button>
         </div>

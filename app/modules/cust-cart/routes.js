@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../lib/database')();
 const priceFormat = require('../cust-0extras/priceFormat');
-const copy = require('../cust-0extras/copy');
+const moment = require('moment');
 const quantLimit = 50;
 
 function sizeString(obj){
@@ -13,6 +13,10 @@ function sizeString(obj){
   obj.strUnitName ? curSize+= ` ${obj.strUnitName}`: 0
   return curSize;
 }
+
+router.get('/limit', (req, res)=>{
+  res.send({quantLimit: quantLimit})
+});
 
 router.get('/modal/:pid', (req, res)=>{
   db.query(`SELECT * FROM tblproductlist
@@ -37,7 +41,7 @@ router.get('/modal/:pid', (req, res)=>{
       curPrice: results[0].productPrice,
       curQty: 1
     }
-    res.send({product: modal});
+    res.send({product: modal, quantLimit: quantLimit});
   });
 });
 router.get('/modal-inv/:inv', (req, res)=>{
@@ -156,9 +160,10 @@ router.put('/list', (req, res)=>{
     req.session.cart.reduce((temp, obj, i)=>{
       return obj.inv == req.body.inv ? i : temp
     }, null);
-  req.session.cart[index].limit > quantLimit ?
-    req.session.cart[index].limit = quantLimit : 0
   if (index != null){
+    req.session.cart[index].limit > quantLimit ?
+      req.session.cart[index].limit = quantLimit : 0
+
     let curQty = req.session.cart[index].curQty,
     blank = 0;
     // Limit
@@ -222,6 +227,35 @@ router.get('/item-inv/:inv', (req, res)=>{
     if (err) console.log(err);
     results[0] ? results[0].productPrice = priceFormat(results[0].productPrice.toFixed(2)): 0;
     res.send({inventory: results[0]});
+  });
+});
+
+router.get('/package/:pid', (req, res)=>{
+  db.query(`SELECT *, (tblpackage.intQuantity - tblpackage.intReservedItems)stock,
+    (tblproductinventory.productPrice * tblpackagelist.intProductQuantity)originalSubTotal FROM tblpackage
+    INNER JOIN tblpackagelist ON tblpackage.intPackageNo= tblpackagelist.intPackageNo
+    INNER JOIN tblproductinventory ON tblpackagelist.intInventoryNo = tblproductinventory.intInventoryNo
+    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUomNo
+    INNER JOIN tblproductlist ON tblproductinventory.intProductNo = tblproductlist.intProductNo
+    INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
+    WHERE tblpackage.intPackageNo= ?`
+    , [req.params.pid], (err,results,fields)=>{
+    if (err) console.log(err);
+    let originalTotal = results.reduce((sum, obj)=>{
+      return sum += parseFloat(obj.originalSubTotal);
+    },0),
+    discount = Math.ceil((originalTotal - parseFloat(results[0].packagePrice)) / originalTotal * 100);
+    results.map( obj => obj.packagePrice = priceFormat(obj.packagePrice.toFixed(2)) );
+    results.map( obj => obj.dateCreated = moment(obj.dateCreated).format('LL') );
+    results.map( obj => obj.intSize = sizeString(obj) );
+    let options = {
+      discount: discount,
+      curQty: 1
+    }
+    res.send({
+      package: results,
+      options: options
+    });
   });
 });
 

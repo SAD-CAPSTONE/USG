@@ -216,8 +216,11 @@ textarea {
 .text-brand {
   color: #2980b9;
 }
+.text-variant {
+  color: #218c74;
+}
 .text-package {
-  color: rgba(204, 49, 2, .8)
+  color: #cd6133
 }
 
 /* Text Align */
@@ -1150,6 +1153,17 @@ table th, table td {
   position: absolute;
   right: 15;
   top: 17.5;
+}
+#package-modal #products-list p {
+  padding: 6px 0 0 0;
+  margin: 0;
+  line-height: 1.3em;
+}
+#package-modal #products-list p:first-of-type {
+  padding-top: 4px;
+}
+#package-modal #products-list p:last-of-type {
+  margin-bottom: 10px;
 }
 
 #package-modal .price-pane > p:first-child {
