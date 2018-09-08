@@ -96,6 +96,8 @@ $(()=>{
     console.log(res)
     limit = res.quantLimit
     $('i.limit-info').attr(`title`,`Maximum of ${limit} of the same product variation per order`)
+    $('i.limit-info-package').attr(`title`,`Maximum of ${limit} of the same package per order`)
+
   })
 })
 
@@ -161,7 +163,7 @@ productModal.on('click', '.add-button', ()=>{
 // PACKAGE
 
 // GET - Cart Button, Get Modal
-$('.products-container').on('click', '.cart-btn.package-btn', function(){
+$('.products-container').on('click', '.cart-btn.package-btn, div.package-img', function(){
   let pid = $(this).closest('.this-package').find('.package-id').val();
   console.log(pid);
   $.get(`/cart/package/${pid}`).then((res) => {
@@ -181,7 +183,8 @@ $('.products-container').on('click', '.cart-btn.package-btn', function(){
     })
 
     modal.find('#stock-display > span').text(data[0].stock);
-    modal.find('.expire-date > span').text(data[0].dateCreated);
+    modal.find('.expire-date > span').text(data[0].dateDue);
+    modal.find('.quantity-input').val(res.options.curQty);
     modal.find('p.discount > span').text(res.options.discount);
     modal.find('p.price-symbol').text(data[0].packagePrice);
 

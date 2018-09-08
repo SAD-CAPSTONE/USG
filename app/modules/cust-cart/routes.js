@@ -238,7 +238,7 @@ router.get('/package/:pid', (req, res)=>{
     INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUomNo
     INNER JOIN tblproductlist ON tblproductinventory.intProductNo = tblproductlist.intProductNo
     INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
-    WHERE tblpackage.intPackageNo= ?`
+    WHERE tblpackage.intPackageNo= ? ORDER BY intProductQuantity DESC`
     , [req.params.pid], (err,results,fields)=>{
     if (err) console.log(err);
     let originalTotal = results.reduce((sum, obj)=>{
@@ -246,7 +246,7 @@ router.get('/package/:pid', (req, res)=>{
     },0),
     discount = Math.ceil((originalTotal - parseFloat(results[0].packagePrice)) / originalTotal * 100);
     results.map( obj => obj.packagePrice = priceFormat(obj.packagePrice.toFixed(2)) );
-    results.map( obj => obj.dateCreated = moment(obj.dateCreated).format('LL') );
+    results.map( obj => obj.dateDue = moment(obj.dateDue).format('LL') );
     results.map( obj => obj.intSize = sizeString(obj) );
     let options = {
       discount: discount,
