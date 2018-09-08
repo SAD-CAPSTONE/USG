@@ -92,6 +92,13 @@
   font-size: 13px;
 }
 
+.product-pic {
+  transition: width .5s ease;
+}
+.product-desc {
+  transition: all .5s ease;
+}
+
 @media (max-width: 500px) {
   :root {
     --container-width: 260px;

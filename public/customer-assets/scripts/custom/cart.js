@@ -104,7 +104,7 @@ $(() => {
                 <div class="product-pic"><img src="${data.img}"/></div>
                 <div class="product-desc">
                   <p class="product-title"><span class="text-package">${data.name}</span></p>
-                  <small class="product-size text-muted">View Details</small>
+                  <small class="product-size text-muted package-details">View Details</small>
                   <div class="input-group quantity">
                     <div class="input-group-prepend addon">
                       <button class="btn btn-primary quantity-buttons minus" type="button">
@@ -276,6 +276,77 @@ $(() => {
     }).catch((error) => {
       console.log(error)
     });
+  });
+
+  // Package Details
+  $('#cart-pad').on('click', '.package-details', function() {
+    let card = $(this).closest('.product-card'),
+    inv = card.find('.inventory-id').val();
+
+    if ($(this).text() == 'View Details'){
+      card.find('.product-pic').css('width', '0px')
+      card.find('.product-desc').css({
+        'margin-left': '0px',
+        'width': '100%'
+      })
+      card.find('.quantity').css({
+        'position': 'static',
+        'left': '0',
+        'bottom': '0'
+      })
+
+      pc1 = setTimeout(()=>{
+        card.css('height', 'auto')
+        card.find('.product-pic').attr('hidden','hidden')
+        card.find('.product-desc').css({
+          'height': 'auto',
+          'position': 'static'
+        })
+        card.find('.product-title').css({
+          'height': 'auto',
+          'margin-bottom': '16px'
+        })
+        $(this).text('Hide Details')
+      },500);
+      
+    }
+    else{
+      card.find('.product-pic').removeAttr('hidden')
+      card.find('.product-title').css({
+        'height': '68px',
+        'margin-bottom': '0px'
+      })
+
+      if( $(window).width() > 500 ) {
+        card.css('height', '125px')
+        card.find('.product-pic').css('width', '125px')
+        card.find('.product-desc').css({
+          'height': '100%',
+          'position': 'absolute',
+          'margin-left': '125px',
+          'width': 'calc(var(--container-width) - 145px)'
+        })
+      }
+      else{
+        card.css('height', '145px')
+        card.find('.product-pic').css('width', '100px')
+        card.find('.product-desc').css({
+          'height': '100%',
+          'position': 'absolute',
+          'margin-left': '100px',
+          'width': '140px'
+        })
+        card.find('.quantity').css({
+          'position': 'absolute',
+          'left': '-90',
+          'bottom': '7'
+        })
+      }
+
+      $(this).text('View Details')
+    }
+
+
   });
 
   // Reload

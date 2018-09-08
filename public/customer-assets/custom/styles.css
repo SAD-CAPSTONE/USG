@@ -1191,6 +1191,13 @@ table th, table td {
   border-radius: 0;
 }
 
+.package-details {
+  cursor: pointer;
+}
+.package-details:hover {
+  text-decoration: underline;
+}
+
 /* Consignor ---------------------------------------------------------------- */
 :root {
   --sales-products-col-width: calc(100% - 339px);
