@@ -1,39 +1,42 @@
 let t1, t2, productModal = $('#modal-product-to-cart'), packageModal = $('#package-modal'), limit;
 
 function postToCart(modal, data, res, tog){
+  let cartAlert = $('.cartAlert')
+
   clearTimeout(t1);
   clearTimeout(t2);
 
-  modal.next().on('click', ()=>{
+  cartAlert.on('click', ()=>{
     $('#cartSidebarCollapse').click();
   })
 
   tog == 1 ? modal.modal('toggle'): 0;
-  modal.next().css({
+  cartAlert.css({
     "max-width": "100%",
     "padding": "20px 23px 20px 20px"
   });
   data[res.latest].curQty == res.limit ?
-    modal.next().css("border-left", "3px solid #FFC107"):
-    modal.next().css("border-left", "3px solid #00AF6E");
-  modal.next().children('div').css("opacity", "1");
+    cartAlert.css("border-left", "3px solid #FFC107"):
+    cartAlert.css("border-left", "3px solid #00AF6E");
+  cartAlert.children('div').css("opacity", "1");
 
   t1 = setTimeout(()=>{
-    modal.next().css({
+    cartAlert.css({
       "max-width": "0",
       "padding": "20px 0px 20px 0px",
       "border-left": "none"
     });
   },5000);
   t2 = setTimeout(()=>{
-    modal.next().children('div').css("opacity", "0");
+    cartAlert.children('div').css("opacity", "0");
   },4700);
 
   data[res.latest].curQty == res.limit ?
-    modal.next().find('p:nth-of-type(3)').text(`Maximum quantity reached (${data[res.latest].curQty})`):
-    modal.next().find('p:nth-of-type(3)').text(`has been added (${data[res.latest].curQty} in cart)`);
-  modal.next().find('p:nth-of-type(2)').html(`<span class="text-brand">${data[res.latest].brand}</span> ${data[res.latest].name} ${data[res.latest].curSize}`);
-
+    cartAlert.find('p:nth-of-type(3)').text(`Maximum quantity reached (${data[res.latest].curQty})`):
+    cartAlert.find('p:nth-of-type(3)').text(`has been added (${data[res.latest].curQty} in cart)`);
+  data[res.latest].type == 1 ?
+    cartAlert.find('p:nth-of-type(2)').html(`<span class="text-brand">${data[res.latest].brand}</span> ${data[res.latest].name} ${data[res.latest].curSize}`):
+    cartAlert.find('p:nth-of-type(2)').html(`<span class="text-package">${data[res.latest].name}</span>`);
   $('#getCart').click();
 }
 function stockDisplay(modal,inv){
@@ -168,6 +171,7 @@ $('.products-container').on('click', '.cart-btn.package-btn, div.package-img', f
   console.log(pid);
   $.get(`/cart/package/${pid}`).then((res) => {
     let data = res.package, modal = packageModal;
+    modal.find('#package-id').val(data[0].intPackageNo);
     modal.find('.package-title').text(data[0].strPackageName);
     modal.find('.package-description').text(data[0].strPackageDescription);
 
@@ -208,4 +212,20 @@ packageModal.on('click', '.plus-btn', ()=>{
 // Minus Button, Get New Quantity
 packageModal.on('click', '.minus-btn', ()=>{
   qtyControl(packageModal,'minus')
+});
+
+// POST - Add to Cart
+packageModal.on('click', '.add-button', ()=>{
+  let modal = packageModal, packageNo = modal.find('#package-id').val(),
+  qty = parseInt(modal.find('input.quantity-input').val());
+  qty ? 0 : qty = 1
+  $.post(`/cart/package`, {
+    package: packageNo, qty: qty
+  }).then((res) => {
+    let data = res.cart;
+    postToCart(modal, data, res, 1);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 });

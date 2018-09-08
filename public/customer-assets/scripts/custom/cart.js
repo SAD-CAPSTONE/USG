@@ -63,35 +63,70 @@ $(() => {
           </div>
           `)
       res.cart.forEach((data,i) => {
-        list.append(`
-          <div class="cart-product-container">
-            <div class="product-card">
-              <input class="inventory-id" value="${data.inv}" hidden/>
-              <div class="product-pic"><a href="/item/${data.id}"><img src="${data.img}"/></a></div>
-              <div class="product-desc">
-                <p class="product-title"><span class="text-brand">${data.brand}</span> ${data.name}</p>
-                <small class="product-size text-muted">${data.curSize}</small>
-                <div class="input-group quantity">
-                  <div class="input-group-prepend addon">
-                    <button class="btn btn-primary quantity-buttons minus" type="button">
-                    <small class="quantity-text quantity-text-minus">-</small>
-                  </button>
+        if (data.type == 1){
+          list.append(`
+            <div class="cart-product-container">
+              <div class="product-card">
+                <input class="inventory-id" value="${data.inv}" hidden/>
+                <input class="cart-type" value="${data.type}" hidden/>
+                <div class="product-pic"><a href="/item/${data.id}"><img src="${data.img}"/></a></div>
+                <div class="product-desc">
+                  <p class="product-title"><span class="text-brand">${data.brand}</span> ${data.name}</p>
+                  <small class="product-size text-muted">${data.curSize}</small>
+                  <div class="input-group quantity">
+                    <div class="input-group-prepend addon">
+                      <button class="btn btn-primary quantity-buttons minus" type="button">
+                      <small class="quantity-text quantity-text-minus">-</small>
+                    </button>
+                    </div>
+                    <input class="form-control quantity-input" type="text" value="${data.curQty}">
+                    <div class="input-group-append addon">
+                      <button class="btn btn-primary quantity-buttons plus" type="button">
+                      <small class="quantity-text quantity-text-plus">+</small>
+                    </button>
+                    </div>
                   </div>
-                  <input class="form-control quantity-input" type="text" value="${data.curQty}">
-                  <div class="input-group-append addon">
-                    <button class="btn btn-primary quantity-buttons plus" type="button">
-                    <small class="quantity-text quantity-text-plus">+</small>
-                  </button>
-                  </div>
+                  <small class="product-oldprice text-muted">
+                    <span>${data.limit} max</span><br>
+                  </small>
+                  <p class="product-price price-symbol">${data.curPrice}</p>
                 </div>
-                <small class="product-oldprice text-muted">
-                  <span>${data.limit} max</span><br>
-                </small>
-                <p class="product-price price-symbol">${data.curPrice}</p>
               </div>
-            </div>
-            <div class="product-remove"><i class="fa fa-remove product-remove-icon"></i></div>
-          </div>`);
+              <div class="product-remove"><i class="fa fa-remove product-remove-icon"></i></div>
+            </div>`);
+        }
+        else{
+          list.append(`
+            <div class="cart-product-container">
+              <div class="product-card">
+                <input class="inventory-id" value="${data.package}" hidden/>
+                <input class="cart-type" value="${data.type}" hidden/>
+                <div class="product-pic"><img src="${data.img}"/></div>
+                <div class="product-desc">
+                  <p class="product-title"><span class="text-package">${data.name}</span></p>
+                  <small class="product-size text-muted">View Details</small>
+                  <div class="input-group quantity">
+                    <div class="input-group-prepend addon">
+                      <button class="btn btn-primary quantity-buttons minus" type="button">
+                      <small class="quantity-text quantity-text-minus">-</small>
+                    </button>
+                    </div>
+                    <input class="form-control quantity-input" type="text" value="${data.curQty}">
+                    <div class="input-group-append addon">
+                      <button class="btn btn-primary quantity-buttons plus" type="button">
+                      <small class="quantity-text quantity-text-plus">+</small>
+                    </button>
+                    </div>
+                  </div>
+                  <small class="product-oldprice text-muted">
+                    <span>${data.limit} max</span><br>
+                  </small>
+                  <p class="product-price price-symbol">${data.curPrice}</p>
+                </div>
+              </div>
+              <div class="product-remove"><i class="fa fa-remove product-remove-icon"></i></div>
+            </div>`);
+        }
         allQtyValidate(data.curQty,data.limit,i)
         // <small class="product-oldprice text-muted">
         //   <span><s class="price-symbol">0</s></span><span> (-0%)</span><br>
@@ -104,6 +139,7 @@ $(() => {
       });
       $('#cart-pad .quantity-input').keyup(function() {
         let inv = $(this).closest('.product-card').find('.inventory-id').val(),
+        type = $(this).closest('.product-card').find('.cart-type').val(),
         val = parseInt($(this).val()) == 0 ? 1 : $(this).val();
 
         $.ajax({
@@ -112,6 +148,7 @@ $(() => {
           contentType: 'application/json',
           data: JSON.stringify({
             inv: inv,
+            type: type,
             action: 'change',
             value: val
           }),
@@ -156,13 +193,16 @@ $(() => {
 
   // DELETE - Remove product
   $('#cart-pad').on('click', '.product-remove', function() {
-    let inv = $(this).prev().find('.inventory-id').val();
+    let inv = $(this).prev().find('.inventory-id').val(),
+    type = $(this).prev().find('.cart-type').val();
+    console.log(type)
     $.ajax({
       url: `/cart/list`,
       method: 'DELETE',
       contentType: 'application/json',
       data: JSON.stringify({
-        inv: inv
+        inv: inv,
+        type: type
       }),
       success: (res) => {
         $(this).parent().remove();
@@ -183,7 +223,8 @@ $(() => {
 
   // PUT - Plus Button, Get New Quantity
   $('#cart-pad').on('click', '.plus', function() {
-    let inv = $(this).closest('.product-card').find('.inventory-id').val();
+    let inv = $(this).closest('.product-card').find('.inventory-id').val(),
+    type = $(this).closest('.product-card').find('.cart-type').val();
 
     $.ajax({
       url: `/cart/list`,
@@ -191,6 +232,7 @@ $(() => {
       contentType: 'application/json',
       data: JSON.stringify({
         inv: inv,
+        type: type,
         action: 'plus'
       }),
       success: (res) => {
@@ -205,7 +247,8 @@ $(() => {
 
   // PUT - Minus Button, Get New Quantity
   $('#cart-pad').on('click', '.minus', function() {
-    let inv = $(this).closest('.product-card').find('.inventory-id').val();
+    let inv = $(this).closest('.product-card').find('.inventory-id').val(),
+    type = $(this).closest('.product-card').find('.cart-type').val();
 
     $.ajax({
       url: `/cart/list`,
@@ -213,6 +256,7 @@ $(() => {
       contentType: 'application/json',
       data: JSON.stringify({
         inv: inv,
+        type: type,
         action: 'minus'
       }),
       success: (res) => {

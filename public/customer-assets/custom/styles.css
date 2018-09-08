@@ -1187,7 +1187,7 @@ table th, table td {
 #package-modal .quantity .input-group-append{
   margin-left: 0px !important;
 }
-#package-modal button.add-btn{
+#package-modal button.add-button{
   border-radius: 0;
 }
 
