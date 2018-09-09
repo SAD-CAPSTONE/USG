@@ -166,7 +166,8 @@ productModal.on('click', '.add-button', ()=>{
 // PACKAGE
 
 // GET - Cart Button, Get Modal
-$('.products-container, #checkout-products').on('click', '.cart-btn.package-btn, .package-img, .package-details-modal', function(){
+$('.products-container, #checkout-products, #order-products-pane')
+.on('click', '.cart-btn.package-btn, .package-img, .package-details-modal', function(){
   let pid = $(this).closest('.this-package, .product-div').find('.package-id, .inventory-id').val();
   console.log(pid);
   $.get(`/cart/package/${pid}`).then((res) => {

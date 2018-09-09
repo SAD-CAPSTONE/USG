@@ -133,7 +133,7 @@ $(() => {
               <div class="product-card">
                 <input class="inventory-id" value="${data.package}" hidden/>
                 <input class="cart-type" value="${data.type}" hidden/>
-                <div class="product-pic"><img src="${data.img}"/></div>
+                <div class="product-pic"><img src="${data.img}" class="cursor-pointer"/></div>
                 <div class="product-desc">
                   <p class="product-title"><span class="text-package">${data.name}</span></p>
                   <div class="package-product-list">
@@ -314,12 +314,12 @@ $(() => {
   });
 
   // Package Details
-  $('#cart-pad').on('click', '.package-details', function() {
+  $('#cart-pad').on('click', '.package-details, .product-pic img', function() {
     let card = $(this).closest('.product-card'),
     inv = card.find('.inventory-id').val(),
     list = card.find('.package-product-list');
 
-    if ($(this).text() == 'View Details'){
+    if (card.find('.package-details').text() == 'View Details'){
       card.find('.product-pic').css('width', '0px')
       card.find('.product-desc').css({
         'margin-left': '0px',
@@ -359,7 +359,7 @@ $(() => {
             'height': 'auto',
             'margin-bottom': '5px'
           })
-          $(this).text('Hide Details')
+          card.find('.package-details').text('Hide Details')
         },500);
 
       }).catch((error) => {
@@ -378,7 +378,7 @@ $(() => {
         })
         packageDetailsFix(card,$(window).width())
 
-        $(this).text('View Details')
+        card.find('.package-details').text('View Details')
       },400);
 
     }

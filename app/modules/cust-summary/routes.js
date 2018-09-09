@@ -101,9 +101,16 @@ function orderProductQty (req, res, next){
 }
 function cartCheck (req, res, next){
   function cartLimitLoop(i){
-    let cart = req.session.cart;
-    db.query(`SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`
-      , [req.session.cart[i].inv], (err, results, fields) => {
+    let cart = req.session.cart, stringquery1, bodyarray1;
+    if (cart[i].type == 1){
+      stringquery1 = `SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`
+      bodyarray1 = [cart[i].inv]
+    }
+    else{
+      stringquery1 = `SELECT (intQuantity - intReservedItems)stock FROM tblpackage WHERE intPackageNo= ?`
+      bodyarray1 = [cart[i].package]
+    }
+    db.query(stringquery1, bodyarray1, (err, results, fields) => {
       if (err) console.log(err);
       req.session.cart[i].limit = results[0].stock > quantLimit ?
         quantLimit : results[0].stock;
@@ -143,6 +150,25 @@ function thisOrder (req, res, next){
     return next();
   });
 }
+function orderPackages (req, res, next){
+  db.query(`SELECT *, (tblorder.intStatus)orderStatus, (tblorderdetails.intQuantity)orderQty FROM tblorder
+    INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
+    INNER JOIN tblpackage ON tblorderdetails.intInventoryNo= tblpackage.intPackageNo
+    WHERE tblorder.intOrderNo= ? AND tblorder.intUserID= ? AND tblorderdetails.intProductType= 2`,
+    [req.params.orderNo, req.user.intUserID], (err, results, fields) => {
+    if (err) console.log(err);
+    let packageOrderLength = 0
+    if (results[0]){
+      results.map( obj => obj.packagePrice = priceFormat(obj.packagePrice.toFixed(2)) );
+      packageOrderLength = results.reduce((temp, obj)=>{
+        return temp += obj.orderQty
+      },0)
+    }
+    req.orderPackages = results;
+    req.packageOrderLength = packageOrderLength
+    return next();
+  });
+}
 
 router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>{
   res.render('cust-summary/views/checkout', {
@@ -151,24 +177,26 @@ router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>
     admin: req.admin
   });
 });
-router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, admin, (req,res)=>{
+router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, orderPackages, admin, (req,res)=>{
   db.query(`SELECT *, (tblorder.intStatus)orderStatus, (tblorderdetails.intQuantity)orderQty FROM tblorder
     INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
     INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
     INNER JOIN tblproductlist ON tblproductinventory.intProductNo= tblproductlist.intProductNo
     INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
     INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUomNo
-    WHERE tblorder.intOrderNo= ? AND tblorder.intUserID= ?`,[req.params.orderNo, req.user.intUserID], (err, results, fields) => {
+    WHERE tblorder.intOrderNo= ? AND tblorder.intUserID= ? AND tblorderdetails.intProductType= 1`,
+    [req.params.orderNo, req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
     if (results[0]){
       results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('ll') );
       results.map( obj => obj.purchasePrice = priceFormat(obj.purchasePrice.toFixed(2)) );
       let orderLength = results.reduce((temp, obj)=>{
         return temp += obj.orderQty
-      },0)
+      },0) + req.packageOrderLength;
       res.render('cust-summary/views/order', {
         thisUser: req.user,
         order: results,
+        packages: req.orderPackages,
         orderLength: orderLength,
         orderOne: results[0],
         orderNumber: req.params.orderNo,
@@ -266,14 +294,25 @@ router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOr
           if (err) console.log(err);
           function multiInsert(i){
             let cart = req.session.cart;
-            db.query(`INSERT INTO tblorderdetails (intOrderDetailsNo, intOrderNo, intInventoryNo, intStatus, purchasePrice, intQuantity)
-              VALUES (?,?,?,?,?,?)`,[req.newOrderDetailsNo + i, thisOrderNo, cart[i].inv, 1, cart[i].curPrice, cart[i].curQty], (err, results, fields) => {
+
+            if (cart[i].type == 1){
+              inv = cart[i].inv
+              stringquery1 = `SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblproductinventory WHERE intInventoryNo= ?`
+              stringquery2 = `UPDATE tblproductinventory SET intReservedItems= ? WHERE intInventoryNo= ?`
+            }
+            else{
+              inv = cart[i].package
+              stringquery1 = `SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblpackage WHERE intPackageNo= ?`
+              stringquery2 = `UPDATE tblpackage SET intReservedItems= ? WHERE intPackageNo= ?`
+            }
+
+            db.query(`INSERT INTO tblorderdetails (intOrderDetailsNo, intOrderNo, intInventoryNo, intProductType, intStatus, purchasePrice, intQuantity)
+              VALUES (?,?,?,?,?,?,?)`,[req.newOrderDetailsNo + i, thisOrderNo, inv, cart[i].type, 1, cart[i].curPrice, cart[i].curQty], (err, results, fields) => {
               if (err) console.log(err);
-              db.query(`SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblproductinventory
-                WHERE intInventoryNo = ?`,[cart[i].inv], (err, results, fields) => {
+              db.query(stringquery1, [inv], (err, results, fields) => {
                 if (results[0].stock){
                   newQty = parseInt(results[0].intReservedItems) + parseInt(cart[i].curQty);
-                  db.query(`UPDATE tblproductinventory SET intReservedItems= ? WHERE intInventoryNo= ?`,[newQty, cart[i].inv], (err, results1, fields) => {
+                  db.query(stringquery2, [newQty, inv], (err, results1, fields) => {
                     if (err) console.log(err);
                     ++i;
                     if (cart.length > i){
