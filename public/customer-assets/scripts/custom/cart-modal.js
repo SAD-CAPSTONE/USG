@@ -166,8 +166,8 @@ productModal.on('click', '.add-button', ()=>{
 // PACKAGE
 
 // GET - Cart Button, Get Modal
-$('.products-container').on('click', '.cart-btn.package-btn, div.package-img', function(){
-  let pid = $(this).closest('.this-package').find('.package-id').val();
+$('.products-container, #checkout-products').on('click', '.cart-btn.package-btn, .package-img, .package-details-modal', function(){
+  let pid = $(this).closest('.this-package, .product-div').find('.package-id, .inventory-id').val();
   console.log(pid);
   $.get(`/cart/package/${pid}`).then((res) => {
     let data = res.package, modal = packageModal;
@@ -198,6 +198,11 @@ $('.products-container').on('click', '.cart-btn.package-btn, div.package-img', f
     console.log(error);
   });
 });
+
+$('#checkout-products').on('click', '.package-img, .package-details-modal', function(){
+  packageModal.find('.item-options').css('display','none')
+});
+
 
 // Change Quantity
 packageModal.find('.quantity-input').keyup(function() {

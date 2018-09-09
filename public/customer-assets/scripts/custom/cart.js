@@ -48,6 +48,38 @@ $(() => {
       $(thisDiv).find(`.plus`).attr('disabled','disabled') :
       $(thisDiv).find(`.plus`).removeAttr('disabled')
   }
+  function packageDetailsFix(card,size){
+    if( size > 500 && !card.find('.product-pic').attr('hidden')) {
+      card.css('height', '125px')
+      card.find('.product-pic').css('width', '125px')
+      card.find('.product-desc').css({
+        'height': '100%',
+        'position': 'absolute',
+        'margin-left': '125px',
+        'width': 'calc(var(--container-width) - 145px)'
+      })
+      card.find('.quantity').css({
+        'position': 'static',
+        'left': '0',
+        'bottom': '0'
+      })
+    }
+    else if( size <= 500 && !card.find('.product-pic').attr('hidden')){
+      card.css('height', '145px')
+      card.find('.product-pic').css('width', '100px')
+      card.find('.product-desc').css({
+        'height': '100%',
+        'position': 'absolute',
+        'margin-left': '100px',
+        'width': '140px'
+      })
+      card.find('.quantity').css({
+        'position': 'absolute',
+        'left': '-90',
+        'bottom': '7'
+      })
+    }
+  }
 
   // GET - Load cart
   $('#getCart').on('click', () => {
@@ -104,6 +136,9 @@ $(() => {
                 <div class="product-pic"><img src="${data.img}"/></div>
                 <div class="product-desc">
                   <p class="product-title"><span class="text-package">${data.name}</span></p>
+                  <div class="package-product-list">
+
+                  </div>
                   <small class="product-size text-muted package-details">View Details</small>
                   <div class="input-group quantity">
                     <div class="input-group-prepend addon">
@@ -281,7 +316,8 @@ $(() => {
   // Package Details
   $('#cart-pad').on('click', '.package-details', function() {
     let card = $(this).closest('.product-card'),
-    inv = card.find('.inventory-id').val();
+    inv = card.find('.inventory-id').val(),
+    list = card.find('.package-product-list');
 
     if ($(this).text() == 'View Details'){
       card.find('.product-pic').css('width', '0px')
@@ -295,58 +331,66 @@ $(() => {
         'bottom': '0'
       })
 
-      pc1 = setTimeout(()=>{
-        card.css('height', 'auto')
-        card.find('.product-pic').attr('hidden','hidden')
-        card.find('.product-desc').css({
-          'height': 'auto',
-          'position': 'static'
-        })
-        card.find('.product-title').css({
-          'height': 'auto',
-          'margin-bottom': '16px'
-        })
-        $(this).text('Hide Details')
-      },500);
-      
+      $.get(`/cart/package/${inv}`).then((res) => {
+        let data = res.package
+
+        pc1 = setTimeout(()=>{
+          list.html('');
+          data.forEach((prod)=>{
+            list.append(`
+              <p class="mb-0">
+                ${prod.intProductQuantity} x
+                <span class="text-brand">${prod.strBrand}</span>
+                ${prod.strProductName}
+                <span class="text-variant">${prod.intSize}</span>
+              </p>`)
+          })
+          pc2 = setTimeout(()=>{
+            list.find('p').css('opacity','1')
+          },1);
+
+          card.css('height', 'auto')
+          card.find('.product-pic').attr('hidden','hidden')
+          card.find('.product-desc').css({
+            'height': 'auto',
+            'position': 'static'
+          })
+          card.find('.product-title').css({
+            'height': 'auto',
+            'margin-bottom': '5px'
+          })
+          $(this).text('Hide Details')
+        },500);
+
+      }).catch((error) => {
+        console.log(error)
+      });
+
     }
     else{
-      card.find('.product-pic').removeAttr('hidden')
-      card.find('.product-title').css({
-        'height': '68px',
-        'margin-bottom': '0px'
-      })
+      list.find('p').css('opacity','0')
+      pc3 = setTimeout(()=>{
+        list.html('');
+        card.find('.product-pic').removeAttr('hidden')
+        card.find('.product-title').css({
+          'height': '68px',
+          'margin-bottom': '0px'
+        })
+        packageDetailsFix(card,$(window).width())
 
-      if( $(window).width() > 500 ) {
-        card.css('height', '125px')
-        card.find('.product-pic').css('width', '125px')
-        card.find('.product-desc').css({
-          'height': '100%',
-          'position': 'absolute',
-          'margin-left': '125px',
-          'width': 'calc(var(--container-width) - 145px)'
-        })
-      }
-      else{
-        card.css('height', '145px')
-        card.find('.product-pic').css('width', '100px')
-        card.find('.product-desc').css({
-          'height': '100%',
-          'position': 'absolute',
-          'margin-left': '100px',
-          'width': '140px'
-        })
-        card.find('.quantity').css({
-          'position': 'absolute',
-          'left': '-90',
-          'bottom': '7'
-        })
-      }
+        $(this).text('View Details')
+      },400);
 
-      $(this).text('View Details')
     }
 
+  });
 
+  // Package Details Fix on Resize
+  $( window ).resize(function() {
+    let card = $('.product-card');
+    card.each(function(){
+      packageDetailsFix($(this),$(window).width())
+    })
   });
 
   // Reload

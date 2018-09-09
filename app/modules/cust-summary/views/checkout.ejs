@@ -1,4 +1,6 @@
 <%- include('../../../templates/navbar.ejs') -%>
+<%- include('../../../templates/modals/package-modal.ejs') -%>
+
 
 <div id="summary-container" class="container">
   <div id="summary-main-pane" class="fl-l">
@@ -243,12 +245,12 @@
                 <div class="inline-block va-t">
                   <input class="inventory-id" value="${data.package}" hidden/>
                   <input class="cart-type" value="${data.type}" hidden/>
-                  <a class="img-link">
-                    <img src="${data.img}" height="100" width="100" alt="product">
-                  </a>
+                    <a href class="package-img img-link" data-toggle="modal" data-target="#package-modal">
+                      <img src="${data.img}" height="100" width="100" alt="product">
+                    </a>
                   <div class="px-2">
                     <p class="m-0 fs-08em fw-400 lh-p3em"><span class="text-package">${data.name}</span></p>
-                    <p class="fs-08em fw-400 text-muted">View Details</p>
+                    <p class="package-details-modal fs-08em fw-400 text-muted w-fit" data-toggle="modal" data-target="#package-modal">View Details</p>
                     <a class="fw-400 remove cursor-pointer"><i class="fa fa-trash"></i></a>
                     <div class="price">
                       <p class="mb-0 fs-1em fw-400 lh-p3em price-symbol">${data.curPrice}</p>

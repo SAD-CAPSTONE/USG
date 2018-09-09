@@ -302,6 +302,9 @@ input#mobile {
 .clear-opacity {
   opacity: 1 !important;
 }
+.w-fit {
+  width: fit-content;
+}
 
 /* FLoat */
 .fl-r {
@@ -1191,10 +1194,10 @@ table th, table td {
   border-radius: 0;
 }
 
-.package-details {
+.package-details, .package-details-modal {
   cursor: pointer;
 }
-.package-details:hover {
+.package-details:hover, .package-details-modal:hover {
   text-decoration: underline;
 }
 
