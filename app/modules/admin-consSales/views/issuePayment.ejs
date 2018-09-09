@@ -1,0 +1,359 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+
+ <!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Transaction</a></li>
+        <li><a href="#">Consignor Sales</a></li>
+        <li class="active">Issue Payment Form</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+    <div class="row">
+      <div class="col-sm-1">
+      </div>
+      <div class="col-sm-10">
+        <div class="box box-success">
+         <div class="box-header with-border">
+           <h3 class="box-title">Payment Receipt Form</h3>
+         </div>
+
+         <!-- purchase order body -->
+         <div class="box-body">
+
+           <small><b>Business Name:</b> Ultra Super Green Trading Corporation</small> </br>
+           <small><b>Business Address:</b> 0002 G/F Elizabeth Hall BLDG. 371 Katipunan Ave., Loyola Heights </br>
+           Quezon City 1108</small> </br>
+           <small><b>Contact No:</b> (02) 738-1202 |  (0955) 904-4744</small> </br>
+           <small><b>Email:</b> info.ultrasupergreen@gmail.com</small> </br>
+           </br>
+
+           <form class="form-horizontal" id="issuePaymentForm" >
+           <div align="center" class="row">
+             <div class="col-sm-1">
+             </div>
+             <div class="col-sm-4">
+               <div class="form-group">
+                 <label for="purcNo">P.R number:</label>
+
+                   <input type="text" disabled value="<%=lastRecord%>" name="RPnum" id="RPNo" class="form-control">
+
+               </div>
+             </div>
+
+             <div class="col-sm-2">
+             </div>
+
+             <div class="col-sm-4">
+               <div class="form-group">
+                 <label for="purcNo">P.R Date:</label>
+                 <input type="date" disabled id="today" value="" name="date" class="form-control">
+
+               </div>
+             </div>
+             <div class="col-sm-1">
+             </div>
+           </div>
+
+           <br>
+           <div class="row">
+             <div class="col-sm-3">
+               <h4> &nbsp; Given To </h4>
+             </div>
+
+           </div>
+
+           <div class="row">
+             &nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
+           <p>  &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
+           </div>
+
+         </br>
+           <div>
+
+               <div class="form-group">
+                 <input type="hidden" class="input-sm form-control" name="supplier" id="suppid" placeholder="">
+                 <label for="businessName" class="col-sm-2 control-label"> Business Name: </label>
+                 <div class="col-sm-6">
+                   <input type="text" disabled class="input-sm form-control" id="businessName" placeholder="">
+                 </div>
+               </div>
+
+               <div class="form-group">
+                 <label for="contract" class="col-sm-2 control-label"> Contact Person: </label>
+                 <div class="col-sm-6">
+                   <input type="text" disabled class="input-sm form-control" id="contactPerson" placeholder="">
+                 </div>
+               </div>
+
+               <div class="form-group">
+                 <label for="address" class="col-sm-2 control-label">Email: </label>
+                 <div class="col-sm-6">
+                   <input type="text"  class="input-sm form-control" name="email" id="email" placeholder="">
+                 </div>
+               </div>
+           </div>
+
+           <div class="row">
+             <div class="col-sm-3">
+               <h4> &nbsp;  </h4>
+             </div>
+           </div>
+
+           <div class="row">
+             <div class="col-sm-12">
+             <div class="box">
+               <div class="box-header">
+                 <h4 align="center">Payment Breakdown</h4>
+
+
+               </div>
+
+               <!-- buttons -->
+               &nbsp; &nbsp;<button type="button" id="addRow" class=" small ui green button" ><i class="fa fa-plus"></i> Add</button>
+               <!-- /.box-header -->
+
+               <div class="box-body table-responsive">
+                 <table id="example" class="table table-bordered table-hover">
+                 <thead>
+                   <tr>
+                     <th style="width: 10px">#</th>
+                     <th>Description</th>
+                     <th>Amount</th>
+
+                   </tr>
+                 </thead>
+
+                 <tbody>
+
+                 </tbody>
+
+                 </table>
+               </div>
+               <!-- /.box-body -->
+
+             </div>
+               <!-- /.box -->
+             </div>
+           </div>
+
+           <div class="row">
+             <div class="col-sm-6">
+             </div>
+             <div class="col-sm-6">
+              <h4 id="total">&nbsp;Total: Php 0.00</h4>
+            </div>
+          </div>
+         </div>
+
+         <div class="box-footer">
+              <a href="#"><button type="button" class=" large ui button">Back</button></a>
+              <a href=""><button type="submit" id="sub" class=" large ui teal button">Submit Form</button></a>
+          </div>
+            <!-- /.box-footer -->
+          </form>
+       </div>
+      </div>
+
+      <div class="col-sm-1">
+      </div>
+    </div>
+ </section>
+
+</div>
+
+  <!-- /.content-wrapper -->
+
+ <!-- Modals -->
+
+
+<div class="modal fade" id="selectSupplier">
+  <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Supplier List</h4>
+    </div>
+    <div class="modal-body">
+
+    <h5 class="text-aqua">* These are the list of consignors.</h5>
+
+    <div class="box-body table-responsive">
+      <table id="example1" class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Business Name</th>
+            <th>Contact Person</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% if(suppliers==null|| suppliers==undefined){ %>
+
+          <% }else if(suppliers.length==0){ %>
+
+          <% }else{ %>
+          <%  suppliers.forEach(function(i){ %>
+              <tr>
+                <td><%=i.strBusinessName%></td>
+                <td><%=i.strFname%> <%=i.strLname%></td>
+                <td><button data-dismiss="modal" data-no="<%=i.intUserID%>" data-bname="<%=i.strBusinessName%>" data-contact="<%=i.strFname%> <%=i.strLname%>" data-email="<%=i.strBusinessEmail%>" class="supplierSetter large ui teal button">Select</button></td>
+              </tr>
+          <%  }) %>
+          <% } %>
+        </tbody>
+
+      </table>
+    </div>
+
+     </div>
+
+  </div>
+  <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+
+
+
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+
+<!-- page script (new added) -->
+
+<script>
+  $(function () {
+    $('#example1').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+    'select'		: true,
+    'scroll'		: true,
+    'searching' : true
+    })
+  })
+</script>
+
+<script>
+  $(function () {
+    $('#example').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : true,
+      'ordering'    : false,
+      'info'        : false,
+      'autoWidth'   : true,
+    'select'		: true,
+    'scroll'		: true,
+    'searching' : false
+    })
+  })
+</script>
+
+
+<script>
+
+$('.supplierSetter').on('click', function(){
+  $('#suppid').val($(this).data('no'));
+  $('#businessName').val($(this).data('bname'));
+  $('#contactPerson').val($(this).data('contact'));
+  $('#email').val($(this).data('email'));
+
+})
+
+
+$(document).ready(function() {
+
+  var t = $('#example').DataTable();
+  var table = document.getElementById("example");
+  var row = table.getElementsByTagName("tr");
+  var rows = t.rows( '.selected' );
+  var tr = table.getElementsByTagName("tr");
+  var count = 1;
+
+  $('#addRow').on('click',function(){
+
+    t.row.add( [
+        count,
+        `<input style="width: 100%" required type="text" name="description[]"  class="form-control">`,
+        `<input style="width: 100px" required type="number" name="amount[]" value="0" class="amount form-control">`
+    ] ).draw( false );
+    count++;
+
+    $('input.amount').on('change',function(){
+      let total = 0;
+      $('div').find('input.amount').each(function(){
+
+        let current = ($(this).val()=="") ? 0 : $(this).val();
+        total = parseInt(total) + parseInt(current);
+
+        $('#total').html(`Total: php `+total.toFixed(2));
+
+      })
+    })
+
+  });
+
+
+
+
+
+
+   $('#issuePaymentForm').submit(function(e){
+     e.preventDefault();
+     $.ajax({
+       url: '/consSales/submitForm',
+       type: 'post',
+       data: $('#issuePaymentForm').serialize(),
+       success: function(response,status,http){
+         if (response == "yes"){
+           swal({title: "Success!", text: "You have created a record for return payment receipt", type: "success"}).then(()=>{
+             window.location.href = '/consSales/paymentRecieptForm'
+           })
+         }
+       },
+       error: function(response){
+         swal("Error","","error");
+       }
+     });
+   })
+
+
+} );
+</script>
+
+
+<script>
+$('#title').html("USG | Payment Receipt Form");
+$(".treeview a:contains('Transactions')").parent().addClass("active");
+$(".navi a:contains('Consignor Sales')").parent().addClass("active");
+</script>
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>

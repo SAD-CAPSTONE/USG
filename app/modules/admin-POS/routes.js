@@ -8,6 +8,8 @@ var mailAccountUse = "imjanellealag@gmail.com";
 
 const excel = require('node-excel-export');
 
+
+
 // You can define styles as json object
 const styles = {
   headerDark: {
@@ -109,8 +111,10 @@ const report = excel.buildExport(
   ]
 );
 
-var spawn = require("child_process").exec;
-var pro = spawn('python',["./hello.py"] );
+var exec = require("child_process").exec;
+var pro = exec( "python " + __dirname + "/hello.py", ( err, stdout, stderr ) => {
+    console.log( stdout )
+});
 
 router.get('/try',(req,res)=>{
 
