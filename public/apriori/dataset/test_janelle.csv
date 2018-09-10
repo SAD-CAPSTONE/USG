@@ -1,0 +1,16 @@
+RIS,Date,organization,stocknumber,details,quantity
+1000,9/4/2018,tg,1000,Apple,1
+1001,9/5/2018,tg,1000,Apple,1
+1001,9/4/2018,tg,1002,Pineapple,1
+1002,9/7/2018,tg,1000,Apple,1
+1002,9/8/2018,tg,1003,Pineapple,1
+1003,9/9/2018,tg,1000,Apple,1
+1004,9/10/2018,tg,1000,Apple,1
+1005,9/4/2018,tg,1002,Pineapple,1
+1006,9/12/2018,tg,1002,Pineapple,1
+1006,9/13/2018,tg,1000,Apple,1
+1007,9/14/2018,tg,1001,Tea,1000
+1008,9/15/2018,tg,1002,Pineapple,2
+1009,9/16/2018,tg,1002,Pineapple,2
+1010,9/17/2018,tg,1002,Pineapple,2
+1011,9/18/2018,tg,1002,Pineapple,2

@@ -26,9 +26,7 @@ router.get('/register-consignor', (req,res)=>{
   });
 });
 
-router.post('/test',(req,res)=>{
-  res.send("yes");
-});
+
 
 router.post('/register',(req,res)=>{
   var user_no = "1000";
@@ -85,7 +83,7 @@ router.post('/register',(req,res)=>{
                       strBusinessAddress, strSupplierPhone, strSupplierMobile, strBusinessTIN, intSupplierType, intStatus)
                       values (?,?,?,?,?,?,?,?,?,?,3)`,
                       [user_no, req.body.businessType, req.body.brands, req.body.businessname, req.body.email, req.body.businessaddress,
-                      phone, req.body.mobile, req.body.businesstin, req.body.suppliertype],(err4,supplieri,fields4)=>{
+                      phone, req.body.mobile, req.body.businesstin, 1],(err4,supplieri,fields4)=>{
 
                       if(err4) {db.rollback(function(){console.log(err4); res.send("error")})}
                       else{

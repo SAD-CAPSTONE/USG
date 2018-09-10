@@ -1,0 +1,152 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+ <!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Transactions</a></li>
+        <li><a href="#">All Consignors</a></li>
+        <li class="active">Payments</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h4 align="center">Payments</h4>
+            </div>
+			  <!-- /.box-header -->
+            <div class="box-body table-responsive">
+              <table id="example2" class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th style="width: 10%">No</th>
+                    <th>Payment Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (payments==null||payments==undefined){ %>
+
+                  <% }else if(payments.length==0){ %>
+
+                  <% }else{ %>
+                  <% var count = 1; %>
+                  <%  payments.forEach(function(i){ %>
+                      <tr>
+                        <td><%= count%></td>
+                        <td><%=moment(i.paymentDate).format("MM/DD/YYYY")%></td>
+                        <td>₱ <%=(i.total).toFixed(2)%></td>
+                        <td>
+                          <% if (i.intStatus == 0){ %>
+                            <span class="label label-warning">Not Received</span>
+                          <% }else{ %>
+                            <span class="label label-success">Received</span>
+                          <% } %>
+                        </td>
+                        <td>
+                          <button data-not="<%=i.intConsignorPaymentNo%>" class="details large ui teal button">Details</button>
+                          <button hidden data-toggle="modal" data-target="#details" id="load"></button>
+                        </td>
+
+                      </tr>
+                    <% count++; %>
+                  <%  }) %>
+                  <% } %>
+
+                </tbody>
+
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+	    </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+  <!-- /.content-wrapper -->
+
+  <!-- modals -->
+<div class="modal fade" id="details">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        <h4 align="center">Payment Breakdown</h4>
+
+        <div id="breakdown_list">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+<!-- page script (new added) -->
+
+<script>
+  $(function () {
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+$('.details').on('click',function(){
+  
+  $('#breakdown_list').load(`/consSales/paymentBreakdown?no=${$(this).data('not')}`);
+  $('#load').click();
+})
+</script>
+
+
+<script>
+$('#title').html("USG | Consignor Payments");
+$(".treeview a:contains('Transactions')").parent().addClass("active");
+$(".navi a:contains('Consignor Sales')").parent().addClass("active");
+</script>
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>
