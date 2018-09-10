@@ -1,0 +1,46 @@
+<div class="box-body table-responsive">
+  <table id="product_table" class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Product Name</th>
+        <th>Brand</th>
+        <th>Size</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if(products==null||products==undefined){ %>
+
+      <% }else if(products.length==0){ %>
+
+      <% }else{ %>
+      <%  var count = 1; %>
+      <%  products.forEach(function(i){ %>
+          <tr>
+            <td><%=count%></td>
+            <td><%=strProductName%></td>
+            <td><%=strProductName%></td>
+            <td><%=strProductName%></td>
+          </tr>
+      <%  count++; %>
+      <%  }) %>
+      <% } %>
+
+    </tbody>
+  </table>
+</div>
+
+<script>
+  $(function () {
+    $('#product_table').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : false,
+      'ordering'    : false,
+      'info'        : false,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>

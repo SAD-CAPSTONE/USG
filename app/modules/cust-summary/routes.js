@@ -8,6 +8,22 @@ const auth_cust = userTypeAuth.cust;
 const firstID = 1000;
 const quantLimit = 50;
 
+function sizeString(obj){
+  let curSize = ``;
+  obj.strVariant ? curSize+= `${obj.strVariant}`: 0
+  obj.strVariant && obj.intSize ? curSize+= ` - `: 0
+  obj.intSize ? curSize+= `${obj.intSize}`: 0
+  obj.strUnitName ? curSize+= ` ${obj.strUnitName}`: 0
+  return curSize;
+}
+function orderArraySort(a,b) {
+  if (a.intOrderDetailsNo < b.intOrderDetailsNo)
+    return -1;
+  if (a.intOrderDetailsNo > b.intOrderDetailsNo)
+    return 1;
+  return 0;
+}
+
 function newOrderNo (req, res, next){
   db.query(`SELECT * FROM tblorder ORDER BY intOrderNo DESC LIMIT 1`, (err, results, fields) => {
     if (err) console.log(err);
@@ -101,9 +117,16 @@ function orderProductQty (req, res, next){
 }
 function cartCheck (req, res, next){
   function cartLimitLoop(i){
-    let cart = req.session.cart;
-    db.query(`SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`
-      , [req.session.cart[i].inv], (err, results, fields) => {
+    let cart = req.session.cart, stringquery1, bodyarray1;
+    if (cart[i].type == 1){
+      stringquery1 = `SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`
+      bodyarray1 = [cart[i].inv]
+    }
+    else{
+      stringquery1 = `SELECT (intQuantity - intReservedItems)stock FROM tblpackage WHERE intPackageNo= ?`
+      bodyarray1 = [cart[i].package]
+    }
+    db.query(stringquery1, bodyarray1, (err, results, fields) => {
       if (err) console.log(err);
       req.session.cart[i].limit = results[0].stock > quantLimit ?
         quantLimit : results[0].stock;
@@ -143,6 +166,33 @@ function thisOrder (req, res, next){
     return next();
   });
 }
+function orderPackages (req, res, next){
+  db.query(`SELECT *, (tblorder.intStatus)orderStatus, (tblorderdetails.intQuantity)orderQty FROM tblorder
+    INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
+    INNER JOIN tblpackage ON tblorderdetails.intInventoryNo= tblpackage.intPackageNo
+    WHERE tblorder.intOrderNo= ? AND tblorder.intUserID= ? AND tblorderdetails.intProductType= 2`,
+    [req.params.orderNo, req.user.intUserID], (err, results, fields) => {
+    if (err) console.log(err);
+    if (results[0]){
+      results.map( obj => obj.packagePrice = priceFormat(obj.packagePrice.toFixed(2)) );
+    }
+    req.orderPackages = results;
+    return next();
+  });
+}
+function receiptPackages (req, res, next){
+  db.query(`SELECT (customer.strFname)customerF, (customer.strMname)customerM, (customer.strLname)customerL, orders.*, tblorder.*
+    FROM tblorder INNER JOIN (SELECT * FROM tbluser)customer ON tblorder.intUserID= customer.intUserID
+    INNER JOIN (SELECT tblorderdetails.*, strPackageName, (packagePrice*tblorderdetails.intQuantity)amount, (packagePrice-(packagePrice*0.12))priceNonVAT,
+    ((packagePrice-(packagePrice*0.12))*tblorderdetails.intQuantity)amountNonVAT
+    FROM tblorderdetails INNER JOIN tblpackage ON tblorderdetails.intInventoryNo= tblpackage.intPackageNo)orders ON orders.intOrderNo= tblorder.intOrderNo
+    WHERE tblorder.intOrderNo= 1005 AND customer.intUserID= 1010 AND orders.intProductType= 2 ORDER BY orders.intOrderDetailsNo`,
+    [req.params.orderNo, req.user.intUserID], (err, results, fields) => {
+    if (err) console.log(err);
+    req.receiptPackages = results;
+    return next();
+  });
+}
 
 router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>{
   res.render('cust-summary/views/checkout', {
@@ -151,21 +201,25 @@ router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>
     admin: req.admin
   });
 });
-router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, admin, (req,res)=>{
+router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, orderPackages, admin, (req,res)=>{
   db.query(`SELECT *, (tblorder.intStatus)orderStatus, (tblorderdetails.intQuantity)orderQty FROM tblorder
     INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
     INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
     INNER JOIN tblproductlist ON tblproductinventory.intProductNo= tblproductlist.intProductNo
     INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
     INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUomNo
-    WHERE tblorder.intOrderNo= ? AND tblorder.intUserID= ?`,[req.params.orderNo, req.user.intUserID], (err, results, fields) => {
+    WHERE tblorder.intOrderNo= ? AND tblorder.intUserID= ? AND tblorderdetails.intProductType= 1`,
+    [req.params.orderNo, req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
     if (results[0]){
       results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('ll') );
       results.map( obj => obj.purchasePrice = priceFormat(obj.purchasePrice.toFixed(2)) );
+      results.map( obj => obj.intSize = sizeString(obj) );
+      results = results.concat(req.orderPackages);
+      results.sort(orderArraySort);
       let orderLength = results.reduce((temp, obj)=>{
         return temp += obj.orderQty
-      },0)
+      },0);
       res.render('cust-summary/views/order', {
         thisUser: req.user,
         order: results,
@@ -201,51 +255,52 @@ router.get('/voucher/:orderNo', checkUserAccount, auth_cust, orderTotal, (req,re
     });
   }
 })
-router.get('/receipt/:orderNo', checkUserAccount, auth_cust, (req,res)=>{
-  if (!req.user){
-    res.send('none')
-  }
-  else{
-    db.query(`SELECT (customer.strFname)customerF, (customer.strMname)customerM, (customer.strLname)customerL, orders.*, tblorder.*
-    FROM tblorder
-    INNER JOIN (SELECT * FROM tbluser)customer ON tblorder.intUserID= customer.intUserID
-    INNER JOIN (SELECT tblorderdetails.*, strBrand, strProductName, intSize, strUnitName, (purchasePrice*tblorderdetails.intQuantity)amount, (purchasePrice-(purchasePrice*0.12))priceNonVAT, ((purchasePrice-(purchasePrice*0.12))*tblorderdetails.intQuantity)amountNonVAT
-    FROM tblorderdetails INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
-    INNER JOIN tblproductlist ON tblproductinventory.intProductNo= tblproductlist.intProductNo
-    INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
-    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno)orders ON orders.intOrderNo= tblorder.intOrderNo
-    WHERE tblorder.intOrderNo= ? AND customer.intUserID= ? ORDER BY orders.intOrderDetailsNo`
-    ,[req.params.orderNo, req.user.intUserID], (err, results, fields) => {
-      if (err) console.log(err);
-      if (results[0]){
-        let totalNonVAT = results.reduce((data, obj)=>{
-          return data + obj.amountNonVAT
-          console.log(data)
-        }, 0);
-        let totalPrice = results.reduce((data, obj)=>{
-          return data + obj.amount
-        }, 0);
-        let vat = totalPrice - totalNonVAT;
-        results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('MM/DD/YY') );
-        results.map( obj => obj.priceNonVAT = priceFormat(obj.priceNonVAT.toFixed(2)) );
-        results.map( obj => obj.amountNonVAT = priceFormat(obj.amountNonVAT.toFixed(2)) );
-        totalNonVAT = priceFormat(totalNonVAT.toFixed(2));
-        totalPrice = priceFormat(totalPrice.toFixed(2));
-        vat = priceFormat(vat.toFixed(2));
+router.get('/receipt/:orderNo', checkUserAccount, auth_cust, receiptPackages, (req,res)=>{
+  db.query(`SELECT (customer.strFname)customerF, (customer.strMname)customerM, (customer.strLname)customerL, orders.*, tblorder.*
+  FROM tblorder INNER JOIN (SELECT * FROM tbluser)customer ON tblorder.intUserID= customer.intUserID
+  INNER JOIN (SELECT tblorderdetails.*, strBrand, strProductName, strVariant, intSize, strUnitName, (purchasePrice*tblorderdetails.intQuantity)amount, (purchasePrice-(purchasePrice*0.12))priceNonVAT, ((purchasePrice-(purchasePrice*0.12))*tblorderdetails.intQuantity)amountNonVAT
+  FROM tblorderdetails INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
+  INNER JOIN tblproductlist ON tblproductinventory.intProductNo= tblproductlist.intProductNo
+  INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
+  INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno)orders ON orders.intOrderNo= tblorder.intOrderNo
+  WHERE tblorder.intOrderNo= ? AND customer.intUserID= ? AND orders.intProductType= 1 ORDER BY orders.intOrderDetailsNo`
+  ,[req.params.orderNo, req.user.intUserID], (err, results, fields) => {
+    if (err) console.log(err);
+    if (results[0]){
+      results = results.concat(req.receiptPackages);
+      results.sort(orderArraySort);
+      let totalNonVAT = results.reduce((data, obj)=>{
+        return data + obj.amountNonVAT
+        console.log(data)
+      }, 0);
+      let totalPrice = results.reduce((data, obj)=>{
+        return data + obj.amount
+      }, 0);
+      let vat = totalPrice - totalNonVAT;
+      results.forEach((obj)=>{
+        obj.intProductType == 1 ?
+          obj.name = `${obj.strBrand} ${obj.strProductName} ${sizeString(obj)}`:
+          obj.name = obj.strPackageName
+      });
+      results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('MM/DD/YY') );
+      results.map( obj => obj.priceNonVAT = priceFormat(obj.priceNonVAT.toFixed(2)) );
+      results.map( obj => obj.amountNonVAT = priceFormat(obj.amountNonVAT.toFixed(2)) );
+      totalNonVAT = priceFormat(totalNonVAT.toFixed(2));
+      totalPrice = priceFormat(totalPrice.toFixed(2));
+      vat = priceFormat(vat.toFixed(2));
 
-        res.send({
-          receipt: results,
-          receiptNonVAT: totalNonVAT,
-          vat: vat,
-          receiptTotal: totalPrice,
-        })
-        // console.log(results)
-      }
-      else{
-        res.send('none')
-      }
-    });
-  }
+      res.send({
+        receipt: results,
+        receiptNonVAT: totalNonVAT,
+        vat: vat,
+        receiptTotal: totalPrice,
+      })
+      // console.log(results)
+    }
+    else{
+      res.send('none')
+    }
+  });
 })
 
 router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOrderDetailsNo, newOrderHistoryNo, newMessageNo, cartCheck, admin, (req,res)=>{
@@ -266,14 +321,25 @@ router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOr
           if (err) console.log(err);
           function multiInsert(i){
             let cart = req.session.cart;
-            db.query(`INSERT INTO tblorderdetails (intOrderDetailsNo, intOrderNo, intInventoryNo, intStatus, purchasePrice, intQuantity)
-              VALUES (?,?,?,?,?,?)`,[req.newOrderDetailsNo + i, thisOrderNo, cart[i].inv, 1, cart[i].curPrice, cart[i].curQty], (err, results, fields) => {
+
+            if (cart[i].type == 1){
+              inv = cart[i].inv
+              stringquery1 = `SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblproductinventory WHERE intInventoryNo= ?`
+              stringquery2 = `UPDATE tblproductinventory SET intReservedItems= ? WHERE intInventoryNo= ?`
+            }
+            else{
+              inv = cart[i].package
+              stringquery1 = `SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblpackage WHERE intPackageNo= ?`
+              stringquery2 = `UPDATE tblpackage SET intReservedItems= ? WHERE intPackageNo= ?`
+            }
+
+            db.query(`INSERT INTO tblorderdetails (intOrderDetailsNo, intOrderNo, intInventoryNo, intProductType, intStatus, purchasePrice, intQuantity)
+              VALUES (?,?,?,?,?,?,?)`,[req.newOrderDetailsNo + i, thisOrderNo, inv, cart[i].type, 1, cart[i].curPrice, cart[i].curQty], (err, results, fields) => {
               if (err) console.log(err);
-              db.query(`SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblproductinventory
-                WHERE intInventoryNo = ?`,[cart[i].inv], (err, results, fields) => {
+              db.query(stringquery1, [inv], (err, results, fields) => {
                 if (results[0].stock){
                   newQty = parseInt(results[0].intReservedItems) + parseInt(cart[i].curQty);
-                  db.query(`UPDATE tblproductinventory SET intReservedItems= ? WHERE intInventoryNo= ?`,[newQty, cart[i].inv], (err, results1, fields) => {
+                  db.query(stringquery2, [newQty, inv], (err, results1, fields) => {
                     if (err) console.log(err);
                     ++i;
                     if (cart.length > i){

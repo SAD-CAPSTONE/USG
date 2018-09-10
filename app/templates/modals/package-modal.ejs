@@ -3,26 +3,26 @@
     <div class="modal-content">
       <div class="modal-header block-none"></div>
       <div class="modal-body">
-        <p class="package-title lh-p3em fw-400 mb-0">Ultra Super Package</p>
+        <input id="package-id" type="text" hidden>
+        <p class="package-title lh-p3em fw-400 mb-0">Package Name</p>
         <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
         <hr>
-        <p class="mb-0 fs-08em text-muted">Ultra super package description</p>
-        <p class="mb-0 fs-1em fw-300">4 x <span class="text-brand">Coco Keto</span> Keto Loaf 2lb (variant)</p>
-        <p class="mb-0 fs-1em fw-300">3 x <span class="text-brand">eHarvest</span> Artisanal Dulong 5lb (variant)</p>
-        <p class="mb-0 fs-1em fw-300">3 x <span class="text-brand">Green Palette</span> Clay Facial Mask 2lb (variant)</p>
-        <p class="mb-2 fs-1em fw-300">1 x <span class="text-brand">Basic Juicery</span> Black UT Juice 45ml (variant)</p>
+        <p class="package-description mb-0 fs-08em lh-p3em text-muted">Package description</p>
+        <div id="products-list"></div>
 
         <div class="price-pane-small block-none">
-          <p class="mb-0 fs-1em fw-400 lh-p3em text-muted inline-block fl-l mb-1">Save 30%</p>
-          <p class="mb-0 fs-1em fw-400 lh-p3em price-symbol price-color inline-block fl-r mb-1">2,750.00</p>
+          <p class="mb-0 fs-1em fw-400 lh-p3em discount text-muted inline-block fl-l mb-1">Save <span>0</span>%</p>
+          <p class="mb-0 fs-1em fw-400 lh-p3em price-symbol price-color inline-block fl-r mb-1">0.00</p>
         </div>
         <div style="clear: both"></div>
 
         <div class="fl-l">
-          <p class="mb-2 fs-08em fw-400">17 Packages Left</p>
-          <p class="mt-1 mb-0 fs-08em fw-400 lh-p3em text-muted">Package lasts until <span class="block">November 24, 2018</span></p>
+          <p id="stock-display" class="mb-2 fs-08em fw-400"><span>0</span> Packages Left
+            <i class="limit-info-package fa fa-info-circle text-muted" title="Maximum of 0 of the same package per order"></i>
+          </p>
+          <p class="mt-1 mb-0 fs-08em fw-400 lh-p3em text-muted expire-date">Package lasts until <span class="block">-</span></p>
         </div>
-        <div class="fl-r align-right">
+        <div class="fl-r align-right pl-2 item-options">
           <div class="input-group quantity mb-2">
             <div class="input-group-prepend addon">
               <button class="btn btn-primary quantity-buttons minus-btn" type="button">
@@ -36,11 +36,11 @@
               </button>
             </div>
           </div>
-          <button type="button" class="add-btn btn btn-custom-primary btn-sm">Add to Cart</button>
+          <button type="button" class="add-button btn btn-custom-primary btn-sm">Add to Cart</button>
         </div>
-        <div class="fl-r align-right pr-2 price-pane">
-          <p class="mb-0 fs-1em fw-400 lh-p3em text-muted">Save 30%</p>
-          <p class="mb-0 fs-08em fw-400 lh-p3em price-symbol price-color">2,750.00</p>
+        <div class="fl-r align-right price-pane">
+          <p class="mb-0 fs-1em fw-400 lh-p3em discount text-muted">Save <span>0</span>%</p>
+          <p class="mb-0 fs-08em fw-400 lh-p3em price-symbol price-color">0.00</p>
         </div>
 
       </div>

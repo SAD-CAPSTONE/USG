@@ -1,0 +1,172 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      <small> Consignment Sales </small>
+    </h1>
+
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="#">Transactions</a></li>
+      <li class="active">Consignor Sales</li>
+    </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#sale_summary" data-toggle="tab"> Sale Summary</a></li>
+            <li ><a href="#all_consignors" data-toggle="tab"> All Consignors</a></li>
+            <!-- <li><a href="#quantity" data-toggle="tab"><i class=""></i>Quantity</a></li> -->
+          </ul>
+          <div class="tab-content">
+            <!-- Active -->
+            <div class="tab-pane active" id="sale_summary">
+
+              <br>
+              <a href="/consSales/paymentRecieptForm"><button class="large ui green button"> Issue Payment Receipt </button></a>
+              </br>
+              <!-- /.box-header -->
+              <div class="box-body table-responsive">
+                <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th style="width: 10%">No</th>
+                      <th>Month / Year</th>
+                      <th>Total Commission</th>
+                      <th>Total Sales</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>January 2018</td>
+                      <td>₱ 1500.00</td>
+                      <td>₱ 3000.00</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>February 2018</td>
+                      <td>₱ 1500.00</td>
+                      <td>₱ 3000.00</td>
+                    </tr>
+
+                  </tbody>
+
+                </table>
+              </div>
+              <!-- /.box-body -->
+            </div>
+
+            <!-- Terminated -->
+            <div class="tab-pane" id="all_consignors">
+
+              </br>
+              <!-- /.box-header -->
+              <div class="box-body table-responsive">
+                <table id="example3" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>Business Name</th>
+                    <th>Contact Person</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <% if(consignors==null||consignors==undefined){ %>
+
+                    <% }else if(consignors.length==0){ %>
+
+                    <% }else{ %>
+                    <%  consignors.forEach(function(i){ %>
+                        <tr>
+                          <td><%=i.strBusinessName%></td>
+                          <td><%=i.strFname%> <%=i.strLname%></td>
+                          <td><%=i.strBusinessEmail%></td>
+                          <td>
+                            <a href="/consSales/viewSales?cons=<%=i.intUserID%>"><button class="large ui teal button">Sales</button></a>
+                            <a href="/consSales/viewPayments?cons=<%=i.intUserID%>"><button class="large ui teal button">Payments</button></a>
+                          </td>
+                        </tr>
+                    <%  }) %>
+                    <% } %>
+
+                  </tbody>
+
+                </table>
+              </div>
+              <!-- /.box-body -->
+            </div>
+
+          </div>
+          <!-- /.tab-content -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+  <!-- ./wrapper -->
+
+  <!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+  <!-- page script (new added) -->
+  <script>
+    $(function () {
+      $('#example2').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+  	  'select'		: true,
+  	  'scroll'		: true
+      })
+    })
+  </script>
+
+  <script>
+    $(function () {
+      $('#example3').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+  	  'select'		: true,
+  	  'scroll'		: true
+      })
+    })
+  </script>
+
+
+  <script>
+    $('#title').html("USG | Consignor Sales");
+
+    $(".treeview a:contains('Transaction')").parent().addClass("active");
+    $(".navi a:contains('Consignor Sales')").parent().addClass("active");
+  </script>
+
+  </body>
+  </html>
