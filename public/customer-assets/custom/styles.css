@@ -216,8 +216,11 @@ textarea {
 .text-brand {
   color: #2980b9;
 }
+.text-variant {
+  color: #218c74;
+}
 .text-package {
-  color: rgba(204, 49, 2, .8)
+  color: #cd6133
 }
 
 /* Text Align */
@@ -298,6 +301,9 @@ input#mobile {
 }
 .clear-opacity {
   opacity: 1 !important;
+}
+.w-fit {
+  width: fit-content;
 }
 
 /* FLoat */
@@ -1151,6 +1157,17 @@ table th, table td {
   right: 15;
   top: 17.5;
 }
+#package-modal #products-list p {
+  padding: 6px 0 0 0;
+  margin: 0;
+  line-height: 1.3em;
+}
+#package-modal #products-list p:first-of-type {
+  padding-top: 4px;
+}
+#package-modal #products-list p:last-of-type {
+  margin-bottom: 10px;
+}
 
 #package-modal .price-pane > p:first-child {
   margin-top: 5px;
@@ -1173,8 +1190,15 @@ table th, table td {
 #package-modal .quantity .input-group-append{
   margin-left: 0px !important;
 }
-#package-modal button.add-btn{
+#package-modal button.add-button{
   border-radius: 0;
+}
+
+.package-details, .package-details-modal {
+  cursor: pointer;
+}
+.package-details:hover, .package-details-modal:hover {
+  text-decoration: underline;
 }
 
 /* Consignor ---------------------------------------------------------------- */

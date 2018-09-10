@@ -1,0 +1,71 @@
+<div class="box-body table-responsive">
+  <table id="product_table" class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Variant / Size</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% if(products==null|| products==undefined){ %>
+
+      <% }else if(products.length==0){ %>
+
+      <% }else{ %>
+      <%  products.forEach(function(i){ %>
+          <tr>
+            <td><%=i.strProductName%></td>
+            <td><%=i.strVariant%> <%=i.intSize%> <%=i.strUnitName%></td>
+            <td><button data-dismiss="modal" data-no="<%=i.intInventoryNo%>" data-product="<%=i.strProductName%>" data-variant="<%=i.strVariant%>" data-size="<%=i.intSize%> <%=i.strUnitName%>" class="productSetter large ui teal button">Select</button></td>
+          </tr>
+      <%  }) %>
+      <% } %>
+    </tbody>
+
+  </table>
+</div>
+
+
+<script>
+  $(function () {
+    $('#product_table').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+    'select'		: true,
+    'scroll'		: true,
+    'searching' : true
+    })
+  })
+
+
+
+  var t = $('#example').DataTable();
+  var table = document.getElementById("example");
+  var row = table.getElementsByTagName("tr");
+  var rows = t.rows( '.selected' );
+  var filter = $(this).data('productid');
+  var tr = table.getElementsByTagName("tr");
+  var count = 1;
+
+  $('.productSetter').on('click',function(){
+
+    t.row.add( [
+        count,
+        `<input type="hidden" name="ino[]" value="${$(this).data('no')}" class="form-control"> ${$(this).data('product')}`,
+        `${$(this).data('variant')}`,
+        `${$(this).data('size')}`,
+        `<input style="width: 90px" type="number" name="quantity[]" required  class="form-control">`,
+        `<input  type="text" name="reason[]" required  class="form-control">`
+
+    ] ).draw( false );
+    count++;
+  });
+
+
+</script>
