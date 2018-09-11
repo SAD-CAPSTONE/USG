@@ -46,6 +46,23 @@
                     </tr>
                     </thead>
                     <tbody>
+                      <% if(returns==null||returns==undefined){ %>
+
+                      <% }else if(returns.length==0){ %>
+
+                      <% }else{ %>
+                      <%  var count = 1; %>
+                      <%  returns.forEach(function(i){ %>
+                          <tr>
+                            <td><%=count%></td>
+                            <td><%=i.strBusinessName%></td>
+                            <td><%=moment(i.dateReturned).format("MM/DD/YYYY")%></td>
+                            <td>
+                              <button class="large ui teal button">View Details</button>
+                            </td>
+                          </tr>
+                      <%  }) %>
+                      <% } %>
 
                     </tbody>
                   </table>
