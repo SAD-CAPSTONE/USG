@@ -102,23 +102,6 @@
                 <input id="thisprod_id" type="text" value="<%= thisProduct.intProductNo%>" hidden />
               </div>
               <div>
-                <!-- <div id="radio-container" class="fl-l">
-                  <% thisInventory.forEach((inv, i)=>{ %>
-                    <div class="form-check radio-div">
-                      <input class="prod_price" type="text" value="<%= inv.productPrice%>" hidden />
-                      <input class="prod_stock" type="text" value="<%= inv.stock%>" hidden />
-                      <% if(i==0){ %>
-                        <input id="<%= inv.intInventoryNo%>" class="form-check-input sizes-radio" type="radio" name="invSizes" value="<%= inv.intInventoryNo%>" checked>
-                      <% }else{ %>
-                        <input id="<%= inv.intInventoryNo%>" class="form-check-input sizes-radio" type="radio" name="invSizes" value="<%= inv.intInventoryNo%>">
-                      <% } %>
-                      <label class="form-check-label" for="<%= inv.intInventoryNo%>">
-                        <%= inv.intSize%><%= inv.strUnitName%>
-                      </label>
-                    </div>
-                  <% }) %>
-                </div> -->
-                <!-- <div id="item-price" class="fl-r pos-relative"></div> -->
                 <select class="select-size" name="">
                   <% thisInventory.forEach((inv, i)=>{ %>
                     <% if(i==0){ %>
@@ -172,7 +155,7 @@
               </div>
 
               <div class="card-desc">
-                <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
+                <p class="card-title" title="<%=prod.strBrand%> <%=prod.strProductName%>"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
                 <p class="card-price price-symbol">
                   <% if(prod.minPrice == prod.maxPrice){ %>
                     <%= prod.minPrice %>
@@ -219,7 +202,7 @@
               </div>
 
               <div class="card-desc">
-                <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
+                <p class="card-title" title="<%=prod.strBrand%> <%=prod.strProductName%>"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
                 <p class="card-price price-symbol">
                   <% if(prod.minPrice == prod.maxPrice){ %>
                     <%= prod.minPrice %>

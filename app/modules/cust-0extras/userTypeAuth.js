@@ -45,7 +45,7 @@ module.exports = {
     }
     else res.redirect('/extras/unAuth')
   },
-  cons_cut: (req,res,next)=>{
+  cons_cust: (req,res,next)=>{
     console.log(`consignor/customer`)
     if (req.user){
       if (auth([2,3], req.user.intUserTypeNo)) return next()

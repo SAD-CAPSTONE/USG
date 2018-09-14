@@ -103,7 +103,7 @@ $(() => {
                 <input class="cart-type" value="${data.type}" hidden/>
                 <div class="product-pic"><a href="/item/${data.id}"><img src="${data.img}"/></a></div>
                 <div class="product-desc">
-                  <p class="product-title"><span class="text-brand">${data.brand}</span> ${data.name}</p>
+                  <p class="product-title" title="${data.brand} ${data.name}"><span class="text-brand">${data.brand}</span> ${data.name}</p>
                   <small class="product-size text-muted">${data.curSize}</small>
                   <div class="input-group quantity">
                     <div class="input-group-prepend addon">
@@ -135,7 +135,7 @@ $(() => {
                 <input class="cart-type" value="${data.type}" hidden/>
                 <div class="product-pic"><img src="${data.img}" class="cursor-pointer"/></div>
                 <div class="product-desc">
-                  <p class="product-title"><span class="text-package">${data.name}</span></p>
+                  <p class="product-title" title="${data.name}"><span class="text-package">${data.name}</span></p>
                   <div class="package-product-list">
 
                   </div>

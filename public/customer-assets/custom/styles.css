@@ -222,6 +222,13 @@ textarea {
 .text-package {
   color: #cd6133
 }
+.unselectable {
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 
 /* Text Align */
 .align-left {
@@ -458,6 +465,9 @@ body {
   background-repeat: no-repeat !important;
   background-position: center !important;
   background-size: cover !important;
+  -webkit-background-size: cover !important;
+  -moz-background-size: cover !important;
+  -o-background-size: cover !important;
 }
 .middle {
   display: table-cell;
@@ -528,6 +538,8 @@ nav .dropdown-item:hover {
 .banner {
   background: url("/assets/images/static/green2.jpg") fixed;
   background-size: 100% 100%;
+  margin-top: 55px;
+  padding: 5px 0px 30px;
 }
 .banner-img {
   width: 100%;
@@ -552,11 +564,11 @@ nav .dropdown-item:hover {
 }
 #sidebar>.row>.col:first-of-type h5 {
   padding: 3px 10px;
-  border-left: 4px solid #F7F7F7;
+  border-left: 4px solid rgba(0, 0, 0, 0);
   transition: border 0.2s linear;
 }
 #sidebar>.row>.col:first-of-type>h5:hover {
-  border-left: 4px solid #F7F7F7 !important;
+  border-left: 4px solid rgba(0, 0, 0, 0) !important;
 }
 #sidebar>.row>.col:first-of-type a {
   text-decoration: none;
@@ -1228,6 +1240,44 @@ table th, table td {
   text-decoration: underline;
 }
 
+/* Order Sucess */
+#orderSuccess-container {
+  margin-top: 70px;
+}
+#orderSuccess-container > div {
+  background: white;
+  margin-bottom: 10px;
+  padding: 15px 0px;
+  box-shadow: 0px 3px 6px #F2F2F2;
+  position: relative;
+  width: 100%
+}
+
+#orderSuccess-container .home-link {
+  color: #707070;
+}
+#orderSuccess-container .links-div {
+  display: none;
+}
+#orderSuccess-container > div:first-child > a:first-of-type,
+#orderSuccess-container > div:first-child > a:nth-of-type(2) {
+  position: absolute;
+  margin-top: 2px;
+}
+#orderSuccess-container > div:first-child > a:first-of-type {
+  left: 15px;
+}
+#orderSuccess-container > div:first-child > a:nth-of-type(2) {
+  right: 15px;
+}
+
+#orderSuccess-container .products-container *{
+  text-align: left;
+}
+#orderSuccess-container .custom-card{
+  margin: 8px 5px;
+}
+
 /* Consignor ---------------------------------------------------------------- */
 :root {
   --sales-products-col-width: calc(100% - 339px);
@@ -1541,6 +1591,21 @@ table th, table td {
     margin-left: 0px !important;
   }
 
+  .banner {
+    margin-top: 32px;
+    padding: 0px;
+  }
+  .banner > .container {
+    padding: 0px;
+  }
+  #banner-carousel {
+    height: 200px;
+  }
+  .banner-img {
+    width: 100%;
+    height: 100%;
+  }
+
   .inner {
     width: auto !important;
   }
@@ -1590,6 +1655,17 @@ table th, table td {
   #package-modal .price-pane {
     display: none;
   }
+
+  #orderSuccess-container .links-div {
+    display: block;
+  }
+  #orderSuccess-container > div:first-child > a:first-of-type {
+    display: none;
+  }
+  #orderSuccess-container > div:first-child > a:nth-of-type(2){
+    display: none;
+  }
+
 }
 @media (max-width: 450px) {
   .search>input {

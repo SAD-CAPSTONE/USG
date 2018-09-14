@@ -2,10 +2,14 @@
 
 <div id="container-messagepage" class="outer">
   <div class="middle">
-    <div class="inner" style="width: 460px">
+    <div class="inner unselectable" style="width: 460px">
       <img src="/customer-assets/images/static/usg-green.png" onContextMenu="return false"/>
-      <h1>Page does not exist.</h1>
-      <a href="/home" role="button" aria-pressed="true" class="btn btn-secondary btn-md" style="width: 110px">Home</a>
+      <h1><%=message%></h1>
+      <% if(messLink == 'home'){ %>
+        <a href="/home" role="button" aria-pressed="true" class="btn btn-secondary btn-md" style="width: 110px">Home</a>
+      <% }else{ %>
+        <a href="/login" role="button" aria-pressed="true" class="btn btn-custom-primary btn-md" style="width: 110px">Login</a>
+      <% } %>
     </div>
   </div>
 </div>

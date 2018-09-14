@@ -113,6 +113,7 @@ $('.products-container').on('click', '.cart-btn:not(.package-btn)', function(){
     modal.find('img').attr("src", data.img);
     modal.find('img').parent().attr("href", `/item/${data.id}`);
     modal.find('.title').html(`<span class="text-brand">${data.brand}</span> ${data.name}`);
+    modal.find('.title').attr(`title`,`${data.brand} ${data.name}`);
     modal.find('.price').text(data.curPrice);
     modal.find('.quantity-input').val(data.curQty);
     modal.find('.select-size').html('');

@@ -6,7 +6,7 @@
   <div id="summary-main-pane" class="fl-l">
     <div>
       <p id="notice" class="m-0 fs-08em fw-400 inline-block">Products will be delivered within <%= admin.deliveryPeriod%> working days</p>
-      <% if (orderOne.orderStatus == 0 || orderOne.orderStatus == 1){ %>
+      <% if ((orderOne.orderStatus == 0 || orderOne.orderStatus == 1) && orderOne.intPaymentStatus == 0){ %>
         <a class="inline-block fl-r" href data-toggle='modal' data-target='#CancelModal'><p class="m-0 fs-08em fw-400">Cancel Order</p></a>
       <% }else if(orderOne.orderStatus == 6){ %>
         <a class="inline-block fl-r"><p class="m-0 fs-08em fw-400 text-danger">Cancelled</p></a>
