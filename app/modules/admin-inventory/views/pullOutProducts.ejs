@@ -1,0 +1,236 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+ <!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+
+        <small>Stock Pull-ou</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Inventory</a></li>
+        <li class="active">Pull-out Products</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#allPullOut" data-toggle="tab"> Pulled-out Products</a></li>
+              <li><a href="#batchPullOut" data-toggle="tab"> Batch Pull-out</a></li>
+
+            </ul>
+            <div class="tab-content">
+
+              <!-- All Pull Outs-->
+              <div class="tab-pane active" id="allPullOut">
+
+                <br>
+                <div class="box-body table-responsive">
+                  <table id="example1" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th>Date</th>
+                        <th>Brand</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if (all==null||all==undefined){ %>
+
+                      <% }else if(all.length==0){ %>
+
+                      <% }else{ %>
+                      <%  var count = 1; %>
+                      <%  all.forEach(function(i){ %>
+                          <tr>
+                            <td><%=count%></td>
+                            <td><%=moment(i.pullOutDate).format("MM/DD/YYYY")%></td>
+                            <td><%=i.strBrand%></td>
+                            <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%><%=i.strUnitName%></td>
+                            <td><%=i.quantity%></td>
+                          </tr>
+                      <%  }) %>
+                      <% } %>
+
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+
+              <!-- Batch Pull Out -->
+              <div class="tab-pane" id="batchPullOut">
+                <br>
+                <div class="box-body table-responsive">
+                  <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th style="width: 30px"></th>
+                        <th>Batch No</th>
+                        <th>Expiration Date</th>
+                        <th>Brand</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if(batch == null || batch == undefined){ %>
+
+                      <% }else if(batch.length==0){ %>
+
+                      <% }else{ %>
+                      <%   batch.forEach(function(i){ %>
+                          <tr>
+                            <td>
+                              <button data-inventory="<%=i.intInventoryNo%>" data-batch="<%=i.intBatchNo%>" class="pulloutitem large ui red basic button">Pull Out</button>
+
+                            </td>
+                            <td><%=i.intBatchNo%></td>
+                            <td><%=moment(i.expirationDate).format("MM/DD/YYYY")%></td>
+                            <td><%=i.strBrand%></td>
+                            <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%><%=i.strUnitName%></td>
+                            <td><%=i.quantity%></td>
+
+                          </tr>
+                      <%  }) %>
+                    <% } %>
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            <!-- /.tab-content -->
+          </div>
+          <!-- /.nav-tabs-custom -->
+          </div>
+	      </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+  <!-- /.content-wrapper -->
+
+  <!-- Modals -->
+
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+
+
+<script>
+  $(function () {
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $(function () {
+    $('#example1').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $(function () {
+    $('#example3').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+
+  $('.pulloutitem').on('click',function(){
+
+
+    swal({
+      title: "Are you sure?",
+      text: "You cannot undo pullout stock from inventory",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Pull-out List from Inventory",
+      cancelButtonText: "Back",
+      reverseButtons: true
+    }).then((result)=>{
+      if(result.value){
+
+         $.ajax({
+           url: '/inventory/pullOutItem',
+           method: 'post',
+           datatype: "json",
+           data: {batch: $(this).data('batch')},
+           success: function(response, status, http){
+             if(response == "yes"){
+               swal({title: 'Success', text: 'You pulled out items from inventory', type: 'success'}).then(() => {
+                 location.reload();
+               })
+             }else{
+               swal({title: 'Error', text: 'You have an error', type: 'error'}, function(){
+               })
+             }
+           }
+         })
+      }
+    })
+  });
+</script>
+
+
+
+
+<script>
+$('#title').html("USG | Pull-out Products");
+$(".treeview a:contains('Inventory')").parent().addClass("active");
+$(".navi a:contains('Pull-out Products')").parent().addClass("active");
+</script>
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>

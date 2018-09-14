@@ -552,7 +552,7 @@ router.post('/searchExpired',(req,res)=>{
 
 router.post('/pullOutItem',(req,res)=>{
 
-  var batch = req.body.o;
+
   var pullOutNo = "1000";
 
   db.beginTransaction(function(err){
@@ -560,7 +560,7 @@ router.post('/pullOutItem',(req,res)=>{
       console.log(err);
     }else{
 
-          db.query(`Select * from tblbatch where intBatchNo = "${batch}" `,(err2,results2,fields2)=>{
+          db.query(`Select * from tblbatch where intBatchNo = "${req.body.batch}" `,(err2,results2,fields2)=>{
             if (err2){db.rollback(function(){console.log(err2)});
             }else{
 
@@ -574,11 +574,11 @@ router.post('/pullOutItem',(req,res)=>{
                       else{
                         pullOutNo = parseInt(results4[0].intPullOutNo) + 1;
                       }
-                        db.query(`Insert into tblstockpullout (intPullOutNo, intBatchNo, intAdminID, intQuantity) values("${pullOutNo}","${batch}","1000",${results2[0].intQuantity})`,(err5,results5,fields5)=>{
+                        db.query(`Insert into tblstockpullout (intPullOutNo, intInventoryNo, intAdminID, intQuantity) values("${pullOutNo}","${results2[0].intInventoryNo}","1000",${results2[0].intQuantity})`,(err5,results5,fields5)=>{
                           if (err5){
                             db.rollback(function(){console.log(err5)});
                           }else{
-                            db.query(`Update tblBatch set intQuantity = 0, intStatus = 0 where intBatchNo = "${batch}"`,(err6,res6,fie6)=>{
+                            db.query(`Update tblBatch set intQuantity = 0, intStatus = 0 where intBatchNo = "${req.body.batch}"`,(err6,res6,fie6)=>{
                               if(err6) db.rollback(function(){console.log(err5)});
                               else{
                                 db.commit(function(e1){
@@ -666,9 +666,11 @@ router.post('/checkExpired',(req,res)=>{
         else{res.send(res1)}
       }
     })
-})
+});
 
-router.get('/pulledOutStocks',(req,res)=>{
+
+
+router.get('/expiredProducts',(req,res)=>{
 
   db.query(`Select tblStockPullOut.intQuantity as quantity, tblStockPullOut.*, tblProductInventory.*, tblBatch.*,
     tblProductList.*, tblUom.*, tblUser.*, tblProductBrand.* from tblStockPullOut join tblBatch on tblStockPullOut.intBatchNo = tblBatch.intBatchNo join tblProductInventory on tblProductInventory.intInventoryNo = tblBatch.intInventoryNo join tblUom on tblProductInventory.intUomNo = tblUom.intUomno join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
@@ -683,12 +685,40 @@ router.get('/pulledOutStocks',(req,res)=>{
       where ((tblbatch.expirationDate between NOW() and DATE_ADD(NOW(), INTERVAL 14 DAY)) and tblbatch.intStatus = 1) and tblBatch.intQuantity <> 0`,(err2,res2,fie2)=>{
         if(err2) console.log(err2);
 
-        if(!err2) res.render('admin-inventory/views/stockPullOut',{re: results1, moment: moment, all: res2});
+        if(!err2) res.render('admin-inventory/views/expiredProducts',{re: results1, moment: moment, all: res2});
 
       })
 
   });
 });
+
+router.get('/pullOutProduct',(req,res)=>{
+  // Select batch
+  db.query(`Select tblBatch.intQuantity as quantity, tblBatch.intStatus as stats, tblBatch.*, tblProductInventory.*, tblProductlist.*, tblProductBrand.*, tblUom.*
+    from tblBatch join tblProductInventory on tblBatch.intInventoryNo = tblProductinventory.intInventoryNo
+    join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
+    join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo
+    join tblUom on tblProductInventory.intUOMno = tblUom.intUOMno
+    where tblBatch.intStatus = 1 and tblBatch.intQuantity <> 0 `,(err1,batch,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+        // select all pullOut
+        db.query(`Select tblStockPullOut.intQuantity as quantity, tblStockPullOut.*, tblProductInventory.*, tblProductBrand.*, tblUom.*
+           from tblStockPullOut join tblProductInventory on tblStockPullOut.intInventoryNo = tblProductInventory.intInventoryNo
+          join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductNo
+          join tblProductBrand on tblProductList.intBrandNo = tblProductBrand.intBrandNo
+          join tblUom on tblProductinventory.intuomno = tbluom.intuomno`,(err2,res2,fie2)=>{
+            if(err2) console.log(err2);
+            else{
+              console.log(res2)
+              res.render('admin-inventory/views/pullOutProducts',{batch: batch, moment: moment, all: res2});
+
+            }
+          })
+
+      }
+    });
+})
 
 router.post('/update',(req,res)=>{
   var transact_no = "1000";
