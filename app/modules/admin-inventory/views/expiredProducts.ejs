@@ -24,7 +24,6 @@
             <ul class="nav nav-tabs">
               <li class="active"><a href="#allExpired" data-toggle="tab"><i class="fa fa-bars"></i> Expired Products</a></li>
               <li><a href="#searchExpired" data-toggle="tab"><i class="fa fa-search"></i> Search Expired</a></li>
-              <li><a href="#pulledOutProducts" data-toggle="tab"> Pulled Out Products</a></li>
             </ul>
             <div class="tab-content">
 
@@ -114,42 +113,6 @@
 
               </div>
 
-              <!-- Pulled Out Stocks -->
-              <div class="tab-pane" id="pulledOutProducts">
-                <br>
-                <button class="large ui teal button">Convert to CSV File and Clear Data</button>
-                <div class="box-body table-responsive">
-                  <table id="example2" class="table table-bordered table-hover">
-                    <thead>
-                    <tr>
-                      <th>Batch No</th>
-                      <th>Product Name</th>
-                      <th>Supplier</th>
-                      <th>Quantity</th>
-                      <th>Date Pulled-out</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                      <% if (re == null || re == undefined){ %>
-
-                      <% }else if (re.length == 0){ %>
-
-                      <% }else{ %>
-                      <%  re.forEach(function(i){ %>
-                          <tr>
-                            <td><%=i.intBatchNo %></td>
-                            <td><%=i.strBrand%> <%=i.strProductName%> <%=i.intSize%> <%=i.strUnitName%></td>
-                            <td><%=i.strFname%> <%=i.strLname%></td>
-                            <td><%=i.quantity%></td>
-                            <td><%=moment(i.pullOutDate).format("MM/DD/YYYY")%></td>
-                          </tr>
-                        <% }) %>
-                      <% } %>
-                    </tbody>
-
-                  </table>
-                </div>
-              </div>
 
             <!-- /.tab-content -->
           </div>
@@ -242,7 +205,7 @@ $(document).ready(function(){
 
   $('.pulloutitem').on('click',function(){
 
-    var data = $(this).data('batch');
+    
     swal({
       title: "Are you sure?",
       text: "You cannot undo pullout stock from inventory",
@@ -258,7 +221,7 @@ $(document).ready(function(){
            url: '/inventory/pullOutItem',
            method: 'post',
            datatype: "json",
-           data: {o: data},
+           data: {batch: $(this).data('batch')},
            success: function(response, status, http){
              if(response == "yes"){
                swal({title: 'Success', text: 'You pulled out items from inventory', type: 'success'}).then(() => {

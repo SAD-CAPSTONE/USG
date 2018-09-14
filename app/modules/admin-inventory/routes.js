@@ -672,11 +672,6 @@ router.post('/checkExpired',(req,res)=>{
 
 router.get('/expiredProducts',(req,res)=>{
 
-  db.query(`Select tblStockPullOut.intQuantity as quantity, tblStockPullOut.*, tblProductInventory.*, tblBatch.*,
-    tblProductList.*, tblUom.*, tblUser.*, tblProductBrand.* from tblStockPullOut join tblBatch on tblStockPullOut.intBatchNo = tblBatch.intBatchNo join tblProductInventory on tblProductInventory.intInventoryNo = tblBatch.intInventoryNo join tblUom on tblProductInventory.intUomNo = tblUom.intUomno join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
-    join tblUser on tblProductInventory.intUserID = tblUser.intUserID join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo`,(err1,results1,fields1)=>{
-    if(err1) console.log(err1);
-
     db.query(`Select * from tblbatch
       join tblproductinventory on tblbatch.intinventoryno = tblproductinventory.intinventoryno
       join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
@@ -685,11 +680,10 @@ router.get('/expiredProducts',(req,res)=>{
       where ((tblbatch.expirationDate between NOW() and DATE_ADD(NOW(), INTERVAL 14 DAY)) and tblbatch.intStatus = 1) and tblBatch.intQuantity <> 0`,(err2,res2,fie2)=>{
         if(err2) console.log(err2);
 
-        if(!err2) res.render('admin-inventory/views/expiredProducts',{re: results1, moment: moment, all: res2});
+        if(!err2) res.render('admin-inventory/views/expiredProducts',{moment: moment, all: res2});
 
       })
 
-  });
 });
 
 router.get('/pullOutProduct',(req,res)=>{
