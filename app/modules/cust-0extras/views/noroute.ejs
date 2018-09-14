@@ -1,18 +1,22 @@
 <%- include('../../../templates/master.ejs') -%>
 
-<div class="container container-errorpage">
-  <div class="row">
-    <div class="col"></div>
-    <div class="col-sm-8 col-md-7 col-lg-5" style="margin-top: 60px;">
-      <div class="container text-center"><br/><img src="/customer-assets/images/static/usg-green.png" onContextMenu="return false"/>
-        <h1>Page does not exist.</h1>
-        <a href="/home" role="button" aria-pressed="true" class="btn btn-secondary btn-md" style="width: 110px">Home</a>
-        <br>
-      </div>
+<div id="container-messagepage" class="outer">
+  <div class="middle">
+    <div class="inner" style="width: 460px">
+      <img src="/customer-assets/images/static/usg-green.png" onContextMenu="return false"/>
+      <h1>Page does not exist.</h1>
+      <a href="/home" role="button" aria-pressed="true" class="btn btn-secondary btn-md" style="width: 110px">Home</a>
     </div>
-    <div class="col"></div>
   </div>
 </div>
+
+<%- include('../../../templates/scripts.ejs') -%>
+<script type="text/javascript">
+  $(()=>{
+    $('.outer').css(`background`, `url('/customer-assets/images/static/login-bg.jpg')`)
+  })
+
+</script>
 
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/closer.ejs') -%>

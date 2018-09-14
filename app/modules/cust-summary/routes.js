@@ -212,11 +212,11 @@ router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, orderPack
     [req.params.orderNo, req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
     if (results[0]){
+      results = results.concat(req.orderPackages);
+      results.sort(orderArraySort);
       results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('ll') );
       results.map( obj => obj.purchasePrice = priceFormat(obj.purchasePrice.toFixed(2)) );
       results.map( obj => obj.intSize = sizeString(obj) );
-      results = results.concat(req.orderPackages);
-      results.sort(orderArraySort);
       let orderLength = results.reduce((temp, obj)=>{
         return temp += obj.orderQty
       },0);
@@ -324,23 +324,44 @@ router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOr
 
             if (cart[i].type == 1){
               inv = cart[i].inv
-              stringquery1 = `SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblproductinventory WHERE intInventoryNo= ?`
-              stringquery2 = `UPDATE tblproductinventory SET intReservedItems= ? WHERE intInventoryNo= ?`
+              stringquery1 = `SELECT (0)productSRP, ?`
+              stringquery2 = `SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblproductinventory WHERE intInventoryNo= ?`
+              stringquery3 = `UPDATE tblproductinventory SET intReservedItems= ? WHERE intInventoryNo= ?`
             }
             else{
               inv = cart[i].package
-              stringquery1 = `SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblpackage WHERE intPackageNo= ?`
-              stringquery2 = `UPDATE tblpackage SET intReservedItems= ? WHERE intPackageNo= ?`
+              stringquery1 = `SELECT productSRP FROM tblproductinventory WHERE intInventoryNo= ?`
+              stringquery2 = `SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblpackage WHERE intPackageNo= ?`
+              stringquery3 = `UPDATE tblpackage SET intReservedItems= ? WHERE intPackageNo= ?`
             }
-
-            db.query(`INSERT INTO tblorderdetails (intOrderDetailsNo, intOrderNo, intInventoryNo, intProductType, intStatus, purchasePrice, intQuantity)
-              VALUES (?,?,?,?,?,?,?)`,[req.newOrderDetailsNo + i, thisOrderNo, inv, cart[i].type, 1, cart[i].curPrice, cart[i].curQty], (err, results, fields) => {
-              if (err) console.log(err);
-              db.query(stringquery1, [inv], (err, results, fields) => {
-                if (results[0].stock){
-                  newQty = parseInt(results[0].intReservedItems) + parseInt(cart[i].curQty);
-                  db.query(stringquery2, [newQty, inv], (err, results1, fields) => {
-                    if (err) console.log(err);
+            db.query(stringquery1, [inv], (err, srp, fields) => {
+              db.query(`INSERT INTO tblorderdetails (intOrderDetailsNo, intOrderNo, intInventoryNo, intProductType, intStatus, purchasePrice, intQuantity, currentSRP)
+                VALUES (?,?,?,?,?,?,?,?)`,[req.newOrderDetailsNo + i, thisOrderNo, inv, cart[i].type, 1, cart[i].curPrice, cart[i].curQty, srp[0].productSRP], (err, results, fields) => {
+                if (err) console.log(err);
+                db.query(stringquery2, [inv], (err, results, fields) => {
+                  if (results[0].stock){
+                    newQty = parseInt(results[0].intReservedItems) + parseInt(cart[i].curQty);
+                    db.query(stringquery3, [newQty, inv], (err, results1, fields) => {
+                      if (err) console.log(err);
+                      ++i;
+                      if (cart.length > i){
+                        multiInsert(i);
+                      }
+                      else{
+                        db.commit(function(err) {
+                          if (err) console.log(err);
+                          req.session.cart = null;
+                          res.render('cust-summary/views/orderSuccess', {
+                            thisUser: req.user,
+                            orderNumber: thisOrderNo,
+                            checkUpdateOrder: req.body.paymentMethod,
+                            admin: req.admin
+                          });
+                        });
+                      }
+                    });
+                  }
+                  else{
                     ++i;
                     if (cart.length > i){
                       multiInsert(i);
@@ -349,29 +370,11 @@ router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOr
                       db.commit(function(err) {
                         if (err) console.log(err);
                         req.session.cart = null;
-                        res.render('cust-summary/views/orderSuccess', {
-                          thisUser: req.user,
-                          orderNumber: thisOrderNo,
-                          checkUpdateOrder: req.body.paymentMethod,
-                          admin: req.admin
-                        });
+                        res.redirect(`/summary/sample`,{message: 'Something went wrong'});
                       });
                     }
-                  });
-                }
-                else{
-                  ++i;
-                  if (cart.length > i){
-                    multiInsert(i);
                   }
-                  else{
-                    db.commit(function(err) {
-                      if (err) console.log(err);
-                      req.session.cart = null;
-                      res.redirect(`/summary/sample`,{message: 'Something went wrong'});
-                    });
-                  }
-                }
+                });
               });
             });
           }

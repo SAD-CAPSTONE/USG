@@ -408,7 +408,7 @@ body {
    position:relative;
 }
 #body {
-   padding-bottom: 60px;   /* Height of the footer */
+  padding-bottom: 60px;   /* Height of the footer */
 }
 #footer {
    position:absolute;
@@ -441,6 +441,33 @@ body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Message Page --------------------------------------------------*/
+#container-messagepage .inner {
+  background: rgba(255,255,255,.9);
+  border-radius: 0;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.outer {
+  display: table;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: cover !important;
+}
+.middle {
+  display: table-cell;
+  vertical-align: middle;
+}
+.inner {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 
 /* Navbar ----------------------------------------------------- */
 .navbar {
@@ -1512,6 +1539,10 @@ table th, table td {
 @media (max-width: 576px) {
   .search>input {
     margin-left: 0px !important;
+  }
+
+  .inner {
+    width: auto !important;
   }
 
   #item-main-pane > div:nth-child(2) img {

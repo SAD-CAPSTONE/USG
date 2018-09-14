@@ -136,38 +136,42 @@
       <%})%>
   </div>
 </div>
-<div class="mb-3">
-  <div class="container">
-    <div>
-      <h3 class="feature-title lead fl-l light-bold mb-2"><b>Packages</b></h3>
-      <h3 class="store-link lead fl-r mb-2"><a href="/store">Go To Store ></a></h3>
+<% if(packages.length){ %>
+  <div class="mb-3">
+    <div class="container">
+      <div>
+        <h3 class="feature-title lead fl-l light-bold mb-2"><b>Packages</b></h3>
+        <h3 class="store-link lead fl-r mb-2"><a href="/store">Go To Store ></a></h3>
+      </div>
+    </div>
+    <div class="container x-scrolling-div products-container" data-simplebar="">
+      <% packages.forEach((pack)=>{ %>
+        <div class="custom-card card-list this-package my-1">
+          <div class="card-img package-img cursor-pointer" data-toggle="modal" data-target="#package-modal">
+            <img src="/customer-assets/images/static/package.jpg">
+          </div>
+          <div class="cart-button-div">
+            <input type="number" class="package-id" value="<%= pack.intPackageNo%>" hidden />
+            <button type="button" class="cart-btn package-btn btn p-0 no-focus" data-toggle="modal"
+            data-target="#package-modal">
+            Add to Cart</button>
+          </div>
+
+          <div class="card-desc">
+            <p class="card-title text-package"><%= pack.strPackageName%></p>
+            <p class="card-price price-symbol"><%= pack.packagePrice %></p>
+            <!-- <small class="card-oldprice text-muted">
+              <span><s class="price-symbol">0</s></span> (-0%)<br>
+            </small> -->
+            <small class="card-rating fs-07em text-muted">Contains <%= pack.Qty %> items</small>
+          </div>
+        </div>
+        <%})%>
     </div>
   </div>
-  <div class="container x-scrolling-div products-container" data-simplebar="">
-    <% packages.forEach((pack)=>{ %>
-      <div class="custom-card card-list this-package my-1">
-        <div class="card-img package-img cursor-pointer" data-toggle="modal" data-target="#package-modal">
-          <img src="/customer-assets/images/static/package.jpg">
-        </div>
-        <div class="cart-button-div">
-          <input type="number" class="package-id" value="<%= pack.intPackageNo%>" hidden />
-          <button type="button" class="cart-btn package-btn btn p-0 no-focus" data-toggle="modal"
-          data-target="#package-modal">
-          Add to Cart</button>
-        </div>
-
-        <div class="card-desc">
-          <p class="card-title text-package"><%= pack.strPackageName%></p>
-          <p class="card-price price-symbol"><%= pack.packagePrice %></p>
-          <!-- <small class="card-oldprice text-muted">
-            <span><s class="price-symbol">0</s></span> (-0%)<br>
-          </small> -->
-          <small class="card-rating fs-07em text-muted">Contains <%= pack.Qty %> items</small>
-        </div>
-      </div>
-      <%})%>
-  </div>
-</div>
+<% }else{ %>
+  <div class="m-0"><span class="fs-07em">&nbsp</span></div>
+<% } %>
 
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
