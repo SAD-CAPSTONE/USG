@@ -838,9 +838,6 @@ router.post('/changeBrandStat',(req,res)=>{
 });
 
 
-// router.post('/editCustomer' (req,res)=>{
-  //db.query(`UPDATE tbluser SET strEtits= ?, strPepe= ? WHERE intEtits= ?`), [req.body, req.body]
-
 router.post('/editCustomer',(req,res)=>{
     db.query(`UPDATE tbluser SET strEmail = ?, strUsername = ?, strFname = ?, strMname = ?, strLname = ? WHERE intUserID = ?`,[req.body.c_email, req.body.c_uname, req.body.c_fname, req.body.c_mname, req.body.c_lname, req.body.c_no], (err,results,fields)=>{
       if(err) console.log(err);
@@ -852,6 +849,16 @@ router.post('/editCustomer',(req,res)=>{
     });
   });
 });
+
+// User Accounts ------------------------
+router.get('/userAccounts',(req,res)=>{
+  db.query(`Select * from tblUser join tblAdmin on tblUser.intUserID = tblAdmin.intUserID where intUserTypeNo = 1`,(err1,res1,fie1)=>{
+    res.render('admin-maintain/views/userAccounts', {re: res1, moment: moment});
+
+  })
+});
+
+
 
 
 
