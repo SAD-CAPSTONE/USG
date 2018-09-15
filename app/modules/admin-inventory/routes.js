@@ -1025,53 +1025,123 @@ router.post('/checkQuantity',(req,res)=>{
   })
 });
 
-router.post('/singlePullOut',(req,res)=>{
-  var pullout_no = "1000"
-  db.beginTransaction(function(err){
-    if(err) console.log(err);
-    else{
-      db.query(`Select * from tblStockPullOut order by intPullOutNo desc limit 1`,(err1,res1,fie1)=>{
-        if(err1) console.log(err1);
-        else{
-          if(res1.length==0){} else{ pullout_no = parseInt(res1[0].intPullOutNo) + 1;}
+router.post('/singlePullOut/:id',(req,res)=>{
+  var pullout_no = "1000";
 
-          db.query(`Select * from tblBatch where intBatchNo = "${req.body.batch}" and intQuantity >= ${req.body.quantity}`,(err2,res2,fie2)=>{
-            if(err2){ console.log(err2); res.send("no")}
-            else{
+  // with warning
+  if(req.params.id==1){
 
-              db.query(`Select * from tblProductInventory where intInventoryNo = "${res2[0].intInventoryNo}"
-                and (intQuantity - intReservedItems) >= ${req.body.quantity}`,(err3,res3,fie3)=>{
-                  if(err3) console.log(err3);
-                  else{
-                    if(res3.length==0){ res.send("reserved")}
+    db.beginTransaction(function(err){
+      if(err) console.log(err);
+      else{
+        db.query(`Select * from tblStockPullOut order by intPullOutNo desc limit 1`,(err1,res1,fie1)=>{
+          if(err1) console.log(err1);
+          else{
+            if(res1.length==0){} else{ pullout_no = parseInt(res1[0].intPullOutNo) + 1;}
+
+            db.query(`Select * from tblBatch where intBatchNo = "${req.body.batch}" and intQuantity >= ${req.body.quantity}`,(err2,res2,fie2)=>{
+              if(err2){ console.log(err2); res.send("no")}
+              else{
+
+                db.query(`Select * from tblProductInventory where intInventoryNo = "${res2[0].intInventoryNo}"
+                  and (intQuantity - intReservedItems) >= ${req.body.quantity}`,(err3,res3,fie3)=>{
+                    if(err3) console.log(err3);
                     else{
-                      db.query(`Update tblProductInventory set intQuantity = intQuantity - ${req.body.quantity} where intInventoryNo = ${res2[0].intInventoryNo}
-                       and (intQuantity - intReservedItems) >= ${req.body.quantity} `,(err4,res4,fie4)=>{
-                         if(err4) console.log(err4);
-                         else{
-                           db.query(`Update tblBatch set intQuantity = intQuantity - ${req.body.quantity} where intBatchNo = "${req.body.batch}" and intQuantity >= ${req.body.quantity}`,(err5,res5,fie5)=>{
-                             if(err5) console.log(err5);
-                             else{
-                               db.commit(function(erra){
-                                 if(erra) console.log(erra);
-                                 else{
-                                   res.send("yes");
-                                 }
-                               })
-                             }
-                           })
-                         }
-                       })
+                      if(res3.length==0){ res.send("reserved")}
+                      else{
+                        db.query(`Update tblProductInventory set intQuantity = intQuantity - ${req.body.quantity} where intInventoryNo = ${res2[0].intInventoryNo}
+                         and (intQuantity - intReservedItems) >= ${req.body.quantity} `,(err4,res4,fie4)=>{
+                           if(err4) console.log(err4);
+                           else{
+                             db.query(`Update tblBatch set intQuantity = intQuantity - ${req.body.quantity} where intBatchNo = "${req.body.batch}" and intQuantity >= ${req.body.quantity}`,(err5,res5,fie5)=>{
+                               if(err5) console.log(err5);
+                               else{
+                                 db.query(`Insert into (intPullOutNo, intInventoryNo, intAdminID, intQuantity)
+                                 values("${pullout_no}", "${res2[0].intInventoryNo}", "1000",  ${req.body.quantity})`,(err6,res6,fie6)=>{
+                                   if(err6) console.log(err6);
+                                   else{
+                                     db.commit(function(erra){
+                                       if(erra) console.log(erra);
+                                       else{
+                                         res.send("yes");
+                                       }
+                                     })
+                                   }
+                                 })
+
+                               }
+                             })
+                           }
+                         })
+                      }
                     }
-                  }
-                })
-            }
-          })
-        }
-      })
-    }
-  })
-})
+                  })
+              }
+            })
+          }
+        })
+      }
+    });
+
+  // without warning
+  }else{
+    db.beginTransaction(function(err){
+      if(err) console.log(err);
+      else{
+        db.query(`Select * from tblStockPullOut order by intPullOutNo desc limit 1`,(err1,res1,fie1)=>{
+          if(err1) console.log(err1);
+          else{
+            if(res1.length==0){} else{ pullout_no = parseInt(res1[0].intPullOutNo) + 1;}
+
+            db.query(`Select * from tblBatch where intBatchNo = "${req.body.batch}" and intQuantity >= ${req.body.quantity}`,(err2,res2,fie2)=>{
+              if(err2){ console.log(err2); }
+              else{
+
+                db.query(`Select * from tblProductInventory where intInventoryNo = "${res2[0].intInventoryNo}"`,(err3,res3,fie3)=>{
+                    if(err3) console.log(err3);
+                    else{
+                      if(res3.length==0){ }
+                      else{
+                        db.query(`Update tblProductInventory set intQuantity = intQuantity - ${req.body.quantity} where intInventoryNo = ${res2[0].intInventoryNo}`,(err4,res4,fie4)=>{
+                           if(err4) console.log(err4);
+                           else{
+                             db.query(`Update tblBatch set intQuantity = intQuantity - ${req.body.quantity} where intBatchNo = "${req.body.batch}" and intQuantity >= ${req.body.quantity}`,(err5,res5,fie5)=>{
+                               if(err5) console.log(err5);
+                               else{
+                                 db.query(`Insert into tblStockPullOut (intPullOutNo, intInventoryNo, intAdminID, intQuantity)
+                                 values ("${pullout_no}", "${res2[0].intInventoryNo}", "1000", ${req.body.quantity})`,(err6,res6,fie6)=>{
+                                   if(err6) console.log(err6);
+                                   else{
+                                     db.commit(function(erra){
+                                       if(erra) console.log(erra);
+                                       else{
+                                         res.send("yes");
+                                       }
+                                     })
+                                   }
+                                 })
+
+
+                               }
+                             })
+                           }
+                         })
+                      }
+                    }
+                  })
+              }
+            })
+          }
+        })
+      }
+    });
+
+  }
+
+
+});
+
+
 
 
 // <%- include('../../../templates/admin-navbar.ejs') -%>

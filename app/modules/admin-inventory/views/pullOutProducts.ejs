@@ -176,9 +176,10 @@
 
         <form id="form">
           <div class="modal-body">
+            <br><br>
             <div id="group" class="form-group">
               <label>Enter quantity you want to pull-out</label>
-              <input type="text" name="batch" id="batch" >
+              <input type="hidden" name="batch" id="batch" >
               <input type="number" required name="quantity" id="quantity" class="form-control">
               <span id="error" class="help-block">Quantity did not match the stock available!</span>
             </div>
@@ -287,13 +288,13 @@
       text: "You cannot undo pullout stock from inventory",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Pull-out List from Inventory",
+      confirmButtonText: "Pull-out from Inventory",
       cancelButtonText: "Back",
       reverseButtons: true
     }).then((result)=>{
       if(result.value){
          $.ajax({
-           url: '/inventory/singlePullOut',
+           url: '/inventory/singlePullOut/1',
            method: 'post',
            datatype: "json",
            data: $('#form').serialize(),
@@ -305,7 +306,25 @@
              }else if(response == "no"){
                swal('Error!','Not enough stock in this batch to pull-out', 'error');
              }else{
-               swal('Error!','There are reserved items', 'error');
+               swal({
+                 title: "There are customers who reserved this product",
+                 text: "You may not be able to process orders of this product as there will be no enough stocks. Do you want to proceed?",
+                 type: "warning",
+                 showCancelButton: true,
+                 confirmButtonText: "Proceed to pull-out",
+                 cancelButtonText: "Cancel",
+                 reverseButtons: true
+               }).then((result)=>{
+                 $.post('/inventory/singlePullOut/2',$('#form').serialize(),function(data,status){
+                   if(data=="yes"){
+                     swal({title: 'Success', text: 'You pulled out items from inventory', type: 'success'}).then(() => {
+                       location.reload();
+                     })
+                   }else{
+                     swal('Error!','','error');
+                   }
+                 })
+               })
 
              }
            }
