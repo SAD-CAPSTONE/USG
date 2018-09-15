@@ -1,7 +1,7 @@
 <%- include('../../../templates/navbar.ejs') -%>
 <%- include('../../../templates/modals/cart-modal.ejs') -%>
 <!--  -->
-<link rel="stylesheet" href="/customer-assets/scripts/bar-rating/dist/themes/fontawesome-stars-o.css">
+<link rel="stylesheet" href="/customer-assets/scripts/bar-rating/dist/themes/css-stars.css">
 <style>
   /* input[type=number]::-webkit-outer-spin-button,
   input[type=number]::-webkit-inner-spin-button {
@@ -22,11 +22,16 @@
   .x-scrolling-div .simplebar-scroll-content {
     overflow-y: hidden !important;
   }
-  .br-theme-fontawesome-stars .br-widget a {
+  .br-theme-css-stars .br-widget a {
     font: normal normal normal 30px/1 FontAwesome;
   }
   .br-widget {
+    width: 115;
+    margin: auto;
     margin-bottom: 4px;
+  }
+  #item-review-pane .fa-star, #item-review-pane .fa-star-half-alt {
+    margin-right: -2.5px;
   }
 
 </style>
@@ -315,7 +320,7 @@
                 <i class="far fa-star"></i>
               <% }
             } %>
-            <small class="text-muted"><%= rev.r_created_at %></small>
+            <small class="text-muted ml-1"><%= rev.r_created_at %></small>
             <small class="review-desc block">
               <%= rev.strReview %>
             </small>
@@ -493,7 +498,7 @@
   // DESIGN - Rating
   $(()=> {
     $('.productRating').barrating({
-      theme: 'fontawesome-stars-o'
+      theme: 'css-stars'
     });
     $('.br-widget > a:first-child').addClass('block-none');
     $('.br-widget > a').on('click', ()=>{
