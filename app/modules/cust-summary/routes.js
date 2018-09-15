@@ -5,6 +5,7 @@ const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
 const userTypeAuth = require('../cust-0extras/userTypeAuth');
 const auth_cust = userTypeAuth.cust;
+const fs = require('fs');
 const firstID = 1000;
 const quantLimit = 50;
 
@@ -526,5 +527,44 @@ router.post('/order/cancel', checkUserOrder, orderProductQty, newOrderHistoryNo,
     });
   });
 })
+router.post('/order/upload-slip', checkUserOrder, thisOrder, (req,res)=>{
+  let img = `bs-${req.body.orderNo.toString()}.png`
+  if(!thisOrder){
+    res.redirect('/noroute');
+  }
+  else if(!req.files.bankslip){
+    req.thisOrder.depositSlip ? fs.unlink('public/customer-assets/images/userImages/bankslips/'+img) : 0
+    db.beginTransaction(function(err) {
+      if (err) console.log(err);
+      db.query(`UPDATE tblorder SET depositSlip= NULL WHERE intOrderNo= ?`, [req.body.orderNo], (err,results,fields)=>{
+        if (err) console.log(err);
+        db.commit(function(err) {
+          if (err) console.log(err);
+          res.render('cust-0extras/views/messagePage',{message: 'File Removed', messBtn: `Back to Order#${req.body.orderNo}`, messLink: `/summary/order/${req.body.orderNo}`});
+        });
+      });
+    });
+  }
+  else if(req.files.bankslip.mimetype != 'image/jpeg' && req.files.bankslip.mimetype != 'image/png'){
+    res.render('cust-0extras/views/messagePage',{message: 'Oops! You uploaded an invalid file.', messBtn: `Back to Order#${req.body.orderNo}`, messLink: `/summary/order/${req.body.orderNo}`});
+  }
+  else{
+    req.thisOrder.depositSlip ? fs.unlink('public/customer-assets/images/userImages/bankslips/'+img) : 0
+    db.beginTransaction(function(err) {
+      if (err) console.log(err);
+      req.files.bankslip.mv('public/customer-assets/images/userImages/bankslips/'+img, function(err){
+        db.query(`UPDATE tblorder SET depositSlip= ? WHERE intOrderNo= ?`, [img, req.body.orderNo], (err,results,fields)=>{
+          if (err) console.log(err);
+          db.commit(function(err) {
+            if (err) console.log(err);
+            res.render('cust-0extras/views/messagePage',{message: 'File Uploaded', messBtn: `Back to Order#${req.body.orderNo}`, messLink: `/summary/order/${req.body.orderNo}`});
+          });
+        });
+      });
+    });
+
+  }
+
+});
 
 exports.summary = router;

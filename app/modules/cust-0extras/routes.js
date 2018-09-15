@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/unAuth', (req, res) => {
-  res.render('cust-0extras/views/messagePage',{message: 'You are unauthorized to view the page', messLink: 'home'});
+  res.render('cust-0extras/views/messagePage',{message: 'You are unauthorized to view the page', messBtn: 'Home', messLink: '/home'});
 });
 
 exports.extras = router;

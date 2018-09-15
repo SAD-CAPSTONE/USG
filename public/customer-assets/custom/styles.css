@@ -17,6 +17,8 @@
   --info-color: #17AACB;
   --search-focus: #0bdc8f;
   --disabled-color: #CFCFCF;
+  --danger-color: #EF3534;
+  --danger-hover: #ED1D1C;
 
   --sub-color: #ccc;
 }
@@ -1103,10 +1105,19 @@ table th, table td {
 
 }
 #summary-main-pane .fa-minus-circle:hover {
-  color: #ED1D1C;
+  color: var(--danger-hover);
 }
 #summary-details-pane > div:nth-child(2) > p:nth-of-type(2) {
   color: var(--primary-color)
+}
+
+#bankslip-img {
+  max-height: 250;
+  max-width: 100%;
+  display: block;
+}
+#del-bs:hover {
+  color: black !important;
 }
 
 /* FAQs --------------------------------------------------------------------- */
