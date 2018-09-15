@@ -1,19 +1,129 @@
 <%- include('../../../templates/navbar.ejs') -%>
 
-<div class="container container-errorpage mt-5" style="min-height: 400px">
-  <div class="row">
-    <div class="col"></div>
-    <div class="col-sm-8 col-md-7 col-lg-5" style="margin-top: 60px;">
-      <div class="container text-center"><br/><img src="/customer-assets/images/static/usg-green.png" onContextMenu="return false"/>
-        <h1>Order Success</h1>
-        <input id="orderNo" type="number" value="<%= orderNumber%>" hidden />
-        <input id="download-file" type="number" value="<%= checkUpdateOrder%>" hidden />
-        <a href="/summary/order/<%= orderNumber%>" role="button" aria-pressed="true" class="btn btn-secondary btn-md" style="width: 110px">View Order</a>
-        <a href="/home" role="button" aria-pressed="true" class="btn btn-secondary btn-md" style="width: 110px">Home</a>
-        <br>
-      </div>
+<div id="orderSuccess-container" class="container">
+  <div class="align-center">
+    <input id="orderNo" type="number" value="<%= orderNumber%>" hidden />
+    <input id="download-file" type="number" value="<%= checkUpdateOrder%>" hidden />
+    <a href="/home" class="home-link"><p class="m-0 fs-08em fw-400">< Home</p></a>
+    <a href="/summary/order/<%= orderNumber%>"><p class="m-0 fs-08em fw-400">Order #<%=orderNumber%> ></p></a>
+    <div style="clear: both"></div>
+    <p class="m-0 fs-1em fw-400 block">Your Order has been Placed</p>
+    <div class="links-div">
+      <a href="/home" class="inline-block home-link"><p class="m-0 fs-08em fw-400">< Home</p></a>
+      <p class="mb-0 inline-block"> | </p>
+      <a href="/summary/order/<%= orderNumber%>" class="inline-block"><p class="m-0 fs-08em fw-400">Order #4529 ></p></a>
     </div>
-    <div class="col"></div>
+  </div>
+  <div>
+    <p class="m-0 fs-09em fw-400 align-center mb-1">Products you might like</p>
+    <div class="container products-container align-center">
+      <% popularProducts.forEach((prod)=>{ %>
+        <div class="custom-card this-product my-2">
+          <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
+          <div class="cart-button-div">
+            <button type="button" class="cart-btn btn p-0 no-focus align-center" data-toggle="modal" data-target="#modal-product-to-cart">
+            Add to Cart</button>
+          </div>
+
+          <div class="card-desc">
+            <p class="card-title" title="<%=prod.strBrand%> <%=prod.strProductName%>"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
+            <p class="card-price price-symbol">
+              <% if(prod.minPrice == prod.maxPrice){ %>
+                <%= prod.minPrice %>
+              <% }else{ %>
+                <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
+              <% } %>
+            </p>
+            <small class="card-rating">
+              <%
+              rating = prod.aveRating;
+              for(i=0; i<5; i++){
+                if (rating < 1 && rating >= 0.5) {
+                %> <i class="fa fa-star-half-o"></i> <%
+                } else if (rating < 0.5) {
+                %> <i class="fa fa-star-o"></i> <%
+                } else {
+                %> <i class="fa fa-star"></i> <%
+                }
+                --rating;
+              }%>
+              <span class="fs-08em fw-400">(<%= prod.cntRating%>)</span>
+            </small>
+            <small class="card-reviews"><%= prod.cntReview%> reviews</small>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    <a href=""><p class="align-center mb-2 fs-09em fw-400">Go to Store ></p></a>
+
+    <p class="m-0 fs-09em fw-400 align-center mb-1">New Products</p>
+    <div class="container products-container align-center">
+      <% newProducts.forEach((prod)=>{ %>
+        <div class="custom-card this-product my-2">
+          <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
+          <div class="cart-button-div">
+            <button type="button" class="cart-btn btn p-0 no-focus align-center" data-toggle="modal" data-target="#modal-product-to-cart">
+            Add to Cart</button>
+          </div>
+
+          <div class="card-desc">
+            <p class="card-title" title="<%=prod.strBrand%> <%=prod.strProductName%>"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
+            <p class="card-price price-symbol">
+              <% if(prod.minPrice == prod.maxPrice){ %>
+                <%= prod.minPrice %>
+              <% }else{ %>
+                <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
+              <% } %>
+            </p>
+            <small class="card-rating">
+              <%
+              rating = prod.aveRating;
+              for(i=0; i<5; i++){
+                if (rating < 1 && rating >= 0.5) {
+                %> <i class="fa fa-star-half-o"></i> <%
+                } else if (rating < 0.5) {
+                %> <i class="fa fa-star-o"></i> <%
+                } else {
+                %> <i class="fa fa-star"></i> <%
+                }
+                --rating;
+              }%>
+              <span class="fs-08em fw-400">(<%= prod.cntRating%>)</span>
+            </small>
+            <small class="card-reviews"><%= prod.cntReview%> reviews</small>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    <a href=""><p class="align-center mb-2 fs-09em fw-400">Go to Store ></p></a>
+
+    <% if(packages.length){ %>
+      <p class="m-0 fs-09em fw-400 align-center mb-1">Packages</p>
+      <div class="container products-container align-center">
+        <% packages.forEach((pack)=>{ %>
+          <div class="custom-card card-list this-package my-1">
+            <div class="card-img package-img cursor-pointer" data-toggle="modal" data-target="#package-modal">
+              <img src="/customer-assets/images/static/package.jpg">
+            </div>
+            <div class="cart-button-div">
+              <input type="number" class="package-id" value="<%= pack.intPackageNo%>" hidden />
+              <button type="button" class="cart-btn package-btn btn p-0 no-focus align-center" data-toggle="modal" data-target="#package-modal">
+              Add to Cart</button>
+            </div>
+
+            <div class="card-desc">
+              <p class="card-title text-package" title="<%= pack.strPackageName%>"><%= pack.strPackageName%></p>
+              <p class="card-price price-symbol"><%= pack.packagePrice %></p>
+              <small class="card-rating fs-07em text-muted">Contains <%= pack.Qty %> items</small>
+            </div>
+          </div>
+        <%})%>
+      </div>
+      <a href=""><p class="align-center mb-2 fs-09em fw-400">Go to Store ></p></a>
+    <% }else{ %>
+      <div class="m-0"><span class="fs-07em">&nbsp</span></div>
+    <% } %>
+
   </div>
 </div>
 
