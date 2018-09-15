@@ -24,6 +24,7 @@
             <ul class="nav nav-tabs">
               <li class="active"><a href="#allPullOut" data-toggle="tab"> Pulled-out Products</a></li>
               <li><a href="#batchPullOut" data-toggle="tab"> Batch Pull-out</a></li>
+              <li><a href="#singlePullOut" data-toggle="tab"> Single Pull-out</a></li>
 
             </ul>
             <div class="tab-content">
@@ -110,6 +111,49 @@
                 </div>
               </div>
 
+              <!-- Single Pull Out -->
+              <div class="tab-pane" id="singlePullOut">
+                <br>
+                <div class="box-body table-responsive">
+                  <table id="example3" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th style="width: 30px"></th>
+                        <th>Batch No</th>
+                        <th>Expiration Date</th>
+                        <th>Brand</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if(batch == null || batch == undefined){ %>
+
+                      <% }else if(batch.length==0){ %>
+
+                      <% }else{ %>
+                      <%   batch.forEach(function(i){ %>
+                          <tr>
+                            <td>
+                              <button data-toggle="modal" data-target="#pulloutmodal" data-batch="<%=i.intBatchNo%>" class="single_btn large ui red basic button">Pull Out</button>
+
+                            </td>
+                            <td><%=i.intBatchNo%></td>
+                            <td><%=moment(i.expirationDate).format("MM/DD/YYYY")%></td>
+                            <td><%=i.strBrand%></td>
+                            <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%><%=i.strUnitName%></td>
+                            <td><%=i.quantity%></td>
+
+                          </tr>
+                      <%  }) %>
+                    <% } %>
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
             <!-- /.tab-content -->
           </div>
           <!-- /.nav-tabs-custom -->
@@ -126,6 +170,27 @@
 
   <!-- Modals -->
 
+  <div class="modal fade" id="pulloutmodal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <form id="form">
+          <div class="modal-body">
+            <div id="group" class="form-group">
+              <label>Enter quantity you want to pull-out</label>
+              <input type="text" name="batch" id="batch" >
+              <input type="number" required name="quantity" id="quantity" class="form-control">
+              <span id="error" class="help-block">Quantity did not match the stock available!</span>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+      			<button type="submit" disabled id="save" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
 <%- include('../../../templates/admin-aside.ejs') -%>
 
@@ -185,8 +250,6 @@
 <script>
 
   $('.pulloutitem').on('click',function(){
-
-
     swal({
       title: "Are you sure?",
       text: "You cannot undo pullout stock from inventory",
@@ -197,7 +260,6 @@
       reverseButtons: true
     }).then((result)=>{
       if(result.value){
-
          $.ajax({
            url: '/inventory/pullOutItem',
            method: 'post',
@@ -217,6 +279,64 @@
       }
     })
   });
+
+  $('#form').submit(function(e){
+    e.preventDefault();
+    swal({
+      title: "Are you sure?",
+      text: "You cannot undo pullout stock from inventory",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Pull-out List from Inventory",
+      cancelButtonText: "Back",
+      reverseButtons: true
+    }).then((result)=>{
+      if(result.value){
+         $.ajax({
+           url: '/inventory/singlePullOut',
+           method: 'post',
+           datatype: "json",
+           data: $('#form').serialize(),
+           success: function(response, status, http){
+             if(response == "yes"){
+               swal({title: 'Success', text: 'You pulled out items from inventory', type: 'success'}).then(() => {
+                 location.reload();
+               })
+             }else if(response == "no"){
+               swal('Error!','Not enough stock in this batch to pull-out', 'error');
+             }else{
+               swal('Error!','There are reserved items', 'error');
+
+             }
+           }
+         })
+      }
+    })
+  });
+
+
+
+  $('.single_btn').on('click',function(){
+    $('#batch').val($(this).data('batch'))
+  })
+
+  $('#group').attr('class', 'form-group');
+  $('#error').hide();
+  $('#save').attr('disabled', true);
+
+  $('#quantity').on('keyup',function(){
+    $.post('/inventory/checkQuantity', {batch: $('#batch').val(), quantity: $('#quantity').val()}, function(data,status){
+      if(data == "yes"){
+        $('#group').attr('class', 'has-success form-group');
+        $('#error').hide();
+        $('#save').attr('disabled', false);
+      }else{
+        $('#group').attr('class', 'has-error form-group');
+        $('#error').show();
+        $('#save').attr('disabled', true);
+      }
+    })
+  })
 </script>
 
 
