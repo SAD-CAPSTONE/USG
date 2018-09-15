@@ -21,6 +21,7 @@
   --danger-hover: #ED1D1C;
 
   --sub-color: #ccc;
+  --secondary-color: #868E96;
 }
 
 body {
@@ -165,8 +166,10 @@ textarea {
 }
 
 /* icons */
-.fa-star, .fa-star-o, .fa-star-half-o {
+.fa-star, .fa-star-half-alt {
   color: #FACA51;
+  font-size: .9em;
+  margin-right: -.8px;
 }
 .fa-check-circle {
   color: #00AF66;
@@ -179,30 +182,30 @@ textarea {
 
 /* Font */
 .fw-300 {
-  font-weight: 300;
+  font-weight: 300 !important;
 }
 .fw-400 {
-  font-weight: 400;
+  font-weight: 400 !important;
 }
 .fw-500 {
-  font-weight: 500;
+  font-weight: 500 !important;
 }
 
 .fs-1em {
-  font-size: 1em;
+  font-size: 1em !important;
 }
 .fs-09em {
-  font-size: .9em;
+  font-size: .9em !important;
 }
 .fs-08em {
-  font-size: .8em;
+  font-size: .8em !important;
 }
 .fs-07em {
-  font-size: .7em;
+  font-size: .7em !important;
 }
 
 .lh-p3em {
-  line-height: 1.3em;
+  line-height: 1.3em !important;
 }
 
 /* Text */
@@ -322,6 +325,12 @@ input#mobile {
 }
 .fl-l {
   display: inline;
+  float: left;
+}
+.pull-right {
+  float: right;
+}
+.pull-left {
   float: left;
 }
 
@@ -491,6 +500,9 @@ body {
 }
 .navbar-dark .navbar-nav .nav-link {
   color: white
+}
+.navbar .fa, .navbar .fas {
+  font-size: 1em
 }
 
 /* Nav searchbar */
@@ -1289,6 +1301,100 @@ table th, table td {
   margin: 8px 5px;
 }
 
+/* Order Stepper */
+/* .steps-form-2 {
+  display: table;
+  width: 100%;
+  position: relative;
+}
+.steps-form-2 .steps-row-2 {
+  display: table-row;
+}
+.steps-form-2 .steps-row-2:before {
+  top: 50%;
+  bottom: 0;
+  position: absolute;
+  content: " ";
+  width: 98%;
+  height: 2px;
+  background-color: #7283a7;
+}
+.steps-form-2 .steps-row-2 .steps-step-2 {
+  display: table-cell;
+  text-align: center;
+  position: relative;
+}
+.steps-form-2 .steps-row-2 .steps-step-2 p {
+  margin-top: 0.5rem;
+}
+.steps-form-2 .steps-row-2 .steps-step-2 .btn-circle-2 {
+  border: 2px solid #59698D;
+  background-color: white !important;
+  color: #59698D !important;
+}
+.steps-form-2 .steps-row-2 .steps-step-2 .btn-circle-2:hover {
+  border: 2px solid #4285F4;
+  color: #4285F4 !important;
+  background-color: white !important;
+}
+.steps-form-2 .steps-row-2 .steps-step-2 .btn-circle-2 .fa {
+  font-size: 1.7rem;
+} */
+.steps-form {
+  width: 100%;
+  position: relative;
+}
+.steps-form .step{
+  border: none;
+  padding: 1px 10px;
+  color: white;
+  background: var(--sub-color);
+  position: relative;
+  box-shadow: 0px 3px 6px var(--sub-color);
+}
+.steps-form .step-active{
+  background: var(--primary-color);
+}
+
+.steps-form .steps-row:before {
+  top: 50%;
+  bottom: 0;
+  position: absolute;
+  content: " ";
+  width: 98%;
+  height: 2px;
+  /* background: -webkit-linear-gradient(right, #87E293, #1DA1F2, #87E293, #1DA1F2) */
+  background: linear-gradient(270deg, #03e698, #18b2ec);
+  background-size: 400% 400%;
+
+  -webkit-animation: AnimationName 8s ease infinite;
+  -moz-animation: AnimationName 8s ease infinite;
+  -o-animation: AnimationName 8s ease infinite;
+  animation: AnimationName 8s ease infinite;
+}
+
+@-webkit-keyframes AnimationName {
+    0%{background-position:0% 51%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 51%}
+}
+@-moz-keyframes AnimationName {
+    0%{background-position:0% 51%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 51%}
+}
+@-o-keyframes AnimationName {
+    0%{background-position:0% 51%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 51%}
+}
+@keyframes AnimationName {
+    0%{background-position:0% 51%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 51%}
+}
+
+
 /* Consignor ---------------------------------------------------------------- */
 :root {
   --sales-products-col-width: calc(100% - 339px);
@@ -1484,7 +1590,7 @@ table th, table td {
     width: 100%;
     position: relative;
   }
-  #summary-details-pane > div:first-child {
+  #summary-details-pane > div:nth-child(2) {
     width: 49%;
     float: left;
   }
@@ -1529,10 +1635,10 @@ table th, table td {
     width: 100%;
     position: relative;
   }
-  #summary-main-pane > div:first-child a {
+  #summary-main-pane > div:nth-child(2) a {
     float: none;
   }
-  #summary-main-pane > div:first-child svg#SVG_refreshList {
+  #summary-main-pane > div:nth-child(2) svg#SVG_refreshList {
     float: none;
     display: block
   }
@@ -1677,6 +1783,14 @@ table th, table td {
     display: none;
   }
 
+  .steps-form .step span{
+    display: none;
+  }
+  .steps-form .step{
+    font-size: 1.2em;
+    padding: 8px;
+  }
+
 }
 @media (max-width: 450px) {
   .search>input {
@@ -1704,7 +1818,7 @@ table th, table td {
     height: 380;
     padding: 0px;
   }
-  #summary-main-pane > div:first-child a {
+  #summary-main-pane > div:nth-child(2) a {
     display: block;
   }
 

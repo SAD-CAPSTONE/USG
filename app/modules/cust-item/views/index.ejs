@@ -22,9 +22,8 @@
   .x-scrolling-div .simplebar-scroll-content {
     overflow-y: hidden !important;
   }
-  .br-theme-fontawesome-stars-o .br-widget a {
+  .br-theme-fontawesome-stars .br-widget a {
     font: normal normal normal 30px/1 FontAwesome;
-    margin-right: 4px;
   }
   .br-widget {
     margin-bottom: 4px;
@@ -53,9 +52,9 @@
           rating = thisProduct.aveRating;
           for(i=0; i<5; i++){
             if (rating < 1 && rating >= 0.5) {
-            %> <i class="fa fa-star-half-o"></i> <%
+            %> <i class="fas fa-star-half-alt"></i> <%
             } else if (rating < 0.5) {
-            %> <i class="fa fa-star-o"></i> <%
+            %> <i class="far fa-star"></i> <%
             } else {
             %> <i class="fa fa-star"></i> <%
             }
@@ -171,9 +170,9 @@
                   rating = prod.aveRating;
                   for(i=0; i<5; i++){
                     if (rating < 1 && rating >= 0.5) {
-                    %> <i class="fa fa-star-half-o"></i> <%
+                    %> <i class="fas fa-star-half-alt"></i> <%
                     } else if (rating < 0.5) {
-                    %> <i class="fa fa-star-o"></i> <%
+                    %> <i class="far fa-star"></i> <%
                     } else {
                     %> <i class="fa fa-star"></i> <%
                     }
@@ -218,9 +217,9 @@
                   rating = prod.aveRating;
                   for(i=0; i<5; i++){
                     if (rating < 1 && rating >= 0.5) {
-                    %> <i class="fa fa-star-half-o"></i> <%
+                    %> <i class="fas fa-star-half-alt"></i> <%
                     } else if (rating < 0.5) {
-                    %> <i class="fa fa-star-o"></i> <%
+                    %> <i class="far fa-star"></i> <%
                     } else {
                     %> <i class="fa fa-star"></i> <%
                     }
@@ -247,9 +246,9 @@
             rating = thisProduct.aveRating;
             for(i=0; i<5; i++){
               if (rating < 1 && rating >= 0.5) {
-              %> <i class="fa fa-star-half-o"></i> <%
+              %> <i class="fas fa-star-half-alt"></i> <%
               } else if (rating < 0.5) {
-              %> <i class="fa fa-star-o"></i> <%
+              %> <i class="far fa-star"></i> <%
               } else {
               %> <i class="fa fa-star"></i> <%
               }
@@ -265,7 +264,7 @@
                 if (i > j){ %>
                   <li class="inline"><i class="fa fa-star"></i></li>
               <% }else{ %>
-                  <li class="inline"><i class="fa fa-star-o"></i></li>
+                  <li class="inline"><i class="far fa-star"></i></li>
               <% }
               } %>
                 <li class="inline">
@@ -313,7 +312,7 @@
               if(i <= rev.intStars){ %>
                 <i class="fa fa-star"></i>
               <% }else{ %>
-                <i class="fa fa-star-o"></i>
+                <i class="far fa-star"></i>
               <% }
             } %>
             <small class="text-muted"><%= rev.r_created_at %></small>

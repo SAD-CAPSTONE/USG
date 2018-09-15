@@ -253,7 +253,7 @@ router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>
     admin: req.admin
   });
 });
-router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, orderPackages, admin, (req,res)=>{
+router.get('/order/:orderNo', checkUserOrder, auth_cust, orderTotal, orderPackages, admin, (req,res)=>{
   db.query(`SELECT *, (tblorder.intStatus)orderStatus, (tblorderdetails.intQuantity)orderQty FROM tblorder
     INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
     INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
@@ -287,7 +287,7 @@ router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, orderPack
     }
   });
 });
-router.get('/voucher/:orderNo', checkUserAccount, auth_cust, orderTotal, (req,res)=>{
+router.get('/voucher/:orderNo', checkUserOrder, auth_cust, orderTotal, (req,res)=>{
   if (!req.user){
     res.send('none')
   }
@@ -307,7 +307,7 @@ router.get('/voucher/:orderNo', checkUserAccount, auth_cust, orderTotal, (req,re
     });
   }
 })
-router.get('/receipt/:orderNo', checkUserAccount, auth_cust, receiptPackages, (req,res)=>{
+router.get('/receipt/:orderNo', checkUserOrder, auth_cust, receiptPackages, (req,res)=>{
   db.query(`SELECT (customer.strFname)customerF, (customer.strMname)customerM, (customer.strLname)customerL, orders.*, tblorder.*
   FROM tblorder INNER JOIN (SELECT * FROM tbluser)customer ON tblorder.intUserID= customer.intUserID
   INNER JOIN (SELECT tblorderdetails.*, strBrand, strProductName, strVariant, intSize, strUnitName, (purchasePrice*tblorderdetails.intQuantity)amount, (purchasePrice-(purchasePrice*0.12))priceNonVAT, ((purchasePrice-(purchasePrice*0.12))*tblorderdetails.intQuantity)amountNonVAT
@@ -354,6 +354,7 @@ router.get('/receipt/:orderNo', checkUserAccount, auth_cust, receiptPackages, (r
     }
   });
 })
+// router.get('/tracker/:orderNo', checkUserOrder)
 
 router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOrderDetailsNo, newOrderHistoryNo,
  newMessageNo, cartCheck, admin, popularProducts, newProducts, packages, (req,res)=>{
