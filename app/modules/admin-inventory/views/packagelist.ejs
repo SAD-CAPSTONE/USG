@@ -12,8 +12,9 @@
    </h1>
    <ol class="breadcrumb">
      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-     <li><a href="#">Maintenance</a></li>
-     <li class="active">Packages</li>
+     <li><a href="#">Inventory</a></li>
+     <li><a href="#">Packages</a></li>
+     <li class="active">Product List</li>
    </ol>
  </section>
 
@@ -27,7 +28,7 @@
          </div>
        </br>
 		<!-- buttons -->
-			&nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addList"><i class="fa fa-plus"></i> Add Product</button>
+			&nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#addList"><i class="fa fa-plus"></i> Add Product</button>
          <!-- /.box-header -->
          <div class="box-body table-responsive">
            <table id="example2" class="table table-bordered table-hover">
@@ -37,7 +38,7 @@
                <th>Product Name</th>
                <th>Supplier Name</th>
                <th>Size</th>
-			         <th>Status</th>
+			         <th>Action</th>
 
              </tr>
              </thead>
@@ -53,7 +54,9 @@
                     <td><%=i.strProductName%></td>
                     <td><%=i.strFname%> <%=i.strMname%> <%=i.strLname%></td>
                     <td><%= i.intSize%>  <%=i.strUnitName%></td>
-  				          <td></td>
+  				          <td>
+                      <button class="large ui red button"> <i class="glyphicon glyphicon-trash"></i></button>
+                    </td>
 
                   </tr>
                 <% }) %>
@@ -105,7 +108,7 @@
       <div class="form-group">
         <label for="" class="col-sm-3 control-label"> Package Quantity </label>
         <div class="col-sm-4">
-          <input type="number" id="package_quantity" value="<%=quantity%>" name="package_quantity" class="form-control" required>
+          <input type="number" disabled id="package_quantity" value="<%=quantity%>" name="package_quantity" class="form-control" required>
 
         </div>
       </div>
@@ -125,47 +128,27 @@
       <div class="form-group">
         <label for="" class="col-sm-3 control-label">Product Name:</label>
         <div class="col-sm-4">
-        <h4 id="prod_name"></h4>
+        <h5 id="prod_name"></h5>
         </div>
       </div>
 
       <div class="form-group">
         <label for="" class="col-sm-3 control-label">Available Stock:</label>
         <div class="col-sm-4">
-        <h4 id="prod_stock"></h4>
+        <h5 id="prod_stock"></h5>
       </div>
       </div>
 
-      <div class="form-group">
         <input type="number" id="prod_stock2" hidden>
         <input type="number" name="package" value="<%=package%>" hidden>
         <input type="number" name="inventory" id="inventory"  hidden>
 
-      </div>
-
-      <div class="form-group">
-        <label for="" class="col-sm-3 control-label">Product Size:</label>
-        <div class="col-sm-4">
-        <h4 id="prod_size"></h4>
-      </div>
-      </div>
-
       <div class="form-group">
         <label for="" class="col-sm-3 control-label">Brand:</label>
         <div class="col-sm-4">
-        <h4 id="prod_brand"></h4>
+        <h5 id="prod_brand"></h5>
       </div>
       </div>
-
-      <div class="form-group">
-        <label for="" class="col-sm-3 control-label">Category:</label>
-        <div class="col-sm-4">
-        <h4 id="prod_category"></h4>
-      </div>
-      </div>
-
-
-
 
       </div>
       <div class="modal-footer">
@@ -194,7 +177,7 @@
 $(document).ready(function(){
   $('#select').on('click',function(){
     $.ajax({
-      url: '/maintenance/addToPromo',
+      url: '/inventory/addToPromo',
       method: 'POST',
       datatype: "json",
       data: {
@@ -246,15 +229,16 @@ $(document).ready(function(){
 </script>
 
 <script>
-  $('#title').html("USG | Promotions");
+  $('#title').html("USG | Packages");
   $(".treeview a:contains('Inventory')").parent().addClass("active");
-  $(".navi a:contains('Package Discounts')").parent().addClass("active");
+  $(".navi a:contains('Packages')").parent().addClass("active");
 </script>
 
 <script>
 $('#starthelpBlock').show();
 $('#successhelpBlock').hide();
 $('#errorhelpBlock').hide();
+$('#save').attr('disabled',true);
 
 $('#successhelpBlock2').hide();
 $('#errorhelpBlock2').hide();
@@ -267,17 +251,19 @@ $('#quantity').on('keyup',function(){
     $('#errorhelpBlock2').show();
     $('#starthelpBlock2').hide();
     $('#successhelpBlock2').hide();
+    $('#save').attr('disabled',true);
 
   }else{
     $('#form-group2').attr('class', 'form-group2 has-success');
     $('#successhelpBlock2').show();
     $('#errorhelpBlock2').hide();
     $('#starthelpBlock2').hide();
+    $('#save').attr('disabled',false);
 
   }
 });
   $('#barcode').on('keyup',function(){
-    $.post('/maintenance/getBarcode',{o: $('#barcode').val()},function(response,status){
+    $.post('/inventory/packageGetBarcode',{o: $('#barcode').val()},function(response,status){
 
       if(response=="error"){
         $('#form-group').attr('class', 'form-group has-error');
@@ -297,12 +283,10 @@ $('#quantity').on('keyup',function(){
         $('#successhelpBlock').show();
         $('#errorhelpBlock').hide();
 
-        $('#prod_name').html(response.inventory[0].strProductName);
-        $('#prod_stock').html(response.batch[0].totalQty);
-        $('#prod_stock2').val(response.batch[0].totalQty);
-        $('#prod_size').html(response.inventory[0].intSize);
+        $('#prod_name').html(response.inventory[0].strProductName + "  " + response.inventory[0].strVariant + "  " + response.inventory[0].intSize  + response.inventory[0].strUnitName);
+        $('#prod_stock').html(response.inventory[0].totalQty);
+        $('#prod_stock2').val(response.inventory[0].totalQty);
         $('#prod_brand').html(response.inventory[0].strBrand);
-        $('#prod_category').html(response.inventory[0].strSubCategory);
         $('#inventory').val(response.inventory[0].intInventoryNo);
 
       }
@@ -313,7 +297,7 @@ $('#quantity').on('keyup',function(){
 <script>
   $('#form_add').submit(function(e){
     e.preventDefault();
-    $.post('/maintenance/addPackageList',$('#form_add').serialize(),function(response,status){
+    $.post('/inventory/addPackageList',$('#form_add').serialize(),function(response,status){
       if(response == "success"){
         swal({title:"Success",text:"You added a product!", type:"success"}).then(()=>{
           location.reload();

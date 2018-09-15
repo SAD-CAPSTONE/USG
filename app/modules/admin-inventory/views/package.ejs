@@ -12,8 +12,8 @@
        </h1>
        <ol class="breadcrumb">
          <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-         <li><a href="#">Maintenance</a></li>
-         <li class="active">Package Discounts</li>
+         <li><a href="#">Inventory</a></li>
+         <li class="active">Packages</li>
        </ol>
      </section>
 
@@ -74,7 +74,7 @@
                                 <center>
 
                                 <button type="button" data-toggle="modal" data-target="#editPackage" data-no="<%=i.intPackageNo%>" data-name="<%=i.strPackageName%>" data-desc="<%=i.strPackageDescription%>" data-price="<%=i.packagePrice%>" data-date="<%=moment(i.dateDue).format("YYYY-MM-DD")%>" data-quantity="<%=i.intQuantity%>"  class="editButton small ui button">Edit Details</button>
-                                <a href="/maintenance/packageList?package=<%=i.intPackageNo%>"><button class="small ui teal button">Product List</button></a>
+                                <a href="/inventory/packageList?package=<%=i.intPackageNo%>"><button class="small ui teal button">Product List</button></a>
                               </center>
                               </td>
                             </tr>
@@ -124,7 +124,7 @@
                             <center>
 
                             <button type="button" data-toggle="modal" data-target="#editPackage" data-no="<%=i.intPackageNo%>" data-name="<%=i.strPackageName%>" data-desc="<%=i.strPackageDescription%>" data-price="<%=i.packagePrice%>" data-date="<%=moment(i.dateDue).format("YYYY-MM-DD")%>" data-quantity="<%=i.intQuantity%>" class="editButton small ui button">Edit Details</button>
-                            <a href="/maintenance/packageList?package=<%=i.intPackageNo%>"><button class="small ui teal button">Product List</button></a>
+                            <a href="/inventory/packageList?package=<%=i.intPackageNo%>"><button class="small ui teal button">Product List</button></a>
                           </center>
                           </td>
                         </tr>
@@ -324,7 +324,7 @@
  $(document).ready(function(i){
    $('#save').on('click',function(){
      $.ajax({
-       url: '/maintenance/addPackage',
+       url: '/inventory/addPackage',
        method: 'post',
        datatype: "json",
        data: {
@@ -352,7 +352,7 @@
  <script>
   $('#edit_form').submit(function(e){
     e.preventDefault()
-    $.post('/maintenance/editPackage', $('#edit_form').serialize(), function(data,status){
+    $.post('/inventory/editPackage', $('#edit_form').serialize(), function(data,status){
       if(data == "yes"){
         swal('Success!','','success').then(()=>{
           location.reload()
@@ -373,7 +373,7 @@
  $('.package_stat').on('change',function(){
    var val = $(this).val() == 1 ? 0 : 1;
 
-   $.post('/maintenance/changePackageStat',{no: $(this).data('no'), value: val}, function(data,status){
+   $.post('/inventory/changePackageStat',{no: $(this).data('no'), value: val}, function(data,status){
      if (data){
      }
    })
