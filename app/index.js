@@ -16,7 +16,7 @@ module.exports = app => {
             });
         });
         app.get('*', function(req, res){
-          res.render('cust-0extras/views/messagePage',{message: 'Page does not exist.', messLink: 'home'});
+          res.render('cust-0extras/views/messagePage',{message: 'Page does not exist.', messBtn: 'Home', messLink: '/home'});
         });
     });
 }

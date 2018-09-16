@@ -5,7 +5,17 @@
 <div id="summary-container" class="container">
   <div id="summary-main-pane" class="fl-l">
     <div>
-      <p id="notice" class="m-0 fs-08em fw-400 inline-block">Products will be delivered within <%= admin.deliveryPeriod%> working days</p>
+      <div class="steps-form">
+        <div class="steps-row setup-panel-2 d-flex justify-content-between">
+          <div class="step step-active" title="Pending"><i class="fa fa-file-signature text-white fs-09em"></i><span> Pending</span></div>
+          <div class="step" title="Processing"><i class="fas fa-boxes text-white fs-09em"></i><span> Processing</span></div>
+          <div class="step" title="Shipping"><i class="fa fa-truck-loading text-white fs-09em"></i><span> Shipping</span></div>
+          <div class="step" title="Delivering"><i class="fa fa-shipping-fast text-white fs-09em"></i><span> Delivering</span></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p id="notice" class="m-0 fs-08em fw-400 inline-block">Products will be delivered within <%= admin.deliveryPeriod%> working day/s</p>
       <% if ((orderOne.orderStatus == 0 || orderOne.orderStatus == 1) && orderOne.intPaymentStatus == 0){ %>
         <a class="inline-block fl-r" href data-toggle='modal' data-target='#CancelModal'><p class="m-0 fs-08em fw-400">Cancel Order</p></a>
       <% }else if(orderOne.orderStatus == 6){ %>
@@ -103,12 +113,22 @@
         <small class="text-muted price vat block">VAT applied</small>
       </div>
       <input id="orderNo" type="number" value="<%= orderNumber%>" hidden />
+      <% if(orderOne.intPaymentMethod == 2 && orderOne.orderStatus == 0){ %>
+        <button type="button" id="upload-bs" class="btn btn-custom-primary btn-sm fl-r" title="<%= orderOne.depositSlip ? 'Edit' : 'Upload' %> Bank Deposit Slip"
+        data-toggle="modal" data-target="#UploadSlip">
+          <i class="zmdi zmdi-file-plus" style="font-size: 1.3em; margin: 1.5px 0px"></i>
+        </button>
+      <% }else{ %>
+        <button type="button" id="upload-bs" class="btn btn-custom-primary btn-sm fl-r" title="<%= orderOne.depositSlip ? 'Edit' : 'Upload' %> Bank Deposit Slip" disabled>
+          <i class="zmdi zmdi-file-plus" style="font-size: 1.3em; margin: 1.5px 0px"></i>
+        </button>
+      <% } %>
       <% if(orderOne.intPaymentMethod == 2 && (orderOne.orderStatus == 0 || orderOne.orderStatus == 1 || orderOne.orderStatus == 2)){ %>
-        <button type="button" id="bs-print-btn" class="btn btn-custom-primary btn-sm fl-r" title="Bank Slip">
+        <button type="button" id="bs-print-btn" class="btn btn-custom-primary btn-sm fl-r mr-2" title="Bank Payment Voucher">
           <i class="zmdi zmdi-file" style="font-size: 1.3em; margin: 1.5px 0px"></i>
         </button>
       <% }else{ %>
-        <button type="button" id="bs-print-btn" class="btn btn-custom-primary btn-sm fl-r" title="Bank Slip" disabled>
+        <button type="button" id="bs-print-btn" class="btn btn-custom-primary btn-sm fl-r mr-2" title="Bank Payment Voucher" disabled>
           <i class="zmdi zmdi-file" style="font-size: 1.3em; margin: 1.5px 0px"></i>
         </button>
       <% } %>
@@ -123,7 +143,7 @@
       <% } %>
       <div id="more-details">
         <a href=""><small class="block fs-08em fw-400">Vouchers Used</small></a>
-        <small>Date Ordered: <%= orderOne.dateOrdered%></small>
+        <small>Date: <%= orderOne.dateOrdered%></small>
       </div>
       <div class="clearfix"></div>
     </div>
@@ -177,6 +197,33 @@
     </div>
   </div>
 </div>
+<div id="UploadSlip" tabindex="-1" role="dialog" aria-labelledby="UploadSlipTitle" aria-hidden="true" class="modal fade">
+  <div role="document" class="modal-dialog">
+    <div class="modal-content">
+      <form action="/summary/order/upload-slip" method="POST" class="m-0" enctype='multipart/form-data'>
+        <div class="modal-header">
+          <h5 id="UploadSlipTitle" class="modal-title"><%= orderOne.depositSlip ? 'Edit' : 'Upload' %> Bank Depost Slip</h5>
+          <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+        </div>
+        <div class="modal-body">
+          <input type="number" name="orderNo" value="<%= orderOne.intOrderNo%>" hidden>
+          <p class="fs-08em fw-400 lh-p3em text-muted mb-2">Upload Bank Slip for verification of your payment. Your order will be processed after successful verification. Upload in jpeg or png format.</p>
+          <input type="file" name="bankslip" id="bankslip" class="fs-08em mb-2" accept="image/*"/>
+          <i id="del-bs" class="zmdi zmdi-delete fs-1em fw-300 text-muted cursor-pointer" title="Remove file"></i>
+          <% if(orderOne.depositSlip){ %>
+            <img id="bankslip-img" src="/customer-assets/images/userImages/bankslips/<%=orderOne.depositSlip%>"/>
+          <% }else{ %>
+            <img id="bankslip-img" src="#" hidden/>
+          <% } %>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-custom-primary" disabled>Submit</button>
+          <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
@@ -187,16 +234,16 @@
     let txtcount1;
     function submitBtn(){
       if(!$('input#agree').is(':checked')){
-        $('button[type=submit]').attr('disabled','disabled');
+        $('#CancelModal button[type=submit]').attr('disabled','disabled');
       }
       else if($('textarea').attr('hidden')){
-        $('button[type=submit]').removeAttr('disabled');
+        $('#CancelModal button[type=submit]').removeAttr('disabled');
       }
       else if($("textarea").val()){
-        $('button[type=submit]').removeAttr('disabled');
+        $('#CancelModal button[type=submit]').removeAttr('disabled');
       }
       else {
-        $('button[type=submit]').attr('disabled','disabled');
+        $('#CancelModal button[type=submit]').attr('disabled','disabled');
       }
     }
     function printReceipt(res){
@@ -403,9 +450,9 @@
     });
     // Notice
     let text = [
-      "Bank deposit slips are valid for 24 hours, failure to pay cancels order",
+      "Bank Payment vouchers are valid for 24 hours, failure to pay cancels order",
       "Online receipt is available after payment",
-      "Products will be delivered within <%= admin.deliveryPeriod%> working days"],
+      "Products will be delivered within <%= admin.deliveryPeriod%> working day/s"],
     notice = $('#notice'), counter = 0, iNotice1 = setInterval(change, 8000), tNotice1;
     function change() {
       notice.css('opacity','0');
@@ -418,6 +465,50 @@
         }
       },350);
     }
+
+    // Img Preview
+    function readURL(input) {
+      if (input.files[0]) {
+        if (input.files[0]['type'] == 'image/jpeg' || input.files[0]['type'] == 'image/png') {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            $('#bankslip-img').attr('src', e.target.result);
+            $('#bankslip-img').removeAttr('hidden');
+            $('#UploadSlip').find('button[type=submit]').removeAttr('disabled')
+          }
+          reader.readAsDataURL(input.files[0]);
+        }
+        else{
+          $('#bankslip-img').attr('hidden','hidden');
+          $('#UploadSlip').find('button[type=submit]').attr('disabled','disabled')
+        }
+      }
+      else{
+        $('#bankslip-img').attr('hidden','hidden');
+        $('#UploadSlip').find('button[type=submit]').attr('disabled','disabled')
+      }
+    }
+    $("#bankslip").change(function() {
+      readURL(this);
+    });
+    $("#del-bs").click(function() {
+      <% if(orderOne.depositSlip){ %>
+        $('#UploadSlip').find('button[type=submit]').removeAttr('disabled');
+      <% }else{ %>
+        $('#UploadSlip').find('button[type=submit]').attr('disabled','disabled');
+      <% } %>
+      $('#bankslip').val(null);
+      $('#bankslip-img').attr('src','#');
+      $('#bankslip-img').attr('hidden','hidden');
+    });
+
   });
+
+  // Tooltips Initialization
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+
+
 </script>
 <%- include('../../../templates/closer.ejs') -%>

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../lib/database')();
 const passport = require('passport');
-// 
+//
 router.get('/', (req,res)=>{
   req.logout();
   console.log('??????????? Session Values');
@@ -30,7 +30,7 @@ router.get('/auth', (req,res)=>{
       switch(req.session.pendRoute){
         case 1 : res.redirect('/account/dashboard'); break;
         case 2 : res.redirect('/summary/checkout'); break;
-        case 3 : res.redirect('/summary/order'); break;
+        case 3 : res.redirect('/account/orders'); break;
         default : res.redirect('/home'); break;
       }
       break;
