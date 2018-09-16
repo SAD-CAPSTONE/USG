@@ -108,8 +108,16 @@
             <a href="/home/faq" class="dropdown-item">FAQs</a>
             <hr id="hzline" />
 
-            <a href="/login" class="dropdown-item"><i class="fa d-inline fa-lg fa-sign-out-alt pr-2"></i>
-              <%= thisUser ? thisUser.intUserTypeNo == 3 ? 'Logout' : 'Login' : 'Login' %>
+            <a href="/login" class="dropdown-item">
+              <% if(thisUser){ %>
+                <% if(thisUser.intUserTypeNo == 3){ %>
+                  <i class="fas fa-sign-out-alt pr-2"></i>Logout
+                <% }else{ %>
+                  <i class="fas fa-sign-in-alt pr-2"></i>Login
+                <% } %>
+              <% }else{ %>
+                <i class="fas fa-sign-in-alt pr-2"></i>Login
+              <% } %>
             </a>
 
           </div>
