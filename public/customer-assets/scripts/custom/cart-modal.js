@@ -96,7 +96,6 @@ function qtyControl(modal,type){
 
 $(()=>{
   $.get(`/cart/limit`).then((res) => {
-    console.log(res)
     limit = res.quantLimit
     $('i.limit-info').attr(`title`,`Maximum of ${limit} of the same product variation per order`)
     $('i.limit-info-package').attr(`title`,`Maximum of ${limit} of the same package per order`)

@@ -6,11 +6,11 @@
   <div id="summary-main-pane" class="fl-l">
     <div>
       <div class="steps-form">
-        <div class="steps-row setup-panel-2 d-flex justify-content-between">
+        <div class="steps-row d-flex justify-content-between">
           <div class="step step-active" title="Pending"><i class="fa fa-file-signature text-white fs-09em"></i><span> Pending</span></div>
           <div class="step" title="Processing"><i class="fas fa-boxes text-white fs-09em"></i><span> Processing</span></div>
-          <div class="step" title="Shipping"><i class="fa fa-truck-loading text-white fs-09em"></i><span> Shipping</span></div>
-          <div class="step" title="Delivering"><i class="fa fa-shipping-fast text-white fs-09em"></i><span> Delivering</span></div>
+          <div class="step" title="Shipped"><i class="fa fa-truck-loading text-white fs-09em"></i><span> Shipped</span></div>
+          <div class="step" title="Delivered"><i class="fa fa-box text-white fs-09em"></i><span> Delivered</span></div>
         </div>
       </div>
     </div>
@@ -502,12 +502,35 @@
       $('#bankslip-img').attr('hidden','hidden');
     });
 
+    function orderTracker(){
+      let orderNo = $('#orderNo').val();
+
+      $.get(`/summary/tracker/${orderNo}`).then((res)=>{
+        console.log(res.status)
+        res.status.forEach((data)=>{
+          switch (data.intStatus) {
+            case 1: $(`.steps-form .step[title=Processing]`).addClass(`step-active`); break;
+            case 2: $(`.steps-form .step[title=Shipped]`).addClass(`step-active`); break;
+            case 3: $(`.steps-form .step[title=Delivered]`).addClass(`step-active`); break;
+          }
+        });
+
+      }).catch((error)=>{
+        console.log(error);
+      })
+    }
+
+    orderTracker();
+    setInterval(function(){
+      orderTracker();
+    }, 15000);
+
   });
 
-  // Tooltips Initialization
-  $(function () {
-    $('[data-toggle="tooltip"]').tooltip()
-  })
+  // // Tooltips Initialization
+  // $(function () {
+  //   $('[data-toggle="tooltip"]').tooltip()
+  // })
 
 
 </script>

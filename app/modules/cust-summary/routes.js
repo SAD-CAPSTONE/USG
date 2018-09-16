@@ -354,7 +354,13 @@ router.get('/receipt/:orderNo', checkUserOrder, auth_cust, receiptPackages, (req
     }
   });
 })
-// router.get('/tracker/:orderNo', checkUserOrder)
+router.get('/tracker/:orderNo', checkUserOrder, auth_cust, (req,res)=>{
+  db.query(`SELECT intStatus FROM tblorderhistory WHERE intOrderNo= ?`,[req.params.orderNo],(err,results,fields)=>{
+    if (err) console.log(err);
+    res.send({status: results})
+  });
+
+});
 
 router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOrderDetailsNo, newOrderHistoryNo,
  newMessageNo, cartCheck, admin, popularProducts, newProducts, packages, (req,res)=>{
