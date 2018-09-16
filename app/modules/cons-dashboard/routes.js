@@ -36,13 +36,24 @@ router.get('/products', auth_cons, (req,res)=>{
 });
 
 router.get('/orders', auth_cons, (req,res)=>{
-  res.render('cons-dashboard/views/cons-orders');
+  db.query(`
+  SELECT * from tblpurchaseorderlist join tblreceiveorder on tblpurchaseorderlist.intpurchaseorderno = tblreceiveorder.intpurchaseorderno
+  join tblpurchaseorder on tblpurchaseorderlist.intPurchaseOrderNo = tblpurchaseorder.intPurchaseOrderNo
+  join tblreceiveorderlist on tblreceiveorderlist.intReceiveOrderNo = tblreceiveorder.intReceiveOrderNo
+  join tblsupplier on tblsupplier.intuserid = tblpurchaseorder.intsupplierid
+  join tbluser on tbluser.intuserid = tblsupplier.intuserid
+  where tbluser.intUserID = ${req.user.intUserID}`,(err1,results1)=>{
+  if (err1) console.log(err1);
+  res.render('cons-dashboard/views/cons-orders', {re: results1});
+  console.log(results1);
+});
 });
 
 router.get('/returns', auth_cons, (req,res)=>{
   db.query(`
     SELECT * from tblpurchaseorder join tblreceiveorder on tblpurchaseorder.intpurchaseorderno = tblreceiveorder.intpurchaseorderno
     join tblreturnbadorders on tblreceiveorder.intreceiveorderno = tblreturnbadorders.intreceiveorderno
+    join tblreceiveorderlist on tblreceiveorderlist.intReceiveOrderNo = tblreturnbadorders.intReceiveOrderNo
     join tblbadorderslist on tblbadorderslist.intbadordersno = tblreturnbadorders.intbadordersno
     join tblsupplier on tblsupplier.intuserid = tblpurchaseorder.intsupplierid
     join tbluser on tbluser.intuserid = tblsupplier.intuserid

@@ -9,9 +9,9 @@
                         <h4>All Orders</h4>
                     </div>
                     <ul class="nav nav-tabs" id="myNavTabs">
-                            <li class="nav-item nav-link active"><a href="#navtabs1" data-toggle="tab">nav-tab 1</a>
-                            <li class="nav-item nav-link"><a href="#navtabs2" data-toggle="tab">nav-tab 2</a>
-                            <li class="nav-item nav-link"><a href="#navtabs3" data-toggle="tab">nav-tab 3</a>
+                            <li class="nav-item nav-link active"><a href="#navtabs1" data-toggle="tab">Pending</a>
+                            <li class="nav-item nav-link"><a href="#navtabs2" data-toggle="tab">Received</a>
+                            <li class="nav-item nav-link"><a href="#navtabs3" data-toggle="tab">Delivered</a>
                           </ul>
                           
                           <!-- using fade to define fade effect -->
@@ -20,83 +20,101 @@
                           <div class="tab-content">
                             <div class="tab-pane fade in active" id="navtabs1">
                                     <div class="card-body">
-                                        </div>
                                         <div class="table-responsive">
                                             <table class="table">
                                                 <thead>
                                                     <tr>
-                                                        <th>&nbsp</th>
-                                                        <th>Product</th>
-                                                        <th>Quantity</th>
+                                                        <th>Order No</th>
                                                         <th>Date</th>
                                                         <th>Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    <% if (re == null || re == undefined){ %>
+
+                                                        <% }else if (re.length == 0){ %>
                 
-                                                    <tr>
-                                                        <td>
-                                                            <div class="round-img">
-                                                                <a href=""><img src="/assets/images/static2/imgs1.jpg"></a>
-                                                            </div>
-                                                        </td>
-                                                        <td>Keto Loaf</td>
-                                                        <td><span>456 pcs</span></td>
-                                                        <td><span>03-19-18</span></td>
-                                                        <td style="width:170px;"><div class="btn-group">
-                                                            <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">Accept</button>
-                                                            <button type="button" class="btn btn-danger" style="margin-bottom:10px; border-radius:5px !important;">Reject</button>
-                                                        </div></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="round-img">
-                                                                <a href=""><img src="/assets/images/static2/img4.jpg" alt=""></a>
-                                                            </div>
-                                                        </td>
-                                                        <td>Kala Milk Soap</td>
-                                                        <td><span>248 pcs</span></td>
-                                                        <td><span>03-18-18</span></td>
-                                                        <td style="width:170px;"><div class="btn-group">
-                                                            <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">Accept</button>
-                                                            <button type="button" class="btn btn-danger" style="margin-bottom:10px; border-radius:5px !important;">Reject</button>
-                                                        </div></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="round-img">
-                                                                <a href=""><img src="/assets/images/static2/img5.jpg" alt=""></a>
-                                                            </div>
-                                                        </td>
-                                                        <td>Dugos Wild Forest Honey</td>
-                                                        <td><span>300 pcs</span></td>
-                                                        <td><span>03-10-18</span></td>
-                                                        <td style="width:170px;"><div class="btn-group">
-                                                            <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">Accept</button>
-                                                            <button type="button" class="btn btn-danger" style="margin-bottom:10px; border-radius:5px !important;">Reject</button>
-                                                        </div></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="round-img">
-                                                                <a href=""><img src="/assets/images/static2/imgs2.jpg" alt=""></a>
-                                                            </div>
-                                                        </td>
-                                                        <td>Coco Keto MCT Oil</td>
-                                                        <td><span>389 pcs</span></td>
-                                                        <td><span>03-09-18</span></td>
-                                                        <td style="width:170px;"><div class="btn-group">
-                                                            <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">Accept</button>
-                                                            <button type="button" class="btn btn-danger" style="margin-bottom:10px; border-radius:5px !important;">Reject</button>
-                                                        </div></td>
-                                                    </tr>
+                                                        <% }else{ %>
+                                                            <%  re.forEach(function(i){ %>
+                                                                <tr>
+                                                                    <td><%= i.intPurchaseOrderNo%></td>
+                                                                    <td><span><%= i.dateOrderReceived%></span></td>
+                                                                    <td style="width:170px;"><div class="btn-group">
+                                                                        <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">Accept</button>
+                                                                        <button type="button" class="btn btn-danger" style="margin-bottom:10px; border-radius:5px !important;">Reject</button>
+                                                                    </div></td>
+                                                                </tr>
+                                                                <%  }) %>
+                                                                <% } %>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                             </div>
-                            <div class="tab-pane fade" id="navtabs2">nav-tabs content 2</div>
-                            <div class="tab-pane fade" id="navtabs3">nav-tabs content 3</div>
+                            <div class="tab-pane fade" id="navtabs2">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Order No</th>
+                                                    <th>Date</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% if (re == null || re == undefined){ %>
+
+                                                    <% }else if (re.length == 0){ %>
+            
+                                                    <% }else{ %>
+                                                        <%  re.forEach(function(i){ %>
+                                                            <tr>
+                                                                <td><%= i.intPurchaseOrderNo%></td>
+                                                                <td><span><%= i.dateOrderReceived%></span></td>
+                                                                <td style="width:170px;"><div class="btn-group">
+                                                                    <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">View Products</button>
+                                                                </div></td>
+                                                            </tr>
+                                                            <%  }) %>
+                                                            <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="navtabs3">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Order No</th>
+                                                    <th>Date</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% if (re == null || re == undefined){ %>
+
+                                                    <% }else if (re.length == 0){ %>
+            
+                                                    <% }else{ %>
+                                                        <%  re.forEach(function(i){ %>
+                                                            <tr>
+                                                                <td><%= i.intPurchaseOrderNo%></td>
+                                                                <td><span><%= i.dateOrderReceived%></span></td>
+                                                                <td style="width:170px;"><div class="btn-group">
+                                                                    <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">View Products</button>
+                                                                </div></td>
+                                                            </tr>
+                                                            <%  }) %>
+                                                            <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                           </div>
                     
                     <div class="row">
