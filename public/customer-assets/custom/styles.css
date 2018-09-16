@@ -177,6 +177,9 @@ textarea {
 .fa-circle {
   color: #B9B9B9;
 }
+.fa-trash {
+  font-size: .9em !important;
+}
 
 /*General---------------------------------------------------------------------*/
 
@@ -1550,7 +1553,7 @@ table th, table td {
     width: 100%;
     position: relative;
   }
-  #summary-details-pane > div:nth-child(2) {
+  #summary-details-pane > div:nth-child(1) {
     width: 49%;
     float: left;
   }

@@ -159,7 +159,7 @@ $(() => {
                   <p class="product-price price-symbol">${data.curPrice}</p>
                 </div>
               </div>
-              <div class="product-remove"><i class="fa fa-remove product-remove-icon"></i></div>
+              <div class="product-remove"><i class="fas fa-times product-remove-icon"></i></div>
             </div>`);
         }
         allQtyValidate(data.curQty,data.limit,i)
