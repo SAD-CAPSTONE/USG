@@ -1313,6 +1313,74 @@ router.post('/editPackage',(req,res)=>{
   })
 })
 
+// Discount - Promotion
+
+router.get('/productDiscount',(req,res)=>{
+  db.query(`Select * from tblProductDiscount join tblProductInventory on tblProductDiscount.intInventoryNo = tblProductInventory.intInventoryNo
+    join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
+    join tblUom on tblUom.intUomno = tblProductInventory.intUomno`, (err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+        db.query(`Select * from tblProductInventory
+          join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
+          join tblUom on tblUom.intUomno = tblProductInventory.intUomno
+          join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo`,(err2,res2,fie2)=>{
+            if(err2) console.log(err2);
+            else{
+              res.render('admin-inventory/views/discount', {list: res1, moment: moment, inventory: res2});
+            }
+          })
+      }
+    })
+});
+
+router.post('/addDiscount',(req,res)=>{
+  var discount_no = "1000", transact_no = "1000";
+
+  db.beginTransaction(function(err){
+    if(err) console.log(err1)
+    else{
+      db.query(`Select * from tblProductDiscount order by intDiscountNo desc limit 1`,(err1,res1,fie1)=>{
+        if(err1) console.log(err1);
+        else{
+          if(res1.length==0){} else{ discount_no = parseInt(res1[0].intDiscountNo) + 1; }
+
+          db.query(`Insert into tblProductDiscount (intDiscountNo, intInventoryNo, discount, strDescription, discountDueDate)
+          values ("${discount_no}", "${req.body.inventory}", ${req.body.discount}, "${req.body.description}", "${req.body.date}")`,(err2,res2,fie2)=>{
+            if(err2) console.log(err2);
+            else{
+              db.query(`Select * from tblInventoryTransactions order by intTransactionID desc limit 1`,(err4,res4,fie4)=>{
+                if(err4) console.log(err4);
+                else{
+                  if(res4.length==0){} else{ transact_no = parseInt(res4[0].intTransactionID) + 1;}
+                  db.query(`Select * from tblProductInventory where intInventoryNo = "${req.body.inventory}"`,(err3,inventory,fie3)=>{
+                    if(err3) console.log(err3);
+                    else{
+                      db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intUserID, intShelfNo, intCriticalLimit, productSRP, productPrice, strTypeOfChanges)
+                      values ("${transact_no}", "${req.body.inventory}", "1000", ${inventory[0].intShelfNo}, ${inventory[0].intCriticalLimit}, ${inventory[0].productSRP}, ${inventory[0].productPrice}, "Discounted ${req.body.discount}% (No: ${discount_no})")`,(err5,res5,fie5)=>{
+                        if(err5) console.log(err5);
+                        else{
+                          db.commit(function(errb){
+                            if(errb) console.log(errb);
+                            else{
+                              res.send("yes");
+                            }
+                          })
+                        }
+                      })
+                    }
+                  })
+                }
+              });
+
+            }
+          })
+        }
+      })
+    }
+  })
+
+})
 
 
 
