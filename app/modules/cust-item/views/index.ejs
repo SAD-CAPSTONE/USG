@@ -1,7 +1,7 @@
 <%- include('../../../templates/navbar.ejs') -%>
 <%- include('../../../templates/modals/cart-modal.ejs') -%>
 <!--  -->
-<link rel="stylesheet" href="/customer-assets/scripts/bar-rating/dist/themes/fontawesome-stars-o.css">
+<link rel="stylesheet" href="/customer-assets/scripts/bar-rating/dist/themes/css-stars.css">
 <style>
   /* input[type=number]::-webkit-outer-spin-button,
   input[type=number]::-webkit-inner-spin-button {
@@ -22,12 +22,16 @@
   .x-scrolling-div .simplebar-scroll-content {
     overflow-y: hidden !important;
   }
-  .br-theme-fontawesome-stars-o .br-widget a {
+  .br-theme-css-stars .br-widget a {
     font: normal normal normal 30px/1 FontAwesome;
-    margin-right: 4px;
   }
   .br-widget {
+    width: 115;
+    margin: auto;
     margin-bottom: 4px;
+  }
+  #item-review-pane .fa-star, #item-review-pane .fa-star-half-alt {
+    margin-right: -2.5px;
   }
 
 </style>
@@ -53,9 +57,9 @@
           rating = thisProduct.aveRating;
           for(i=0; i<5; i++){
             if (rating < 1 && rating >= 0.5) {
-            %> <i class="fa fa-star-half-o"></i> <%
+            %> <i class="fas fa-star-half-alt"></i> <%
             } else if (rating < 0.5) {
-            %> <i class="fa fa-star-o"></i> <%
+            %> <i class="far fa-star"></i> <%
             } else {
             %> <i class="fa fa-star"></i> <%
             }
@@ -102,23 +106,6 @@
                 <input id="thisprod_id" type="text" value="<%= thisProduct.intProductNo%>" hidden />
               </div>
               <div>
-                <!-- <div id="radio-container" class="fl-l">
-                  <% thisInventory.forEach((inv, i)=>{ %>
-                    <div class="form-check radio-div">
-                      <input class="prod_price" type="text" value="<%= inv.productPrice%>" hidden />
-                      <input class="prod_stock" type="text" value="<%= inv.stock%>" hidden />
-                      <% if(i==0){ %>
-                        <input id="<%= inv.intInventoryNo%>" class="form-check-input sizes-radio" type="radio" name="invSizes" value="<%= inv.intInventoryNo%>" checked>
-                      <% }else{ %>
-                        <input id="<%= inv.intInventoryNo%>" class="form-check-input sizes-radio" type="radio" name="invSizes" value="<%= inv.intInventoryNo%>">
-                      <% } %>
-                      <label class="form-check-label" for="<%= inv.intInventoryNo%>">
-                        <%= inv.intSize%><%= inv.strUnitName%>
-                      </label>
-                    </div>
-                  <% }) %>
-                </div> -->
-                <!-- <div id="item-price" class="fl-r pos-relative"></div> -->
                 <select class="select-size" name="">
                   <% thisInventory.forEach((inv, i)=>{ %>
                     <% if(i==0){ %>
@@ -172,7 +159,7 @@
               </div>
 
               <div class="card-desc">
-                <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
+                <p class="card-title" title="<%=prod.strBrand%> <%=prod.strProductName%>"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
                 <p class="card-price price-symbol">
                   <% if(prod.minPrice == prod.maxPrice){ %>
                     <%= prod.minPrice %>
@@ -188,9 +175,9 @@
                   rating = prod.aveRating;
                   for(i=0; i<5; i++){
                     if (rating < 1 && rating >= 0.5) {
-                    %> <i class="fa fa-star-half-o"></i> <%
+                    %> <i class="fas fa-star-half-alt"></i> <%
                     } else if (rating < 0.5) {
-                    %> <i class="fa fa-star-o"></i> <%
+                    %> <i class="far fa-star"></i> <%
                     } else {
                     %> <i class="fa fa-star"></i> <%
                     }
@@ -219,7 +206,7 @@
               </div>
 
               <div class="card-desc">
-                <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
+                <p class="card-title" title="<%=prod.strBrand%> <%=prod.strProductName%>"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
                 <p class="card-price price-symbol">
                   <% if(prod.minPrice == prod.maxPrice){ %>
                     <%= prod.minPrice %>
@@ -235,9 +222,9 @@
                   rating = prod.aveRating;
                   for(i=0; i<5; i++){
                     if (rating < 1 && rating >= 0.5) {
-                    %> <i class="fa fa-star-half-o"></i> <%
+                    %> <i class="fas fa-star-half-alt"></i> <%
                     } else if (rating < 0.5) {
-                    %> <i class="fa fa-star-o"></i> <%
+                    %> <i class="far fa-star"></i> <%
                     } else {
                     %> <i class="fa fa-star"></i> <%
                     }
@@ -264,9 +251,9 @@
             rating = thisProduct.aveRating;
             for(i=0; i<5; i++){
               if (rating < 1 && rating >= 0.5) {
-              %> <i class="fa fa-star-half-o"></i> <%
+              %> <i class="fas fa-star-half-alt"></i> <%
               } else if (rating < 0.5) {
-              %> <i class="fa fa-star-o"></i> <%
+              %> <i class="far fa-star"></i> <%
               } else {
               %> <i class="fa fa-star"></i> <%
               }
@@ -282,7 +269,7 @@
                 if (i > j){ %>
                   <li class="inline"><i class="fa fa-star"></i></li>
               <% }else{ %>
-                  <li class="inline"><i class="fa fa-star-o"></i></li>
+                  <li class="inline"><i class="far fa-star"></i></li>
               <% }
               } %>
                 <li class="inline">
@@ -330,10 +317,10 @@
               if(i <= rev.intStars){ %>
                 <i class="fa fa-star"></i>
               <% }else{ %>
-                <i class="fa fa-star-o"></i>
+                <i class="far fa-star"></i>
               <% }
             } %>
-            <small class="text-muted"><%= rev.r_created_at %></small>
+            <small class="text-muted ml-1"><%= rev.r_created_at %></small>
             <small class="review-desc block">
               <%= rev.strReview %>
             </small>
@@ -511,7 +498,7 @@
   // DESIGN - Rating
   $(()=> {
     $('.productRating').barrating({
-      theme: 'fontawesome-stars-o'
+      theme: 'css-stars'
     });
     $('.br-widget > a:first-child').addClass('block-none');
     $('.br-widget > a').on('click', ()=>{

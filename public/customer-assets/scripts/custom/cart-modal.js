@@ -96,7 +96,6 @@ function qtyControl(modal,type){
 
 $(()=>{
   $.get(`/cart/limit`).then((res) => {
-    console.log(res)
     limit = res.quantLimit
     $('i.limit-info').attr(`title`,`Maximum of ${limit} of the same product variation per order`)
     $('i.limit-info-package').attr(`title`,`Maximum of ${limit} of the same package per order`)
@@ -113,6 +112,7 @@ $('.products-container').on('click', '.cart-btn:not(.package-btn)', function(){
     modal.find('img').attr("src", data.img);
     modal.find('img').parent().attr("href", `/item/${data.id}`);
     modal.find('.title').html(`<span class="text-brand">${data.brand}</span> ${data.name}`);
+    modal.find('.title').attr(`title`,`${data.brand} ${data.name}`);
     modal.find('.price').text(data.curPrice);
     modal.find('.quantity-input').val(data.curQty);
     modal.find('.select-size').html('');

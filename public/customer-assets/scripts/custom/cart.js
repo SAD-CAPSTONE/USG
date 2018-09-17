@@ -103,7 +103,7 @@ $(() => {
                 <input class="cart-type" value="${data.type}" hidden/>
                 <div class="product-pic"><a href="/item/${data.id}"><img src="${data.img}"/></a></div>
                 <div class="product-desc">
-                  <p class="product-title"><span class="text-brand">${data.brand}</span> ${data.name}</p>
+                  <p class="product-title" title="${data.brand} ${data.name}"><span class="text-brand">${data.brand}</span> ${data.name}</p>
                   <small class="product-size text-muted">${data.curSize}</small>
                   <div class="input-group quantity">
                     <div class="input-group-prepend addon">
@@ -124,7 +124,7 @@ $(() => {
                   <p class="product-price price-symbol">${data.curPrice}</p>
                 </div>
               </div>
-              <div class="product-remove"><i class="fa fa-remove product-remove-icon"></i></div>
+              <div class="product-remove"><i class="fas fa-times product-remove-icon"></i></div>
             </div>`);
         }
         else{
@@ -135,7 +135,7 @@ $(() => {
                 <input class="cart-type" value="${data.type}" hidden/>
                 <div class="product-pic"><img src="${data.img}" class="cursor-pointer"/></div>
                 <div class="product-desc">
-                  <p class="product-title"><span class="text-package">${data.name}</span></p>
+                  <p class="product-title" title="${data.name}"><span class="text-package">${data.name}</span></p>
                   <div class="package-product-list">
 
                   </div>
@@ -159,7 +159,7 @@ $(() => {
                   <p class="product-price price-symbol">${data.curPrice}</p>
                 </div>
               </div>
-              <div class="product-remove"><i class="fa fa-remove product-remove-icon"></i></div>
+              <div class="product-remove"><i class="fas fa-times product-remove-icon"></i></div>
             </div>`);
         }
         allQtyValidate(data.curQty,data.limit,i)

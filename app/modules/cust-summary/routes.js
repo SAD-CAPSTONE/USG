@@ -5,6 +5,7 @@ const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
 const userTypeAuth = require('../cust-0extras/userTypeAuth');
 const auth_cust = userTypeAuth.cust;
+const fs = require('fs');
 const firstID = 1000;
 const quantLimit = 50;
 
@@ -194,6 +195,57 @@ function receiptPackages (req, res, next){
   });
 }
 
+function popularProducts(req,res,next){
+  /*Most Popular Products;
+  *(tblproductlist)*(tblproductbrand)*(tblproductinventory)*(tblorderdetails)*(tblproductreview)*/
+  db.query(`SELECT B.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating,
+  COUNT(Review.strReview)AS cntReview FROM(SELECT A.*, Orders.intOrderDetailsNo, COUNT(Orders.intOrderDetailsNo)AS OrderCNT FROM(
+  SELECT tblproductlist.*, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.minPrice, Inv.maxPrice, Brand.strBrand FROM tblproductlist
+  INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
+  INNER JOIN (SELECT intInventoryNo,intProductNo,intStatus,min(productPrice)minPrice,max(productPrice)maxPrice FROM tblproductinventory GROUP BY intProductNo)Inv ON tblproductlist.intProductNo= Inv.intProductNo
+  WHERE Brand.intStatus= 1)A LEFT JOIN (SELECT * FROM tblorderdetails)Orders ON A.intInventoryNo= Orders.intInventoryNo GROUP BY A.intProductNo)B
+  LEFT JOIN (SELECT * FROM tblproductreview)Review ON B.intProductNo = Review.intProductNo
+  GROUP BY B.intProductNo ORDER BY OrderCNT DESC LIMIT 10`, function (err,  results, fields) {
+    if (err) console.log(err);
+    results[0] ? results.forEach((obj)=>{
+      obj.minPrice = priceFormat(obj.minPrice.toFixed(2)) ;
+      obj.maxPrice = priceFormat(obj.maxPrice.toFixed(2)) ;
+    }) : 0
+    req.popularProducts= results;
+    return next();
+  });
+}
+function newProducts(req,res,next){
+  /*New Popular Products;
+  *(tblproductlist)*(tblproductbrand)*(tblproductinventory)*(tblproductreview)*/
+  db.query(`SELECT A.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating, COUNT(Review.strReview)AS cntReview FROM(
+  SELECT tblproductlist.*, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.minPrice, Inv.maxPrice, Brand.strBrand FROM tblproductlist
+  INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
+  INNER JOIN (SELECT intInventoryNo,intProductNo,intStatus,min(productPrice)minPrice,max(productPrice)maxPrice FROM tblproductinventory GROUP BY intProductNo)Inv ON tblproductlist.intProductNo= Inv.intProductNo
+  WHERE Brand.intStatus= 1 GROUP BY tblproductlist.intProductNo)A
+  LEFT JOIN (SELECT * FROM tblproductreview)Review ON A.intProductNo = Review.intProductNo
+  GROUP BY A.intProductNo ORDER BY intProductNo DESC LIMIT 10`, function (err,  results, fields) {
+    if (err) console.log(err);
+    results[0] ? results.forEach((obj)=>{
+      obj.minPrice = priceFormat(obj.minPrice.toFixed(2)) ;
+      obj.maxPrice = priceFormat(obj.maxPrice.toFixed(2)) ;
+    }) : 0
+    req.newProducts= results;
+    return next();
+  });
+}
+function packages(req,res,next){
+  db.query(`SELECT *, SUM(intProductQuantity)Qty FROM tblpackage
+    INNER JOIN tblpackagelist ON tblpackage.intPackageNo= tblpackagelist.intPackageNo
+    WHERE tblpackage.intStatus= 1 AND (tblpackage.intQuantity - tblpackage.intReservedItems) > 0 GROUP BY tblpackage.intPackageNo ORDER BY tblpackage.intPackageNo DESC`,
+    function (err,  results, fields) {
+    if (err) console.log(err);
+    results.forEach((obj)=>{ obj.packagePrice = priceFormat(obj.packagePrice.toFixed(2)) })
+    req.packages= results;
+    return next();
+  });
+}
+
 router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>{
   res.render('cust-summary/views/checkout', {
     thisUser: req.user,
@@ -201,7 +253,7 @@ router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>
     admin: req.admin
   });
 });
-router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, orderPackages, admin, (req,res)=>{
+router.get('/order/:orderNo', checkUserOrder, auth_cust, orderTotal, orderPackages, admin, (req,res)=>{
   db.query(`SELECT *, (tblorder.intStatus)orderStatus, (tblorderdetails.intQuantity)orderQty FROM tblorder
     INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
     INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
@@ -212,11 +264,11 @@ router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, orderPack
     [req.params.orderNo, req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
     if (results[0]){
+      results = results.concat(req.orderPackages);
+      results.sort(orderArraySort);
       results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('ll') );
       results.map( obj => obj.purchasePrice = priceFormat(obj.purchasePrice.toFixed(2)) );
       results.map( obj => obj.intSize = sizeString(obj) );
-      results = results.concat(req.orderPackages);
-      results.sort(orderArraySort);
       let orderLength = results.reduce((temp, obj)=>{
         return temp += obj.orderQty
       },0);
@@ -235,7 +287,7 @@ router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, orderPack
     }
   });
 });
-router.get('/voucher/:orderNo', checkUserAccount, auth_cust, orderTotal, (req,res)=>{
+router.get('/voucher/:orderNo', checkUserOrder, auth_cust, orderTotal, (req,res)=>{
   if (!req.user){
     res.send('none')
   }
@@ -255,7 +307,7 @@ router.get('/voucher/:orderNo', checkUserAccount, auth_cust, orderTotal, (req,re
     });
   }
 })
-router.get('/receipt/:orderNo', checkUserAccount, auth_cust, receiptPackages, (req,res)=>{
+router.get('/receipt/:orderNo', checkUserOrder, auth_cust, receiptPackages, (req,res)=>{
   db.query(`SELECT (customer.strFname)customerF, (customer.strMname)customerM, (customer.strLname)customerL, orders.*, tblorder.*
   FROM tblorder INNER JOIN (SELECT * FROM tbluser)customer ON tblorder.intUserID= customer.intUserID
   INNER JOIN (SELECT tblorderdetails.*, strBrand, strProductName, strVariant, intSize, strUnitName, (purchasePrice*tblorderdetails.intQuantity)amount, (purchasePrice-(purchasePrice*0.12))priceNonVAT, ((purchasePrice-(purchasePrice*0.12))*tblorderdetails.intQuantity)amountNonVAT
@@ -302,8 +354,16 @@ router.get('/receipt/:orderNo', checkUserAccount, auth_cust, receiptPackages, (r
     }
   });
 })
+router.get('/tracker/:orderNo', checkUserOrder, auth_cust, (req,res)=>{
+  db.query(`SELECT intStatus FROM tblorderhistory WHERE intOrderNo= ?`,[req.params.orderNo],(err,results,fields)=>{
+    if (err) console.log(err);
+    res.send({status: results})
+  });
 
-router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOrderDetailsNo, newOrderHistoryNo, newMessageNo, cartCheck, admin, (req,res)=>{
+});
+
+router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOrderDetailsNo, newOrderHistoryNo,
+ newMessageNo, cartCheck, admin, popularProducts, newProducts, packages, (req,res)=>{
   req.session.cart.forEach((data,i)=>{
     data.curQty == 0 ? req.session.cart.splice(i,1) : 0
   })
@@ -324,23 +384,47 @@ router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOr
 
             if (cart[i].type == 1){
               inv = cart[i].inv
-              stringquery1 = `SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblproductinventory WHERE intInventoryNo= ?`
-              stringquery2 = `UPDATE tblproductinventory SET intReservedItems= ? WHERE intInventoryNo= ?`
+              stringquery1 = `SELECT (0)productSRP, ?`
+              stringquery2 = `SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblproductinventory WHERE intInventoryNo= ?`
+              stringquery3 = `UPDATE tblproductinventory SET intReservedItems= ? WHERE intInventoryNo= ?`
             }
             else{
               inv = cart[i].package
-              stringquery1 = `SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblpackage WHERE intPackageNo= ?`
-              stringquery2 = `UPDATE tblpackage SET intReservedItems= ? WHERE intPackageNo= ?`
+              stringquery1 = `SELECT productSRP FROM tblproductinventory WHERE intInventoryNo= ?`
+              stringquery2 = `SELECT (intQuantity - intReservedItems)stock, intReservedItems FROM tblpackage WHERE intPackageNo= ?`
+              stringquery3 = `UPDATE tblpackage SET intReservedItems= ? WHERE intPackageNo= ?`
             }
-
-            db.query(`INSERT INTO tblorderdetails (intOrderDetailsNo, intOrderNo, intInventoryNo, intProductType, intStatus, purchasePrice, intQuantity)
-              VALUES (?,?,?,?,?,?,?)`,[req.newOrderDetailsNo + i, thisOrderNo, inv, cart[i].type, 1, cart[i].curPrice, cart[i].curQty], (err, results, fields) => {
-              if (err) console.log(err);
-              db.query(stringquery1, [inv], (err, results, fields) => {
-                if (results[0].stock){
-                  newQty = parseInt(results[0].intReservedItems) + parseInt(cart[i].curQty);
-                  db.query(stringquery2, [newQty, inv], (err, results1, fields) => {
-                    if (err) console.log(err);
+            db.query(stringquery1, [inv], (err, srp, fields) => {
+              db.query(`INSERT INTO tblorderdetails (intOrderDetailsNo, intOrderNo, intInventoryNo, intProductType, intStatus, purchasePrice, intQuantity, currentSRP)
+                VALUES (?,?,?,?,?,?,?,?)`,[req.newOrderDetailsNo + i, thisOrderNo, inv, cart[i].type, 1, cart[i].curPrice, cart[i].curQty, srp[0].productSRP], (err, results, fields) => {
+                if (err) console.log(err);
+                db.query(stringquery2, [inv], (err, results, fields) => {
+                  if (results[0].stock){
+                    newQty = parseInt(results[0].intReservedItems) + parseInt(cart[i].curQty);
+                    db.query(stringquery3, [newQty, inv], (err, results1, fields) => {
+                      if (err) console.log(err);
+                      ++i;
+                      if (cart.length > i){
+                        multiInsert(i);
+                      }
+                      else{
+                        db.commit(function(err) {
+                          if (err) console.log(err);
+                          req.session.cart = null;
+                          res.render('cust-summary/views/orderSuccess', {
+                            thisUser: req.user,
+                            orderNumber: thisOrderNo,
+                            checkUpdateOrder: req.body.paymentMethod,
+                            admin: req.admin,
+                            popularProducts: req.popularProducts,
+                            newProducts: req.newProducts,
+                            packages: req.packages
+                          });
+                        });
+                      }
+                    });
+                  }
+                  else{
                     ++i;
                     if (cart.length > i){
                       multiInsert(i);
@@ -349,29 +433,11 @@ router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOr
                       db.commit(function(err) {
                         if (err) console.log(err);
                         req.session.cart = null;
-                        res.render('cust-summary/views/orderSuccess', {
-                          thisUser: req.user,
-                          orderNumber: thisOrderNo,
-                          checkUpdateOrder: req.body.paymentMethod,
-                          admin: req.admin
-                        });
+                        res.redirect(`/summary/sample`,{message: 'Something went wrong'});
                       });
                     }
-                  });
-                }
-                else{
-                  ++i;
-                  if (cart.length > i){
-                    multiInsert(i);
                   }
-                  else{
-                    db.commit(function(err) {
-                      if (err) console.log(err);
-                      req.session.cart = null;
-                      res.redirect(`/summary/sample`,{message: 'Something went wrong'});
-                    });
-                  }
-                }
+                });
               });
             });
           }
@@ -468,5 +534,44 @@ router.post('/order/cancel', checkUserOrder, orderProductQty, newOrderHistoryNo,
     });
   });
 })
+router.post('/order/upload-slip', checkUserOrder, thisOrder, (req,res)=>{
+  let img = `bs-${req.body.orderNo.toString()}.png`
+  if(!thisOrder){
+    res.redirect('/noroute');
+  }
+  else if(!req.files.bankslip){
+    req.thisOrder.depositSlip ? fs.unlink('public/customer-assets/images/userImages/bankslips/'+img) : 0
+    db.beginTransaction(function(err) {
+      if (err) console.log(err);
+      db.query(`UPDATE tblorder SET depositSlip= NULL WHERE intOrderNo= ?`, [req.body.orderNo], (err,results,fields)=>{
+        if (err) console.log(err);
+        db.commit(function(err) {
+          if (err) console.log(err);
+          res.render('cust-0extras/views/messagePage',{message: 'File Removed', messBtn: `Back to Order#${req.body.orderNo}`, messLink: `/summary/order/${req.body.orderNo}`});
+        });
+      });
+    });
+  }
+  else if(req.files.bankslip.mimetype != 'image/jpeg' && req.files.bankslip.mimetype != 'image/png'){
+    res.render('cust-0extras/views/messagePage',{message: 'Oops! You uploaded an invalid file.', messBtn: `Back to Order#${req.body.orderNo}`, messLink: `/summary/order/${req.body.orderNo}`});
+  }
+  else{
+    req.thisOrder.depositSlip ? fs.unlink('public/customer-assets/images/userImages/bankslips/'+img) : 0
+    db.beginTransaction(function(err) {
+      if (err) console.log(err);
+      req.files.bankslip.mv('public/customer-assets/images/userImages/bankslips/'+img, function(err){
+        db.query(`UPDATE tblorder SET depositSlip= ? WHERE intOrderNo= ?`, [img, req.body.orderNo], (err,results,fields)=>{
+          if (err) console.log(err);
+          db.commit(function(err) {
+            if (err) console.log(err);
+            res.render('cust-0extras/views/messagePage',{message: 'File Uploaded', messBtn: `Back to Order#${req.body.orderNo}`, messLink: `/summary/order/${req.body.orderNo}`});
+          });
+        });
+      });
+    });
+
+  }
+
+});
 
 exports.summary = router;
