@@ -10,7 +10,16 @@ router.get('/sales',(req,res)=>{
 
 router.get('/inventory',(req,res)=>{
   res.render('admin-reports/views/inventory');
-})
+});
+
+router.get('/damage',(req,res)=>{
+  res.render('admin-reports/views/damage');
+});
+
+router.get('/customer',(req,res)=>{
+  res.render('admin-reports/views/damage');
+});
+
 
 // <%- include('../../../templates/admin-navbar.ejs') -%>
 
