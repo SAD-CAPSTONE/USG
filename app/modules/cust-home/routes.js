@@ -8,13 +8,34 @@ function popularProducts(req,res,next){
   /*Most Popular Products;
   *(tblproductlist)*(tblproductbrand)*(tblproductinventory)*(tblorderdetails)*(tblproductreview)*/
   db.query(`SELECT B.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating,
-  COUNT(Review.strReview)AS cntReview FROM(SELECT A.*, Orders.intOrderDetailsNo, COUNT(Orders.intOrderDetailsNo)AS OrderCNT FROM(
-  SELECT tblproductlist.*, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.minPrice, Inv.maxPrice, Brand.strBrand FROM tblproductlist
-  INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
-  INNER JOIN (SELECT intInventoryNo,intProductNo,intStatus,min(productPrice)minPrice,max(productPrice)maxPrice FROM tblproductinventory GROUP BY intProductNo)Inv ON tblproductlist.intProductNo= Inv.intProductNo
-  WHERE Brand.intStatus= 1)A LEFT JOIN (SELECT * FROM tblorderdetails)Orders ON A.intInventoryNo= Orders.intInventoryNo GROUP BY A.intProductNo)B
-  LEFT JOIN (SELECT * FROM tblproductreview)Review ON B.intProductNo = Review.intProductNo
-  GROUP BY B.intProductNo ORDER BY OrderCNT DESC LIMIT 10`, function (err,  results, fields) {
+    COUNT(Review.strReview)AS cntReview FROM
+    (
+    	SELECT A.*, OrderCNT FROM
+    	(
+    		SELECT tblproductlist.*, Inv.intInventoryNo, min(Inv.productPrice)minPrice,max(Inv.productPrice)maxPrice,
+        Brand.strBrand, max(Inv.discount)maxDisc FROM tblproductlist
+        INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
+    		INNER JOIN
+    		(
+    			SELECT tblproductinventory.intInventoryNo,intProductNo, discount,
+    			IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, discountDueDate
+    			FROM tblproductinventory LEFT JOIN
+    			(
+    				SELECT * FROM tblproductdiscount WHERE now() <= discountDueDate AND intStatus= 1
+    			)Discount ON tblproductinventory.intInventoryNo= Discount.intInventoryNo
+    		)Inv ON tblproductlist.intProductNo= Inv.intProductNo
+    		WHERE Brand.intStatus= 1 GROUP BY tblproductlist.intProductNo
+    	)A
+    	LEFT JOIN
+    	(
+    		SELECT tblproductlist.intProductNo, COUNT(intOrderDetailsNo)OrderCNT FROM tblorderdetails
+    		INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
+    		INNER JOIN tblproductlist ON tblproductinventory.intProductNo= tblproductlist.intProductNo
+    		GROUP BY tblproductlist.intProductNo
+    	)Orders ON A.intProductNo= Orders.intProductNo
+    )B
+    LEFT JOIN (SELECT * FROM tblproductreview)Review ON B.intProductNo = Review.intProductNo
+    GROUP BY B.intProductNo ORDER BY OrderCNT DESC,B.intProductNo LIMIT 10`, function (err,  results, fields) {
     if (err) console.log(err);
     results[0] ? results.forEach((obj)=>{
       obj.minPrice = priceFormat(obj.minPrice.toFixed(2)) ;
@@ -27,13 +48,25 @@ function popularProducts(req,res,next){
 function newProducts(req,res,next){
   /*New Popular Products;
   *(tblproductlist)*(tblproductbrand)*(tblproductinventory)*(tblproductreview)*/
-  db.query(`SELECT A.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating, COUNT(Review.strReview)AS cntReview FROM(
-  SELECT tblproductlist.*, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.minPrice, Inv.maxPrice, Brand.strBrand FROM tblproductlist
-  INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
-  INNER JOIN (SELECT intInventoryNo,intProductNo,intStatus,min(productPrice)minPrice,max(productPrice)maxPrice FROM tblproductinventory GROUP BY intProductNo)Inv ON tblproductlist.intProductNo= Inv.intProductNo
-  WHERE Brand.intStatus= 1 GROUP BY tblproductlist.intProductNo)A
-  LEFT JOIN (SELECT * FROM tblproductreview)Review ON A.intProductNo = Review.intProductNo
-  GROUP BY A.intProductNo ORDER BY intProductNo DESC LIMIT 10`, function (err,  results, fields) {
+  db.query(`SELECT A.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating,
+    COUNT(Review.strReview)AS cntReview FROM
+    (
+    	SELECT tblproductlist.*, Inv.intInventoryNo, min(Inv.productPrice)minPrice,max(Inv.productPrice)maxPrice,
+    	Brand.strBrand, max(Inv.discount)maxDisc FROM tblproductlist
+    	INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
+    	INNER JOIN
+    	(
+    		SELECT tblproductinventory.intInventoryNo,intProductNo, discount,
+    		IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, discountDueDate
+    		FROM tblproductinventory LEFT JOIN
+    		(
+    			SELECT * FROM tblproductdiscount WHERE now() <= discountDueDate AND intStatus= 1
+    		)Discount ON tblproductinventory.intInventoryNo= Discount.intInventoryNo
+    	)Inv ON tblproductlist.intProductNo= Inv.intProductNo
+    	WHERE Brand.intStatus= 1 GROUP BY tblproductlist.intProductNo
+    )A
+    LEFT JOIN (SELECT * FROM tblproductreview)Review ON A.intProductNo = Review.intProductNo
+    GROUP BY A.intProductNo ORDER BY A.intProductNo DESC LIMIT 10`, function (err,  results, fields) {
     if (err) console.log(err);
     results[0] ? results.forEach((obj)=>{
       obj.minPrice = priceFormat(obj.minPrice.toFixed(2)) ;
@@ -46,7 +79,7 @@ function newProducts(req,res,next){
 function packages(req,res,next){
   db.query(`SELECT *, SUM(intProductQuantity)Qty FROM tblpackage
     INNER JOIN tblpackagelist ON tblpackage.intPackageNo= tblpackagelist.intPackageNo
-    WHERE tblpackage.intStatus= 1 AND (tblpackage.intQuantity - tblpackage.intReservedItems) > 0 GROUP BY tblpackage.intPackageNo ORDER BY tblpackage.intPackageNo DESC`, 
+    WHERE tblpackage.intStatus= 1 AND (tblpackage.intQuantity - tblpackage.intReservedItems) > 0 GROUP BY tblpackage.intPackageNo ORDER BY tblpackage.intPackageNo DESC`,
     function (err,  results, fields) {
     if (err) console.log(err);
     results.forEach((obj)=>{ obj.packagePrice = priceFormat(obj.packagePrice.toFixed(2)) })

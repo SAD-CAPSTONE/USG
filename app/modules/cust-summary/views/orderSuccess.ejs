@@ -34,6 +34,11 @@
                 <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
               <% } %>
             </p>
+            <% if(prod.maxDisc){ %>
+              <small class="card-oldprice text-muted">
+                <span><i class="fas fa-tags"></i> upto <%= prod.maxDisc %>% off <br>
+              </small>
+            <% } %>
             <small class="card-rating">
               <%
               rating = prod.aveRating;
@@ -75,6 +80,11 @@
                 <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
               <% } %>
             </p>
+            <% if(prod.maxDisc){ %>
+              <small class="card-oldprice text-muted">
+                <span><i class="fas fa-tags"></i> upto <%= prod.maxDisc %>% off <br>
+              </small>
+            <% } %>
             <small class="card-rating">
               <%
               rating = prod.aveRating;

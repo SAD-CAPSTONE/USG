@@ -21,8 +21,14 @@ router.get('/limit', (req, res)=>{
 router.get('/modal/:pid', (req, res)=>{
   db.query(`SELECT * FROM tblproductlist
     INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
-	  INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
-    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno
+    INNER JOIN (
+    	SELECT tblproductinventory.intInventoryNo, intProductNo, intUOMno, intSize, (tblproductinventory.intStatus)InvStatus,
+      IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, intQuantity,
+      intReservedItems, strVariant, discount, discountDueDate FROM tblproductinventory
+    	LEFT JOIN (SELECT * FROM tblproductdiscount WHERE now() <= discountDueDate AND intStatus= 1)Disc
+    	ON tblproductinventory.intInventoryNo= Disc.intInventoryNo
+    )Inv ON tblproductlist.intProductNo= Inv.intProductNo
+    INNER JOIN tbluom ON Inv.intUOMno= tbluom.intUOMno
     WHERE tblproductlist.intProductNo= ?`
     , [req.params.pid], (err,results,fields)=>{
     if (err) console.log(err);
@@ -45,11 +51,16 @@ router.get('/modal/:pid', (req, res)=>{
   });
 });
 router.get('/modal-inv/:inv', (req, res)=>{
-  db.query(`SELECT productPrice, (intQuantity - intReservedItems)stock FROM tblproductinventory
-    WHERE intInventoryNo = ?`
+  db.query(`SELECT (intQuantity - intReservedItems)stock, (productPrice)oldPrice, discount, IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice
+    FROM tblproductinventory LEFT JOIN (SELECT * FROM tblproductdiscount WHERE now() <= discountDueDate AND intStatus= 1)Disc
+    ON tblproductinventory.intInventoryNo= Disc.intInventoryNo
+    WHERE tblproductinventory.intInventoryNo = ?`
     , [req.params.inv], (err,results,fields)=>{
     if (err) console.log(err);
-    results[0] ? results[0].productPrice = priceFormat(results[0].productPrice.toFixed(2)): 0;
+    if (results[0]){
+      results[0].productPrice = priceFormat(results[0].productPrice.toFixed(2));
+      results[0].oldPrice = priceFormat(results[0].oldPrice.toFixed(2));
+    }
     res.send({inventory: results[0]});
   });
 });

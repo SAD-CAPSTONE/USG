@@ -19,6 +19,7 @@
   --disabled-color: #CFCFCF;
   --danger-color: #EF3534;
   --danger-hover: #ED1D1C;
+  --discount-color: rgba(140, 122, 230, .9);
 
   --sub-color: #ccc;
   --secondary-color: #868E96;
@@ -179,6 +180,14 @@ textarea {
 }
 .fa-trash {
   font-size: .9em !important;
+}
+.fa-tags {
+  color: var(--discount-color);
+}
+.fa-tags.discount-modal {
+  font-size: .6em;
+  vertical-align: 2.5px;
+  cursor: pointer;
 }
 
 /*General---------------------------------------------------------------------*/
