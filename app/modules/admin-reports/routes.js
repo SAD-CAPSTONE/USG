@@ -17,7 +17,7 @@ router.get('/damage',(req,res)=>{
 });
 
 router.get('/customer',(req,res)=>{
-  res.render('admin-reports/views/damage');
+  res.render('admin-reports/views/customer');
 });
 
 
