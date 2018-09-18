@@ -22,8 +22,8 @@
         <div class="col-xs-12">
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#allAdjustments" data-toggle="tab"><i class="fa fa-bars"></i> All Adjustments</a></li>
-              <li><a href="#newAdjustment" data-toggle="tab"><i class="fa fa-plus"></i> New</a></li>
+              <li class="active"><a href="#allAdjustments" data-toggle="tab"> All Adjustments</a></li>
+              <!-- <li><a href="#newAdjustment" data-toggle="tab"><i class="fa fa-plus"></i> New</a></li> -->
               <li><a href="#inventory_count" data-toggle="tab">Inventory Count</a></li>
 
             </ul>
@@ -36,7 +36,6 @@
                     <thead>
                       <tr>
                         <th>No</th>
-                        <th>Barcode</th>
                         <th>Product Name</th>
                         <th>Quantity</th>
                         <th>Date Adjusted</th>
@@ -53,11 +52,15 @@
                       <%  all.forEach(function(i){ %>
                           <tr>
                             <td><%=i.intAdjustmentNo%></td>
-                            <td><%=i.strBarcode%></td>
                             <td><%=i.strProductName%></td>
                             <td><%= i.qty %></td>
                             <td><%= moment().format("MM/DD/YYYY")%></td>
-                            <td><%= i.strAdjustment %></td>
+                            <td><% if(i.intAdjustmentType == 0){ %>
+                              Loss
+                            <% }else{ %>
+                              Gain
+                            <% } %>
+                            </td>
                             <td><%=i.strAdjustmentNote%></td>
 
                           </tr>
@@ -71,7 +74,7 @@
               </div>
 
               <!-- New Adjustment -->
-              <div class="tab-pane" id="newAdjustment">
+              <!-- <div class="tab-pane" id="newAdjustment">
                 <br>
                 <div class="row">
                   <div class="col-sm-6">
@@ -121,7 +124,7 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
 
               <!-- All Adjustments -->
               <div class="tab-pane" id="inventory_count">
@@ -130,7 +133,7 @@
                     <thead>
                       <tr>
                         <th>No</th>
-                        <th>Barcode</th>
+
                         <th>Product Name</th>
                         <th>Quantity</th>
                         <th>Action</th>
@@ -145,11 +148,12 @@
                       <%  inv.forEach(function(i){ %>
                           <tr>
                             <td><%=i.intInventoryNo%></td>
-                            <td><%=i.strBarcode%></td>
+
                             <td><%=i.strProductName%></td>
                             <td><%= i.intQuantity %></td>
                             <td>
-                              <a href="/inventory/count?inv=<%=i.intInventoryNo%>"><button class="large ui teal button">Check Batch</button></a>
+                              <button data-toggle="modal" data-target="#checkBatch" data-inv="<%=i.intInventoryNo%>"  class="checkBatch large ui teal button">Check Batch</button>
+
                             </td>
 
                           </tr>
@@ -179,6 +183,88 @@
 
   <!-- Modals -->
 
+<div class="modal fade" id="checkBatch">
+  <div style="width: 70%" class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 align="center">Choose Batch</h4>
+      </div>
+
+      <div class="modal-body">
+
+          <div id="loader">
+          </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="adjust">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">Batch Adjustment</h4>
+      </div>
+      <div class="modal-body">
+
+        <!-- form start -->
+        <form role="form" id="batch_adjust_form">
+          <div class="box-body">
+
+            <div class="form-group">
+              <div class="row">
+                <div class="col-sm-6">
+                  <label>Batch</label>
+                  <input type="hidden" name="batch_no"  class="add_batch form-control">
+                  <input type="text" disabled   class="add_batch form-control">
+                </div>
+                <div class="col-sm-6">
+                  <label>Quantity</label>
+                  <input type="text" disabled  id="add_quantity" class="form-control">
+                </div>
+              </div>
+
+            </div>
+
+
+            <div class="form-group">
+              <label>Choose adjustment type:</label>
+              <select class="form-control" name="types">
+                <option value="0">Lost</option>
+                <option value="1">Gain</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Quantity:</label>
+              <input type="number" class="form-control" name="quantity">
+            </div>
+
+            <div class="form-group">
+              <label>Other details:</label>
+              <textarea name="details" class="form-control"></textarea>
+            </div>
+
+          </div>
+          <!-- /.box-body -->
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="large ui button pull-left" data-dismiss="modal">Back</button>
+        <button type="submit" class="large ui teal button">Save</button>
+        </form>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+</div>
+
 
 <%- include('../../../templates/admin-aside.ejs') -%>
 
@@ -195,6 +281,8 @@
 <script src="/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
 
 <script>
+
+
   $(function () {
     $('#example2').DataTable({
       'paging'      : false,
@@ -222,6 +310,13 @@
 	  'scroll'		: true
     })
   })
+
+  $('.checkBatch').on('click',function(){
+
+    $('#loader').load(`/inventory/count/${$(this).data('inv')}`);
+
+  })
+
 </script>
 
 
@@ -245,6 +340,23 @@
 $('#title').html("USG | Adjustments");
 $(".treeview a:contains('Inventory')").parent().addClass("active");
 $(".navi a:contains('Adjustments')").parent().addClass("active");
+</script>
+
+<script>
+  $('#batch_adjust_form').submit(function(e){
+
+    e.preventDefault();
+
+    $.post('/inventory/addBatchAdjust',$('#batch_adjust_form').serialize(),function(data,status){
+      if(data == 'yes'){
+        swal({title:'Success',text:'',type:'success'}).then(()=>{
+          location.reload();
+        })
+      }else{
+        swal('Error!','No enough stock for loss adjustment','error')
+      }
+    })
+  })
 </script>
 
 <script>
@@ -283,46 +395,6 @@ $(".navi a:contains('Adjustments')").parent().addClass("active");
 
 <script>
 
-var count = 1;
-  $('#add_barcode').on('click',function(){
-
-    var t = $('#example2').DataTable();
-    var table = document.getElementById("example2");
-    var row = table.getElementsByTagName("tr");
-    var rows = t.rows( '.selected' );
-    var tr = table.getElementsByTagName("tr");
-    var validity = 1;
-
-    $.post('/inventory/getBarcode',{o: $('#barcode').val()},function(data,status){
-      if(data == "no"){
-        $('#addItem').attr('class', 'form-group has-error');
-
-      }else{
-        if (validity){
-          $('#addItem').attr('class', 'form-group has-success');
-
-          t.row.add( [
-              count,
-              `<input style="width: 90px" id="barcodes"required type="text" required name="barcode[]" value="" class="barcode form-control">`,
-              '<input style="width: 200px" id="products" required type="text" name="product[]" value="" class="product form-control">',
-              '<input style="width: 80px" type="number" name="quantity[]" value="" class="form-control">',
-              '<input style="width: 80px" type="number" name="batch[]" value="" class="form-control">',
-              '<select   required name="type[]" value="" class=" form-control">  <%if(type.length==0){}else{ type.forEach(function(i){ %> <option style="width: 90px" value="<%=i.intAdjustmentTypeNo%>"><%=i.strAdjustment%></option><% })}%>                  </select>',
-              '<input style="width: 180px" type="text" required name="note[]"  class=" form-control">'
-          ] ).draw( false );
-          $('#barcodes').val(data[0].strBarcode);
-          $('#products').val(data[0].strProductName);
-          $('input.barcode').removeAttr("id");
-          $('input.product').removeAttr("id");
-          count++;
-        }
-      }
-    })
-
-
-
-
-  } );
 </script>
 
 

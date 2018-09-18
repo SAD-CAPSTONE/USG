@@ -743,101 +743,132 @@ router.post('/update',(req,res)=>{
 })
 
 router.get('/adjustments',(req,res)=>{
-  db.query(`Select tblAdjustments.intQuantity as qty, tblProductInventory.*, tblProductList.*, tblAdjustments.*, tblAdjustmentTypes.* from tblAdjustments join tblProductInventory on tblAdjustments.intInventoryNo = tblProductInventory.intInventoryNo join tblProductList on tblProductlist.intProductNo = tblProductInventory.intProductNo join tblAdjustmentTypes on tblAdjustmentTypes.intAdjustmentTypeNo = tblAdjustments.intAdjustmentTypeNo`,(err1,res1,fie1)=>{
+  db.query(`Select tblAdjustments.intQuantity as qty, tblProductInventory.*, tblProductList.*, tblAdjustments.* from tblAdjustments
+    join tblProductInventory on tblAdjustments.intInventoryNo = tblProductInventory.intInventoryNo
+    join tblProductList on tblProductlist.intProductNo = tblProductInventory.intProductNo `,(err1,res1,fie1)=>{
     if(err1){console.log(err1)}
     else{
-      db.query(`Select * from tblAdjustmentTypes where intStatus = 1`,(err2,res2,fie2)=>{
-        if(err2) console.log(err2);
-        else{
-          db.query(`Select * from tblProductInventory join tblProductList on tblProductinventory.intProductNo = tblProductList.intProductNo where tblProductlist.intStatus = 1`,(err3,res3,fie3)=>{
-            if(err3) console.log(err3);
-            res.render('admin-inventory/views/adjustments',{all: res1, moment: moment, type: res2, inv: res3});
 
-          });
+      db.query(`Select * from tblProductInventory
+        join tblProductList on tblProductinventory.intProductNo = tblProductList.intProductNo where tblProductlist.intStatus = 1`,(err3,res3,fie3)=>{
+        if(err3) console.log(err3);
+        res.render('admin-inventory/views/adjustments',{all: res1, moment: moment, inv: res3});
 
-        }
-      })
+      });
+
+
+
     }
   });
 });
 
-router.get('/count',(req,res)=>{
-  db.query(`Select * from tblbatch where intInventoryNo = "${req.query.inv}" and intStatus = 1`,(err1,res1,fie1)=>{
+router.get('/count/:inv',(req,res)=>{
+  db.query(`Select * from tblbatch where intInventoryNo = "${req.params.inv}" and intStatus = 1`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
-    db.query(`Select * from tblAdjustmentTypes where intStatus = 1`,(err2,res2,fie2)=>{
-      if(err2) console.log(err2);
-      res.render('admin-inventory/views/batchAdjust',{re: res1, moment: moment, types: res2});
+      console.log(res1)
+      res.render('admin-inventory/views/batchAdjust',{re: res1, moment: moment});
 
-    })
+
   });
 });
 
 router.post('/addBatchAdjust',(req,res)=>{
   var adj = "1000";
+  var transact_no = "1000";
 
   db.beginTransaction(function(e){
-    db.query(`Select * from tblAdjustmentTypes where intAdjustmentTypeNo = "${req.body.types}"`,(err1,res1,fie1)=>{
-      if(err1) console.log(err1);
-      console.log(res1[0]);
       db.query(`Select * from tblAdjustments order by intAdjustmentNo desc limit 1`,(erra,resa,fiea)=>{
         if(erra) console.log(erra);
-
         else{
           if(resa.length == 0){}
           else{ adj = parseInt(resa[0].intAdjustmentNo) + 1}
 
-          // loss
-          if(res1[0].intAdjustmentType == 0){
+          db.query(`Select * from tblInventoryTransactions order by intTransactionID desc limit 1`,(errp,resp,fiep)=>{
+            if(errp) console.log(errp);
+            else{
+              if(resp.length==0){} else{transact_no= parseInt(resp[0].intTransactionID)+1;}
 
-            db.query(`Select * from tblBatch where intBatchNo = "${req.body.batch_no}"`,(err2,res2,fie2)=>{
-              if(err2) console.log(err2);
-              else{
-                if(res2[0].intQuantity == 0 || res2[0].intQuantity < req.body.quantity){ res.send("no");}
-                else{
-                  db.query(`Update tblBatch set intQuantity = intQuantity - ${req.body.quantity} where intBatchNo = ${req.body.batch_no}`,(err3,res3,fie3)=>{
-                    if(err3) console.log(err3);
+              // loss
+              if(req.body.types == 0){
+
+                db.query(`Select * from tblBatch where intBatchNo = "${req.body.batch_no}"`,(err2,res2,fie2)=>{
+                  if(err2) console.log(err2);
+                  else{
+                    if(res2[0].intQuantity == 0 || res2[0].intQuantity < req.body.quantity){ res.send("no");}
                     else{
-
-                      db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentTypeNo, strAdjustmentNote, intAdminID, intQuantity) values ("${adj}", "${res2[0].intInventoryNo}","${req.body.types}","${req.body.details}",1000,${req.body.quantity})`,(errq,resq,fieq)=>{
-                        if(errq) console.log(errq);
+                      db.query(`Update tblBatch set intQuantity = intQuantity - ${req.body.quantity} where intBatchNo = ${req.body.batch_no}`,(err3,res3,fie3)=>{
+                        if(err3) console.log(err3);
                         else{
 
-
-                          db.query(`Update tblProductInventory set intQuantity = intQuantity - ${req.body.quantity} where intInventoryNo = ${res2[0].intInventoryNo}`,(errf,resf,fief)=>{
-                            if(errf) console.log(errf);
+                          db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentType, strAdjustmentNote, intAdminID, intQuantity) values ("${adj}", "${res2[0].intInventoryNo}","${req.body.types}","${req.body.details}",1000,${req.body.quantity})`,(errq,resq,fieq)=>{
+                            if(errq) console.log(errq);
                             else{
-                              db.commit(function(ee){
-                                if(ee) console.log(ee);
-                                else{ res.send("yes");}
-                              })
-                            }
-                          });
 
+                              db.query(`Update tblProductInventory set intQuantity = intQuantity - ${req.body.quantity} where intInventoryNo = ${res2[0].intInventoryNo}`,(errf,resf,fief)=>{
+                                if(errf) console.log(errf);
+                                else{
+
+                                  db.query(`Select * from tblProductInventory where intInventoryNo = ${res2[0].intInventoryNo}`,(aerr,bres,cfie)=>{
+                                    if(aerr) console.log(aerr);
+                                    else{
+                                      db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intUserID, intShelfNo, intCriticalLimit, productSRP, productPrice, strTypeOfChanges)
+                                      values ("${transact_no}", "${res2[0].intInventoryNo}", "1000", ${bres[0].intShelfNo}, ${bres[0].intCriticalLimit}, ${bres[0].productSRP}, ${bres[0].productPrice}, "Loss Stock (- ${req.body.quantity})")`,(err12,res12,fie12)=>{
+                                        if(err12) console.log(err12);
+                                        else{
+                                          db.commit(function(ee){
+                                            if(ee) console.log(ee);
+                                            else{ res.send("yes");}
+                                          })
+                                        }
+                                      })
+                                    }
+                                  })
+
+                                }
+                              });
+
+                            }
+                          })
                         }
                       })
                     }
-                  })
-                }
+                  }
+                })
               }
-            })
-          }
-          // gain
-          else{
-            db.query(`Update tblBatch set intQuantity = intQuantity + ${req.body.quantity} where intBatchNo = ${req.body.batch_no}`,(err4,res4,fie4)=>{
-              if(err4) console.log(err4);
+              // gain
               else{
-                db.query(`Select * from tblBatch where intBatchNo = ${req.body.batch_no}`,(err5,res5,fie5)=>{
-                  if(err5) console.log(err5);
+                db.query(`Update tblBatch set intQuantity = intQuantity + ${req.body.quantity} where intBatchNo = ${req.body.batch_no}`,(err4,res4,fie4)=>{
+                  if(err4) console.log(err4);
                   else{
-                    db.query(`Update tblProductInventory set intQuantity = intQuantity + ${req.body.quantity} where intInventoryNo = "${res5[0].intInventoryNo}"`,(err6,res6,fie6)=>{
-                      if(err6) console.log(err6);
+                    db.query(`Select * from tblBatch where intBatchNo = ${req.body.batch_no}`,(err5,res5,fie5)=>{
+                      if(err5) console.log(err5);
                       else{
-                        db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentTypeNo, strAdjustmentNote, intAdminID, intQuantity) values ("${adj}", "${res5[0].intInventoryNo}","${req.body.type}","${req.body.details}",1000,${req.body.quantity})`,(errq,resq,fieq)=>{
-                          if(errq) console.log(errq);
+                        db.query(`Update tblProductInventory set intQuantity = intQuantity + ${req.body.quantity} where intInventoryNo = "${res5[0].intInventoryNo}"`,(err6,res6,fie6)=>{
+                          if(err6) console.log(err6);
                           else{
-                            db.commit(function(eew){
-                              if(eew) console.log(eew);
-                              else{ res.send("yes");}
+                            db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentType, strAdjustmentNote, intAdminID, intQuantity) values ("${adj}", "${res5[0].intInventoryNo}","${req.body.types}","${req.body.details}",1000,${req.body.quantity})`,(errq,resq,fieq)=>{
+                              if(errq) console.log(errq);
+                              else{
+                                db.query(`Select * from tblProductInventory where intInventoryNo = "${res5[0].intInventoryNo}"`,(err14,res14,fie14)=>{
+                                  if(err14) console.log(err14);
+                                  else{
+
+                                    db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intUserID, intShelfNo, intCriticalLimit, productSRP, productPrice, strTypeOfChanges)
+                                    values ("${transact_no}", "${res5[0].intInventoryNo}", "1000", ${res14[0].intShelfNo}, ${res14[0].intCriticalLimit}, ${res14[0].productSRP}, ${res14[0].productPrice}, "Gain Stock (+ ${req.body.quantity})")`,(err15,res15,fie15)=>{
+                                      if(err15) console.log(err15);
+                                      else{
+                                        db.commit(function(eew){
+                                          if(eew) console.log(eew);
+                                          else{ res.send("yes");}
+                                        })
+                                      }
+                                    })
+
+
+                                  }
+                                })
+
+                              }
                             })
                           }
                         })
@@ -846,11 +877,13 @@ router.post('/addBatchAdjust',(req,res)=>{
                   }
                 })
               }
-            })
-          }
+
+            }
+          })
         }
+
       })
-    })
+
   })
 });
 
