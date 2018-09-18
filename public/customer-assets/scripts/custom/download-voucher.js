@@ -148,7 +148,7 @@ function download_voucher(bankAccountNo, bankServiceFee){
     doc.setFont('Poppins-Regular');
     doc.text(138.5, 79+ext, `${order.paymentDue.toUpperCase()}`);
 
-    doc.save('UltraSuperGreen Deposit Slip.pdf');
+    doc.save('UltraSuperGreen Bank Payment Voucher.pdf');
     console.log('PDF Downloaded!');
   }).catch((error)=>{
     console.log(error);

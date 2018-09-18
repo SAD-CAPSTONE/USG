@@ -78,7 +78,6 @@ router.post('/dashboard/info', checkUser, auth_cust, (req,res)=>{
 });
 
 // ajax
-
 router.post('/orders/load', checkUser, (req,res)=>{
   // ORDER BY intOrderNo DESC
   let config = {

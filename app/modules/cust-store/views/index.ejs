@@ -27,7 +27,7 @@
             if (i > j){ %>
               <li class="inline"><i class="fa fa-star"></i></li>
           <% }else{ %>
-              <li class="inline"><i class="fa fa-star-o"></i></li>
+              <li class="inline"><i class="far fa-star"></i></li>
           <% }
           }
           if (i !== 5){ %>
@@ -129,7 +129,7 @@
                   if (i > j){ %>
                     <li class="inline"><i class="fa fa-star"></i></li>
                 <% }else{ %>
-                    <li class="inline"><i class="fa fa-star-o"></i></li>
+                    <li class="inline"><i class="far fa-star"></i></li>
                 <% }
                 }
                 if (i !== 5){ %>
@@ -415,9 +415,9 @@
             let rating = data.aveRating, result = '';
             for(i=0; i<5; i++){
               if (rating < 1 && rating >= 0.5) {
-                result = result.concat('<i class="fa fa-star-half-o"></i> ');
+                result = result.concat('<i class="fas fa-star-half-alt"></i> ');
               } else if (rating < 0.5) {
-                result = result.concat('<i class="fa fa-star-o"></i> ');
+                result = result.concat('<i class="far fa-star"></i> ');
               } else {
                 result = result.concat('<i class="fa fa-star"></i> ');
               }

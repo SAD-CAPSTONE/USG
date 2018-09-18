@@ -76,7 +76,7 @@
 }
 
 .cart-product-container .product-remove {
-  background: #EF3534;
+  background: var(--danger-color);
   height: 20px;
   width: 20px;
   border-radius: 50px;
@@ -89,14 +89,14 @@
   display: block;
 }
 .cart-product-container .product-remove:hover {
-  background: #ED1D1C;
+  background: var(--danger-hover);
   cursor: pointer;
 }
-.cart-product-container .fa.fa-remove.product-remove-icon {
+.cart-product-container .fas.fa-times.product-remove-icon {
   color: white;
   position: absolute;
-  left: 4.8px;
-  top: 3px;
+  left: 5.5px;
+  top: 4px;
   font-size: 13px;
 }
 

@@ -5,6 +5,7 @@ const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
 const userTypeAuth = require('../cust-0extras/userTypeAuth');
 const auth_cust = userTypeAuth.cust;
+const fs = require('fs');
 const firstID = 1000;
 const quantLimit = 50;
 
@@ -252,7 +253,7 @@ router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>
     admin: req.admin
   });
 });
-router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, orderPackages, admin, (req,res)=>{
+router.get('/order/:orderNo', checkUserOrder, auth_cust, orderTotal, orderPackages, admin, (req,res)=>{
   db.query(`SELECT *, (tblorder.intStatus)orderStatus, (tblorderdetails.intQuantity)orderQty FROM tblorder
     INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
     INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
@@ -286,7 +287,7 @@ router.get('/order/:orderNo', checkUserAccount, auth_cust, orderTotal, orderPack
     }
   });
 });
-router.get('/voucher/:orderNo', checkUserAccount, auth_cust, orderTotal, (req,res)=>{
+router.get('/voucher/:orderNo', checkUserOrder, auth_cust, orderTotal, (req,res)=>{
   if (!req.user){
     res.send('none')
   }
@@ -306,7 +307,7 @@ router.get('/voucher/:orderNo', checkUserAccount, auth_cust, orderTotal, (req,re
     });
   }
 })
-router.get('/receipt/:orderNo', checkUserAccount, auth_cust, receiptPackages, (req,res)=>{
+router.get('/receipt/:orderNo', checkUserOrder, auth_cust, receiptPackages, (req,res)=>{
   db.query(`SELECT (customer.strFname)customerF, (customer.strMname)customerM, (customer.strLname)customerL, orders.*, tblorder.*
   FROM tblorder INNER JOIN (SELECT * FROM tbluser)customer ON tblorder.intUserID= customer.intUserID
   INNER JOIN (SELECT tblorderdetails.*, strBrand, strProductName, strVariant, intSize, strUnitName, (purchasePrice*tblorderdetails.intQuantity)amount, (purchasePrice-(purchasePrice*0.12))priceNonVAT, ((purchasePrice-(purchasePrice*0.12))*tblorderdetails.intQuantity)amountNonVAT
@@ -353,6 +354,13 @@ router.get('/receipt/:orderNo', checkUserAccount, auth_cust, receiptPackages, (r
     }
   });
 })
+router.get('/tracker/:orderNo', checkUserOrder, auth_cust, (req,res)=>{
+  db.query(`SELECT intStatus FROM tblorderhistory WHERE intOrderNo= ?`,[req.params.orderNo],(err,results,fields)=>{
+    if (err) console.log(err);
+    res.send({status: results})
+  });
+
+});
 
 router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOrderDetailsNo, newOrderHistoryNo,
  newMessageNo, cartCheck, admin, popularProducts, newProducts, packages, (req,res)=>{
@@ -526,5 +534,44 @@ router.post('/order/cancel', checkUserOrder, orderProductQty, newOrderHistoryNo,
     });
   });
 })
+router.post('/order/upload-slip', checkUserOrder, thisOrder, (req,res)=>{
+  let img = `bs-${req.body.orderNo.toString()}.png`
+  if(!thisOrder){
+    res.redirect('/noroute');
+  }
+  else if(!req.files.bankslip){
+    req.thisOrder.depositSlip ? fs.unlink('public/customer-assets/images/userImages/bankslips/'+img) : 0
+    db.beginTransaction(function(err) {
+      if (err) console.log(err);
+      db.query(`UPDATE tblorder SET depositSlip= NULL WHERE intOrderNo= ?`, [req.body.orderNo], (err,results,fields)=>{
+        if (err) console.log(err);
+        db.commit(function(err) {
+          if (err) console.log(err);
+          res.render('cust-0extras/views/messagePage',{message: 'File Removed', messBtn: `Back to Order#${req.body.orderNo}`, messLink: `/summary/order/${req.body.orderNo}`});
+        });
+      });
+    });
+  }
+  else if(req.files.bankslip.mimetype != 'image/jpeg' && req.files.bankslip.mimetype != 'image/png'){
+    res.render('cust-0extras/views/messagePage',{message: 'Oops! You uploaded an invalid file.', messBtn: `Back to Order#${req.body.orderNo}`, messLink: `/summary/order/${req.body.orderNo}`});
+  }
+  else{
+    req.thisOrder.depositSlip ? fs.unlink('public/customer-assets/images/userImages/bankslips/'+img) : 0
+    db.beginTransaction(function(err) {
+      if (err) console.log(err);
+      req.files.bankslip.mv('public/customer-assets/images/userImages/bankslips/'+img, function(err){
+        db.query(`UPDATE tblorder SET depositSlip= ? WHERE intOrderNo= ?`, [img, req.body.orderNo], (err,results,fields)=>{
+          if (err) console.log(err);
+          db.commit(function(err) {
+            if (err) console.log(err);
+            res.render('cust-0extras/views/messagePage',{message: 'File Uploaded', messBtn: `Back to Order#${req.body.orderNo}`, messLink: `/summary/order/${req.body.orderNo}`});
+          });
+        });
+      });
+    });
+
+  }
+
+});
 
 exports.summary = router;

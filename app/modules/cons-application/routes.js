@@ -99,7 +99,7 @@ router.post('/register-consignor',(req,res)=>{
                             db.commit(function(e){
                               if(e){db.rollback(function(){console.log(e);})}
                               else{
-                                res.render('cust-0extras/views/messagePage',{message: 'Your Application has been created.', messLink: 'login'});
+                                res.render('cust-0extras/views/messagePage',{message: 'Your Application has been created.', messBtn: 'Login', messLink: '/login'});
                               }
                             })
                           }
