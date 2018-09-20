@@ -101,7 +101,13 @@ router.get('/assessOrder',(req,res)=>{
               if (results4[0] == null || results4[0] == undefined){} else if(results4[0].total == ""){}
               else{ this_total = results4[0].total }
 
-              res.render('admin-custOrder/views/assessOrder', {orderno: orderno, orderlist: results1, customer: results2, moment: moment, total: results3[0].totalAll, payment: this_total});
+              db.query(`Select * from tblOrderHistory where intOrderNo = ${orderno}`,(err5,res5,fie5)=>{
+                if(err5) console.log(err5);
+                else{
+                  res.render('admin-custOrder/views/assessOrder', {orderno: orderno, orderlist: results1, customer: results2, moment: moment, total: results3[0].totalAll, payment: this_total, history: res5});
+
+                }
+              })
 
             });
 

@@ -13,7 +13,7 @@
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Orders</a></li>
-        <li class="active">Orders</li>
+        <li class="active">Assess Order</li>
       </ol>
     </section>
 
@@ -29,24 +29,22 @@
                   <div class="box-header with-border">
                     <h3 class="box-title">Order Details</h3>
 
-                    <div class="box-tools pull-right">
-                      <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                      </button>
-                    </div>
                     <!-- /.box-tools -->
                   </div>
                   <!-- /.box-header -->
                   <div class="box-body">
-                    <i class="fa fa-shopping-cart"></i> <strong>Store:</strong> Ultra Super Green, Quezon City Branch </br>
-                    <i class="fa fa-calendar"></i> <strong>Order Date: </strong> <%= moment(customer[0].dateOrdered).format("MM/DD/YYYY") %> </br>
-                    <i class="fa fa-credit-card"></i> <strong>Payment Method: </strong>
+                    <p style="font-size:16px">
+                     <strong>Store:</strong>&nbsp;&nbsp; Ultra Super Green, Quezon City Branch </br>
+                     <strong>Order Date: </strong>&nbsp;&nbsp; <%= moment(customer[0].dateOrdered).format("MM/DD/YYYY") %> </br>
+                     <strong>Payment Method: </strong>&nbsp;&nbsp;
                      <% if (customer[0].intPaymentMethod == 1) { %>
                        Cash on Delivery
                        <% }else { %>
                          Bank Deposit
                          <% } %>
                        </br>
-
+                       <br>
+                    </p>
 
                   </div>
                   <!-- /.box-body -->
@@ -60,19 +58,17 @@
                   <div class="box-header with-border">
                     <h3 class="box-title">Customer Details</h3>
 
-                    <div class="box-tools pull-right">
-                      <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                      </button>
-                    </div>
+
                     <!-- /.box-tools -->
                   </div>
                   <!-- /.box-header -->
                   <div class="box-body">
-                    <i class=""></i><strong>Name: </strong> <%= customer[0].strFname %>&nbsp;<%= customer[0].strLname %></br>
-                    <i class=""></i><strong>Mobile No.: </strong><%= customer[0].strCusMobileNo %>  </br>
-                    <i class=""></i><strong>Phone no.: </strong><%= customer[0].strCusPhoneNo %></br>
-                    <i class=""></i><strong>Email Address: </strong><%= customer[0].strEmail %></br>
-
+                    <p  style="font-size:16px">
+                      <i class=""></i><strong>Name: </strong>&nbsp;&nbsp; <%= customer[0].strFname %>&nbsp;<%= customer[0].strLname %></br>
+                      <i class=""></i><strong>Mobile No.: </strong>&nbsp;&nbsp;<%= customer[0].strCusMobileNo %>  </br>
+                      <i class=""></i><strong>Phone no.: </strong>&nbsp;&nbsp;<%= customer[0].strCusPhoneNo %></br>
+                      <i class=""></i><strong>Email Address: </strong>&nbsp;&nbsp;<%= customer[0].strEmail %></br>
+                    </p>
 
                   </div>
                   <!-- /.box-body -->
@@ -112,10 +108,11 @@
                         <table class="table table-bordered">
                           <thead class ="bg-success">
                             <tr>
-                              <th>Product Code</th>
+
                               <th>Product Name</th>
                               <th>Quantity</th>
                               <th>Product Price</th>
+                              <th>Discount</th>
                               <th>Subtotal</th>
 
                             </tr>
@@ -123,10 +120,11 @@
                           <tbody>
                             <% orderlist.forEach(function(i){ %>
                               <tr>
-                                <td><%= i.strProductCode %></td>
-                                <td><%= i.strProductName %> <%=i.intSize%> <%=i.strUnitName%></td>
+
+                                <td><%= i.strProductName %> <%=i.strVariant%> <%=i.intSize%> <%=i.strUnitName%></td>
                                 <td><%= i.quantity %></td>
                                 <td>₱ <%= (i.purchasePrice).toFixed(2) %></td>
+                                <td></td>
                                 <td>₱ <%= (i.quantity * i.purchasePrice).toFixed(2) %></td>
 
                               </tr>
@@ -139,9 +137,9 @@
                     </div>
 
                     <div class="row">
-                    <div class="col-sm-8">
+                    <div class="col-sm-7">
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-5">
                       <div class="box-body">
                         <table class="table table-bordered">
                           <tr>
@@ -149,17 +147,18 @@
                             <th style="width: 100px"></th>
                           </tr>
                           <tr>
-                            <td><strong>Discount:</strong></td>
-                            <td  align="right"> 0%</td>
-
-                          </tr>
-                          <tr>
                             <td><strong>Total: </strong></td>
                             <td  align="right">₱ <%= (total).toFixed(2) %></td>
                           </tr>
+                          <tr>
+                            <td><strong>less (voucher):</strong></td>
+                            <td  align="right"></td>
+
+                          </tr>
+
 
                           <tr>
-                            <td><strong>Amount Due:</strong></td>
+                            <td><strong>Amount:</strong></td>
                             <td align="right">₱ <%= (total - payment).toFixed(2) %></td>
                           </tr>
 
@@ -169,6 +168,76 @@
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                      <h4 align="center">Order History</h4>
+                    </div>
+                    <!-- /.box-header -->
+
+                      <div class="box-body">
+                        <div class="box-body table-responsive">
+                          <table id="history_table" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                              <th>Transaction Date</th>
+                              <th>Order Status</th>
+                              <th>Payment Status</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                              <% if(history==null||history==undefined){ %>
+
+                              <% }else if(history.length==0){ %>
+
+                              <% }else{ %>
+                              <%  history.forEach(function(i){ %>
+                                  <tr>
+                                    <td><%= moment(i.historyDate).format("MM/DD/YYYY h:mm a") %></td>
+
+                                    <td><% if (i.intStatus == 0){ %>
+                                      Pending
+                                    <% }else if(i.intStatus == 1){ %>
+                                      Processing
+                                    <% }else if(i.intStatus == 2){ %>
+                                      Shipped
+                                    <% }else if (i.intStatus == 3){ %>
+                                      Delivered
+                                    <% }else if(i.intStatus == 4){ %>
+                                      Will not deliver
+                                    <% }else if(i.intStatus == 5){ %>
+                                      Returned
+                                    <% }else{ %>
+                                      Cancelled
+                                    <% } %></td>
+
+                                    <td><% if (i.intPaymentStatus == 0){ %>
+                                      Awaiting Payment
+                                    <% }else if(i.intPaymentStatus == 1){ %>
+                                      Paid
+                                    <% }else{ %>
+                                      Cancelled
+                                    <% } %></td>
+                                  </tr>
+                              <%  }) %>
+                              <% } %>
+
+                            </tbody>
+
+                          </table>
+                        </div>
+                      </div>
+                      <div class="box-footer">
+                        <a href="/customerOrder/orderHistory?order=<%= orderno %>"><button class="large ui green button pull-right">View all</button></a>
+                      </div>
+
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -182,10 +251,6 @@
                   <div class="box-header with-border">
                     <h3 class="box-title">Shipping Information</h3>
 
-                    <div class="box-tools pull-right">
-                      <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                      </button>
-                    </div>
                     <!-- /.box-tools -->
                   </div>
                   <!-- /.box-header -->
@@ -195,11 +260,11 @@
                       <option value="None">None</option>
                       <option value="Courier">Courier</option>
                       <option value="Local Pickup">Local Pickup</option>
-                      <option value="Free Shipping">Free shipping</option>
+
                     </select>
                     </br>
                     <label for="carrier">Courier:</label>
-                    <input class="form-control" required placeholder="insert validations here"  id="courier">
+                    <input class="form-control" required   id="courier">
 
                   </div>
                   <!-- /.box-body -->
@@ -207,6 +272,31 @@
                 <!-- /.box -->
               </div>
             </div>
+
+            <div class="row">
+
+              <!-- Payment information -->
+              <div class="col-md-12">
+                <div class="box box-success">
+                  <div class="box-header with-border">
+                    <h3 class="box-title">Payment Information</h3>
+
+                    <!-- /.box-tools -->
+                  </div>
+                  <!-- /.box-header -->
+                  <div class="box-body">
+                    <p style="font-size:16px">
+                      <strong>Payment Method:</strong> &nbsp;&nbsp;&nbsp; Bank Deposit </br>
+                      <strong>Reference No.:</strong> &nbsp;&nbsp;&nbsp; </br>
+                      <strong>Deposit Slip:</strong> &nbsp;&nbsp;&nbsp;<a href="#">Click here</a> </br>
+                    </p>
+                  </div>
+                  <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+              </div>
+            </div>
+
             <div class="row">
               <!-- Order status -->
               <div class="col-md-12">
@@ -214,10 +304,6 @@
                   <div class="box-header with-border">
                     <h3 class="box-title"></h3>
 
-                    <div class="box-tools pull-right">
-                      <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                      </button>
-                    </div>
                     <!-- /.box-tools -->
                   </div>
                   <!-- /.box-header -->
@@ -255,7 +341,7 @@
                     <label for="comment">Message to Customer</label>
                     <textarea id="message" class="form-control"></textarea>
                   </br>
-                  <button id="submit" class="btn btn-primary pull-right">Submit</button>
+                  <button id="submit" class="fluid large ui teal button pull-right">Submit</button>
                   </div>
                   <!-- /.box-body -->
                 </div>
@@ -292,6 +378,21 @@
       'searching'   : true,
       'ordering'    : true,
       'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $(function () {
+    $('#history_table').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : false,
+      'ordering'    : false,
+      'info'        : false,
       'autoWidth'   : true,
 	  'select'		: true,
 	  'scroll'		: true
@@ -343,7 +444,7 @@
   if(<%= customer[0].Stat %> == 1){
     $('#order_pending').attr('disabled',true);
     $('#order_processing').attr('disabled',true);
-  
+
 
   }
 
