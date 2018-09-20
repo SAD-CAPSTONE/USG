@@ -1413,6 +1413,19 @@ router.post('/addDiscount',(req,res)=>{
     }
   })
 
+});
+
+router.get('/testInventoryCount',(req,res)=>{
+  db.query(`Select SUM(tblBatch.intQuantity) as batchqty, tblProductInventory.intQuantity as invqty, tblProductInventory.intInventoryno as inv, tblProductinventory.*, tblProductlist.*, tblbatch.*
+  from tblProductInventory join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductno
+  join tblBatch on tblProductInventory.intInventoryno = tblbatch.intInventoryNo
+  group by tblproductInventory.intinventoryno `,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      res.render('admin-inventory/views/testInventoryCount',{re: res1});
+
+    }
+  })
 })
 
 
