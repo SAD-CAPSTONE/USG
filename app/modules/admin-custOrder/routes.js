@@ -244,7 +244,7 @@ var c = 0;
               }
             }
           })
-        } // end of package product 
+        } // end of package product
 
 
       },function(erry,resultsy){
@@ -366,8 +366,8 @@ router.post('/assessOrder',(req,res)=>{
     if(err){ console.log(err);}
     else{
       // Update order status
-      db.query(`Update tblOrder set intStatus = ${req.body.orderStatus}, strShippingMethod =
-        "${req.body.shippingMethod}", strCourier = "${req.body.courier}", intPaymentStatus = ${req.body.paymentStatus} where intOrderNo = "${req.body.orderNo}" `, (err1,results1,fields1)=>{
+      db.query(`Update tblOrder set intStatus = ${req.body.orderStatus}, strShippingMethod ="${req.body.shippingMethod}",
+       strCourier = "${req.body.courier}", intPaymentStatus = ${req.body.paymentStatus} where intOrderNo = "${req.body.orderNo}" `, (err1,results1,fields1)=>{
           if(err1){db.rollback(function(){console.log(err1); res.send("no")})}
           else{
             var historynum = 1000, messagenum = 0;

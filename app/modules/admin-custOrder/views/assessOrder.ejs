@@ -264,7 +264,7 @@
                     </select>
                     </br>
                     <label for="carrier">Courier:</label>
-                    <input class="form-control" required   id="courier">
+                    <input class="form-control"   id="courier">
 
                   </div>
                   <!-- /.box-body -->
@@ -451,13 +451,13 @@
   if(<%= customer[0].Stat %> == 2){
     $('#order_pending').attr('disabled',true);
     $('#order_processing').attr('disabled',true);
-    $('#order_shipped').attr('disabled',true);
+  //  $('#order_shipped').attr('disabled',true);
 
   }
 
   // Pending
   if(<%= customer[0].Stat %> == 0){
-    $('#order_pending').attr('disabled',true);
+  //  $('#order_pending').attr('disabled',true);
     $('#order_delivered').attr('disabled',true);
 
   }
@@ -465,7 +465,7 @@
   // Processing
   if(<%= customer[0].Stat %> == 1){
     $('#order_pending').attr('disabled',true);
-    $('#order_processing').attr('disabled',true);
+    //$('#order_processing').attr('disabled',true);
 
 
   }
@@ -477,7 +477,7 @@
     $('#order_shipped').attr('disabled',true);
     $('#order_notDeliver').attr('disabled',true);
     $('#order_cancelled').attr('disabled',true);
-    $('#order_delivered').attr('disabled',true);
+  //  $('#order_delivered').attr('disabled',true);
 
   }
 
@@ -497,7 +497,7 @@
     $('#order_processing').attr('disabled',true);
     $('#order_shipped').attr('disabled',true);
     $('#order_delivered').attr('disabled',true);
-    $('#order_notDeliver').attr('disabled',true);
+  //  $('#order_notDeliver').attr('disabled',true);
     $('#order_returned').attr('disabled',true);
 
 

@@ -38,6 +38,7 @@
                   <thead>
                   <tr>
                     <th>Order No</th>
+                    <th>Order Date </th>
                     <th>Customer Name</th>
 
                     <th>Method</th>
@@ -54,6 +55,8 @@
                       <% allPayments.forEach(function(i){ %>
                         <tr>
                           <td><%=i.intOrderNo%></td>
+                          <td><%= moment(i.dateOrdered).format("MM/DD/YYYY")%></td>
+
                           <td><%=i.strFname%> <%=i.strLname%></td>
 
 
@@ -113,7 +116,6 @@
                     <th>Order No</th>
                     <th>Customer Name</th>
                     <th>Order Date</th>
-
                     <th>Method</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -152,8 +154,14 @@
                             <% } %>
                           </td>
                           <td>
-                            <button class="btn btn-primary btn-sm">View History</button>
-                            <button class="btn btn-primary btn-sm"><i class="fa fa-caret-down"></i></button>
+                            <button class="large ui teal button">Change Status</button>
+                            <% if (i.order_stat == 6){ %>
+                              <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancelled</button>
+
+                            <% }else{ %>
+                              <button data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancel Order</button>
+
+                            <% } %>
 
                           </td>
                         </tr>
@@ -178,8 +186,9 @@
                   <thead>
                   <tr>
                     <th>Order No</th>
-                    <th>Customer Name</th>
                     <th>Order Date</th>
+
+                    <th>Customer Name</th>
                     <th>Payment Due</th>
                     <th>Method</th>
                     <th>Status</th>
@@ -195,8 +204,9 @@
                       <% bankDeposits.forEach(function(i){ %>
                         <tr>
                           <td><%=i.intOrderNo%></td>
-                          <td><%=i.strFname%> <%=i.strLname%></td>
                           <td><%= moment(i.dateOrdered).format("MM/DD/YYYY")%></td>
+
+                          <td><%=i.strFname%> <%=i.strLname%></td>
                           <td>
                               <%= moment(i.paymentDue).format("MM/DD/YYYY")%>
 
@@ -231,8 +241,14 @@
                             <% } %>
                           </td>
                           <td>
-                            <button class="btn btn-primary btn-sm">View History</button>
-                            <button class="btn btn-primary btn-sm"><i class="fa fa-caret-down"></i></button>
+                            <button class="large ui teal button">Change Status</button>
+                            <% if (i.order_stat == 6){ %>
+                              <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancelled</button>
+
+                            <% }else{ %>
+                              <button data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancel Order</button>
+
+                            <% } %>
 
                           </td>
                         </tr>
@@ -296,9 +312,14 @@
                             <% } %>
                           </td>
                           <td>
-                            <button class="btn btn-primary btn-sm">View History</button>
-                            <button class="btn btn-primary btn-sm"><i class="fa fa-caret-down"></i></button>
+                            <button class="large ui teal button">Change Status</button>
+                            <% if (i.order_stat == 6){ %>
+                              <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancelled</button>
 
+                            <% }else{ %>
+                              <button data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancel Order</button>
+
+                            <% } %>
                           </td>
                         </tr>
                       <% }) %>
