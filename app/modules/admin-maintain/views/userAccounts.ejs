@@ -54,8 +54,21 @@
                             Staff
                           <% } %>
                         </td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                          <input type="checkbox"
+                          <% if (i.intStatus == 0){ %>
+                            value="0"
+                          <% }else{ %>
+                            value="1" checked
+                          <% } %>
+
+                           data-no="<%=i.intUserID%>" class="user_stat" data-size="mini"  data-on="Active" data-off="Inactive" data-toggle="toggle" data-offstyle="danger" data-onstyle="success">
+
+                        </td>
+                        <td>
+                          <button class="large ui button">View</button>
+                          <button class="large ui teal button">Edit</button>
+                        </td>
                       </tr>
                   <%  }) %>
                   <% } %>
@@ -322,9 +335,9 @@ $('.brand_stat').on('change',function(){
 </script>
 
 <script>
-$('#title').html("USG | Brand");
+$('#title').html("USG | User Accounts");
 $(".treeview a:contains('Maintenance')").parent().addClass("active");
-$(".navi a:contains('Product Brand')").parent().addClass("active");
+$(".navi a:contains('User Accounts')").parent().addClass("active");
 </script>
 
 
