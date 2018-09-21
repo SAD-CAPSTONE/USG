@@ -20,6 +20,7 @@
   --danger-color: #EF3534;
   --danger-hover: #ED1D1C;
   --discount-color: rgba(140, 122, 230, .9);
+  --package-color: #cd6133;
 
   --sub-color: #ccc;
   --secondary-color: #868E96;
@@ -189,6 +190,11 @@ textarea {
   vertical-align: 2.5px;
   cursor: pointer;
 }
+.fa-tags.discount-item {
+  font-size: .6em;
+  vertical-align: 3.5px;
+  cursor: pointer;
+}
 
 /*General---------------------------------------------------------------------*/
 
@@ -237,7 +243,7 @@ textarea {
   color: #218c74;
 }
 .text-package {
-  color: #cd6133
+  color: var(--package-color);
 }
 .unselectable {
   -moz-user-select: -moz-none;
@@ -414,6 +420,13 @@ input#mobile {
 .price-color {
   color: var(--price-color);
 }
+.price-color-imp {
+  color: var(--price-color) !important;
+}
+.discount-color-imp {
+  color: var(--discount-color) !important;
+}
+
 
 #notice {
   transition: all 0.25s ease;
@@ -916,6 +929,19 @@ table th, table td {
 #item-main-pane #item-options > div:nth-child(2) > p {
   color: var(--price-color);
 }
+#item-main-pane #thisprod_stock {
+  transition: all 0.15s ease;
+}
+#item-main-pane .discount {
+  margin: 0;
+  margin-top: 0;
+  margin-right: 20;
+  height: 0;
+  font-size: .8em !important;
+  font-weight: 400;
+  opacity: 0;
+  transition: margin-right 0.25s ease, opacity 0.25s ease, height 0.25s ease-out;
+}
 
 #item-main-pane #item-options > div:nth-child(1){/*quantity,add-to-cart*/
   float: right;
@@ -1046,6 +1072,10 @@ table th, table td {
 }
 #summary-main-pane .price p:first-of-type{
   color: var(--price-color);
+}
+#summary-main-pane .fa-tags{
+  font-size: .6em;
+  vertical-align: 2.5px;
 }
 
 #summary-main-pane .product-div > div:nth-child(2) {

@@ -58,13 +58,27 @@
   bottom: 29px;
   font-size: 80%;
 }
+.cart-product-container .product-oldprice.prodDetails > span {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+.cart-product-container .product-oldprice.prodDetails > span:nth-child(1) {
+  position: static;
+  opacity: 1;
+}
+.cart-product-container .fa-tags {
+  font-size: .6em;
+  vertical-align: 2.5px;
+}
 .cart-product-container .product-price {
   position: absolute;
   right: 10px;
   bottom: 3px;
   margin: 0px;
   font-size: 1.1em !important;
-  color: var(--price-color) !important;
 }
 .cart-product-container .package-product-list p {
   font-size: .85em !important;

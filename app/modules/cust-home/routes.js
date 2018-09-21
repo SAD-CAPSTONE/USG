@@ -21,7 +21,7 @@ function popularProducts(req,res,next){
     			IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, discountDueDate
     			FROM tblproductinventory LEFT JOIN
     			(
-    				SELECT * FROM tblproductdiscount WHERE now() <= discountDueDate AND intStatus= 1
+    				SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1
     			)Discount ON tblproductinventory.intInventoryNo= Discount.intInventoryNo
     		)Inv ON tblproductlist.intProductNo= Inv.intProductNo
     		WHERE Brand.intStatus= 1 GROUP BY tblproductlist.intProductNo
@@ -60,7 +60,7 @@ function newProducts(req,res,next){
     		IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, discountDueDate
     		FROM tblproductinventory LEFT JOIN
     		(
-    			SELECT * FROM tblproductdiscount WHERE now() <= discountDueDate AND intStatus= 1
+    			SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1
     		)Discount ON tblproductinventory.intInventoryNo= Discount.intInventoryNo
     	)Inv ON tblproductlist.intProductNo= Inv.intProductNo
     	WHERE Brand.intStatus= 1 GROUP BY tblproductlist.intProductNo

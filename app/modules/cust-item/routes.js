@@ -4,7 +4,7 @@ const db = require('../../lib/database')();
 const firstID = 1000;
 const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
-//
+
 function newReviewID(req,res,next) {
   db.query(`SELECT * FROM tblproductreview ORDER BY intProductReviewNo DESC LIMIT 1`, (err, results, fields) => {
     if (err) console.log(err);
@@ -51,15 +51,19 @@ function thisProduct(req,res,next){
   });
 }
 function thisInventory(req,res,next){
-  db.query(`SELECT *, SUM(tblproductinventory.intQuantity - tblproductinventory.intReservedItems)stock FROM tblproductlist
-    INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
-    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno
-    WHERE tblproductlist.intProductNo= ? GROUP BY tblproductinventory.intInventoryNo`
-    ,[req.params.prodid], (err, results, fields)=> {
+  db.query(`SELECT * FROM tblproductlist INNER JOIN (
+    SELECT tblproductinventory.intInventoryNo, intProductNo, intUOMno, intSize, (tblproductinventory.intStatus)InvStatus, (productPrice)oldPrice,
+    IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, intQuantity, intReservedItems, strVariant,
+    discount, discountDueDate, SUM(tblproductinventory.intQuantity - tblproductinventory.intReservedItems)stock FROM tblproductinventory
+  	LEFT JOIN (SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1)Disc
+  	ON tblproductinventory.intInventoryNo= Disc.intInventoryNo GROUP BY tblproductinventory.intInventoryNo
+    )Inv ON tblproductlist.intProductNo= Inv.intProductNo INNER JOIN tbluom ON Inv.intUOMno= tbluom.intUOMno
+    WHERE tblproductlist.intProductNo= ?`,[req.params.prodid], (err, results, fields)=> {
     if (err) console.log(err);
     if (results[0]){
       results.forEach((data)=>{
-        data.productPrice = priceFormat(data.productPrice.toFixed(2))
+        data.oldPrice = priceFormat(data.oldPrice.toFixed(2));
+        data.productPrice = priceFormat(data.productPrice.toFixed(2));
       })
       let curSize = ``;
       results[0].strVariant ? curSize+= `${results[0].strVariant}`: 0
@@ -89,7 +93,7 @@ function relatedProducts(req,res,next){
     			IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, discountDueDate
     			FROM tblproductinventory LEFT JOIN
     			(
-    				SELECT * FROM tblproductdiscount WHERE now() <= discountDueDate AND intStatus= 1
+    				SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1
     			)Discount ON tblproductinventory.intInventoryNo= Discount.intInventoryNo
     		)Inv ON tblproductlist.intProductNo= Inv.intProductNo
     		INNER JOIN (SELECT * FROM tblsubcategory)Cat ON tblproductlist.intSubCategoryNo= Cat.intSubCategoryNo
@@ -150,7 +154,7 @@ function popularProducts(req,res,next){
     			IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, discountDueDate
     			FROM tblproductinventory LEFT JOIN
     			(
-    				SELECT * FROM tblproductdiscount WHERE now() <= discountDueDate AND intStatus= 1
+    				SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1
     			)Discount ON tblproductinventory.intInventoryNo= Discount.intInventoryNo
     			WHERE tblproductinventory.intStatus= 1
     		)Inv ON tblproductlist.intProductNo= Inv.intProductNo
