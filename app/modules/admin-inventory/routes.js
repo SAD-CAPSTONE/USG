@@ -1237,7 +1237,7 @@ router.get('/packageList',(req,res)=>{
     join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
     join tbluom on tblproductinventory.intuomno = tbluom.intuomno
     join tbluser on tblproductinventory.intuserid = tbluser.intuserid
-    where tblpackagelist.intpackageno = ${pack}`,(err1,results1,fields1)=>{
+    where tblpackagelist.intpackageno = "${pack}"`,(err1,results1,fields1)=>{
       if (err1) console.log(err1);
 
       db.query(`Select * from tblPackage where intPackageNo = ${pack}`,(err2,results2,fields2)=>{
