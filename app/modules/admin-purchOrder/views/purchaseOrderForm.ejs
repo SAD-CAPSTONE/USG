@@ -57,14 +57,14 @@
                    <%  P = parseInt(POno[0].intPurchaseOrderNo) + 1 %>
                    <% } %>
                    <div class="col-sm-9">
-                     <input type="text" disabled value="<%=P%>" name="POnum" id="purcNo" class="input-sm form-control">
+                     <input type="text" disabled value="<%=P%>" name="POnum" id="purcNo" class="form-control">
                    </div>
                  </div>
 
                  <div class="form-group">
                    <label class="col-sm-3 control-label" for="purcNo">P.O Date:</label>
                    <div class="col-sm-9">
-                     <input type="date" disabled id="today" value="<%= moment().format("YYYY-MM-DD")%>" name="date" class="input-sm form-control">
+                     <input type="date" disabled id="today" value="<%= moment().format("YYYY-MM-DD")%>" name="date" class=" form-control">
                    </div>
                  </div>
 
@@ -75,7 +75,7 @@
                      <label for="businessName" class="col-sm-3 control-label"> Company Name</label>
 
                      <div class="col-sm-9">
-                       <input type="text" disabled class="input-sm form-control" id="businessName" placeholder="Choose from the list of suppliers ->">
+                       <input type="text" disabled class=" form-control" id="businessName" placeholder="Choose from the list of suppliers ->">
                      </div>
                    </div>
 
@@ -86,7 +86,7 @@
 
                      <div class="col-sm-9">
 
-                       <input type="text" disabled class="input-sm form-control" id="contract" placeholder="">
+                       <input type="text" disabled class=" form-control" id="contract" placeholder="">
                      </div>
                    </div>
 
@@ -95,7 +95,7 @@
                      <label for="address" class="col-sm-3 control-label">Address</label>
 
                      <div class="col-sm-9">
-                       <input type="text" disabled class="input-sm form-control" id="address" placeholder="">
+                       <input type="text" disabled class=" form-control" id="address" placeholder="">
                      </div>
                    </div>
 
@@ -141,7 +141,7 @@
                  <table id="example" class="table table-bordered table-hover">
                  <thead>
                    <tr>
-                     <th style="width: 10px">#</th>
+                     <th style="width: 10px"></th>
                      <th>Product Name</th>
                      <th>Quantity</th>
                      <th>Variant</th>
@@ -175,6 +175,8 @@
          <div class="box-footer">
               <a href="/purchaseOrder"><button type="button" class="large ui button">Back</button></a>
               <a href=""><button type="submit" id="sub" class="btn large ui teal button">Submit Order Form</button></a>
+              <br><small class="text-aqua">Please review your form before you proceed.</small>
+
           </div>
             <!-- /.box-footer -->
           </form>
@@ -431,9 +433,41 @@ $(document).ready(function() {
        data: $('#purchaseForm').serialize(),
        success: function(response,status,http){
          if (response == "yes"){
-           swal({title: "Success!", text: "You have created an purchase order record", type: "success"}).then(()=>{
-             window.location.href = '/purchaseOrder'
-           })
+
+
+          swal({
+            title: 'Do you want to email the supplier?',
+            text: "Email: imjanellealag@gmail.com",
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Send an Email',
+
+            cancelButtonText: 'Proceed without email',
+            reverseButtons: true
+          }).then((result) => {
+            if (result.value) {
+              swal(
+                'Success!',
+                'Your form has been emailed.',
+                'success'
+              )
+            } else if (
+              // Read more about handling dismissals
+              result.dismiss === swal.DismissReason.cancel
+            ) {
+              swal(
+                'Success',
+                'You have created a purchase order form',
+                'success'
+              )
+            }
+          })
+
+           // swal({title: "Success!", text: "You have created an purchase order record", type: "success"}).then(()=>{
+           //   window.location.href = '/purchaseOrder'
+           // })
          }
        },
        error: function(response){
