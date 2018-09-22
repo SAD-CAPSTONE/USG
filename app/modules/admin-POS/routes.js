@@ -111,14 +111,41 @@ const report = excel.buildExport(
   ]
 );
 
-var exec = require("child_process").exec;
-var pro = exec( "python " + __dirname + "/hello.py", ( err, stdout, stderr ) => {
-    console.log( stdout )
-});
+// var exec = require("child_process").exec;
+// var pro = exec( "python " + __dirname + "/hello.py", ( err, stdout, stderr ) => {
+//     console.log( stdout )
+// });
+
+
+var areaChartData = {
+  labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+  datasets: [
+    {
+      label               : 'Electronics',
+      fillColor           : 'rgba(210, 214, 222, 1)',
+      strokeColor         : 'rgba(210, 214, 222, 1)',
+      pointColor          : 'rgba(210, 214, 222, 1)',
+      pointStrokeColor    : '#c1c7d1',
+      pointHighlightFill  : '#fff',
+      pointHighlightStroke: 'rgba(220,220,220,1)',
+      data                : [65, 59, 80, 81, 56, 55, 40]
+    },
+    {
+      label               : 'Digital Goods',
+      fillColor           : 'rgba(60,141,188,0.9)',
+      strokeColor         : 'rgba(60,141,188,0.8)',
+      pointColor          : '#3b8bba',
+      pointStrokeColor    : 'rgba(60,141,188,1)',
+      pointHighlightFill  : '#fff',
+      pointHighlightStroke: 'rgba(60,141,188,1)',
+      data                : [28, 48, 40, 19, 86, 27, 90]
+    }
+  ]
+}
+
+//console.log(areaChartData.datasets[0].data)
 
 router.get('/try',(req,res)=>{
-
-
 
   // res.attachment('report.csv'); // This is sails.js specific (in general you need to set headers)
   // return res.send(report);

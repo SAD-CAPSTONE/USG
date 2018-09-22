@@ -103,13 +103,13 @@
         res.orders.length ? list.html('') : list.html('<td colspan="6" class="align-center text-muted"><em>None</em></td>');
         res.orders.forEach((data)=>{
           switch(data.intStatus){
-            case 0: status = 'Pending'; break;
-            case 1: status = 'Processing'; break;
-            case 2: status = 'Shipped'; break;
-            case 3: status = 'Delivered'; break;
-            case 4: status = 'Will not Deliver'; break;
-            case 5: status = 'Returned'; break;
-            case 6: status = 'Cancelled'; break;
+            case 0: status = '<td class="text-dark">Pending</td>'; break;
+            case 1: status = '<td class="text-info">Processing</td>'; break;
+            case 2: status = '<td class="text-primary">Shipped</td>'; break;
+            case 3: status = '<td class="text-success">Delivered</td>'; break;
+            case 4: status = '<td class="text-secondary">Will not Deliver</td>'; break;
+            case 5: status = '<td class="text-package">Returned</td>'; break;
+            case 6: status = '<td class="text-danger">Cancelled'; break;
           }
           payment = data.intPaymentMethod == 1 ? 'Cash on Delivery' : 'Bank Deposit'
           paymentstatus = data.intPaymentStatus == 1 ?
@@ -119,7 +119,7 @@
           list.append(`
             <tr>
               <td><a href="/summary/order/${data.intOrderNo}">#${data.intOrderNo}</a></td>
-              <td>${status}</td>
+              ${status}
               <td>${data.dateOrdered}</td>
               <td>${paymentstatus}${payment}</td>
               <td><span class="price-symbol price-color">${data.totalPrice}</span></td>

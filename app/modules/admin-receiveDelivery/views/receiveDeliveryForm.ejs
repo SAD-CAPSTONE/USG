@@ -39,12 +39,15 @@
           				<small><b>Mobile Number:</b> (0955) 904-4744</small> </br>
           				</br>
 
-          				<div align="center" class="row">
-                    <div class="col-sm-1">
-                    </div>
-          					<div class="col-sm-4">
-          						<div class="form-group">
-          							<label for="purcNo">Receive Order Number:</label>
+                </br>
+
+                  <div class="row">
+                    <div class="col-sm-9">
+
+
+
+                      <div class="form-group">
+          							<label class="col-sm-4 control-label" >Receive Order Number:</label>
                         <% var number = "1000"; %>
                         <% if (re == null || re == undefined){ %>
 
@@ -52,54 +55,37 @@
                         <% }else{ %>
                           <%  number = parseInt(re[0].intReceiveOrderNo) + 1 %>
                         <% } %>
-                        <input type="text" value="<%= number %>" name="rno" class="form-control">
+                        <div class="col-sm-8">
+                          <input type="text" value="<%= number %>" name="rno" class="form-control">
+                        </div>
           						</div>
-          					</div>
 
-          					<div class="col-sm-2">
-          					</div>
+                      <div class="form-group">
+          							<label class="col-sm-4 control-label">Receive Order Date:</label>
+                        <div class="col-sm-8">
+                          <input type="date" disabled value="<%= moment().format("YYYY-MM-DD") %>" class="form-control">
 
-          					<div class="col-sm-4">
-
-          						<div class="form-group">
-          							<label for="purcNo">Receive Order Date:</label>
-
-          							<input type="date" disabled value="<%= moment().format("YYYY-MM-DD") %>" class="form-control">
+                        </div>
           						</div>
-          					</div>
 
-                    <div class="col-sm-1">
+
+                      <div id="formgroup" class="form-group">
+                        <label class="col-sm-4 control-label" for="POno">Enter purchase order number:</label>
+
+                        <div class="col-sm-8">
+                          <input type="number"  required class="pono form-control" name="POno" required id="POno" >
+                          <span id="errorhelpBlock" class="help-block">No purchase order record found!</span>
+                          <span id="successhelpBlock" class="help-block">Purchase Order number found!</span>
+                          <a data-target="#orderList" data-toggle="modal">Select purchase number here</a>
+
+                        </div>
+                      </div>
                     </div>
-
-          				</div>
-
-                </br>
-
-                  <div class="row">
-                    <div id="formgroup" class="col-sm-4">
-                      <label for="POno">Enter purchase order number:</label>
-                      <input type="number"  required class="pono form-control" name="POno" required id="POno" >
-                      <span id="errorhelpBlock" class="help-block">No purchase order record found!</span>
-                      <span id="starthelpBlock" class="help-block">Press enter to check number</span>
-                      <span id="successhelpBlock" class="help-block">Purchase Order number found!</span>
-
-
-
-                    </div>
-                    <div class="col-sm-4">
-                    </br>
-                  </br>
-                      <a data-target="#orderList" data-toggle="modal">Select purchase number here</a>
+                    <div class="col-sm-3">
                     </div>
                   </div>
 
-
-
-          				<div class="row">
-          					<div class="col-sm-3">
-          						<h4> &nbsp;  </h4>
-          					</div>
-          				</div>
+                  <br>
 
           				<div class="row">
           					<div class="col-sm-12">
@@ -156,6 +142,8 @@
           			<div class="box-footer">
                     <a href="/receiveDelivery"><button type="button" class="large ui button">Back</button></a>
                     <button disabled id="sub" type="submit" class="large ui teal button">Submit Form</button>
+                    <br><small class="text-aqua">Please review your form before you proceed.</small>
+                    
                 </div>
                         <!-- /.box-footer -->
                 </form>
@@ -284,7 +272,7 @@ $(document).ready(function(){
       data: {o: text},
       success: function(response,status,http){
         if (response == "no"){
-          $('#formgroup').attr('class', 'form-group has-error col-sm-4');
+          $('#formgroup').attr('class', 'form-group has-error');
           $('#errorhelpBlock').show();
           $('#successhelpBlock').hide();
           $('#starthelpBlock').hide();
@@ -294,7 +282,7 @@ $(document).ready(function(){
 
 
         }else{
-          $('#formgroup').attr('class', 'form-group has-success col-sm-4');
+          $('#formgroup').attr('class', 'form-group has-success');
           $('#successhelpBlock').show();
           $('#starthelpBlock').hide();
           $('#errorhelpBlock').hide();

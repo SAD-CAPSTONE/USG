@@ -1,0 +1,318 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+
+<!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+ <!-- Content Header (Page header) -->
+ <section class="content-header">
+   <h1>
+
+     <small>Note: You can add a package to a product in inventory.</small>
+   </h1>
+   <ol class="breadcrumb">
+     <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+     <li><a href="#">Inventory</a></li>
+     <li><a href="#">Packages</a></li>
+     <li class="active">Product List</li>
+   </ol>
+ </section>
+
+ <!-- Main content -->
+ <section class="content">
+   <div class="row">
+     <div class="col-xs-12">
+       <div class="box">
+         <div class="box-header">
+           <h3 class="box-title">Package No. <%=package%></h3>
+         </div>
+       </br>
+		<!-- buttons -->
+			&nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#addList"><i class="fa fa-plus"></i> Add Product</button>
+         <!-- /.box-header -->
+         <div class="box-body table-responsive">
+           <table id="example2" class="table table-bordered table-hover">
+             <thead>
+             <tr>
+               <th>Product Code</th>
+               <th>Product Name</th>
+               <th>Supplier Name</th>
+               <th>Size</th>
+			         <th>Action</th>
+
+             </tr>
+             </thead>
+             <tbody>
+              <% if (re == null || re == undefined){ %>
+
+              <% }else if(re.length == 0){ %>
+
+              <% }else{ %>
+                <% re.forEach(function(i){ %>
+                  <tr>
+                    <td><%=i.strProductCode%></td>
+                    <td><%=i.strProductName%></td>
+                    <td><%=i.strFname%> <%=i.strMname%> <%=i.strLname%></td>
+                    <td><%= i.intSize%>  <%=i.strUnitName%></td>
+  				          <td>
+                      <button class="large ui red button"> <i class="glyphicon glyphicon-trash"></i></button>
+                    </td>
+
+                  </tr>
+                <% }) %>
+              <% } %>
+
+
+             </tbody>
+
+           </table>
+         </div>
+         <!-- /.box-body -->
+       </div>
+       <!-- /.box -->
+
+    </div>
+     <!-- /.col -->
+   </div>
+   <!-- /.row -->
+ </section>
+ <!-- /.content -->
+</div>
+
+<!-- /.content-wrapper -->
+
+<!-- Modals -->
+
+<div class="modal fade" id="addList">
+  <div class="modal-dialog"  >
+  <div class="modal-content">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title"></h4>
+    </div>
+    <div class="modal-body">
+    <!-- Horizontal Form -->
+
+    <form class="form-horizontal" id="form_add">
+    <div class="row">
+      <div id="form-group" class="form-group">
+        <label for="" class="col-sm-3 control-label">Enter Barcode or Scan:</label>
+        <div class="col-sm-4">
+          <input type="text" id="barcode" class="form-control" required>
+          <span id="errorhelpBlock" class="help-block">No product record found!</span>
+          <span id="starthelpBlock" class="help-block">Search Barcode</span>
+          <span id="successhelpBlock" class="help-block"></span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="" class="col-sm-3 control-label"> Package Quantity </label>
+        <div class="col-sm-4">
+          <input type="number" disabled id="package_quantity" value="<%=quantity%>" name="package_quantity" class="form-control" required>
+
+        </div>
+      </div>
+      <div id="form-group2" class="form-group">
+        <label for="" class="col-sm-3 control-label"> Item Quantity:</label>
+        <div class="col-sm-4">
+          <input type="number" id="quantity" name="quantity" class="form-control" required>
+          <span id="starthelpBlock2" class="help-block"></span>
+          <span id="errorhelpBlock2" class="help-block">No available stocks!</span>
+          <span id="successhelpBlock2" class="help-block"></span>
+        </div>
+      </div>
+      </div>
+
+    <hr>
+
+      <div class="form-group">
+        <label for="" class="col-sm-3 control-label">Product Name:</label>
+        <div class="col-sm-4">
+        <h5 id="prod_name"></h5>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="" class="col-sm-3 control-label">Available Stock:</label>
+        <div class="col-sm-4">
+        <h5 id="prod_stock"></h5>
+      </div>
+      </div>
+
+        <input type="number" id="prod_stock2" hidden>
+        <input type="number" name="package" value="<%=package%>" hidden>
+        <input type="number" name="inventory" id="inventory"  hidden>
+
+      <div class="form-group">
+        <label for="" class="col-sm-3 control-label">Brand:</label>
+        <div class="col-sm-4">
+        <h5 id="prod_brand"></h5>
+      </div>
+      </div>
+
+      </div>
+      <div class="modal-footer">
+      <button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
+      <button type="submit" id="save" class="large ui teal button">Save changes</button>
+      </div>
+    </form>
+  </div>
+  <!-- /.modal-content -->
+</div>
+ <!-- /.modal-dialog -->
+</div>
+
+
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- ./wrapper -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+
+<!-- page script (new added) -->
+
+<script>
+$(document).ready(function(){
+  $('#select').on('click',function(){
+    $.ajax({
+      url: '/inventory/addToPromo',
+      method: 'POST',
+      datatype: "json",
+      data: {
+        ino: $(this).data('ino'),
+        pno: $(this).data('pno')
+      },
+      success: function(response,status,http){
+        if (response == "yes"){
+
+            swal("Success","You added this product to the promo", "success");
+            window.location.reload();
+        }else{
+
+        }
+      }
+    });
+  });
+})
+</script>
+
+<script>
+  $(function () {
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $(function () {
+    $('#example3').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $('#title').html("USG | Packages");
+  $(".treeview a:contains('Inventory')").parent().addClass("active");
+  $(".navi a:contains('Packages')").parent().addClass("active");
+</script>
+
+<script>
+$('#starthelpBlock').show();
+$('#successhelpBlock').hide();
+$('#errorhelpBlock').hide();
+$('#save').attr('disabled',true);
+
+$('#successhelpBlock2').hide();
+$('#errorhelpBlock2').hide();
+$('#starthelpBlock2').show();
+
+$('#quantity').on('keyup',function(){
+  if(($('#quantity').val() * $('#package_quantity').val())  > $('#prod_stock2').val()){
+
+    $('#form-group2').attr('class', 'form-group2 has-error');
+    $('#errorhelpBlock2').show();
+    $('#starthelpBlock2').hide();
+    $('#successhelpBlock2').hide();
+    $('#save').attr('disabled',true);
+
+  }else{
+    $('#form-group2').attr('class', 'form-group2 has-success');
+    $('#successhelpBlock2').show();
+    $('#errorhelpBlock2').hide();
+    $('#starthelpBlock2').hide();
+    $('#save').attr('disabled',false);
+
+  }
+});
+  $('#barcode').on('keyup',function(){
+    $.post('/inventory/packageGetBarcode',{o: $('#barcode').val()},function(response,status){
+
+      if(response=="error"){
+        $('#form-group').attr('class', 'form-group has-error');
+        $('#errorhelpBlock').show();
+        $('#starthelpBlock').hide();
+        $('#successhelpBlock').hide();
+
+        $('#prod_name').html("");
+        $('#prod_stock').html("");
+        $('#prod_size').html("");
+        $('#prod_brand').html("");
+        $('#prod_category').html("");
+
+      }else{
+        $('#form-group').attr('class', 'form-group has-success');
+        $('#starthelpBlock').hide();
+        $('#successhelpBlock').show();
+        $('#errorhelpBlock').hide();
+
+        $('#prod_name').html(response.inventory[0].strProductName + "  " + response.inventory[0].strVariant + "  " + response.inventory[0].intSize  + response.inventory[0].strUnitName);
+        $('#prod_stock').html(response.inventory[0].totalQty);
+        $('#prod_stock2').val(response.inventory[0].totalQty);
+        $('#prod_brand').html(response.inventory[0].strBrand);
+        $('#inventory').val(response.inventory[0].intInventoryNo);
+
+      }
+    })
+  });
+</script>
+
+<script>
+  $('#form_add').submit(function(e){
+    e.preventDefault();
+    $.post('/inventory/addPackageList',$('#form_add').serialize(),function(response,status){
+      if(response == "success"){
+        swal({title:"Success",text:"You added a product!", type:"success"}).then(()=>{
+          location.reload();
+        })
+      }else{
+        swal("Error!","","error")
+      }
+    })
+  })
+</script>
+
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>

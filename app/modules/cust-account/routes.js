@@ -6,12 +6,11 @@ const moment = require('moment');
 const userTypeAuth = require('../cust-0extras/userTypeAuth');
 const auth_cust = userTypeAuth.cust;
 const pageLimit = 10;
-const orderQuery = `SELECT tblorder.intStatus AS Status, tblorder.*, Price.totalPrice FROM tbluser
-  INNER JOIN tblorder ON tbluser.intUserID= tblorder.intUserID INNER JOIN (
-	SELECT SUM(purchasePrice*intQuantity)totalPrice, tblorder.intOrderNo FROM tblorder
-	INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
-  GROUP BY tblorder.intOrderNo )Price ON tblorder.intOrderNo= Price.intOrderNo
-  WHERE tblorder.intUserID = ? `
+const orderQuery = `SELECT tblorder.intStatus AS Status, IF(discountPrice IS NOT NULL, totalOriginalPrice-discountPrice, totalOriginalPrice)totalPrice,
+  tblorder.* FROM tbluser INNER JOIN tblorder ON tbluser.intUserID= tblorder.intUserID INNER JOIN (
+  SELECT SUM(purchasePrice*intQuantity)totalOriginalPrice, SUM(purchasePrice*discount*0.01*intQuantity)discountPrice,
+  tblorder.intOrderNo FROM tblorder INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
+  GROUP BY tblorder.intOrderNo )Price ON tblorder.intOrderNo= Price.intOrderNo WHERE tblorder.intUserID = ? `
 
 function checkUser(req, res, next){
   if(!req.user){
@@ -78,7 +77,6 @@ router.post('/dashboard/info', checkUser, auth_cust, (req,res)=>{
 });
 
 // ajax
-
 router.post('/orders/load', checkUser, (req,res)=>{
   // ORDER BY intOrderNo DESC
   let config = {

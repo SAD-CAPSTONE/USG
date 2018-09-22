@@ -27,7 +27,7 @@
             if (i > j){ %>
               <li class="inline"><i class="fa fa-star"></i></li>
           <% }else{ %>
-              <li class="inline"><i class="fa fa-star-o"></i></li>
+              <li class="inline"><i class="far fa-star"></i></li>
           <% }
           }
           if (i !== 5){ %>
@@ -129,7 +129,7 @@
                   if (i > j){ %>
                     <li class="inline"><i class="fa fa-star"></i></li>
                 <% }else{ %>
-                    <li class="inline"><i class="fa fa-star-o"></i></li>
+                    <li class="inline"><i class="far fa-star"></i></li>
                 <% }
                 }
                 if (i !== 5){ %>
@@ -149,8 +149,8 @@
           <div class="col">
             <div class="mb-3 price-range-div">
               <p class="m-0"><b>Price Range</b></p>
-              <input type="text" class="inline-block min-range input-number" placeholder="min"/> -
-              <input type="text" class="inline-block max-range input-number" placeholder="max"/>
+              <input type="text" class="inline-block material min-range input-number" placeholder="min"/> -
+              <input type="text" class="inline-block material max-range input-number" placeholder="max"/>
               <div class="align-right">
                 <button class="btn btn-custom-primary btn-sm mt-3 priceRangeBtn">Apply</button>
               </div>
@@ -404,7 +404,7 @@
                 </div>
 
                 <div class="card-desc">
-                  <p class="card-title"><span class="text-brand">${data.strBrand}</span> ${data.strProductName}</p>
+                  <p class="card-title" title="${data.strBrand} ${data.strProductName}"><span class="text-brand">${data.strBrand}</span> ${data.strProductName}</p>
                   <p class="card-price price-symbol">${productPrice}</p>
                   <small class="card-rating">
 
@@ -415,9 +415,9 @@
             let rating = data.aveRating, result = '';
             for(i=0; i<5; i++){
               if (rating < 1 && rating >= 0.5) {
-                result = result.concat('<i class="fa fa-star-half-o"></i> ');
+                result = result.concat('<i class="fas fa-star-half-alt"></i> ');
               } else if (rating < 0.5) {
-                result = result.concat('<i class="fa fa-star-o"></i> ');
+                result = result.concat('<i class="far fa-star"></i> ');
               } else {
                 result = result.concat('<i class="fa fa-star"></i> ');
               }
