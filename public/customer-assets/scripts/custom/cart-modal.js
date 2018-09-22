@@ -44,6 +44,18 @@ function stockDisplay(modal,inv){
     let inv = res.inventory, qty = modal.find('.quantity-input');
     modal.find('.price').html(`${inv.productPrice}`);
     modal.find('#stock-display > span').text(inv.stock);
+    if (inv.discount){
+      modal.find('.price').css(`color`,`var(--discount-color)`);
+      modal.find('.price').append(` <i class="fas fa-tags discount-modal" title="discounted price"></i>`);
+      modal.find('.discount').html(`<s>${inv.oldPrice}</s> (${inv.discount}% off)`);
+    }
+    else{
+      modal.find('.price').css(`color`,`var(--price-color)`);
+      modal.find('.discount').css(`opacity`,`0`);
+      modal.find('.price').css(`font-size`,`1.4em`);
+      modal.find('.price > i').css(`vertical-align`,`2.5px`);
+      modal.find('.discount').attr('hide','hide');
+    }
 
     if (inv.stock > 0){
       modal.find('#stock-display > span').text(inv.stock);
@@ -99,7 +111,6 @@ $(()=>{
     limit = res.quantLimit
     $('i.limit-info').attr(`title`,`Maximum of ${limit} of the same product variation per order`)
     $('i.limit-info-package').attr(`title`,`Maximum of ${limit} of the same package per order`)
-
   })
 })
 
@@ -161,6 +172,22 @@ productModal.on('click', '.add-button', ()=>{
   .catch((error) => {
     console.log(error);
   });
+});
+
+productModal.on('click', '.price > i', function(){
+  let modal = productModal;
+  if (modal.find('.discount').attr('hide')){
+    modal.find('.discount').css(`opacity`,`1`);
+    modal.find('.price').css(`font-size`,`1em`);
+    modal.find('.price > i').css(`vertical-align`,`1.5px`);
+    modal.find('.discount').removeAttr('hide')
+  }
+  else{
+    modal.find('.discount').css(`opacity`,`0`);
+    modal.find('.price').css(`font-size`,`1.4em`);
+    modal.find('.price > i').css(`vertical-align`,`2.5px`);
+    modal.find('.discount').attr('hide','hide')
+  }
 });
 
 // PACKAGE

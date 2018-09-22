@@ -123,7 +123,8 @@
                     <% } %>
                   <% }) %>
                 </select>
-                <p id="thisprod_price" class="m-0 price-symbol"><%= thisInventory[0].productPrice%></p>
+                <p class="discount price-symbol text-muted" hide='hide'></p>
+                <p id="thisprod_price" class="m-0 price-symbol price"><%= thisInventory[0].productPrice%></p>
                 <% if(thisInventory[0].stock > 0){ %>
                   <small id="thisprod_stock" class="text-muted">
                     <i class="limit-info fa fa-info-circle" title="Maximum of 0 of the same product variation per order"></i>
@@ -167,6 +168,11 @@
                     <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
                   <% } %>
                 </p>
+                <% if(prod.maxDisc){ %>
+                  <small class="card-oldprice text-muted">
+                    <span><i class="fas fa-tags"></i> upto <%= prod.maxDisc %>% off <br>
+                  </small>
+                <% } %>
                 <!-- <small class="card-oldprice text-muted">
                   <span><s class="price-symbol">0</s></span> (-0%)<br>
                 </small> -->
@@ -214,6 +220,11 @@
                     <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
                   <% } %>
                 </p>
+                <% if(prod.maxDisc){ %>
+                  <small class="card-oldprice text-muted">
+                    <span><i class="fas fa-tags"></i> upto <%= prod.maxDisc %>% off <br>
+                  </small>
+                <% } %>
                 <!-- <small class="card-oldprice text-muted">
                   <span><s class="price-symbol">0</s></span> (-0%)<br>
                 </small> -->
@@ -410,6 +421,13 @@
 <script type="text/javascript">
   $(()=>{
     itemQtyValidate(1,$(`#thisprod_stock span`).text())
+    if (<%=thisInventory[0].discount%>){
+      let div = $(`#item-options`);
+      div.find('.price').css(`color`,`var(--discount-color)`);
+      div.find('.price').append(` <i class="fas fa-tags discount-modal" title="discounted price"></i>`);
+      div.find('.discount').html(`<s><%=thisInventory[0].oldPrice%></s> (<%=thisInventory[0].discount%>% off)`);
+    }
+
   })
   function itemQtyValidate(qty,stock){
     $('#item-options .quantity-input').val() <= 1 ?
@@ -443,9 +461,11 @@
   // GET - Size
   $('#item-options .select-size').on('change', function() {
     $.get(`/cart/item-inv/${this.value}`).then((res) => {
-      $('#thisprod_price').text(res.inventory.productPrice);
-      if (res.inventory.stock > 0){
-        $('#thisprod_stock span').text(res.inventory.stock);
+      let inv = res.inventory, div = $(`#item-options`);
+
+      $('#thisprod_price').text(inv.productPrice);
+      if (inv.stock > 0){
+        $('#thisprod_stock span').text(inv.stock);
         $('#thisItemBtn').removeAttr('disabled');
       }
       else{
@@ -462,12 +482,48 @@
         $('#item-options input.quantity-input').val(stock);
       }
 
-      itemQtyValidate(qty,stock)
+      if (inv.discount){
+        div.find('.price').css(`color`,`var(--discount-color)`);
+        div.find('.price').append(` <i class="fas fa-tags discount-item" title="discounted price"></i>`);
+        div.find('.discount').html(`<s>${inv.oldPrice}</s> (${inv.discount}% off)`);
+      }
+      else{
+        div.find('.price').css(`color`,`var(--price-color)`);
+        div.find('.discount').css(`opacity`,`0`);
+        div.find('.price').css(`font-size`,`1.4em`);
+        div.find('.price > i').css(`vertical-align`,`2.5px`);
+        div.find('.discount').attr('hide','hide');
+      }
+
+      itemQtyValidate(qty,stock);
 
     }).catch((error) => {
       console.log(error);
     });
   })
+  $('#item-options').on('click', '.price > i', function(){
+    let div = $('#item-options')
+    if (div.find('.discount').attr('hide')){
+      div.find('.discount').css({
+        "height": "15",
+        "margin-top": "4",
+        "margin-right": "0",
+        "opacity": "1"
+      });
+      div.find('#thisprod_stock').css(`opacity`,`0`);
+      div.find('.discount').removeAttr('hide');
+    }
+    else{
+      div.find('.discount').css({
+        "height": "0",
+        "margin-top": "0",
+        "margin-right": "20",
+        "opacity": "0"
+      });
+      div.find('#thisprod_stock').css(`opacity`,`1`);
+      div.find('.discount').attr('hide','hide');
+    }
+  });
   // Change Quantity
   $('.quantity-input').keyup(function() {
     itemQtyControl($('#item-options'),'change')

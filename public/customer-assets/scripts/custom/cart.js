@@ -1,3 +1,5 @@
+let iProdDetails, tProdDetails;
+
 $(() => {
 
   function chekoutBtnDisabled(){
@@ -83,6 +85,8 @@ $(() => {
 
   // GET - Load cart
   $('#getCart').on('click', () => {
+    clearInterval(iProdDetails);
+    clearTimeout(tProdDetails);
     let list = $('#cart-pad');
     $.get('/cart/list').then((res) => {
       list.html('');
@@ -96,6 +100,22 @@ $(() => {
           `)
       res.cart.forEach((data,i) => {
         if (data.type == 1){
+          let priceDiv = data.discount ?
+            `<p class="product-price discount-color-imp">
+              <i class="fas fa-tags" title="discounted price"></i>
+              <span class="price-symbol">${data.curPrice}</span>
+             </p>` :
+            `<p class="product-price price-symbol price-color-imp">${data.curPrice}</p>`,
+          discountDiv = data.discount ?
+            `<span class="discount">${data.discount}% off</span>` : ``,
+          prodDetailsDiv = data.discount ?
+            `<small class="product-oldprice text-muted prodDetails">
+              <span>${data.limit} max</span>
+              <span>(-${data.discount}%)</span>
+            </small>` :
+            `<small class="product-oldprice text-muted">
+              <span>${data.limit} max</span>
+            </small>`
           list.append(`
             <div class="cart-product-container">
               <div class="product-card">
@@ -118,10 +138,8 @@ $(() => {
                     </button>
                     </div>
                   </div>
-                  <small class="product-oldprice text-muted">
-                    <span>${data.limit} max</span><br>
-                  </small>
-                  <p class="product-price price-symbol">${data.curPrice}</p>
+                  ${prodDetailsDiv}
+                  ${priceDiv}
                 </div>
               </div>
               <div class="product-remove"><i class="fas fa-times product-remove-icon"></i></div>
@@ -156,17 +174,30 @@ $(() => {
                   <small class="product-oldprice text-muted">
                     <span>${data.limit} max</span><br>
                   </small>
-                  <p class="product-price price-symbol">${data.curPrice}</p>
+                  <p class="product-price price-symbol price-color-imp">${data.curPrice}</p>
                 </div>
               </div>
               <div class="product-remove"><i class="fas fa-times product-remove-icon"></i></div>
             </div>`);
         }
         allQtyValidate(data.curQty,data.limit,i)
-        // <small class="product-oldprice text-muted">
-        //   <span><s class="price-symbol">0</s></span><span> (-0%)</span><br>
-        // </small>
       });
+
+      let prodDetails = $(`.product-oldprice.discount > span:nth-child(1)`)
+      let spanLength = 2, count = 1;
+
+      iProdDetails = setInterval(change,8000)
+
+      function change(){
+        $(`.product-oldprice.prodDetails > span:not(:nth-child(${count+1}))`).css('opacity','0');
+        tProdDetails = setTimeout(()=>{
+          $(`.product-oldprice.prodDetails > span:nth-child(${count+1})`).css('opacity','1');
+          count++;
+          if (count == spanLength) {
+            count = 0;
+          }
+        },350)
+      }
 
       $('.quantity .quantity-input').bind("cut copy paste",function(e) { e.preventDefault(); });
       $('.quantity-input').keypress(function(key) {

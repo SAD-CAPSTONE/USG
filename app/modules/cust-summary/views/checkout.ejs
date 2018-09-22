@@ -213,6 +213,22 @@
         list.html('');
         res.cart.forEach((data) => {
           if (data.type == 1){
+            let priceDivM = data.discount ?
+              `<p class="mb-0 fs-1em fw-400 lh-p3em price-symbol discount-color-imp">
+                ${data.curPrice}
+                <i class="fas fa-tags" title="discounted price"></i>
+              </p>
+              <p class="mb-1 fs-09em lh-p3em text-muted price-symbol"><s>${data.oldPrice}</s></p>
+              <p class="mb-1 fs-09em lh-p3em text-muted">${data.discount}% off</p>`:
+              `<p class="mb-0 fs-1em fw-400 lh-p3em price-symbol">${data.curPrice}</p>`,
+            priceDivL = data.discount ?
+              `<p class="mb-1 fs-1em fw-400 lh-p3em price-symbol discount-color-imp">
+                ${data.curPrice}
+                <i class="fas fa-tags" title="discounted price"></i>
+              </p>
+              <p class="mb-1 fs-09em lh-p3em text-muted price-symbol"><s>${data.oldPrice}</s></p>
+              <p class="mb-1 fs-09em lh-p3em text-muted">${data.discount}% off</p>`:
+              `<p class="mb-1 fs-1em fw-400 lh-p3em price-symbol">${data.curPrice}</p>`
             list.append(`
               <div class="product-div pos-relative px-3">
                 <div class="inline-block va-t">
@@ -226,12 +242,12 @@
                     <p class="fs-08em fw-400 text-muted lh-p3em">${data.curSize}</p>
                     <a class="fw-400 remove cursor-pointer"><i class="fa fa-trash"></i></a>
                     <div class="price">
-                      <p class="mb-0 fs-1em fw-400 lh-p3em price-symbol">${data.curPrice}</p>
+                      ${priceDivM}
                     </div>
                   </div>
                 </div>
                 <div class="inline-block va-t mt-2">
-                  <p class="mb-1 fs-1em fw-400 lh-p3em price-symbol">${data.curPrice}</p>
+                  ${priceDivL}
                 </div>
                 <div class="inline-block va-t mt-2">
                   <p class="m-0 fs-09em fw-400 lh-p3em quantity">${data.curQty}</p>

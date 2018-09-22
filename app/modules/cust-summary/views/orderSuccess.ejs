@@ -1,4 +1,6 @@
 <%- include('../../../templates/navbar.ejs') -%>
+<%- include('../../../templates/modals/cart-modal.ejs') -%>
+<%- include('../../../templates/modals/package-modal.ejs') -%>
 
 <div id="orderSuccess-container" class="container">
   <div class="align-center">
@@ -21,6 +23,7 @@
         <div class="custom-card this-product my-2">
           <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
           <div class="cart-button-div">
+            <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
             <button type="button" class="cart-btn btn p-0 no-focus align-center" data-toggle="modal" data-target="#modal-product-to-cart">
             Add to Cart</button>
           </div>
@@ -34,6 +37,11 @@
                 <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
               <% } %>
             </p>
+            <% if(prod.maxDisc){ %>
+              <small class="card-oldprice text-muted">
+                <span><i class="fas fa-tags"></i> upto <%= prod.maxDisc %>% off <br>
+              </small>
+            <% } %>
             <small class="card-rating">
               <%
               rating = prod.aveRating;
@@ -62,6 +70,7 @@
         <div class="custom-card this-product my-2">
           <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
           <div class="cart-button-div">
+            <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
             <button type="button" class="cart-btn btn p-0 no-focus align-center" data-toggle="modal" data-target="#modal-product-to-cart">
             Add to Cart</button>
           </div>
@@ -75,6 +84,11 @@
                 <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
               <% } %>
             </p>
+            <% if(prod.maxDisc){ %>
+              <small class="card-oldprice text-muted">
+                <span><i class="fas fa-tags"></i> upto <%= prod.maxDisc %>% off <br>
+              </small>
+            <% } %>
             <small class="card-rating">
               <%
               rating = prod.aveRating;
