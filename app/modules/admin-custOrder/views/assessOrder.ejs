@@ -124,8 +124,14 @@
                                 <td><%= i.productName%></td>
                                 <td><%= i.intQuantity %></td>
                                 <td>₱ <%= (i.purchasePrice).toFixed(2) %></td>
-                                <td></td>
-                                <td>₱ <%= (i.intQuantity * i.purchasePrice).toFixed(2) %></td>
+                                <% if(i.discount == null){ %>
+
+                                <% }else{ %>
+
+                                <% } %>
+                                <td><%= parseFloat(i.discount)  %> %</td>
+                                <% var subT = ((i.intQuantity * i.purchasePrice).toFixed(2)) * (parseFloat(i.discount) / 100) %>
+                                <td>₱ <%= (i.intQuantity * i.purchasePrice).toFixed(2) - subT %></td>
 
                               </tr>
                             <% }) %>

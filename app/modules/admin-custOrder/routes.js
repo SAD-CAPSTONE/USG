@@ -88,7 +88,7 @@ router.get('/assessOrder',(req,res)=>{
         if (err2) console.log(err2);
 
       // total
-      db.query(`Select SUM(tblorderdetails.intquantity * tblorderdetails.purchaseprice) as
+      db.query(`Select SUM((tblorderdetails.intquantity * tblorderdetails.purchaseprice) - ((tblorderdetails.intquantity * tblorderdetails.purchaseprice) * (tblOrderDetails.discount / 100)))
         totalAll from tblOrder
         join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
         where tblOrder.intOrderno = "${orderno}"`, (err3,results3,fields3)=>{
