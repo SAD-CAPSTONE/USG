@@ -8,117 +8,153 @@
                     <div class="card-title">
                         <h4>All Orders</h4>
                     </div>
-                    <ul class="nav nav-tabs" id="myNavTabs">
-                            <li class="nav-item nav-link active"><a href="#navtabs1" data-toggle="tab">Pending</a>
-                            <li class="nav-item nav-link"><a href="#navtabs2" data-toggle="tab">Received</a>
-                            <li class="nav-item nav-link"><a href="#navtabs3" data-toggle="tab">Delivered</a>
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                              <a class="nav-link active" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="true">Pending</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" id="received-tab" data-toggle="tab" href="#received" role="tab" aria-controls="received" aria-selected="false">Received</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" id="delivered-tab" data-toggle="tab" href="#delivered" role="tab" aria-controls="delivered" aria-selected="false">Delivered</a>
+                            </li>
                           </ul>
                           
-                          <!-- using fade to define fade effect -->
-                          <!-- using active class to define the first actived tab and content -->
-                          
                           <div class="tab-content">
-                            <div class="tab-pane fade in active" id="navtabs1">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Order No</th>
-                                                        <th>Date</th>
-                                                        <th>Actions</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <% if (re == null || re == undefined){ %>
+                              <div class="tab-pane active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                                  <div class="card-body">
+                                      <div class="table-responsive">
+                                          <table class="table">
+                                              <thead>
+                                                  <tr>
+                                                      <th>Order No</th>
+                                                      <th>Date</th>
+                                                      <th>Actions</th>
+                                                  </tr>
+                                              </thead>
+                                              <tbody>
+                                                  <% if (re == null || re == undefined){ %>
+                          
+                                                  <% }else if (re.length == 0){ %>
+                          
+                                                  <% }else{ %>
+                                                  <%  re.forEach(function(i){ %>
+                                                      <tr>
+                                                          <td><%= i.intPurchaseOrderNo%></td>
+                                                          <td><span><%=moment(i.DateOrderReceived).format("MM/DD/YYYY")%></span></td>
+                                                          <td style="width:170px;"><div class="btn-group">
+                                                              <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">Accept</button>
+                                                              <button type="button" class="btn btn-danger" style="margin-bottom:10px; border-radius:5px !important;">Reject</button>
+                                                          </div></td>
+                                                      </tr>
+                                                  <%  }) %>
+                                                  <% } %>
+                                              </tbody>
+                                          </table>
+                                      </div>
+                                  </div>
+                               </div>
+                          
+                              <div class="tab-pane" id="received" role="tabpanel" aria-labelledby="received-tab">
+                                  <div class="card-body">
+                                      <div class="table-responsive">
+                                          <table class="table">
+                                              <thead>
+                                                  <tr>
+                                                      <th>Order No</th>
+                                                      <th>Date</th>
+                                                      <th>Status</th>
+                                                      <th>Actions</th>
+                                                  </tr>
+                                              </thead>
+                                              <tbody>
+                                                  <% if (re == null || re == undefined){ %>
+                          
+                                                  <% }else if (re.length == 0){ %>
+                          
+                                                  <% }else{ %>
+                                                  <%  re.forEach(function(i){ %>
+                                                      <tr>
+                                                          <td><%= i.intPurchaseOrderNo%></td>
+                                                          <td><span><%=moment(i.DateOrderReceived).format("MM/DD/YYYY")%></span></td>
+                                                          <% if (i.intStatus == 1){ %>
+                                                            <td><span class="badge badge-success" style="height: 30px; font-size:100% !important; font-weight:22 !important">Received</span></td>
+                                                          <% }else if(i.intStatus == 2){ %>
+                                                            <td><span class="badge badge-warning" style="height: 30px; font-size:100% !important; font-weight:22 !important">Waiting</span></td>
+                                                          <% }else{ %>
+                                                            <td><span class="badge badge-info" style="height: 30px; font-size:100% !important; font-weight:22 !important">On Process</span></td>
+                                                          <% } %>
 
-                                                        <% }else if (re.length == 0){ %>
-                
-                                                        <% }else{ %>
-                                                            <%  re.forEach(function(i){ %>
-                                                                <tr>
-                                                                    <td><%= i.intPurchaseOrderNo%></td>
-                                                                    <td><span><%= i.dateOrderReceived%></span></td>
-                                                                    <td style="width:170px;"><div class="btn-group">
-                                                                        <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">Accept</button>
-                                                                        <button type="button" class="btn btn-danger" style="margin-bottom:10px; border-radius:5px !important;">Reject</button>
-                                                                    </div></td>
-                                                                </tr>
-                                                                <%  }) %>
-                                                                <% } %>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                            </div>
-                            <div class="tab-pane fade" id="navtabs2">
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Order No</th>
-                                                    <th>Date</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <% if (re == null || re == undefined){ %>
-
-                                                    <% }else if (re.length == 0){ %>
-            
-                                                    <% }else{ %>
-                                                        <%  re.forEach(function(i){ %>
-                                                            <tr>
-                                                                <td><%= i.intPurchaseOrderNo%></td>
-                                                                <td><span><%= i.dateOrderReceived%></span></td>
-                                                                <td style="width:170px;"><div class="btn-group">
-                                                                    <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">View Products</button>
-                                                                </div></td>
-                                                            </tr>
-                                                            <%  }) %>
-                                                            <% } %>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="navtabs3">
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Order No</th>
-                                                    <th>Date</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <% if (re == null || re == undefined){ %>
-
-                                                    <% }else if (re.length == 0){ %>
-            
-                                                    <% }else{ %>
-                                                        <%  re.forEach(function(i){ %>
-                                                            <tr>
-                                                                <td><%= i.intPurchaseOrderNo%></td>
-                                                                <td><span><%= i.dateOrderReceived%></span></td>
-                                                                <td style="width:170px;"><div class="btn-group">
-                                                                    <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">View Products</button>
-                                                                </div></td>
-                                                            </tr>
-                                                            <%  }) %>
-                                                            <% } %>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
+                                                          <td style="width:170px;">
+                                                              <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important" data-toggle='modal' data-target='#ViewProducts'>View Products</button>
+                                                              <div id="ViewProducts" class="modal fade" tabindex='-1' role='dialog' aria-labelledby='ViewProducts' aria-hidden='true'>
+                                                                    <div class="modal-dialog" role='document'>
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                        <h5 id="EditInfoTitle" class="modal-title"><b><%= i.strProduct%></b></h5>
+                                                                        <button class="close" type='button' data-dismiss='modal' aria-label='Close'>
+                                                                            <span aria-hidden='true'>×</span>
+                                                                        </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                        <div class="row">
+                                                                            <div style="width: 490px;padding: 20px;"><span class="text-tab">Variant</span><span style="margin-left: 150px;"><%= i.strVariant%></span>
+                                                                            <hr/><span class="text-tab">Size</span><span style="margin-left: 150px;""><%= i.strSize%></span>
+                                                                            <hr/><span class="text-tab">Qauntity</span><span style="margin-left: 150px;""><%= i.intQuantity%></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                        <button class="btn btn-secondary" type='button', data-dismiss='modal'>Close</button>
+                                                                        </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    </div>
+                                                                </div>
+                                                          </td>
+                                                      </tr>
+                                                  <%  }) %>
+                                                  <% } %>
+                                              </tbody>
+                                          </table>
+                                      </div>
+                                  </div>
+                               </div>
+                          
+                              <div class="tab-pane" id="delivered" role="tabpanel" aria-labelledby="delivered-tab">
+                                  <div class="card-body">
+                                      <div class="table-responsive">
+                                          <table class="table">
+                                              <thead>
+                                                  <tr>
+                                                      <th>Order No</th>
+                                                      <th>Date</th>
+                                                      <th>Actions</th>
+                                                  </tr>
+                                              </thead>
+                                              <tbody>
+                                                  <% if (re == null || re == undefined){ %>
+                          
+                                                  <% }else if (re.length == 0){ %>
+                          
+                                                  <% }else{ %>
+                                                  <%  re.forEach(function(i){ %>
+                                                      <tr>
+                                                          <td><%= i.intPurchaseOrderNo%></td>
+                                                          <td><span><%=moment(i.DateOrderReceived).format("MM/DD/YYYY")%></span></td>
+                                                          <td style="width:170px;"><div class="btn-group">
+                                                              <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">View Products</button>
+                                                          </div></td>
+                                                      </tr>
+                                                  <%  }) %>
+                                                  <% } %>
+                                              </tbody>
+                                          </table>
+                                      </div>
+                                  </div>
+                              </div>
                           </div>
-                    
                     <div class="row">
-                            <div class="col"> </div>
+                        <div class="col"> </div>
                             <div class="col">
                             <ul class="pagination" style="margin-left: 40px;">
                                 <li class="page-item">
@@ -147,11 +183,8 @@
                                 </li>
                             </ul>
                             </div>
-                            <div class="col"> </div>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
+                        <div class="col"> </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -159,18 +192,20 @@
 </div>
 
 <script>
-$('#myNavTabs a').click(function (evt) {
-  evt.preventDefault();
+$('#myTab a').click(function(e) {
+  e.preventDefault();
   $(this).tab('show');
 });
 
-$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-  //new tab
-  console.log(e.target);
-  
-  //previous tab
-  console.log(e.relatedTarget);
-})
+// store the currently selected tab in the hash value
+$("ul.nav-tabs > li > a").on("shown.bs.tab", function(e) {
+  var id = $(e.target).attr("href").substr(1);
+  window.location.hash = id;
+});
+
+// on load of the page: switch to the currently selected tab
+var hash = window.location.hash;
+$('#myTab a[href="' + hash + '"]').tab('show');
 </script>
 
 

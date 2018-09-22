@@ -90,7 +90,7 @@
 								</td>
 								<td><%= i.strProductName%></td>
 								<td><span><%= i.intQuantity%></span></td>
-								<td><span><%= i.dateRecorded%></span></td>
+								<td><span><%= moment(i.dateRecorded).format("MM/DD/YYYY")%></span></td>
                 <% if (i.intStatus == 0 ){ %>
 								<td><span class="badge badge-warning">Out of Stock</span></td>
                 <% }else if (i.intStatus == 1) { %>

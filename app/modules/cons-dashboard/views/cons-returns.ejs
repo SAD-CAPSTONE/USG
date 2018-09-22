@@ -15,6 +15,7 @@
                                     <tr>
                                         <th>Order No.</th>
                                         <th>Date</th>
+                                        <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -27,9 +28,14 @@
                                             <%  re.forEach(function(i){ %>
                                                 <tr>
                                                     <td><a><%= i.intPurchaseOrderNo%></a></td>
-                                                    <td><span><%= i.dateOrderReceived%></span></td>
-                                                    <td><a class="btn btn-custom-primary" data-toggle='modal' data-target='#EditInfo'> </i>&nbsp;View Sales</a>
-														<div id="EditInfo" class="modal fade" tabindex='-1' role='dialog' aria-labelledby='EditInfoTitle' aria-hidden='true'>
+                                                    <td><span><%=moment(i.dateOrderReceived).format("MM/DD/YYYY")%></span></td>
+                                                    <% if (i.intStatus == 0 ){ %>
+                                                        <td><span class="badge badge-warning">Bad</span></td>
+                                                    <% }else if (i.intStatus == 1) { %>
+                                                        <td><span class="badge badge-success">Good</span></td>
+                                                    <%} %>
+                                                    <td><a class="btn btn-custom-primary" data-toggle='modal' data-target='#ViewSales'> </i>&nbsp;View Details</a>
+														<div id="ViewSales" class="modal fade" tabindex='-1' role='dialog' aria-labelledby='EditInfoTitle' aria-hidden='true'>
 															<div class="modal-dialog" role='document'>
 															<div class="modal-content">
 																<div class="modal-header">

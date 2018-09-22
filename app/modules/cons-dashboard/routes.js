@@ -13,14 +13,14 @@ router.get('/consignor-dash', auth_cons, (req,res)=>{
     join tblsupplier on tblsupplier.intUserID = tblproductinventory.intUserID
     where tbluser.intUserID = ${req.user.intUserID}`,(err1,results1)=>{
     if (err1) console.log(err1);
-    res.render('cons-dashboard/views/cons-dashboard', {re: results1});
+    res.render('cons-dashboard/views/cons-dashboard', {re: results1, moment: moment});
     console.log(results1);
   });
 });
 
-//router.get('/consignor-products', (req,res)=>{
-  //res.render('cons-dashboard/views/cons-products');
-//});
+router.get('/payment', auth_cons, (req,res)=>{
+  res.render('cons-dashboard/views/cons-payment');
+});
 
 router.get('/products', auth_cons, (req,res)=>{
   db.query(`
@@ -39,13 +39,22 @@ router.get('/orders', auth_cons, (req,res)=>{
   db.query(`
   SELECT * from tblpurchaseorderlist join tblreceiveorder on tblpurchaseorderlist.intpurchaseorderno = tblreceiveorder.intpurchaseorderno
   join tblpurchaseorder on tblpurchaseorderlist.intPurchaseOrderNo = tblpurchaseorder.intPurchaseOrderNo
-  join tblreceiveorderlist on tblreceiveorderlist.intReceiveOrderNo = tblreceiveorder.intReceiveOrderNo
   join tblsupplier on tblsupplier.intuserid = tblpurchaseorder.intsupplierid
   join tbluser on tbluser.intuserid = tblsupplier.intuserid
   where tbluser.intUserID = ${req.user.intUserID}`,(err1,results1)=>{
   if (err1) console.log(err1);
-  res.render('cons-dashboard/views/cons-orders', {re: results1});
-  console.log(results1);
+  db.query(`Select * from tblPurchaseOrder where intStatus = 1`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      db.query(`Select * from tblPurchaseOrder where intStatus = 0`,(err2,res2,fie2)=>{
+      if(err2) console.log(err2);
+      else{
+        res.render('cons-dashboard/views/cons-orders',{re: results1, pending: res2, moment: moment});
+        console.log(results1);
+   }
+   })
+   }
+   })
 });
 });
 
@@ -59,9 +68,12 @@ router.get('/returns', auth_cons, (req,res)=>{
     join tbluser on tbluser.intuserid = tblsupplier.intuserid
     where tbluser.intUserID = ${req.user.intUserID}`,(err1,results1)=>{
     if (err1) console.log(err1);
-    res.render('cons-dashboard/views/cons-returns', {re: results1});
-    console.log(results1);
+    db.query(`Select * from tblpurchaseorderlist where intStatus = 2`,(err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+        res.render('cons-dashboard/views/cons-returns', {re: results1, moment: moment});
+        console.log(results1);
   });
+});
 });
 
 exports.consignor = router;
