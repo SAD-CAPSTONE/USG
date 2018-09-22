@@ -3,6 +3,7 @@ var db = require('../../lib/database')();
 var moment = require('moment');
 //dashboard--
 router.get('/', (req,res)=>{
+    console.log(req.user)
     db.query(`SELECT COUNT(intOrderNo) cnt FROM tblorder WHERE intStatus = 0 AND dateOrdered <= NOW() AND dateOrdered >= NOW() - INTERVAL 2 DAY`,(err1,results1)=>{
       if (err1) console.log(err1)
       db.query(`SELECT COUNT(intUserID) cnt FROM tblcustomer WHERE intStatus = 1`,(err1,results2)=>{

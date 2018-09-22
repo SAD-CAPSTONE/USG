@@ -1,0 +1,299 @@
+ <%- include('../../../templates/admin-navbar.ejs') -%>
+
+
+  <!-- Content Wrapper. Contains page content -->
+
+ <div class="content-wrapper">
+     <!-- Content Header (Page header) -->
+     <section class="content-header">
+       <h1>
+
+         <small>Note: Product discount will automatically deactivated on its due date.</small>
+       </h1>
+       <ol class="breadcrumb">
+         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+         <li><a href="#">Maintenance</a></li>
+         <li class="active">Discounts</li>
+       </ol>
+     </section>
+
+     <!-- Main content -->
+     <section class="content">
+       <div class="row">
+         <div class="col-xs-12">
+           <div class="box">
+             <div class="box-header">
+               <h4 align="center">Discounts</h4>
+             </div>
+ 			<!-- buttons -->
+ 				&nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#addDiscount"><i class="fa fa-plus"></i> Add New Discount</button>
+             <!-- /.box-header -->
+             <div class="box-body table-responsive">
+               <table id="example2" class="table table-bordered table-hover">
+                 <thead>
+                 <tr>
+
+                   <th>Product Name</th>
+                   <th>Discount</th>
+                   <th>Promo Date Due</th>
+ 				           <th>Status</th>
+                   <th>Actions</th>
+                 </tr>
+                 </thead>
+                 <tbody>
+                   <% if(list.length==0){ %>
+
+                   <% }else{ %>
+                    <% list.forEach(function(i){ %>
+                       <tr>
+                         <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%><%=i.strUnitName%></td>
+                         <td><%=i.discount%>%</td>
+                         <td><%=moment(i.discountDueDate).format("MM/DD/YYYY")%></td>
+                         <td></td>
+                         <td></td>
+                       </tr>
+                    <% }) %>
+                   <% } %>
+
+                 </tbody>
+
+               </table>
+             </div>
+             <!-- /.box-body -->
+           </div>
+           <!-- /.box -->
+
+ 	    </div>
+         <!-- /.col -->
+       </div>
+       <!-- /.row -->
+     </section>
+     <!-- /.content -->
+ </div>
+
+   <!-- /.content-wrapper -->
+
+   <!-- Modals -->
+
+ 	<div class="modal fade" id="addDiscount">
+ 	  <div class="modal-dialog">
+ 		<div class="modal-content">
+ 		  <div class="modal-header">
+ 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+ 			  <span aria-hidden="true">&times;</span></button>
+ 			<h4 class="modal-title"></h4>
+ 		  </div>
+ 		  <div class="modal-body">
+        <div class="box-body table-responsive">
+          <table id="example1" class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th style="width: 10%"></th>
+                <th>Product Name</th>
+                <th>Brand</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if(inventory.length==0){ %>
+
+              <% }else{ %>
+              <%  inventory.forEach(function(i){ %>
+                  <tr>
+                    <td>
+                      <button  hidden class="select2">
+                      <button data-toggle="modal" data-target="#addDiscount2"  data-name="<%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%><%=i.strUnitName%>" data-inventory="<%=i.intInventoryNo%>" class="select small ui teal button">Select</button>
+                    </td>
+                    <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%><%=i.strUnitName%></td>
+                    <td><%=i.strBrand%></td>
+                  </tr>
+              <%  }) %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+
+ 		  </div>
+
+ 		</div>
+ 		<!-- /.modal-content -->
+ 	</div>
+   <!-- /.modal-dialog -->
+ </div>
+
+ <div class="modal fade" id="addDiscount2">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span></button>
+         <h4 class="modal-title"></h4>
+       </div>
+       <form id="form_add">
+         <div class="modal-body">
+           <div class='form-group'>
+             <label>Product</label>
+             <input type="hidden" class="form-control" name="inventory" id="inventory_no">
+             <input disabled type="text" class="form-control" id="name">
+           </div>
+           <div class='form-group'>
+             <label>Percentage Discount</label>
+             <input type="number" required name="discount" class="form-control">
+           </div>
+           <div class='form-group'>
+             <label>Description</label>
+             <input type="text" name="description" class="form-control">
+           </div>
+           <div class='form-group'>
+             <label>Due Date</label>
+             <input type="date" required name="date" class="form-control">
+           </div>
+         </div>
+
+         <div class="modal-footer">
+           <button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
+           <button type="submit" id="save" class="large ui teal button">Save changes</button>
+         </div>
+
+       </form>
+     </div>
+   </div>
+ </div>
+
+ <%- include('../../../templates/admin-aside.ejs') -%>
+
+ <!-- ./wrapper -->
+
+ <!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+ <!-- page script (new added) -->
+
+ <script>
+    $('.select').on('click',function(){
+      $('#inventory_no').val($(this).data('inventory'));
+      $('#name').val($(this).data('name'));
+      $('.select2').click()
+    })
+
+    $('#form_add').submit(function(e){
+      e.preventDefault();
+      $.post('/inventory/addDiscount',$('#form_add').serialize(),function(data,status){
+        if(data=="yes"){
+          swal({title: 'Success!', text: "You've added a discount to a product",type: "success"}).then(()=>{
+            location.reload();
+          })
+        }else{
+          swal('Error!','','error')
+        }
+      })
+    })
+ </script>
+ <script>
+   $(function () {
+     $('#example2').DataTable({
+       'paging'      : true,
+       'lengthChange': true,
+       'searching'   : true,
+       'ordering'    : true,
+       'info'        : true,
+       'autoWidth'   : true,
+ 	  'select'		: true,
+ 	  'scroll'		: true
+     })
+   })
+ </script>
+
+ <script>
+   $(function () {
+     $('#example1').DataTable({
+       'paging'      : true,
+       'lengthChange': true,
+       'searching'   : true,
+       'ordering'    : true,
+       'info'        : true,
+       'autoWidth'   : true,
+     'select'		: true,
+     'scroll'		: true
+     })
+   })
+ </script>
+
+ <script>
+ $(document).ready(function(){
+
+  $('#save').on('click',function(){
+    $.ajax({
+      url: '/maintenance/addPromotion',
+      method: 'POST',
+      datatype: "json",
+      data: {
+        pno: $('#pno').val(),
+        pcode: $('#pcode').val(),
+        pname: $('#pname').val(),
+        pdesc: $('#pdesc').val(),
+        pdiscount: $('#pdiscount').val(),
+        pdue: $('#pdue').val()
+
+      },
+      success: function(response,status,http){
+        if (response){
+          if (response == "yes"){
+            confirm_alert();
+          }
+        }
+      }
+    });
+  });
+
+
+ })
+ </script>
+
+
+<script>
+  $('#title').html("USG | Discounts");
+  $(".treeview a:contains('Inventory')").parent().addClass("active");
+  $(".navi a:contains('Discounts')").parent().addClass("active");
+</script>
+
+<script>
+$('.inactivate_promo').on('click',function(){
+  $(this).removeClass("ui toggle button active inactivate_promo").addClass("ui toggle button  activate_promo").html("Inactive");
+
+  $.ajax({
+    url: '/maintenance/inactivatePromo',
+    method: 'post',
+    datatype: 'json',
+    data: {no: $(this).data('no')},
+    success: function(response,status,http){
+      if (response){
+        swal("Success!", "You have activated Promo no"+$(this).data('no'), "success");
+      }
+    }
+  })
+})
+
+$('.activate_promo').on('click',function(){
+  $(this).removeClass("ui toggle button activate_promo").addClass("ui toggle button active inactivate_promo").html("Active");
+
+  $.ajax({
+    url: '/maintenance/activatePromo',
+    method: 'post',
+    datatype: 'json',
+    data: {no: $(this).data('no')},
+    success: function(response,status,http){
+      if (response){
+        swal("Success!", "You have activated Promo no"+$(this).data('no'), "success");
+      }
+    }
+  })
+})
+</script>
+
+
+ <!-- Optionally, you can add Slimscroll and FastClick plugins.
+      Both of these plugins are recommended to enhance the
+      user experience. -->
+ </body>
+ </html>

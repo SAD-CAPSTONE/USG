@@ -98,7 +98,7 @@
 }
 
 .custom-card .fa-star, .custom-card .fa-star-half-o {
-  
+
 }
 
 .custom-card .card-reviews {
@@ -120,7 +120,7 @@
   position:absolute;
   right:auto;
   left:10px;
-  bottom:23px;
+  bottom:24px;
   transition:all 0.25s ease;
   display:block;
 }
