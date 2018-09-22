@@ -273,29 +273,47 @@
               </div>
             </div>
 
-            <div class="row">
+            <!-- <div class="row">
 
-              <!-- Payment information -->
+
               <div class="col-md-12">
                 <div class="box box-success">
                   <div class="box-header with-border">
                     <h3 class="box-title">Payment Information</h3>
 
-                    <!-- /.box-tools -->
+
                   </div>
-                  <!-- /.box-header -->
+
                   <div class="box-body">
-                    <p style="font-size:16px">
-                      <strong>Payment Method:</strong> &nbsp;&nbsp;&nbsp; Bank Deposit </br>
-                      <strong>Reference No.:</strong> &nbsp;&nbsp;&nbsp; </br>
-                      <strong>Deposit Slip:</strong> &nbsp;&nbsp;&nbsp;<a data-toggle="modal" data-target="#depositSlip_modal" href="#">Click here</a> </br>
+                    <p style="font-size:15px">
+                      <strong>Payment Method:</strong> &nbsp;&nbsp;&nbsp;
+                      <% if (customer[0].intPaymentMethod == 1) { %>
+                        Cash on Delivery
+                        <% }else { %>
+                          Bank Deposit
+                          <% } %> </br>
+                      <% if (customer[0].intPaymentMethod == 1) { %>
+
+                        <% }else { %>
+                              <strong>Deposit Slip:</strong> &nbsp;&nbsp;&nbsp;<a data-toggle="modal" data-target="#depositSlip_modal" href="#">Click here</a> </br>
+                          <% } %>
+
                     </p>
+                    </br>
+                    <label for="stats">Payment Status:</label>
+                    <select class="form-control" id="paymentstatus">
+                      <option id="payment_awaiting" value="0">Awaiting Payment</option>
+                      <option id="payment_paid" value="1">Paid</option>
+                      <option id="payment_partially" value="2">Partially Paid</option>
+                      <option id="payment_cancelled" value="3">Cancelled</option>
+                      <option id="payment_refunded" value="4">Refunded</option>
+                    </select>
                   </div>
-                  <!-- /.box-body -->
+
                 </div>
-                <!-- /.box -->
+
               </div>
-            </div>
+            </div> -->
 
             <div class="row">
               <!-- Order status -->
@@ -308,6 +326,22 @@
                   </div>
                   <!-- /.box-header -->
                   <div class="box-body">
+                    <p style="font-size:15px">
+                      <strong>Payment Method:</strong> &nbsp;&nbsp;&nbsp;
+                      <% if (customer[0].intPaymentMethod == 1) { %>
+                        Cash on Delivery
+                        <% }else { %>
+                          Bank Deposit
+                          <% } %>
+                      <% if (customer[0].intPaymentMethod == 1) { %>
+
+                        <% }else { %>
+                            <br>  <strong>Deposit Slip:</strong> &nbsp;&nbsp;&nbsp;<a data-toggle="modal" data-target="#depositSlip_modal" href="#">Click here</a>
+                          <% } %>
+
+                    </p>
+
+                    <br>
                     <label for="stats">Order Status:</label>
                     <select class="form-control" id="orderstatus">
                       <option id="order_pending" value="0">Pending</option>
@@ -316,9 +350,8 @@
                       <option id="order_delivered" value="3">Delivered</option>
                       <option id="order_notDeliver" value="4">Will not Deliver</option>
                       <option id="order_returned" value="5">Returned</option>
+                      <option id="order_cancelled" value="6">Cancelled</option>
                     </select>
-
-
                   </br>
                   <label for="stats">Payment Status:</label>
                   <select class="form-control" id="paymentstatus">
@@ -328,6 +361,9 @@
                     <option id="payment_cancelled" value="3">Cancelled</option>
                     <option id="payment_refunded" value="4">Refunded</option>
                   </select>
+
+
+
                 </br>
                     <label for="notify">
 
@@ -500,7 +536,17 @@
   //  $('#order_notDeliver').attr('disabled',true);
     $('#order_returned').attr('disabled',true);
 
+  }
 
+  // cancelled
+  if(<%= customer[0].Stat %> == 6){
+    $('#order_pending').attr('disabled',true);
+    $('#order_processing').attr('disabled',true);
+    $('#order_shipped').attr('disabled',true);
+    $('#order_delivered').attr('disabled',true);
+    $('#order_notDeliver').attr('disabled',true);
+  $('#order_returned').attr('disabled',true);
+    $('#order_cancelled').attr('disabled',true);
 
   }
 
