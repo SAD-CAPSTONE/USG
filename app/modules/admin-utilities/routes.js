@@ -20,7 +20,9 @@ router.get('/order',(req,res)=>{
 });
 
 router.post('/updateOrderPolicies',(req,res)=>{
-  db.query(`Update tblAdmin set shippingFee = ${req.body.shippingFee}, deliveryPeriod = ${req.body.deliveryPeriod}, paymentVoucherValidity = ${req.body.paymentVoucherValidity}, bankAccountNo = "${req.body.bankAccountNo}", bankServiceFee = ${req.body.bankServiceFee}, businessBank = "${req.body.businessBank}"`,(err1,res1,fie1)=>{
+  db.query(`Update tblAdmin set shippingFee = ${req.body.shippingFee}, deliveryPeriod = ${req.body.deliveryPeriod},
+     paymentVoucherValidity = ${req.body.paymentVoucherValidity}, bankAccountNo = "${req.body.bankAccountNo}",
+   bankServiceFee = ${req.body.bankServiceFee}, businessBank = "${req.body.businessBank}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     if(!err1) res.send('success');
   });

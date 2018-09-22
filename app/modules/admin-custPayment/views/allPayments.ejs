@@ -22,7 +22,7 @@
       <div class="col-xs-12">
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs">
-            <li class="active"><a href="#allPayments" data-toggle="tab"><i class="fa fa-bars"></i> All Payments</a></li>
+            <li class="active"><a href="#allPayments" data-toggle="tab"> All Payments</a></li>
             <li><a href="#cashOnDelivery" data-toggle="tab"> Cash on Delivery</a></li>
             <li><a href="#bankDeposits" data-toggle="tab"> Bank Deposits</a></li>
             <li><a href="#awaiting" data-toggle="tab"> Awaiting Payments</a></li>
@@ -38,9 +38,9 @@
                   <thead>
                   <tr>
                     <th>Order No</th>
+                    <th>Order Date </th>
                     <th>Customer Name</th>
-                    <th>Order Date</th>
-                    <th>Payment Due</th>
+
                     <th>Method</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -55,9 +55,11 @@
                       <% allPayments.forEach(function(i){ %>
                         <tr>
                           <td><%=i.intOrderNo%></td>
-                          <td><%=i.strFname%> <%=i.strLname%></td>
                           <td><%= moment(i.dateOrdered).format("MM/DD/YYYY")%></td>
-                          <td><%= moment(i.paymentDue).format("MM/DD/YYYY")%></td>
+
+                          <td><%=i.strFname%> <%=i.strLname%></td>
+
+
                           <td>
                             <% if(i.intPaymentMethod == 1){ %>
                             Cash On Delivery
@@ -67,9 +69,9 @@
                           </td>
                           <td>
                             <% if (i.intPaymentStatus == 0){ %>
-                              Not Paid
+                              <span class="label label-warning">Not Paid</span>
                             <% }else if(i.intPaymentStatus == 1){ %>
-                              Paid
+                              <span class="label label-info">Paid</span>
                             <% }else if(i.intPaymentStatus == 2){ %>
                               Partially Paid
                             <% }else{ %>
@@ -78,7 +80,15 @@
                           </td>
                           <td>
                             <!-- <a href="/customerPayment/history?orderno=<%=i.intOrderNo%>"><button class="btn btn-primary btn-sm">View History</button></a> -->
-                            <button class="btn btn-primary btn-sm"><i class="fa fa-caret-down"></i></button>
+                            <button class="large ui teal button">Change Status</button>
+                            <% if (i.order_stat == 6){ %>
+                              <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancelled</button>
+
+                            <% }else{ %>
+                              <button data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancel Order</button>
+
+                            <% } %>
+
 
                           </td>
                         </tr>
@@ -106,7 +116,6 @@
                     <th>Order No</th>
                     <th>Customer Name</th>
                     <th>Order Date</th>
-                    <th>Payment Due</th>
                     <th>Method</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -123,7 +132,7 @@
                           <td><%=i.intOrderNo%></td>
                           <td><%=i.strFname%> <%=i.strLname%></td>
                           <td><%= moment(i.dateOrdered).format("MM/DD/YYYY")%></td>
-                          <td><%= moment(i.paymentDue).format("MM/DD/YYYY")%></td>
+
                           <td>
                             <% if(i.intPaymentMethod == 1){ %>
                             Cash On Delivery
@@ -133,9 +142,11 @@
                           </td>
                           <td>
                             <% if (i.intPaymentStatus == 0){ %>
-                              Not Paid
+                              <span class="label label-warning">Not Paid</span>
+
                             <% }else if(i.intPaymentStatus == 1){ %>
-                              Paid
+                              <span class="label label-info">Paid</span>
+
                             <% }else if(i.intPaymentStatus == 2){ %>
                               Partially Paid
                             <% }else{ %>
@@ -143,8 +154,14 @@
                             <% } %>
                           </td>
                           <td>
-                            <button class="btn btn-primary btn-sm">View History</button>
-                            <button class="btn btn-primary btn-sm"><i class="fa fa-caret-down"></i></button>
+                            <button class="large ui teal button">Change Status</button>
+                            <% if (i.order_stat == 6){ %>
+                              <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancelled</button>
+
+                            <% }else{ %>
+                              <button data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancel Order</button>
+
+                            <% } %>
 
                           </td>
                         </tr>
@@ -169,8 +186,9 @@
                   <thead>
                   <tr>
                     <th>Order No</th>
-                    <th>Customer Name</th>
                     <th>Order Date</th>
+
+                    <th>Customer Name</th>
                     <th>Payment Due</th>
                     <th>Method</th>
                     <th>Status</th>
@@ -186,9 +204,24 @@
                       <% bankDeposits.forEach(function(i){ %>
                         <tr>
                           <td><%=i.intOrderNo%></td>
-                          <td><%=i.strFname%> <%=i.strLname%></td>
                           <td><%= moment(i.dateOrdered).format("MM/DD/YYYY")%></td>
-                          <td><%= moment(i.paymentDue).format("MM/DD/YYYY")%></td>
+
+                          <td><%=i.strFname%> <%=i.strLname%></td>
+                          <td>
+                              <%= moment(i.paymentDue).format("MM/DD/YYYY")%>
+
+                            <% var GivenDate = moment(i.paymentDue) %>
+                            <% var CurrentDate = new Date(); %>
+                            <% GivenDate = new Date(GivenDate); %>
+                            <% if(i.intPaymentStatus == 1){ %>
+
+                            <% }else if(GivenDate.toDateString() === CurrentDate.toDateString() || GivenDate > CurrentDate ){ %>
+
+                            <% }else{ %>
+                              &nbsp;&nbsp;<span class="label label-danger">Late!</span>
+
+                            <% } %>
+                          </td>
                           <td>
                             <% if(i.intPaymentMethod == 1){ %>
                             Cash On Delivery
@@ -198,9 +231,9 @@
                           </td>
                           <td>
                             <% if (i.intPaymentStatus == 0){ %>
-                              Not Paid
+                              <span class="label label-warning">Not Paid</span>
                             <% }else if(i.intPaymentStatus == 1){ %>
-                              Paid
+                              <span class="label label-info">Paid</span>
                             <% }else if(i.intPaymentStatus == 2){ %>
                               Partially Paid
                             <% }else{ %>
@@ -208,8 +241,14 @@
                             <% } %>
                           </td>
                           <td>
-                            <button class="btn btn-primary btn-sm">View History</button>
-                            <button class="btn btn-primary btn-sm"><i class="fa fa-caret-down"></i></button>
+                            <button class="large ui teal button">Change Status</button>
+                            <% if (i.order_stat == 6){ %>
+                              <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancelled</button>
+
+                            <% }else{ %>
+                              <button data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancel Order</button>
+
+                            <% } %>
 
                           </td>
                         </tr>
@@ -273,9 +312,14 @@
                             <% } %>
                           </td>
                           <td>
-                            <button class="btn btn-primary btn-sm">View History</button>
-                            <button class="btn btn-primary btn-sm"><i class="fa fa-caret-down"></i></button>
+                            <button class="large ui teal button">Change Status</button>
+                            <% if (i.order_stat == 6){ %>
+                              <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancelled</button>
 
+                            <% }else{ %>
+                              <button data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancel Order</button>
+
+                            <% } %>
                           </td>
                         </tr>
                       <% }) %>
@@ -303,6 +347,34 @@
 </div>
 <!-- /.content-wrapper -->
 
+<div class="modal fade" id="cancel_modal">
+  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title"></h4>
+		  </div>
+      <form id="cancel_form">
+  		  <div class="modal-body">
+          <input type="hidden" name="order_no" id="order_no">
+          <br>
+          <div class="form-group">
+            <label>Please notify the customer why would you want to cancel the order.</label>
+            <textarea name="message" class="form-control"></textarea>
+            <small class="text-aqua">Note: You cannot revert once you cancel an order. You may cancel the order if the payment is late.</small>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button data-dismiss="modal" type="button" class="large ui button pull-left">Back</button>
+          <button type="submit" class="large ui red button pull-right">Cancel Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <%- include('../../../templates/admin-aside.ejs') -%>
 
 <!-- REQUIRED JS SCRIPTS -->
@@ -311,6 +383,25 @@
 
 
   <!-- page script (new added) -->
+
+  <script>
+    $('.cancel_order').on('click',function(){
+      $('#order_no').val($(this).data('order'));
+    })
+
+    $('#cancel_form').submit(function(e){
+      e.preventDefault();
+      $.post('/customerPayment/cancelOrder',$('#cancel_form').serialize(),function(data,status){
+        if(data == "yes"){
+          swal({title: "Success", text:"You have cancelled the order", type: "success"}).then(()=>{
+            location.href = '/customerPayment';
+          })
+        }
+      })
+    })
+  </script>
+
+
 
   <script>
     $(function () {
@@ -358,7 +449,7 @@
       $('#title').html("USG | All Products");
 
       $(".treeview a:contains('Transaction')").parent().addClass("active");
-      $(".navi a:contains('Customer Payment')").parent().addClass("active");
+      $(".navi a:contains('Customer Payments')").parent().addClass("active");
     </script>
 
 </body>

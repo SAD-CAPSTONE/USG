@@ -41,76 +41,59 @@
            </br>
 
            <form class="form-horizontal" id="returnProductsForm" >
-           <div align="center" class="row">
-             <div class="col-sm-1">
-             </div>
-             <div class="col-sm-4">
-               <div class="form-group">
-                 <label for="purcNo">R.P Number:</label>
 
-                   <input type="text" disabled value="<%=lastRecord%>" name="RPnum" id="RPNo" class="form-control">
-
-               </div>
-             </div>
-
-             <div class="col-sm-2">
-             </div>
-
-             <div class="col-sm-4">
-               <div class="form-group">
-                 <label for="purcNo">P.O Date:</label>
-                 <input type="date" disabled id="today" value="" name="date" class="form-control">
-
-               </div>
-             </div>
-             <div class="col-sm-1">
-             </div>
-           </div>
-
-           <br>
-           <!-- <div class="row">
-             <div class="col-sm-3">
-               <h4> &nbsp; Supplier </h4>
-             </div>
-
-           </div> -->
-
-           <div class="row">
-             &nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
-           <p>  &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
-           </div>
 
          </br>
-           <div>
 
-               <div class="form-group">
-                 <input type="hidden" class="input-sm form-control" name="supplier" id="suppid" placeholder="">
-                 <label for="businessName" class="col-sm-2 control-label"> Business Name: </label>
-                 <div class="col-sm-6">
-                   <input type="text" disabled class="input-sm form-control" id="businessName" placeholder="">
-                 </div>
+         <div class="row">
+           <div class="col-sm-9">
+
+             <div class="form-group">
+               <label class="col-sm-3" for="purcNo">R.P Number:</label>
+               <div class="col-sm-9">
+                 <input type="text" disabled value="<%=lastRecord%>" name="RPnum" id="RPNo" class="input-sm form-control">
                </div>
-
-               <div class="form-group">
-                 <label for="contract" class="col-sm-2 control-label"> Contact Person: </label>
-                 <div class="col-sm-6">
-                   <input type="text" disabled class="input-sm form-control" id="contactPerson" placeholder="">
-                 </div>
-               </div>
-
-               <div class="form-group">
-                 <label for="address" class="col-sm-2 control-label">Email: </label>
-                 <div class="col-sm-6">
-                   <input type="text"  class="input-sm form-control" name="email" id="email" placeholder="">
-                 </div>
-               </div>
-           </div>
-
-           <div class="row">
-             <div class="col-sm-3">
-               <h4> &nbsp;  </h4>
              </div>
+
+             <div class="form-group">
+               <label class="col-sm-3" for="purcNo">P.O Date:</label>
+               <div class="col-sm-9">
+                <input type="date" disabled id="today" value="" name="date" class="input-sm form-control">
+               </div>
+             </div>
+
+             <div class="form-group">
+               <input type="hidden" class="input-sm form-control" name="supplier" id="suppid" placeholder="">
+               <label for="businessName" class="col-sm-3"> Business Name: </label>
+               <div class="col-sm-9">
+                 <input type="text" disabled class="input-sm form-control" id="businessName" placeholder="">
+               </div>
+             </div>
+
+             <div class="form-group">
+               <label for="contract" class="col-sm-3"> Contact Person: </label>
+               <div class="col-sm-9">
+                 <input type="text" disabled class="input-sm form-control" id="contactPerson" placeholder="">
+               </div>
+             </div>
+
+             <div class="form-group">
+               <label for="address" class="col-sm-3">Email: </label>
+               <div class="col-sm-9">
+                 <input type="text"  class="input-sm form-control" name="email" id="email" placeholder="">
+               </div>
+             </div>
+
            </div>
+
+           <div class="col-sm-3">
+             <br><br><br>
+             &nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
+           <p>  &nbsp;&nbsp;&nbsp;New supplier?<br> Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
+
+           </div>
+         </div>
+
 
            <div class="row">
              <div class="col-sm-12">
@@ -162,6 +145,7 @@
          <div class="box-footer">
               <a href="/purchaseOrder"><button type="button" class="large ui button">Back</button></a>
               <a href=""><button type="submit" id="sub" class="btn large ui teal button">Submit Form</button></a>
+              <br><small class="text-aqua">Please review your form before you proceed.</small>
           </div>
             <!-- /.box-footer -->
           </form>
@@ -377,29 +361,51 @@ $('.supplierSetter').on('click', function(){
 })
 
 
-$(document).ready(function() {
+  $(document).ready(function() {
 
-   $('#returnProductsForm').submit(function(e){
-     e.preventDefault();
-     $.ajax({
-       url: '/returnProducts/submitForm',
-       type: 'post',
-       data: $('#returnProductsForm').serialize(),
-       success: function(response,status,http){
-         if (response == "yes"){
-           swal({title: "Success!", text: "You have created a record for return products to supplier", type: "success"}).then(()=>{
-             window.location.href = '/returnProducts/form'
-           })
+     $('#returnProductsForm').submit(function(e){
+       e.preventDefault();
+       $.ajax({
+         url: '/returnProducts/submitForm',
+         type: 'post',
+         data: $('#returnProductsForm').serialize(),
+         success: function(response,status,http){
+           if (response == "yes"){
+
+             swal({
+               title: 'Do you want to email the supplier?',
+               text: "Email: imjanellealag@gmail.com",
+               type: 'question',
+               showCancelButton: true,
+               confirmButtonColor: '#3085d6',
+               cancelButtonColor: '#d33',
+               confirmButtonText: 'Send an Email',
+               cancelButtonText: 'Submit without email',
+               reverseButtons: true
+             }).then((result) => {
+               if (result.value) {
+                 swal({title: "Success!", text: "Your form has been emailed", type: "success"}).then(()=>{
+                   window.location.href = '/returnProducts'; })
+               } else if (
+                 // Read more about handling dismissals
+                 result.dismiss === swal.DismissReason.cancel
+               ) {
+                 swal({title: "Success!", text: "You have created a record for return products to supplier", type: "success"}).then(()=>{
+                   window.location.href = '/returnProducts'; });
+               }
+             })
+
+
+           }
+         },
+         error: function(response){
+           swal("Error","","error");
          }
-       },
-       error: function(response){
-         swal("Error","","error");
-       }
-     });
-   })
+       });
+     })
 
 
-} );
+  } );
 </script>
 
 
@@ -409,7 +415,7 @@ $(document).ready(function() {
 <script>
 $('#title').html("USG | Return Products");
 $(".treeview a:contains('Transactions')").parent().addClass("active");
-$(".navi a:contains('Return Products')").parent().addClass("active");
+$(".navi a:contains('Return to Supplier')").parent().addClass("active");
 </script>
 
 

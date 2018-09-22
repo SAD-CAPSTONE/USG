@@ -1,0 +1,391 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      Inventory Report
+      <small></small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"></i> Home</a></li>
+      <li><a href="#"></i> Reports</a></li>
+      <li class="active">Inventory</li>
+    </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <!-- Stock Monthly Report -->
+    <div class="row">
+
+      <div class="col-sm-12">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title">Stock Monthly Report</h3>
+          </div>
+
+          <div class="box-body">
+            <div class="row">
+              <div class="col-md-12">
+                <p class="text-center">
+                  <strong>1 Jan, 2018 - 31 Dec, 2018</strong>
+                </p>
+
+                <canvas id="recapChart" width="400" height="100"></canvas>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+
+    </div>
+    <!-- /.row -->
+
+    <br>
+    <h3 align="center">Product Ranking</h3>
+    <br>
+
+    <div class="row">
+      <!-- Ranking by value -->
+      <div class="col-sm-6">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title">Total Value</h3>
+          </div>
+
+          <div class="box-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="table-responsive">
+                  <table class="table no-margin">
+                    <thead>
+                      <tr>
+                        <th>SKU</th>
+                        <th>Product Name</th>
+                        <th >Cost per item</th>
+                        <th>Total Value</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="box-footer clearfix">
+
+            <a href="javascript:void(0)" class="large ui teal button pull-right">View All</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Ranking by most popular -->
+
+      <div class="col-sm-6">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title">Most Popular</h3>
+          </div>
+
+          <div class="box-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="table-responsive">
+                  <table class="table no-margin">
+                    <thead>
+                      <tr>
+                        <th>SKU</th>
+                        <th>Product Name</th>
+                        <th>Quantity Bought</th>
+                        <th>Sales</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="box-footer clearfix">
+
+            <a href="javascript:void(0)" class="large ui teal button pull-right">View All</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr>
+    <div class="row">
+
+      <!-- Best Seller Products -->
+      <div class="col-sm-8">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title">Recent Inventory Transactions</h3>
+          </div>
+
+          <div class="box-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="table-responsive">
+                  <table class="table no-margin">
+                    <thead>
+                      <tr>
+                        <th>SKU</th>
+                        <th>Product Name</th>
+                        <th style="width: 20%">Date</th>
+                        <th>View</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+                      <tr>
+                        <td>1000</td>
+                        <td>Gatas Kalabaw Choco 1000ml</td>
+                        <td>10</td>
+                        <td>Php 2,000.00</td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="box-footer clearfix">
+
+            <a href="javascript:void(0)" class="large ui teal button pull-right">View All</a>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Payment Methods -->
+      <div class="col-sm-4">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title">Product Category</h3>
+          </div>
+
+          <div class="box-body">
+            <div class="row">
+              <div class="col-md-12">
+                <canvas id="donutChart" width="400" height="250"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
+
+ <%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+
+<script src="/assets/admin/bower_components/chart.js/dist/Chart.js"></script>
+
+
+<script>
+  var ctx = document.getElementById("recapChart");
+  var myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul","Aug","Sept","Oct","Nov","Dec"],
+          datasets: [{
+              label: 'Product Quantity',
+              data: [1500, 1900, 3000, 5000, 6000, 3500, 1500, 4000, 1456, 2367, 2000, 5600],
+              backgroundColor: [
+                  'rgba(56, 236, 28, 1)'
+              ],
+              borderColor: [
+                  'rgba(26,145,7,1)'
+              ],
+              borderWidth: 1,
+              fill: false
+          },
+          {
+              label: 'Pulled-out',
+              data: [1555, 2345, 3234, 4545, 2345, 4566, 7437, 1238, 1439, 1231, 1452, 1233],
+              backgroundColor: [
+                  'rgba(255, 99, 132, 1)'
+              ],
+              borderColor: [
+                  'rgba(255,99,132,1)'
+              ],
+              borderWidth: 1,
+              fill: false
+          }]
+      },
+      options: {
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero:true
+                  }
+              }]
+          }
+      }
+  });
+
+
+
+  var donut = document.getElementById("donutChart");
+  var myDoughnutChart = new Chart(donut, {
+      type: 'doughnut',
+      data: {
+              datasets: [{
+                  data: [10, 20,15],
+                  backgroundColor: [
+                      'rgba(93, 238, 117, 1)',
+                      'rgba(117, 197, 234, 1)',
+                      'rgba(251, 228, 18, 1)'
+
+                  ]
+              }],
+
+              // These labels appear in the legend and in the tooltips when hovering different arcs
+              labels: [
+                  'Food',
+                  'Beverages',
+                  'Pet Care'
+              ]
+            }
+  });
+</script>
+
+
+
+
+<script>
+$('#title').html("USG | Inventory Reports");
+$(".treeview a:contains('Reports')").parent().addClass("active");
+$(".navi a:contains('Inventory')").parent().addClass("active");
+</script>
+
+
+</body>
+</html>

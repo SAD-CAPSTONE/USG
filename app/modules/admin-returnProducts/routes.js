@@ -7,7 +7,13 @@ router.get('/',(req,res)=>{
   db.query(`Select tblPurchaseOrder.intStatus as stat, tblreceiveorder.intReceiveorderNo as rno, tblreturnbadorders.*, tblreceiveorder.*, tblSupplier.* from tblreturnbadorders join tblreceiveorder on tblreturnbadorders.intReceiveorderNo = tblreceiveorder.intReceiveorderNo join tblPurchaseOrder on tblreceiveorder.intPurchaseOrderNo = tblPurchaseOrder.intPurchaseOrderNo join tblSupplier on tblPurchaseOrder.intSupplierID = tblSupplier.intUserID`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{
-      res.render('admin-returnProducts/views/allReturns', {bad: res1, moment: moment});
+      db.query(`Select * from tblReturnProducts join tblSupplier on tblReturnProducts.intSupplierID = tblSupplier.intUserID`,(err2,res2,fie2)=>{
+        if(err2) console.log(err2);
+        else{
+          res.render('admin-returnProducts/views/allReturns', {bad: res1, moment: moment, returns: res2});
+
+        }
+      })
 
     }
   })
@@ -72,8 +78,9 @@ router.post('/submitForm',(req,res)=>{
                     values("${rplist_no}", "${rp_no}","${req.body.ino[count]}", ${req.body.quantity[count]}, "${req.body.reason[count]}")`,(err5,res5,fie5)=>{
                       if(err5) console.log(err5);
                       else{
-                        count++;
+                        count++; rplist_no++;
                         callback();
+
                       }
                     })
                   }, function(err,results){

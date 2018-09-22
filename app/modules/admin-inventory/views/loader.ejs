@@ -65,7 +65,7 @@
 
   $('.pulloutitem').on('click',function(){
 
-    var data = $(this).data('batch');
+    
     swal({
       title: "Are you sure?",
       text: "You cannot undo pullout stock from inventory",
@@ -82,7 +82,7 @@
            url: '/inventory/pullOutItem',
            method: 'post',
            datatype: "json",
-           data: {o: data},
+           data: {batch: $(this).data('batch')},
            success: function(response, status, http){
              if(response == "yes"){
                swal({title: 'Success', text: 'You pulled out items from inventory', type: 'success'}).then(() => {
