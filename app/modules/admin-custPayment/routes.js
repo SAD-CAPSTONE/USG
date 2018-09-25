@@ -141,6 +141,30 @@ router.post('/cancelOrder',(req,res)=>{
       })
     }
   })
+});
+
+router.post('/changeStatus',(req,res)=>{
+  var history_no = "1000", sales_no = "1000";
+  db.beginTransaction(function(err){
+    if(err) console.log(err);
+    else{
+      db.query(`Select * from tblOrderHistory order by intOrderHistoryNo desc limit 1`,(err1,res1,fie1)=>{
+        if(err1) console.log(err1);
+        else{
+          if(res1.length==0){} else{ history_no = parseInt(res1[0].intOrderHistoryNo)+1;}
+
+          db.query(`Select * from tblSales order by intSalesNo desc limit 1`,(err2,res2,fie2)=>{
+            if(err2) console.log(err2);
+            else{
+              if(res2.length==0){} else{ sales_no = parseInt(res2[0].intSalesNo) + 1;}
+
+              
+            }
+          })
+        }
+      })
+    }
+  })
 })
 
 exports.customerPayment = router;

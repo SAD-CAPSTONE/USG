@@ -1,0 +1,155 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      <small> Consignment Request </small>
+    </h1>
+
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="#">Transactions</a></li>
+      <li class="active">Consignor Request</li>
+    </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#all_requests" data-toggle="tab"> All Requests</a></li>
+            <li ><a href="#new_product" data-toggle="tab"> New Product Request</a></li>
+            <li ><a href="#all_consignors" data-toggle="tab"> Other Requests</a></li>
+            <!-- <li><a href="#quantity" data-toggle="tab"><i class=""></i>Quantity</a></li> -->
+          </ul>
+          <div class="tab-content">
+            <!-- Active -->
+            <div class="tab-pane active" id="all_requests">
+              <!-- /.box-header -->
+              <div class="box-body table-responsive">
+                <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th style="width: 10%">No</th>
+                      <th>Consignor</th>
+                      <th>Request</th>
+                      <th>Status</th>
+                      <th>Action</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if(all==null||all==undefined){ %>
+
+                    <% }else if(all.length==0){ %>
+
+                    <% }else{ %>
+                    <%  var count = 1; %>
+                    <%  all.forEach(function(i){ %>
+                        <tr>
+                          <td><%=count%></td>
+                          <td><%=i.strFname%> <%=i.strMname%> <%=i.strLname%></td>
+                          <td>
+                            <% if(i.intRequestType == 1){ %>
+                              Product Request
+                            <% }else{ %>
+
+                            <% } %>
+                          </td>
+                          <td>
+                            <% if(i.stat == 1){ %>
+                              Accepted
+                            <% }else if(i.stat == 2){ %>
+                              Rejected
+                            <% }else{ %>
+                              Pending
+                            <% } %>
+                          </td>
+                          <td>
+                            <a href="/consignorRequests/productRequest?no=<%=i.intRequestNo%>"><button class="large ui teal button">View Request</button></a>
+                          </td>
+                        </tr>
+                      <%  count++; %>
+                      <% }) %>
+                    <% } %>
+
+                  </tbody>
+
+                </table>
+              </div>
+              <!-- /.box-body -->
+
+            </div>
+
+            <!-- Terminated -->
+            <div class="tab-pane" id="new_product">
+
+            </div>
+
+          </div>
+          <!-- /.tab-content -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+  <!-- ./wrapper -->
+
+  <!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+  <!-- page script (new added) -->
+  <script>
+    $(function () {
+      $('#example2').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+  	  'select'		: true,
+  	  'scroll'		: true
+      })
+    })
+  </script>
+
+  <script>
+    $(function () {
+      $('#example3').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+  	  'select'		: true,
+  	  'scroll'		: true
+      })
+    })
+  </script>
+
+
+  <script>
+    $('#title').html("USG | Consignor Request");
+
+    $(".treeview a:contains('Transaction')").parent().addClass("active");
+    $(".navi a:contains('Consignor Request')").parent().addClass("active");
+  </script>
+
+  </body>
+  </html>
