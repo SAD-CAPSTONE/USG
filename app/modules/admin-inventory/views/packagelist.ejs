@@ -38,6 +38,7 @@
                <th>Product Name</th>
                <th>Supplier Name</th>
                <th>Size</th>
+               <th>Quantity</th>
 			         <th>Action</th>
 
              </tr>
@@ -54,6 +55,7 @@
                     <td><%=i.strProductName%></td>
                     <td><%=i.strFname%> <%=i.strMname%> <%=i.strLname%></td>
                     <td><%= i.intSize%>  <%=i.strUnitName%></td>
+                    <td><%=i.intProductQuantity%></td>
   				          <td>
                       <button class="large ui red button"> <i class="glyphicon glyphicon-trash"></i></button>
                     </td>
@@ -108,7 +110,9 @@
       <div class="form-group">
         <label for="" class="col-sm-3 control-label"> Package Quantity </label>
         <div class="col-sm-4">
-          <input type="number" disabled id="package_quantity" value="<%=quantity%>" name="package_quantity" class="form-control" required>
+          <input type="hidden"  id="package_quantity" value="<%=quantity%>" name="package_quantity" class="package_quantity form-control" required>
+
+          <input type="number" disabled id="package_quantity" value="<%=quantity%>"  class="package_quantity form-control" required>
 
         </div>
       </div>
@@ -245,7 +249,7 @@ $('#errorhelpBlock2').hide();
 $('#starthelpBlock2').show();
 
 $('#quantity').on('keyup',function(){
-  if(($('#quantity').val() * $('#package_quantity').val())  > $('#prod_stock2').val()){
+  if(($('#quantity').val() * $('.package_quantity').val())  > $('#prod_stock2').val()){
 
     $('#form-group2').attr('class', 'form-group2 has-error');
     $('#errorhelpBlock2').show();

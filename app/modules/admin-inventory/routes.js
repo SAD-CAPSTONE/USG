@@ -1349,7 +1349,7 @@ router.post('/editPackage',(req,res)=>{
 // Discount - Promotion
 
 router.get('/productDiscount',(req,res)=>{
-  db.query(`Select * from tblProductDiscount join tblProductInventory on tblProductDiscount.intInventoryNo = tblProductInventory.intInventoryNo
+  db.query(`Select tblProductDiscount.*, tblProductInventory.*, tblProductlist.*, tblUom.*, tblProductDiscount.intStatus as stat from tblProductDiscount join tblProductInventory on tblProductDiscount.intInventoryNo = tblProductInventory.intInventoryNo
     join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
     join tblUom on tblUom.intUomno = tblProductInventory.intUomno`, (err1,res1,fie1)=>{
       if(err1) console.log(err1);
@@ -1424,6 +1424,17 @@ router.get('/testInventoryCount',(req,res)=>{
     else{
       res.render('admin-inventory/views/testInventoryCount',{re: res1});
 
+    }
+  })
+});
+
+router.post('/changeDiscountStat',(req,res)=>{
+
+  db.query(`Update tblProductDiscount set intStatus = ${req.body.value} where intDiscountNo = "${req.body.no}"`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+
+      res.send("");
     }
   })
 })
