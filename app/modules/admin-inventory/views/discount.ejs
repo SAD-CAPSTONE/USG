@@ -49,7 +49,18 @@
                          <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%><%=i.strUnitName%></td>
                          <td><%=i.discount%>%</td>
                          <td><%=moment(i.discountDueDate).format("MM/DD/YYYY")%></td>
-                         <td></td>
+                         <td>
+
+                           <input type="checkbox"
+                           <% if (i.stat == 0){ %>
+                             value="0"
+                           <% }else{ %>
+                             value="1" checked
+                           <% } %>
+
+                            data-no="<%=i.intDiscountNo%>" class="discount_stat" data-size="mini"  data-on="Active" data-off="Inactive" data-toggle="toggle" data-offstyle="danger" data-onstyle="success">
+
+                         </td>
                          <td></td>
                        </tr>
                     <% }) %>
@@ -170,6 +181,15 @@
  <!-- page script (new added) -->
 
  <script>
+ $('.discount_stat').on('change',function(){
+   var val = $(this).val() == 1 ? 0 : 1;
+
+   $.post('/inventory/changeDiscountStat',{no: $(this).data('no'), value: val}, function(data,status){
+     if (data){
+     }
+   })
+ })
+
     $('.select').on('click',function(){
       $('#inventory_no').val($(this).data('inventory'));
       $('#name').val($(this).data('name'));
