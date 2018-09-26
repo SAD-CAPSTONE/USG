@@ -40,12 +40,16 @@
                                                   <% }else{ %>
                                                   <%  re.forEach(function(i){ %>
                                                       <tr>
-                                                          <td><%= i.intPurchaseOrderNo%></td>
-                                                          <td><span><%=moment(i.DateOrderReceived).format("MM/DD/YYYY")%></span></td>
-                                                          <td style="width:170px;"><div class="btn-group">
-                                                              <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">Accept</button>
-                                                              <button type="button" class="btn btn-danger" style="margin-bottom:10px; border-radius:5px !important;">Reject</button>
-                                                          </div></td>
+                                                          <% if (i.intStatus == 0){ %>
+                                                            <td><%= i.intPurchaseOrderNo%></td>
+                                                            <td><span><%=moment(i.DateOrderReceived).format("MM/DD/YYYY")%></span></td>
+                                                            <td style="width:170px;"><div class="btn-group">
+                                                                <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">Accept</button>
+                                                                <button type="button" class="btn btn-danger" style="margin-bottom:10px; border-radius:5px !important;">Reject</button>
+                                                            </div></td>
+                                                          <% }else{ %>
+                                                            <td colspan="3" style="text-align: center">No Orders</td>
+                                                          <% } %>
                                                       </tr>
                                                   <%  }) %>
                                                   <% } %>
@@ -75,42 +79,46 @@
                                                   <% }else{ %>
                                                   <%  re.forEach(function(i){ %>
                                                       <tr>
-                                                          <td><%= i.intPurchaseOrderNo%></td>
-                                                          <td><span><%=moment(i.DateOrderReceived).format("MM/DD/YYYY")%></span></td>
-                                                          <% if (i.intStatus == 1){ %>
-                                                            <td><span class="badge badge-success" style="height: 30px; font-size:100% !important; font-weight:22 !important">Received</span></td>
-                                                          <% }else if(i.intStatus == 2){ %>
-                                                            <td><span class="badge badge-warning" style="height: 30px; font-size:100% !important; font-weight:22 !important">Waiting</span></td>
-                                                          <% }else{ %>
-                                                            <td><span class="badge badge-info" style="height: 30px; font-size:100% !important; font-weight:22 !important">On Process</span></td>
-                                                          <% } %>
+                                                          <% if (!re[1]){ %>
+                                                            <td><%= i.intPurchaseOrderNo%></td>
+                                                            <td><span><%=moment(i.DateOrderReceived).format("MM/DD/YYYY")%></span></td>
+                                                            <% if (i.intStatus == 1){ %>
+                                                                <td><span class="badge badge-success" style="height: 30px; font-size:100% !important; font-weight:22 !important">Received</span></td>
+                                                            <% }else if(i.intStatus == 0){ %>
+                                                                <td><span class="badge badge-warning" style="height: 30px; font-size:100% !important; font-weight:22 !important">Waiting</span></td>
+                                                            <% }else{ %>
+                                                                <td><span class="badge badge-info" style="height: 30px; font-size:100% !important; font-weight:22 !important">On Process</span></td>
+                                                            <% } %>
 
-                                                          <td style="width:170px;">
-                                                              <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important" data-toggle='modal' data-target='#ViewProducts'>View Products</button>
-                                                              <div id="ViewProducts" class="modal fade" tabindex='-1' role='dialog' aria-labelledby='ViewProducts' aria-hidden='true'>
-                                                                    <div class="modal-dialog" role='document'>
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                        <h5 id="EditInfoTitle" class="modal-title"><b><%= i.strProduct%></b></h5>
-                                                                        <button class="close" type='button' data-dismiss='modal' aria-label='Close'>
-                                                                            <span aria-hidden='true'>×</span>
-                                                                        </button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                        <div class="row">
-                                                                            <div style="width: 490px;padding: 20px;"><span class="text-tab">Variant</span><span style="margin-left: 150px;"><%= i.strVariant%></span>
-                                                                            <hr/><span class="text-tab">Size</span><span style="margin-left: 150px;""><%= i.strSize%></span>
-                                                                            <hr/><span class="text-tab">Qauntity</span><span style="margin-left: 150px;""><%= i.intQuantity%></span>
+                                                            <td style="width:170px;">
+                                                                <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important" data-toggle='modal' data-target='#ViewProducts'>View Products</button>
+                                                                <div id="ViewProducts" class="modal fade" tabindex='-1' role='dialog' aria-labelledby='ViewProducts' aria-hidden='true'>
+                                                                        <div class="modal-dialog" role='document'>
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                            <h5 id="EditInfoTitle" class="modal-title"><b><%= i.strProduct%></b></h5>
+                                                                            <button class="close" type='button' data-dismiss='modal' aria-label='Close'>
+                                                                                <span aria-hidden='true'>×</span>
+                                                                            </button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                            <div class="row">
+                                                                                <div style="width: 490px;padding: 20px;"><span class="text-tab">Variant</span><span style="margin-left: 150px;"><%= i.strVariant%></span>
+                                                                                <hr/><span class="text-tab">Size</span><span style="margin-left: 150px;""><%= i.strSize%></span>
+                                                                                <hr/><span class="text-tab">Qauntity</span><span style="margin-left: 150px;""><%= i.intQuantity%></span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                            <button class="btn btn-secondary" type='button', data-dismiss='modal'>Close</button>
+                                                                            </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="modal-footer">
-                                                                        <button class="btn btn-secondary" type='button', data-dismiss='modal'>Close</button>
-                                                                        </div>
                                                                         </div>
                                                                     </div>
-                                                                    </div>
-                                                                </div>
-                                                          </td>
+                                                            </td>
+                                                          <% }else{ %>
+                                                            <td colspan="4" style="text-align: center">No Orders</td>
+                                                          <% } %>
                                                       </tr>
                                                   <%  }) %>
                                                   <% } %>
@@ -139,11 +147,15 @@
                                                   <% }else{ %>
                                                   <%  re.forEach(function(i){ %>
                                                       <tr>
-                                                          <td><%= i.intPurchaseOrderNo%></td>
-                                                          <td><span><%=moment(i.DateOrderReceived).format("MM/DD/YYYY")%></span></td>
-                                                          <td style="width:170px;"><div class="btn-group">
-                                                              <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">View Products</button>
-                                                          </div></td>
+                                                          <% if (i.intStatus == 1){ %>
+                                                            <td><%= i.intPurchaseOrderNo%></td>
+                                                            <td><span><%=moment(i.DateOrderReceived).format("MM/DD/YYYY")%></span></td>
+                                                            <td style="width:170px;"><div class="btn-group">
+                                                                <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">View Products</button>
+                                                            </div></td>
+                                                          <% }else{ %>
+                                                            <td colspan="3" style="text-align: center">No Orders</td>
+                                                          <% } %>
                                                       </tr>
                                                   <%  }) %>
                                                   <% } %>

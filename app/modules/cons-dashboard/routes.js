@@ -22,6 +22,10 @@ router.get('/payment', auth_cons, (req,res)=>{
   res.render('cons-dashboard/views/cons-payment');
 });
 
+router.get('/consignor-account', auth_cons, (req,res)=>{
+  res.render('cons-dashboard/views/cons-account');
+});
+
 router.get('/products', auth_cons, (req,res)=>{
   db.query(`
     SELECT * from tblproductinventory join tblproductlist on tblproductinventory.intProductNo = tblproductlist.intproductno

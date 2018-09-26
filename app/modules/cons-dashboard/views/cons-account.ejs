@@ -1,0 +1,84 @@
+<%- include('../../../templates/consignor-dashboard.ejs') -%>
+
+<div id="consigner" class="container">
+    <div class="row">
+        <div class="col">
+            <div id="main-content">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="content" class="clearfix rep">
+                                <div id="userphoto"><img src="images/avatar.png" alt="default avatar"></div>
+                                <h1>Business Name</h1>
+                                <nav id="profiletabs">
+                                <ul class="clearfix">
+                                    <li><a href="#bio" class="sel">Bio</a></li>
+                                    <li><a href="#activity">Brands</a></li>
+                                </ul>
+                                </nav>
+                                
+                                <section id="bio">
+                                <div class="row">
+                                    <div class="col" style="padding-left: 0px;">
+                                        <p>Name: Representative's Name</p>
+                                    </div>
+                                    <div class="col" style="padding-left: 0px;">
+                                        <p>Business Name: Keto Lines</p>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:10px;">
+                                    <div class="col" style="padding-left: 0px;">
+                                        <p>Contact: 09162912053</p>
+                                    </div>
+                                    <div class="col" style="padding-left: 0px;">
+                                        <p>Email: KetoLines@yahoo.com</p>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:10px;">
+                                    <div class="col" style="padding-left: 0px;">
+                                        <p>Address: Tandang Sora, Quezon City
+                                </section>
+                                
+                                <section id="activity" class="hidden">
+                                
+                                <p class="activity">Super Scoops Ice Cream</p>
+                                
+                                <p class="activity">Coco Natura</p>
+                                
+                                <p class="activity">Coco Keto Breadery</p>
+                                
+                                <p class="activity">Kala Milk</p>
+                                </section>
+                            </div><!-- @end #content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function(){
+        $('#profiletabs ul li a').on('click', function(e){
+        e.preventDefault();
+        var newcontent = $(this).attr('href');
+        
+        $('#profiletabs ul li a').removeClass('sel');
+        $(this).addClass('sel');
+        
+        $('#content section').each(function(){
+            if(!$(this).hasClass('hidden')) { $(this).addClass('hidden'); }
+        });
+        
+        $(newcontent).removeClass('hidden');
+        });
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+</body>
+
+</html>
