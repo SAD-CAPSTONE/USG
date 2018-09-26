@@ -80,7 +80,7 @@
                           </td>
                           <td>
                             <!-- <a href="/customerPayment/history?orderno=<%=i.intOrderNo%>"><button class="btn btn-primary btn-sm">View History</button></a> -->
-                            <button class="large ui teal button">Change Status</button>
+                            <button data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status large ui teal button">Change Status</button>
                             <% if (i.order_stat == 6){ %>
                               <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancelled</button>
 
@@ -347,6 +347,32 @@
 </div>
 <!-- /.content-wrapper -->
 
+<div class="modal fade" id="change_status">
+  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title"></h4>
+		  </div>
+      <form id="change_form">
+  		  <div class="modal-body">
+          <label >Payment Status:</label>
+          <input type="hidden" id="order_no" name="order_no">
+          <select class="form-control" id="payment_status" name="payment_status">
+            <option value="0">Awaiting Payment</option>
+            <option value="1">Paid</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button data-dismiss="modal" class="large ui button pull-left">Back</button>
+          <button type="submit" class="large ui teal button pull-right">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="cancel_modal">
   <div class="modal-dialog">
 		<div class="modal-content">
@@ -383,6 +409,25 @@
 
 
   <!-- page script (new added) -->
+
+  <script>
+    $('.change_status').on('click',function(){
+      $('#order_no').val($(this).data('no'))
+      $('#payment_status').val($(this).data('status'))
+    })
+
+    $('#change_form').submit(function(e){
+      e.preventDefault();
+      $.post('/customerPayment/changeStatus',$('#change_form').serialize(), function(data,status){
+        if(data=="yes"){
+          
+        }else{
+
+        }
+      })
+    })
+
+  </script>
 
   <script>
     $('.cancel_order').on('click',function(){
