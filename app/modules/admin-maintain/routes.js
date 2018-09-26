@@ -743,15 +743,16 @@ router.post('/changeUomStat',(req,res)=>{
 
 // Customer -------------------------------------
 router.get('/customer', (req,res)=>{
-  db.query(`SELECT tblcustomer.intStatus as Stats, tblUser.*,tblcustomer.* from
-    tblUser join tblcustomer on tblUser.intUserID =
-    tblcustomer.intUserID WHERE intStatus != 2`,(err1,results1)=>{
-      if (err1) console.log(err1);
-      res.render('admin-maintain/views/customer', {re: results1});
+  db.query(`SELECT tblcustomer.intStatus as Stats, tblUser.*,tblcustomer.* from tblUser join tblcustomer on tblUser.intUserID = tblcustomer.intUserID WHERE intStatus = 1`,(err1,results1)=>{
+    db.query(`SELECT tblcustomer.intStatus as Stats, tblUser.*,tblcustomer.* from tblUser join tblcustomer on tblUser.intUserID = tblcustomer.intUserID WHERE intStatus = 2`,(err2,results2)=>{  
+    if (err1) console.log(err1);
+      res.render('admin-maintain/views/customer', {re: results1, re2: results2});
 
-
+      console.log(results2);
+    });
   });
 });
+
 
 // Certification --------------------------------
 router.get('/productCertification',(req,res)=>{
