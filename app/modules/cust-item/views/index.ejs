@@ -421,12 +421,12 @@
 <script type="text/javascript">
   $(()=>{
     itemQtyValidate(1,$(`#thisprod_stock span`).text())
-    if (<%=thisInventory[0].discount%>){
+    <% if (thisInventory[0].discount){ %>
       let div = $(`#item-options`);
       div.find('.price').css(`color`,`var(--discount-color)`);
       div.find('.price').append(` <i class="fas fa-tags discount-modal" title="discounted price"></i>`);
       div.find('.discount').html(`<s><%=thisInventory[0].oldPrice%></s> (<%=thisInventory[0].discount%>% off)`);
-    }
+    <% } %>
 
   })
   function itemQtyValidate(qty,stock){

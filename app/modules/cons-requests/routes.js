@@ -11,6 +11,17 @@ router.get('/',(req,res)=>{
       res.render('cons-requests/views/cons-requests',{re: res1, moment: moment})
     }
   })
+});
+
+router.get('/newRequest',(req,res)=>{
+  db.query(`Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID
+    where tblUser.intUserID = "${req.user.intUserID}"`,(err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+        res.render('cons-requests/views/newRequest',{moment: moment, consignor: res1});
+
+      }
+    })
 })
 
 exports.consRequests = router;
