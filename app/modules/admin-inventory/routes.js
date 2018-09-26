@@ -552,7 +552,7 @@ router.post('/searchExpired',(req,res)=>{
 
 router.post('/pullOutItem',(req,res)=>{
 
-  var batch = req.body.o;
+
   var pullOutNo = "1000";
 
   db.beginTransaction(function(err){
@@ -560,7 +560,7 @@ router.post('/pullOutItem',(req,res)=>{
       console.log(err);
     }else{
 
-          db.query(`Select * from tblbatch where intBatchNo = "${batch}" `,(err2,results2,fields2)=>{
+          db.query(`Select * from tblbatch where intBatchNo = "${req.body.batch}" `,(err2,results2,fields2)=>{
             if (err2){db.rollback(function(){console.log(err2)});
             }else{
 
@@ -574,11 +574,11 @@ router.post('/pullOutItem',(req,res)=>{
                       else{
                         pullOutNo = parseInt(results4[0].intPullOutNo) + 1;
                       }
-                        db.query(`Insert into tblstockpullout (intPullOutNo, intBatchNo, intAdminID, intQuantity) values("${pullOutNo}","${batch}","1000",${results2[0].intQuantity})`,(err5,results5,fields5)=>{
+                        db.query(`Insert into tblstockpullout (intPullOutNo, intInventoryNo, intAdminID, intQuantity) values("${pullOutNo}","${results2[0].intInventoryNo}","1000",${results2[0].intQuantity})`,(err5,results5,fields5)=>{
                           if (err5){
                             db.rollback(function(){console.log(err5)});
                           }else{
-                            db.query(`Update tblBatch set intQuantity = 0, intStatus = 0 where intBatchNo = "${batch}"`,(err6,res6,fie6)=>{
+                            db.query(`Update tblBatch set intQuantity = 0, intStatus = 0 where intBatchNo = "${req.body.batch}"`,(err6,res6,fie6)=>{
                               if(err6) db.rollback(function(){console.log(err5)});
                               else{
                                 db.commit(function(e1){
@@ -666,14 +666,11 @@ router.post('/checkExpired',(req,res)=>{
         else{res.send(res1)}
       }
     })
-})
+});
 
-router.get('/pulledOutStocks',(req,res)=>{
 
-  db.query(`Select tblStockPullOut.intQuantity as quantity, tblStockPullOut.*, tblProductInventory.*, tblBatch.*,
-    tblProductList.*, tblUom.*, tblUser.*, tblProductBrand.* from tblStockPullOut join tblBatch on tblStockPullOut.intBatchNo = tblBatch.intBatchNo join tblProductInventory on tblProductInventory.intInventoryNo = tblBatch.intInventoryNo join tblUom on tblProductInventory.intUomNo = tblUom.intUomno join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
-    join tblUser on tblProductInventory.intUserID = tblUser.intUserID join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo`,(err1,results1,fields1)=>{
-    if(err1) console.log(err1);
+
+router.get('/expiredProducts',(req,res)=>{
 
     db.query(`Select * from tblbatch
       join tblproductinventory on tblbatch.intinventoryno = tblproductinventory.intinventoryno
@@ -683,12 +680,39 @@ router.get('/pulledOutStocks',(req,res)=>{
       where ((tblbatch.expirationDate between NOW() and DATE_ADD(NOW(), INTERVAL 14 DAY)) and tblbatch.intStatus = 1) and tblBatch.intQuantity <> 0`,(err2,res2,fie2)=>{
         if(err2) console.log(err2);
 
-        if(!err2) res.render('admin-inventory/views/stockPullOut',{re: results1, moment: moment, all: res2});
+        if(!err2) res.render('admin-inventory/views/expiredProducts',{moment: moment, all: res2});
 
       })
 
-  });
 });
+
+router.get('/pullOutProduct',(req,res)=>{
+  // Select batch
+  db.query(`Select tblBatch.intQuantity as quantity, tblBatch.intStatus as stats, tblBatch.*, tblProductInventory.*, tblProductlist.*, tblProductBrand.*, tblUom.*
+    from tblBatch join tblProductInventory on tblBatch.intInventoryNo = tblProductinventory.intInventoryNo
+    join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
+    join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo
+    join tblUom on tblProductInventory.intUOMno = tblUom.intUOMno
+    where tblBatch.intStatus = 1 and tblBatch.intQuantity <> 0 `,(err1,batch,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+        // select all pullOut
+        db.query(`Select tblStockPullOut.intQuantity as quantity, tblStockPullOut.*, tblProductInventory.*, tblProductBrand.*, tblUom.*
+           from tblStockPullOut join tblProductInventory on tblStockPullOut.intInventoryNo = tblProductInventory.intInventoryNo
+          join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductNo
+          join tblProductBrand on tblProductList.intBrandNo = tblProductBrand.intBrandNo
+          join tblUom on tblProductinventory.intuomno = tbluom.intuomno`,(err2,res2,fie2)=>{
+            if(err2) console.log(err2);
+            else{
+              console.log(res2)
+              res.render('admin-inventory/views/pullOutProducts',{batch: batch, moment: moment, all: res2});
+
+            }
+          })
+
+      }
+    });
+})
 
 router.post('/update',(req,res)=>{
   var transact_no = "1000";
@@ -719,101 +743,132 @@ router.post('/update',(req,res)=>{
 })
 
 router.get('/adjustments',(req,res)=>{
-  db.query(`Select tblAdjustments.intQuantity as qty, tblProductInventory.*, tblProductList.*, tblAdjustments.*, tblAdjustmentTypes.* from tblAdjustments join tblProductInventory on tblAdjustments.intInventoryNo = tblProductInventory.intInventoryNo join tblProductList on tblProductlist.intProductNo = tblProductInventory.intProductNo join tblAdjustmentTypes on tblAdjustmentTypes.intAdjustmentTypeNo = tblAdjustments.intAdjustmentTypeNo`,(err1,res1,fie1)=>{
+  db.query(`Select tblAdjustments.intQuantity as qty, tblProductInventory.*, tblProductList.*, tblAdjustments.* from tblAdjustments
+    join tblProductInventory on tblAdjustments.intInventoryNo = tblProductInventory.intInventoryNo
+    join tblProductList on tblProductlist.intProductNo = tblProductInventory.intProductNo `,(err1,res1,fie1)=>{
     if(err1){console.log(err1)}
     else{
-      db.query(`Select * from tblAdjustmentTypes where intStatus = 1`,(err2,res2,fie2)=>{
-        if(err2) console.log(err2);
-        else{
-          db.query(`Select * from tblProductInventory join tblProductList on tblProductinventory.intProductNo = tblProductList.intProductNo where tblProductlist.intStatus = 1`,(err3,res3,fie3)=>{
-            if(err3) console.log(err3);
-            res.render('admin-inventory/views/adjustments',{all: res1, moment: moment, type: res2, inv: res3});
 
-          });
+      db.query(`Select * from tblProductInventory
+        join tblProductList on tblProductinventory.intProductNo = tblProductList.intProductNo where tblProductlist.intStatus = 1`,(err3,res3,fie3)=>{
+        if(err3) console.log(err3);
+        res.render('admin-inventory/views/adjustments',{all: res1, moment: moment, inv: res3});
 
-        }
-      })
+      });
+
+
+
     }
   });
 });
 
-router.get('/count',(req,res)=>{
-  db.query(`Select * from tblbatch where intInventoryNo = "${req.query.inv}" and intStatus = 1`,(err1,res1,fie1)=>{
+router.get('/count/:inv',(req,res)=>{
+  db.query(`Select * from tblbatch where intInventoryNo = "${req.params.inv}" and intStatus = 1`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
-    db.query(`Select * from tblAdjustmentTypes where intStatus = 1`,(err2,res2,fie2)=>{
-      if(err2) console.log(err2);
-      res.render('admin-inventory/views/batchAdjust',{re: res1, moment: moment, types: res2});
+      console.log(res1)
+      res.render('admin-inventory/views/batchAdjust',{re: res1, moment: moment});
 
-    })
+
   });
 });
 
 router.post('/addBatchAdjust',(req,res)=>{
   var adj = "1000";
+  var transact_no = "1000";
 
   db.beginTransaction(function(e){
-    db.query(`Select * from tblAdjustmentTypes where intAdjustmentTypeNo = "${req.body.types}"`,(err1,res1,fie1)=>{
-      if(err1) console.log(err1);
-      console.log(res1[0]);
       db.query(`Select * from tblAdjustments order by intAdjustmentNo desc limit 1`,(erra,resa,fiea)=>{
         if(erra) console.log(erra);
-
         else{
           if(resa.length == 0){}
           else{ adj = parseInt(resa[0].intAdjustmentNo) + 1}
 
-          // loss
-          if(res1[0].intAdjustmentType == 0){
+          db.query(`Select * from tblInventoryTransactions order by intTransactionID desc limit 1`,(errp,resp,fiep)=>{
+            if(errp) console.log(errp);
+            else{
+              if(resp.length==0){} else{transact_no= parseInt(resp[0].intTransactionID)+1;}
 
-            db.query(`Select * from tblBatch where intBatchNo = "${req.body.batch_no}"`,(err2,res2,fie2)=>{
-              if(err2) console.log(err2);
-              else{
-                if(res2[0].intQuantity == 0 || res2[0].intQuantity < req.body.quantity){ res.send("no");}
-                else{
-                  db.query(`Update tblBatch set intQuantity = intQuantity - ${req.body.quantity} where intBatchNo = ${req.body.batch_no}`,(err3,res3,fie3)=>{
-                    if(err3) console.log(err3);
+              // loss
+              if(req.body.types == 0){
+
+                db.query(`Select * from tblBatch where intBatchNo = "${req.body.batch_no}"`,(err2,res2,fie2)=>{
+                  if(err2) console.log(err2);
+                  else{
+                    if(res2[0].intQuantity == 0 || res2[0].intQuantity < req.body.quantity){ res.send("no");}
                     else{
-
-                      db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentTypeNo, strAdjustmentNote, intAdminID, intQuantity) values ("${adj}", "${res2[0].intInventoryNo}","${req.body.types}","${req.body.details}",1000,${req.body.quantity})`,(errq,resq,fieq)=>{
-                        if(errq) console.log(errq);
+                      db.query(`Update tblBatch set intQuantity = intQuantity - ${req.body.quantity} where intBatchNo = ${req.body.batch_no}`,(err3,res3,fie3)=>{
+                        if(err3) console.log(err3);
                         else{
 
-
-                          db.query(`Update tblProductInventory set intQuantity = intQuantity - ${req.body.quantity} where intInventoryNo = ${res2[0].intInventoryNo}`,(errf,resf,fief)=>{
-                            if(errf) console.log(errf);
+                          db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentType, strAdjustmentNote, intAdminID, intQuantity) values ("${adj}", "${res2[0].intInventoryNo}","${req.body.types}","${req.body.details}",1000,${req.body.quantity})`,(errq,resq,fieq)=>{
+                            if(errq) console.log(errq);
                             else{
-                              db.commit(function(ee){
-                                if(ee) console.log(ee);
-                                else{ res.send("yes");}
-                              })
-                            }
-                          });
 
+                              db.query(`Update tblProductInventory set intQuantity = intQuantity - ${req.body.quantity} where intInventoryNo = ${res2[0].intInventoryNo}`,(errf,resf,fief)=>{
+                                if(errf) console.log(errf);
+                                else{
+
+                                  db.query(`Select * from tblProductInventory where intInventoryNo = ${res2[0].intInventoryNo}`,(aerr,bres,cfie)=>{
+                                    if(aerr) console.log(aerr);
+                                    else{
+                                      db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intUserID, intShelfNo, intCriticalLimit, productSRP, productPrice, strTypeOfChanges)
+                                      values ("${transact_no}", "${res2[0].intInventoryNo}", "1000", ${bres[0].intShelfNo}, ${bres[0].intCriticalLimit}, ${bres[0].productSRP}, ${bres[0].productPrice}, "Loss Stock (- ${req.body.quantity})")`,(err12,res12,fie12)=>{
+                                        if(err12) console.log(err12);
+                                        else{
+                                          db.commit(function(ee){
+                                            if(ee) console.log(ee);
+                                            else{ res.send("yes");}
+                                          })
+                                        }
+                                      })
+                                    }
+                                  })
+
+                                }
+                              });
+
+                            }
+                          })
                         }
                       })
                     }
-                  })
-                }
+                  }
+                })
               }
-            })
-          }
-          // gain
-          else{
-            db.query(`Update tblBatch set intQuantity = intQuantity + ${req.body.quantity} where intBatchNo = ${req.body.batch_no}`,(err4,res4,fie4)=>{
-              if(err4) console.log(err4);
+              // gain
               else{
-                db.query(`Select * from tblBatch where intBatchNo = ${req.body.batch_no}`,(err5,res5,fie5)=>{
-                  if(err5) console.log(err5);
+                db.query(`Update tblBatch set intQuantity = intQuantity + ${req.body.quantity} where intBatchNo = ${req.body.batch_no}`,(err4,res4,fie4)=>{
+                  if(err4) console.log(err4);
                   else{
-                    db.query(`Update tblProductInventory set intQuantity = intQuantity + ${req.body.quantity} where intInventoryNo = "${res5[0].intInventoryNo}"`,(err6,res6,fie6)=>{
-                      if(err6) console.log(err6);
+                    db.query(`Select * from tblBatch where intBatchNo = ${req.body.batch_no}`,(err5,res5,fie5)=>{
+                      if(err5) console.log(err5);
                       else{
-                        db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentTypeNo, strAdjustmentNote, intAdminID, intQuantity) values ("${adj}", "${res5[0].intInventoryNo}","${req.body.type}","${req.body.details}",1000,${req.body.quantity})`,(errq,resq,fieq)=>{
-                          if(errq) console.log(errq);
+                        db.query(`Update tblProductInventory set intQuantity = intQuantity + ${req.body.quantity} where intInventoryNo = "${res5[0].intInventoryNo}"`,(err6,res6,fie6)=>{
+                          if(err6) console.log(err6);
                           else{
-                            db.commit(function(eew){
-                              if(eew) console.log(eew);
-                              else{ res.send("yes");}
+                            db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentType, strAdjustmentNote, intAdminID, intQuantity) values ("${adj}", "${res5[0].intInventoryNo}","${req.body.types}","${req.body.details}",1000,${req.body.quantity})`,(errq,resq,fieq)=>{
+                              if(errq) console.log(errq);
+                              else{
+                                db.query(`Select * from tblProductInventory where intInventoryNo = "${res5[0].intInventoryNo}"`,(err14,res14,fie14)=>{
+                                  if(err14) console.log(err14);
+                                  else{
+
+                                    db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intUserID, intShelfNo, intCriticalLimit, productSRP, productPrice, strTypeOfChanges)
+                                    values ("${transact_no}", "${res5[0].intInventoryNo}", "1000", ${res14[0].intShelfNo}, ${res14[0].intCriticalLimit}, ${res14[0].productSRP}, ${res14[0].productPrice}, "Gain Stock (+ ${req.body.quantity})")`,(err15,res15,fie15)=>{
+                                      if(err15) console.log(err15);
+                                      else{
+                                        db.commit(function(eew){
+                                          if(eew) console.log(eew);
+                                          else{ res.send("yes");}
+                                        })
+                                      }
+                                    })
+
+
+                                  }
+                                })
+
+                              }
                             })
                           }
                         })
@@ -822,16 +877,20 @@ router.post('/addBatchAdjust',(req,res)=>{
                   }
                 })
               }
-            })
-          }
+
+            }
+          })
         }
+
       })
-    })
+
   })
 });
 
 router.post('/getBarcode',(req,res)=>{
-  db.query(`Select * from tblProductInventory join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductNo where tblProductInventory.strBarcode = "${req.body.o}"`,(err1,res1,fie1)=>{
+  db.query(`Select * from tblProductInventory
+    join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductNo
+     where tblProductInventory.strBarcode = "${req.body.o}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{
       if(res1==null||res1==undefined){res.send("no");} else if(res1.length==0){res.send("no")}
@@ -920,9 +979,6 @@ router.post('/addAdjustment',(req,res)=>{
                                         }
                                       }
                                     });
-
-
-
                                   }
                                 });
                               }
@@ -993,6 +1049,396 @@ router.post('/updatePrice',(req,res)=>{
     }
   })
 })
+
+router.post('/checkQuantity',(req,res)=>{
+  db.query(`Select * from tblBatch where intBatchNo = "${req.body.batch}" and intQuantity >= ${req.body.quantity}`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      if(res1.length==0){ res.send("no")}
+      else{ res.send("yes")}
+    }
+  })
+});
+
+router.post('/singlePullOut/:id',(req,res)=>{
+  var pullout_no = "1000";
+
+  // with warning
+  if(req.params.id==1){
+
+    db.beginTransaction(function(err){
+      if(err) console.log(err);
+      else{
+        db.query(`Select * from tblStockPullOut order by intPullOutNo desc limit 1`,(err1,res1,fie1)=>{
+          if(err1) console.log(err1);
+          else{
+            if(res1.length==0){} else{ pullout_no = parseInt(res1[0].intPullOutNo) + 1;}
+
+            db.query(`Select * from tblBatch where intBatchNo = "${req.body.batch}" and intQuantity >= ${req.body.quantity}`,(err2,res2,fie2)=>{
+              if(err2){ console.log(err2); res.send("no")}
+              else{
+
+                db.query(`Select * from tblProductInventory where intInventoryNo = "${res2[0].intInventoryNo}"
+                  and (intQuantity - intReservedItems) >= ${req.body.quantity}`,(err3,res3,fie3)=>{
+                    if(err3) console.log(err3);
+                    else{
+                      if(res3.length==0){ res.send("reserved")}
+                      else{
+                        db.query(`Update tblProductInventory set intQuantity = intQuantity - ${req.body.quantity} where intInventoryNo = ${res2[0].intInventoryNo}
+                         and (intQuantity - intReservedItems) >= ${req.body.quantity} `,(err4,res4,fie4)=>{
+                           if(err4) console.log(err4);
+                           else{
+                             db.query(`Update tblBatch set intQuantity = intQuantity - ${req.body.quantity} where intBatchNo = "${req.body.batch}" and intQuantity >= ${req.body.quantity}`,(err5,res5,fie5)=>{
+                               if(err5) console.log(err5);
+                               else{
+                                 db.query(`Insert into (intPullOutNo, intInventoryNo, intAdminID, intQuantity)
+                                 values("${pullout_no}", "${res2[0].intInventoryNo}", "1000",  ${req.body.quantity})`,(err6,res6,fie6)=>{
+                                   if(err6) console.log(err6);
+                                   else{
+                                     db.commit(function(erra){
+                                       if(erra) console.log(erra);
+                                       else{
+                                         res.send("yes");
+                                       }
+                                     })
+                                   }
+                                 })
+
+                               }
+                             })
+                           }
+                         })
+                      }
+                    }
+                  })
+              }
+            })
+          }
+        })
+      }
+    });
+
+  // without warning
+  }else{
+    db.beginTransaction(function(err){
+      if(err) console.log(err);
+      else{
+        db.query(`Select * from tblStockPullOut order by intPullOutNo desc limit 1`,(err1,res1,fie1)=>{
+          if(err1) console.log(err1);
+          else{
+            if(res1.length==0){} else{ pullout_no = parseInt(res1[0].intPullOutNo) + 1;}
+
+            db.query(`Select * from tblBatch where intBatchNo = "${req.body.batch}" and intQuantity >= ${req.body.quantity}`,(err2,res2,fie2)=>{
+              if(err2){ console.log(err2); }
+              else{
+
+                db.query(`Select * from tblProductInventory where intInventoryNo = "${res2[0].intInventoryNo}"`,(err3,res3,fie3)=>{
+                    if(err3) console.log(err3);
+                    else{
+                      if(res3.length==0){ }
+                      else{
+                        db.query(`Update tblProductInventory set intQuantity = intQuantity - ${req.body.quantity} where intInventoryNo = ${res2[0].intInventoryNo}`,(err4,res4,fie4)=>{
+                           if(err4) console.log(err4);
+                           else{
+                             db.query(`Update tblBatch set intQuantity = intQuantity - ${req.body.quantity} where intBatchNo = "${req.body.batch}" and intQuantity >= ${req.body.quantity}`,(err5,res5,fie5)=>{
+                               if(err5) console.log(err5);
+                               else{
+                                 db.query(`Insert into tblStockPullOut (intPullOutNo, intInventoryNo, intAdminID, intQuantity)
+                                 values ("${pullout_no}", "${res2[0].intInventoryNo}", "1000", ${req.body.quantity})`,(err6,res6,fie6)=>{
+                                   if(err6) console.log(err6);
+                                   else{
+                                     db.commit(function(erra){
+                                       if(erra) console.log(erra);
+                                       else{
+                                         res.send("yes");
+                                       }
+                                     })
+                                   }
+                                 })
+
+
+                               }
+                             })
+                           }
+                         })
+                      }
+                    }
+                  })
+              }
+            })
+          }
+        })
+      }
+    });
+
+  }
+
+
+});
+
+
+// Packages -----------------------
+router.get('/package', (req,res)=>{
+  db.query(`Select * from tblpackage`,(err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+    db.query(`Select * from tblpackage where dateDue <= CURDATE()`,(err2,res2,fie2)=>{
+      if(err2) console.log(err2);
+      else{
+        res.render('admin-inventory/views/package',{re: results1, moment: moment, due: res2});
+      }
+    })
+  });
+});
+
+router.post('/packageGetBarcode',(req,res)=>{
+  db.query(`Select (intQuantity - intReservedItems) as totalQty, tblProductInventory.*, tblProductlist.*, tblUom.*, tblProductBrand.*
+  from tblproductInventory
+    join tblproductlist on tblproductinventory.intproductno = tblproductlist.intproductno
+  join tbluom on tbluom.intUomNo = tblproductInventory.intUomNo
+  join tblProductBrand on tblProductList.intBrandno = tblProductBrand.intBrandNo
+  where strBarcode = "${req.body.o}"`,(err1,inventory,fields1)=>{
+    if(err1){
+      console.log(err1); res.send("error");
+    }
+    if(!err1){
+      if(inventory == null|| inventory == undefined){res.send("error")}
+      else if(inventory.length == 0){res.send("error")}
+      else{ res.json({inventory: inventory})}
+
+    }
+  });
+});
+
+router.post('/addPackage',(req,res)=>{
+  db.query(`Select * from tblpackage order by intPackageNo desc limit 1`,(err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+
+    var num = "1000";
+    if (results1 == null || results1 == undefined){
+
+    }else if (results1.length == 0){
+
+    }else{
+      num = parseInt(results1[0].intPackageNo) + 1;
+    }
+
+    db.query(`Insert into tblpackage (intPackageNo, intAdminID, strPackageName, strPackageDescription, packagePrice, intQuantity, dateDue) values ("${num}","1000","${req.body.pname}","${req.body.pdesc}",${req.body.pprice}, ${req.body.pquantity}, "${req.body.pdue}")`,(err2,results2,fields2)=>{
+      if (err2) console.log(err2);
+      if (!err2) res.send("yes");
+    });
+  })
+});
+
+router.get('/packageList',(req,res)=>{
+  var pack = req.query.package;
+
+  db.query(`Select * from tblpackagelist
+    join tblproductinventory on tblpackagelist.intinventoryno = tblproductinventory.intinventoryno
+    join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
+    join tbluom on tblproductinventory.intuomno = tbluom.intuomno
+    join tbluser on tblproductinventory.intuserid = tbluser.intuserid
+    where tblpackagelist.intpackageno = "${pack}"`,(err1,results1,fields1)=>{
+      if (err1) console.log(err1);
+
+      db.query(`Select * from tblPackage where intPackageNo = ${pack}`,(err2,results2,fields2)=>{
+        if(err2) console.log(err2);
+
+        res.render('admin-inventory/views/packagelist',{re:results1, moment: moment, package: pack, quantity: results2[0].intQuantity});
+      });
+
+
+    });
+});
+
+router.post('/addPackageList',(req,res)=>{
+  var no = "1000";
+
+  db.beginTransaction(function(err){
+    if(err){db.rollback(function(){console.log(err); res.send("error");})}
+    else{
+      db.query(`Select * from tblPackageList order by intpackagelistno desc limit 1`,(err1,results1,fields1)=>{
+        if(err1){db.rollback(function(){console.log(err1); res.send("error");})}
+        if(!err1){
+          if(results1==null||results1==undefined){} else if(results1.length==0){}
+          else{
+            no = parseInt(results1[0].intPackageListNo) + 1;
+          }
+
+          db.query(`Insert into tblPackageList (intPackageListNo, intInventoryNo, intPackageNo, intProductQuantity) values ("${no}","${req.body.inventory}","${req.body.package}","${req.body.quantity}")`,(err2,results2,fields2)=>{
+            if(err2){db.rollback(function(){console.log(err2); res.send("error");})}
+
+            db.query(`Update tblPackage set intQuantity = ${req.body.package_quantity} where intPackageNo = "${req.body.package}"`,(err3,res3,fie3)=>{
+              if(err3) {db.rollback(function(){console.log(err3); res.send("error");})}
+
+              db.query(`Update tblProductInventory set intQuantity = intQuantity - (${req.body.package_quantity} * ${req.body.quantity}) where intInventoryNo = "${req.body.inventory}"`,(err4,res4,fie4)=>{
+                if(err4) {db.rollback(function(){console.log(err4); res.send("error");})}
+                else{
+                  db.query(`SELECT * FROM tblbatch where intinventoryno = "${req.body.inventory}"  order by created_at`,(err5,batch,fie5)=>{
+                    if(err5) {db.rollback(function(){console.log(err5); res.send("error");})}
+                    else{
+                      var remaining = req.body.package_quantity * req.body.quantity;
+                      for(var a in batch){
+                        if(remaining == 0){
+                          break;
+
+                        }
+                        else if(batch[a].intQuantity < remaining || batch[a].intQuantity == remaining){
+                          let newValue = 0;
+                          // remaining -= batch[a].intQuantity;
+                          // console.log('newValue: '+newValue);
+                          // console.log('remaining: '+remaining);
+                          db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(e4,r4,f4)=>{
+                            if(e4)console.log(e4);
+                          });
+
+                        }
+                        else{
+                          let newValue = batch[a].intQuantity - remaining;
+                          remaining = 0;
+                          // console.log('newValue: '+newValue);
+                          // console.log('remaining: '+remaining);
+                          db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(e5,r5,f5)=>{
+                            if(e5)console.log(e5);
+                          });
+                        }
+                      }
+                      com(req,res);
+                      function com(req,res){
+                        db.commit(function(e){
+                          if(e){db.rollback(function(){console.log(e); res.send("error");})}
+                          else{
+                            res.send("success");
+
+                          }
+                        })
+                      }
+
+
+                    }
+                  })
+                }
+              });
+            });
+
+          });
+        }
+      });
+    }
+  })
+
+
+});
+
+router.post('/changePackageStat',(req,res)=>{
+  db.query(`Update tblPackage set intStatus = ${req.body.value} where intPackageNo = "${req.body.no}"`,(err2,res2,fie2)=>{
+    if(err2) console.log(err2);
+    res.send("")
+  })
+});
+
+router.post('/editPackage',(req,res)=>{
+  //var d = moment(req.body.date).format('')
+  db.query(`Update tblPackage set strPackageName = "${req.body.name}", strPackageDescription="${req.body.description}", packagePrice=${req.body.price}, dateDue="${req.body.date}" where intPackageNo = "${req.body.no}"`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      res.send("yes")
+    }
+  })
+})
+
+// Discount - Promotion
+
+router.get('/productDiscount',(req,res)=>{
+  db.query(`Select tblProductDiscount.*, tblProductInventory.*, tblProductlist.*, tblUom.*, tblProductDiscount.intStatus as stat from tblProductDiscount join tblProductInventory on tblProductDiscount.intInventoryNo = tblProductInventory.intInventoryNo
+    join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
+    join tblUom on tblUom.intUomno = tblProductInventory.intUomno`, (err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+        db.query(`Select * from tblProductInventory
+          join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
+          join tblUom on tblUom.intUomno = tblProductInventory.intUomno
+          join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo`,(err2,res2,fie2)=>{
+            if(err2) console.log(err2);
+            else{
+              res.render('admin-inventory/views/discount', {list: res1, moment: moment, inventory: res2});
+            }
+          })
+      }
+    })
+});
+
+router.post('/addDiscount',(req,res)=>{
+  var discount_no = "1000", transact_no = "1000";
+
+  db.beginTransaction(function(err){
+    if(err) console.log(err1)
+    else{
+      db.query(`Select * from tblProductDiscount order by intDiscountNo desc limit 1`,(err1,res1,fie1)=>{
+        if(err1) console.log(err1);
+        else{
+          if(res1.length==0){} else{ discount_no = parseInt(res1[0].intDiscountNo) + 1; }
+
+          db.query(`Insert into tblProductDiscount (intDiscountNo, intInventoryNo, discount, strDescription, discountDueDate)
+          values ("${discount_no}", "${req.body.inventory}", ${req.body.discount}, "${req.body.description}", "${req.body.date}")`,(err2,res2,fie2)=>{
+            if(err2) console.log(err2);
+            else{
+              db.query(`Select * from tblInventoryTransactions order by intTransactionID desc limit 1`,(err4,res4,fie4)=>{
+                if(err4) console.log(err4);
+                else{
+                  if(res4.length==0){} else{ transact_no = parseInt(res4[0].intTransactionID) + 1;}
+                  db.query(`Select * from tblProductInventory where intInventoryNo = "${req.body.inventory}"`,(err3,inventory,fie3)=>{
+                    if(err3) console.log(err3);
+                    else{
+                      db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intUserID, intShelfNo, intCriticalLimit, productSRP, productPrice, strTypeOfChanges)
+                      values ("${transact_no}", "${req.body.inventory}", "1000", ${inventory[0].intShelfNo}, ${inventory[0].intCriticalLimit}, ${inventory[0].productSRP}, ${inventory[0].productPrice}, "Discounted ${req.body.discount}% (No: ${discount_no})")`,(err5,res5,fie5)=>{
+                        if(err5) console.log(err5);
+                        else{
+                          db.commit(function(errb){
+                            if(errb) console.log(errb);
+                            else{
+                              res.send("yes");
+                            }
+                          })
+                        }
+                      })
+                    }
+                  })
+                }
+              });
+
+            }
+          })
+        }
+      })
+    }
+  })
+
+});
+
+router.get('/testInventoryCount',(req,res)=>{
+  db.query(`Select SUM(tblBatch.intQuantity) as batchqty, tblProductInventory.intQuantity as invqty, tblProductInventory.intInventoryno as inv, tblProductinventory.*, tblProductlist.*, tblbatch.*
+  from tblProductInventory join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductno
+  join tblBatch on tblProductInventory.intInventoryno = tblbatch.intInventoryNo
+  group by tblproductInventory.intinventoryno `,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      res.render('admin-inventory/views/testInventoryCount',{re: res1});
+
+    }
+  })
+});
+
+router.post('/changeDiscountStat',(req,res)=>{
+
+  db.query(`Update tblProductDiscount set intStatus = ${req.body.value} where intDiscountNo = "${req.body.no}"`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+
+      res.send("");
+    }
+  })
+})
+
 
 
 // <%- include('../../../templates/admin-navbar.ejs') -%>

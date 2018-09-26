@@ -21,8 +21,14 @@ router.get('/limit', (req, res)=>{
 router.get('/modal/:pid', (req, res)=>{
   db.query(`SELECT * FROM tblproductlist
     INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
-	  INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
-    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno
+    INNER JOIN (
+    	SELECT tblproductinventory.intInventoryNo, intProductNo, intUOMno, intSize, (tblproductinventory.intStatus)InvStatus,
+      IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, intQuantity,
+      intReservedItems, strVariant, discount, discountDueDate FROM tblproductinventory
+    	LEFT JOIN (SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1)Disc
+    	ON tblproductinventory.intInventoryNo= Disc.intInventoryNo
+    )Inv ON tblproductlist.intProductNo= Inv.intProductNo
+    INNER JOIN tbluom ON Inv.intUOMno= tbluom.intUOMno
     WHERE tblproductlist.intProductNo= ?`
     , [req.params.pid], (err,results,fields)=>{
     if (err) console.log(err);
@@ -45,11 +51,16 @@ router.get('/modal/:pid', (req, res)=>{
   });
 });
 router.get('/modal-inv/:inv', (req, res)=>{
-  db.query(`SELECT productPrice, (intQuantity - intReservedItems)stock FROM tblproductinventory
-    WHERE intInventoryNo = ?`
+  db.query(`SELECT (intQuantity - intReservedItems)stock, (productPrice)oldPrice, discount, IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice
+    FROM tblproductinventory LEFT JOIN (SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1)Disc
+    ON tblproductinventory.intInventoryNo= Disc.intInventoryNo
+    WHERE tblproductinventory.intInventoryNo = ?`
     , [req.params.inv], (err,results,fields)=>{
     if (err) console.log(err);
-    results[0] ? results[0].productPrice = priceFormat(results[0].productPrice.toFixed(2)): 0;
+    if (results[0]){
+      results[0].productPrice = priceFormat(results[0].productPrice.toFixed(2));
+      results[0].oldPrice = priceFormat(results[0].oldPrice.toFixed(2));
+    }
     res.send({inventory: results[0]});
   });
 });
@@ -66,13 +77,21 @@ router.get('/modal-qty/:action', (req, res)=>{
 router.post('/modal', (req, res)=>{
   db.query(`SELECT * FROM tblproductlist
     INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
-    INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
-    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno WHERE intInventoryNo= ?`
+    INNER JOIN (
+    	SELECT tblproductinventory.intInventoryNo, intProductNo, intUOMno, intSize, (tblproductinventory.intStatus)InvStatus, (productPrice)oldPrice,
+        IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, intQuantity, intReservedItems, strVariant,
+        discount, discountDueDate, SUM(tblproductinventory.intQuantity - tblproductinventory.intReservedItems)stock FROM tblproductinventory
+    	LEFT JOIN (SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1)Disc
+    	ON tblproductinventory.intInventoryNo= Disc.intInventoryNo
+    	GROUP BY tblproductinventory.intInventoryNo
+    )Inv ON tblproductlist.intProductNo= Inv.intProductNo
+    INNER JOIN tbluom ON Inv.intUOMno= tbluom.intUOMno WHERE intInventoryNo= ?`
     , [req.body.inv], (err,results,fields)=>{
     if (err) console.log(err);
     let curSize = sizeString(results[0])
 
     results[0].productPrice = priceFormat(results[0].productPrice.toFixed(2));
+    results[0].oldPrice = priceFormat(results[0].oldPrice.toFixed(2));
     let this_item = {
       inv: req.body.inv,
       id: results[0].intProductNo,
@@ -82,6 +101,8 @@ router.post('/modal', (req, res)=>{
       img: `/assets/images/products/${results[0].strProductPicture}`,
       curSize: curSize,
       curPrice: results[0].productPrice,
+      oldPrice: results[0].oldPrice,
+      discount: results[0].discount,
       curQty: parseInt(req.body.qty),
       type: 1
     }
@@ -121,21 +142,16 @@ router.post('/modal', (req, res)=>{
 router.get('/list', (req, res)=>{
   // req.session.cart = null;
   req.session.cart ? 0 : req.session.cart = [];
-  // req.session.cart.forEach((data,i)=>{
-  //   data.curQty == 0 ? req.session.cart.splice(i,1) : 0
-  // })
-  modal = req.session.modal_cart;
-  if (modal){
-    req.session.modal_cart.curSize = modal.sizes[0][0];
-    req.session.modal_cart.curPrice = modal.sizes[0][1];
-    req.session.modal_cart.curQty = 1;
-    req.session.item_qty = 1;
-  }
   function cartLimitLoop(i){
     let cart = req.session.cart, stringquery1, bodyarray1;
     if (cart[i].type == 1){
-      stringquery1 = `SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`;
-      bodyarray1 = [req.session.cart[i].inv]
+      stringquery1 = `SELECT (tblproductinventory.intStatus)InvStatus, (productPrice)oldPrice,
+      IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice,
+      discount, SUM(tblproductinventory.intQuantity - tblproductinventory.intReservedItems)stock FROM tblproductinventory
+      LEFT JOIN (SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1)Disc ON tblproductinventory.intInventoryNo= Disc.intInventoryNo
+      WHERE tblproductinventory.intInventoryNo= ? GROUP BY tblproductinventory.intInventoryNo LIMIT 1`;
+      bodyarray1 = [req.session.cart[i].inv];
+      stringquery2 = `SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`;
     }
     else{
       stringquery1 = `SELECT (intQuantity - intReservedItems)stock FROM tblpackage WHERE intPackageNo= ?`;
@@ -143,11 +159,23 @@ router.get('/list', (req, res)=>{
     }
     db.query(stringquery1, bodyarray1, (err, results, fields) => {
       if (err) console.log(err);
+      if (cart[i].type == 1){
+        req.session.cart[i].discount= results[0].discount;
+        req.session.cart[i].oldPrice= priceFormat(results[0].oldPrice.toFixed(2));
+      }
       req.session.cart[i].limit = results[0].stock > quantLimit ?
         quantLimit : results[0].stock;
       req.session.cart[i].curQty > req.session.cart[i].limit ?
         req.session.cart[i].curQty = req.session.cart[i].limit : 0;
-      results[0].stock < 1 ? req.session.cart.splice(i,1) : 0
+      results[0].stock < 1 ? req.session.cart.splice(i,1) : 0;
+
+      cart[i] ?
+        cart[i].type == 1 ?
+          results[0].InvStatus ?
+            0 : req.session.cart.splice(i,1)
+          : 0
+        : 0
+
       ++i;
       if (cart.length > i){
         cartLimitLoop(i);
@@ -236,9 +264,10 @@ router.get('/list/total/:type', (req, res)=>{
 });
 
 router.get('/item-inv/:inv', (req, res)=>{
-  db.query(`SELECT productPrice, (intQuantity - intReservedItems)stock FROM tblproductinventory
-    WHERE intInventoryNo = ?`
-    , [req.params.inv], (err,results,fields)=>{
+  db.query(`SELECT (intQuantity - intReservedItems)stock, (productPrice)oldPrice, discount, IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice
+    FROM tblproductinventory LEFT JOIN (SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1)Disc
+    ON tblproductinventory.intInventoryNo= Disc.intInventoryNo WHERE tblproductinventory.intInventoryNo = ?`,
+    [req.params.inv], (err,results,fields)=>{
     if (err) console.log(err);
     results[0] ? results[0].productPrice = priceFormat(results[0].productPrice.toFixed(2)): 0;
     res.send({inventory: results[0]});

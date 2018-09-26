@@ -65,13 +65,18 @@ router.get('/assessOrder',(req,res)=>{
   var orderno = req.query.order;
 
   // Order list
-  db.query(`Select tblorderdetails.intQuantity as quantity, tblOrder.*, tblUOM.*, tblorderdetails.*,
-    tblproductinventory.*, tblproductlist.* from tblOrder
+  db.query(`(Select tblOrderDetails.intOrderDetailsNo, tblOrderDetails.intOrderNo, tblOrderDetails.intInventoryNo, tblOrderDetails.intQuantity, tblOrderDetails.purchasePrice, tblOrderDetails.discount, tblOrderDetails.intProductType,
+    CONCAT(tblProductList.strProductName, tblProductInventory.strVariant,tblProductInventory.intSize, tblUom.strUnitname) as productName from tblOrder
     join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
     join tblproductinventory on tblproductinventory.intinventoryno = tblorderdetails.intinventoryno
     join tblUOM on tblProductinventory.intUOMno = tblUom.intUOMno
     join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
-    where tblOrder.intOrderno = "${orderno}"`,(err1,results1,fields1)=>{
+    where tblOrder.intOrderno = "${orderno}" and tblOrderdetails.intProductType = 1 )
+
+    UNION
+
+    ( Select tblOrderDetails.intOrderDetailsNo, tblOrderDetails.intOrderNo, tblOrderDetails.intInventoryNo, tblOrderDetails.intQuantity,  tblOrderDetails.purchasePrice, tblOrderDetails.discount, tblOrderDetails.intProductType, CONCAT(tblPackage.strPackageName) as productName from tblOrder join tblOrderDetails on tblOrder.intOrderNo = tblOrderDetails.intOrderNo join tblPackage on tblOrderDetails.intInventoryNo = tblPackage.intPackageNo
+    where tblOrder.intOrderNo = "${orderno}" and tblOrderDetails.intProductType = 2)`,(err1,results1,fields1)=>{
       if (err1) console.log(err1);
 
 
@@ -83,10 +88,9 @@ router.get('/assessOrder',(req,res)=>{
         if (err2) console.log(err2);
 
       // total
-      db.query(`Select SUM(tblorderdetails.intquantity * tblorderdetails.purchaseprice) as
+      db.query(`Select SUM((tblorderdetails.intquantity * tblorderdetails.purchaseprice) - ((tblorderdetails.intquantity * tblorderdetails.purchaseprice) * (tblOrderDetails.discount / 100)))
         totalAll from tblOrder
         join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
-        join tblproductinventory on tblorderdetails.intinventoryno = tblproductinventory.intinventoryno
         where tblOrder.intOrderno = "${orderno}"`, (err3,results3,fields3)=>{
           if (err3) console.log(err3);
 
@@ -101,7 +105,13 @@ router.get('/assessOrder',(req,res)=>{
               if (results4[0] == null || results4[0] == undefined){} else if(results4[0].total == ""){}
               else{ this_total = results4[0].total }
 
-              res.render('admin-custOrder/views/assessOrder', {orderno: orderno, orderlist: results1, customer: results2, moment: moment, total: results3[0].totalAll, payment: this_total});
+              db.query(`Select * from tblOrderHistory where intOrderNo = ${orderno} order by intOrderHistoryNo desc limit 3`,(err5,res5,fie5)=>{
+                if(err5) console.log(err5);
+                else{
+                  res.render('admin-custOrder/views/assessOrder', {orderno: orderno, orderlist: results1, customer: results2, moment: moment, total: results3[0].totalAll, payment: this_total, history: res5});
+
+                }
+              })
 
             });
 
@@ -143,70 +153,98 @@ function processing(req,res){
 } // end of processing
 
 
+function forPackage(req,res){
+
+}
+
 function shipped(req,res){
 var c = 0;
   // update product inventory
   db.query(`Select * from tblorderdetails where intOrderNo = "${req.body.orderNo}"`,(errz,orders,fieldsz)=>{
     if(errz){db.rollback(function(){console.log(errz)})}
     else{
+
       async.eachSeries(orders,function(data,callback){
-        // check if stock is in Quantity
-        db.query(`Select * from tblProductinventory where intInventoryNo = "${orders[c].intInventoryNo}" and intQuantity  >= ${orders[c].intQuantity}`,(errw,resw,fieldsw)=>{
-          if(errw){db.rollback(function(){console.log(errw); res.send("no")})}
-          else{
-            if(resw==undefined||resw==null){db.rollback(function(){ res.send("false")})}
-            else if(resw.length==0){db.rollback(function(){ res.send("false")})}
+
+        // if ordinary product
+        if(orders[c].intProductType == 1){
+
+          // check if stock is in Quantity
+          db.query(`Select * from tblProductinventory where intInventoryNo = "${orders[c].intInventoryNo}" and intQuantity  >= ${orders[c].intQuantity}`,(errw,resw,fieldsw)=>{
+            if(errw){db.rollback(function(){console.log(errw); res.send("no")})}
             else{
-              // Update inventory (less quantity , reserved items )
-              db.query(`Update tblproductinventory set intQuantity = intQuantity - ${orders[c].intQuantity}, intReservedItems = intReservedItems - ${orders[c].intQuantity}
-                where (tblproductinventory.intInventoryNo = "${orders[c].intInventoryNo}") and (intQuantity  >= ${orders[c].intQuantity})`,(errx,resultsx,fieldsx)=>{
-                  if(errx){db.rollback(function(){console.log(errx); res.send("no");})}
+              if(resw==undefined||resw==null){db.rollback(function(){ res.send("false")})}
+              else if(resw.length==0){db.rollback(function(){ res.send("false")})}
+              else{
+                // Update inventory (less quantity , reserved items )
+                db.query(`Update tblproductinventory set intQuantity = intQuantity - ${orders[c].intQuantity}, intReservedItems = intReservedItems - ${orders[c].intQuantity}
+                  where (tblproductinventory.intInventoryNo = "${orders[c].intInventoryNo}") and (intQuantity  >= ${orders[c].intQuantity})`,(errx,resultsx,fieldsx)=>{
+                    if(errx){db.rollback(function(){console.log(errx); res.send("no");})}
 
-                  else{
-                    var remaining = orders[c].intQuantity; // 22
-                    var remaining2 = orders[c].intQuantity;
+                    // batch deduct
+                    else{
+                      var remaining = orders[c].intQuantity; // 22
+                      var remaining2 = orders[c].intQuantity;
 
+                        db.query(`Select * from tblBatch where intInventoryNo = "${orders[c].intInventoryNo}" order by created_at`,(e3,batch,f3)=>{
+                          if(e3) console.log(e3);
 
-                      db.query(`Select * from tblBatch where intInventoryNo = "${orders[c].intInventoryNo}" order by created_at`,(e3,batch,f3)=>{
-                        if(e3) console.log(e3);
+                          for(var a in batch){
+                            if(remaining == 0){
+                              break;
+                            }
+                            else if(batch[a].intQuantity < remaining || batch[a].intQuantity == remaining){
+                              let newValue = 0;
+                              remaining -= batch[a].intQuantity;
+                              console.log('newValue: '+newValue);
+                              console.log('remaining: '+remaining);
+                              db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(e4,r4,f4)=>{
+                                if(e4)console.log(e4);
+                              });
 
-                        for(var a in batch){
-                          if(remaining == 0){
-                            break;
+                            }
+                            else{
+                              let newValue = batch[a].intQuantity - remaining;
+                              remaining = 0;
+                              console.log('newValue: '+newValue);
+                              console.log('remaining: '+remaining);
+                              db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(e5,r5,f5)=>{
+                                if(e5)console.log(e5);
+                              });
+                            }
                           }
-                          else if(batch[a].intQuantity < remaining || batch[a].intQuantity == remaining){
-                            let newValue = 0;
-                            remaining -= batch[a].intQuantity;
-                            console.log('newValue: '+newValue);
-                            console.log('remaining: '+remaining);
-                            db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(e4,r4,f4)=>{
-                              if(e4)console.log(e4);
-                            });
-
-                          }
-                          else{
-                            let newValue = batch[a].intQuantity - remaining;
-                            remaining = 0;
-                            console.log('newValue: '+newValue);
-                            console.log('remaining: '+remaining);
-                            db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(e5,r5,f5)=>{
-                              if(e5)console.log(e5);
-                            });
-                          }
-                        }
-
-
-                          c++;
-                          callback();
-
-
-                      })
-
-                  }
-                });
+                            c++;
+                            callback();
+                        })
+                    }
+                  });
+              }
             }
-          }
-        });
+          });
+
+        } // end of ordinary product
+
+        // if package product
+        else{
+          // check if stock is in quantity
+          db.query(`Select * from tblPackage where intPackageNo = "${orders[c].intInventoryNo}" and intQuantity >= ${orders[c].intQuantity}`,(errw,resw,fiew)=>{
+            if(errw) {console.log(errw); res.send("no")}
+            else{
+              if(resw==undefined||resw==null){res.send("false")} else if(resw.length==0){res.send("false")}
+              else{
+                // Update package (less quantity, reserved items)
+                db.query(`Update tblPackage set intQuantity = intQuantity - ${orders[c].intQuantity}, intReservedItems = intReservedItems - ${orders[c].intQuantity}
+                  where (intPackageNo = "${orders[c].intInventoryNo}") and (intQuantity  >= ${orders[c].intQuantity})`,(errx,resx,fiex)=>{
+                    if(errx) {console.log(errx); res.send("no");}
+                    else{
+                      c++;
+                      callback();
+                    }
+                  })
+              }
+            }
+          })
+        } // end of package product
 
 
       },function(erry,resultsy){
@@ -328,8 +366,8 @@ router.post('/assessOrder',(req,res)=>{
     if(err){ console.log(err);}
     else{
       // Update order status
-      db.query(`Update tblOrder set intStatus = ${req.body.orderStatus}, strShippingMethod =
-        "${req.body.shippingMethod}", strCourier = "${req.body.courier}", intPaymentStatus = ${req.body.paymentStatus} where intOrderNo = "${req.body.orderNo}" `, (err1,results1,fields1)=>{
+      db.query(`Update tblOrder set intStatus = ${req.body.orderStatus}, strShippingMethod ="${req.body.shippingMethod}",
+       strCourier = "${req.body.courier}", intPaymentStatus = ${req.body.paymentStatus} where intOrderNo = "${req.body.orderNo}" `, (err1,results1,fields1)=>{
           if(err1){db.rollback(function(){console.log(err1); res.send("no")})}
           else{
             var historynum = 1000, messagenum = 0;

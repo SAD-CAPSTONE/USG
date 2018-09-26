@@ -1,7 +1,7 @@
 <%- include('../../../templates/navbar.ejs') -%>
 <%- include('../../../templates/modals/cart-modal.ejs') -%>
 <!--  -->
-<link rel="stylesheet" href="/customer-assets/scripts/bar-rating/dist/themes/fontawesome-stars-o.css">
+<link rel="stylesheet" href="/customer-assets/scripts/bar-rating/dist/themes/css-stars.css">
 <style>
   /* input[type=number]::-webkit-outer-spin-button,
   input[type=number]::-webkit-inner-spin-button {
@@ -22,12 +22,16 @@
   .x-scrolling-div .simplebar-scroll-content {
     overflow-y: hidden !important;
   }
-  .br-theme-fontawesome-stars-o .br-widget a {
+  .br-theme-css-stars .br-widget a {
     font: normal normal normal 30px/1 FontAwesome;
-    margin-right: 4px;
   }
   .br-widget {
+    width: 115;
+    margin: auto;
     margin-bottom: 4px;
+  }
+  #item-review-pane .fa-star, #item-review-pane .fa-star-half-alt {
+    margin-right: -2.5px;
   }
 
 </style>
@@ -53,9 +57,9 @@
           rating = thisProduct.aveRating;
           for(i=0; i<5; i++){
             if (rating < 1 && rating >= 0.5) {
-            %> <i class="fa fa-star-half-o"></i> <%
+            %> <i class="fas fa-star-half-alt"></i> <%
             } else if (rating < 0.5) {
-            %> <i class="fa fa-star-o"></i> <%
+            %> <i class="far fa-star"></i> <%
             } else {
             %> <i class="fa fa-star"></i> <%
             }
@@ -102,23 +106,6 @@
                 <input id="thisprod_id" type="text" value="<%= thisProduct.intProductNo%>" hidden />
               </div>
               <div>
-                <!-- <div id="radio-container" class="fl-l">
-                  <% thisInventory.forEach((inv, i)=>{ %>
-                    <div class="form-check radio-div">
-                      <input class="prod_price" type="text" value="<%= inv.productPrice%>" hidden />
-                      <input class="prod_stock" type="text" value="<%= inv.stock%>" hidden />
-                      <% if(i==0){ %>
-                        <input id="<%= inv.intInventoryNo%>" class="form-check-input sizes-radio" type="radio" name="invSizes" value="<%= inv.intInventoryNo%>" checked>
-                      <% }else{ %>
-                        <input id="<%= inv.intInventoryNo%>" class="form-check-input sizes-radio" type="radio" name="invSizes" value="<%= inv.intInventoryNo%>">
-                      <% } %>
-                      <label class="form-check-label" for="<%= inv.intInventoryNo%>">
-                        <%= inv.intSize%><%= inv.strUnitName%>
-                      </label>
-                    </div>
-                  <% }) %>
-                </div> -->
-                <!-- <div id="item-price" class="fl-r pos-relative"></div> -->
                 <select class="select-size" name="">
                   <% thisInventory.forEach((inv, i)=>{ %>
                     <% if(i==0){ %>
@@ -136,7 +123,8 @@
                     <% } %>
                   <% }) %>
                 </select>
-                <p id="thisprod_price" class="m-0 price-symbol"><%= thisInventory[0].productPrice%></p>
+                <p class="discount price-symbol text-muted" hide='hide'></p>
+                <p id="thisprod_price" class="m-0 price-symbol price"><%= thisInventory[0].productPrice%></p>
                 <% if(thisInventory[0].stock > 0){ %>
                   <small id="thisprod_stock" class="text-muted">
                     <i class="limit-info fa fa-info-circle" title="Maximum of 0 of the same product variation per order"></i>
@@ -172,7 +160,7 @@
               </div>
 
               <div class="card-desc">
-                <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
+                <p class="card-title" title="<%=prod.strBrand%> <%=prod.strProductName%>"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
                 <p class="card-price price-symbol">
                   <% if(prod.minPrice == prod.maxPrice){ %>
                     <%= prod.minPrice %>
@@ -180,6 +168,11 @@
                     <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
                   <% } %>
                 </p>
+                <% if(prod.maxDisc){ %>
+                  <small class="card-oldprice text-muted">
+                    <span><i class="fas fa-tags"></i> upto <%= prod.maxDisc %>% off <br>
+                  </small>
+                <% } %>
                 <!-- <small class="card-oldprice text-muted">
                   <span><s class="price-symbol">0</s></span> (-0%)<br>
                 </small> -->
@@ -188,9 +181,9 @@
                   rating = prod.aveRating;
                   for(i=0; i<5; i++){
                     if (rating < 1 && rating >= 0.5) {
-                    %> <i class="fa fa-star-half-o"></i> <%
+                    %> <i class="fas fa-star-half-alt"></i> <%
                     } else if (rating < 0.5) {
-                    %> <i class="fa fa-star-o"></i> <%
+                    %> <i class="far fa-star"></i> <%
                     } else {
                     %> <i class="fa fa-star"></i> <%
                     }
@@ -219,7 +212,7 @@
               </div>
 
               <div class="card-desc">
-                <p class="card-title"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
+                <p class="card-title" title="<%=prod.strBrand%> <%=prod.strProductName%>"><span class="text-brand"><%= prod.strBrand%></span> <%= prod.strProductName%></p>
                 <p class="card-price price-symbol">
                   <% if(prod.minPrice == prod.maxPrice){ %>
                     <%= prod.minPrice %>
@@ -227,6 +220,11 @@
                     <%= prod.minPrice %><span class="text-muted fs-08em"> - <%= prod.maxPrice %></span>
                   <% } %>
                 </p>
+                <% if(prod.maxDisc){ %>
+                  <small class="card-oldprice text-muted">
+                    <span><i class="fas fa-tags"></i> upto <%= prod.maxDisc %>% off <br>
+                  </small>
+                <% } %>
                 <!-- <small class="card-oldprice text-muted">
                   <span><s class="price-symbol">0</s></span> (-0%)<br>
                 </small> -->
@@ -235,9 +233,9 @@
                   rating = prod.aveRating;
                   for(i=0; i<5; i++){
                     if (rating < 1 && rating >= 0.5) {
-                    %> <i class="fa fa-star-half-o"></i> <%
+                    %> <i class="fas fa-star-half-alt"></i> <%
                     } else if (rating < 0.5) {
-                    %> <i class="fa fa-star-o"></i> <%
+                    %> <i class="far fa-star"></i> <%
                     } else {
                     %> <i class="fa fa-star"></i> <%
                     }
@@ -264,9 +262,9 @@
             rating = thisProduct.aveRating;
             for(i=0; i<5; i++){
               if (rating < 1 && rating >= 0.5) {
-              %> <i class="fa fa-star-half-o"></i> <%
+              %> <i class="fas fa-star-half-alt"></i> <%
               } else if (rating < 0.5) {
-              %> <i class="fa fa-star-o"></i> <%
+              %> <i class="far fa-star"></i> <%
               } else {
               %> <i class="fa fa-star"></i> <%
               }
@@ -282,7 +280,7 @@
                 if (i > j){ %>
                   <li class="inline"><i class="fa fa-star"></i></li>
               <% }else{ %>
-                  <li class="inline"><i class="fa fa-star-o"></i></li>
+                  <li class="inline"><i class="far fa-star"></i></li>
               <% }
               } %>
                 <li class="inline">
@@ -330,10 +328,10 @@
               if(i <= rev.intStars){ %>
                 <i class="fa fa-star"></i>
               <% }else{ %>
-                <i class="fa fa-star-o"></i>
+                <i class="far fa-star"></i>
               <% }
             } %>
-            <small class="text-muted"><%= rev.r_created_at %></small>
+            <small class="text-muted ml-1"><%= rev.r_created_at %></small>
             <small class="review-desc block">
               <%= rev.strReview %>
             </small>
@@ -423,6 +421,13 @@
 <script type="text/javascript">
   $(()=>{
     itemQtyValidate(1,$(`#thisprod_stock span`).text())
+    <% if (thisInventory[0].discount){ %>
+      let div = $(`#item-options`);
+      div.find('.price').css(`color`,`var(--discount-color)`);
+      div.find('.price').append(` <i class="fas fa-tags discount-modal" title="discounted price"></i>`);
+      div.find('.discount').html(`<s><%=thisInventory[0].oldPrice%></s> (<%=thisInventory[0].discount%>% off)`);
+    <% } %>
+
   })
   function itemQtyValidate(qty,stock){
     $('#item-options .quantity-input').val() <= 1 ?
@@ -456,9 +461,11 @@
   // GET - Size
   $('#item-options .select-size').on('change', function() {
     $.get(`/cart/item-inv/${this.value}`).then((res) => {
-      $('#thisprod_price').text(res.inventory.productPrice);
-      if (res.inventory.stock > 0){
-        $('#thisprod_stock span').text(res.inventory.stock);
+      let inv = res.inventory, div = $(`#item-options`);
+
+      $('#thisprod_price').text(inv.productPrice);
+      if (inv.stock > 0){
+        $('#thisprod_stock span').text(inv.stock);
         $('#thisItemBtn').removeAttr('disabled');
       }
       else{
@@ -475,12 +482,48 @@
         $('#item-options input.quantity-input').val(stock);
       }
 
-      itemQtyValidate(qty,stock)
+      if (inv.discount){
+        div.find('.price').css(`color`,`var(--discount-color)`);
+        div.find('.price').append(` <i class="fas fa-tags discount-item" title="discounted price"></i>`);
+        div.find('.discount').html(`<s>${inv.oldPrice}</s> (${inv.discount}% off)`);
+      }
+      else{
+        div.find('.price').css(`color`,`var(--price-color)`);
+        div.find('.discount').css(`opacity`,`0`);
+        div.find('.price').css(`font-size`,`1.4em`);
+        div.find('.price > i').css(`vertical-align`,`2.5px`);
+        div.find('.discount').attr('hide','hide');
+      }
+
+      itemQtyValidate(qty,stock);
 
     }).catch((error) => {
       console.log(error);
     });
   })
+  $('#item-options').on('click', '.price > i', function(){
+    let div = $('#item-options')
+    if (div.find('.discount').attr('hide')){
+      div.find('.discount').css({
+        "height": "15",
+        "margin-top": "4",
+        "margin-right": "0",
+        "opacity": "1"
+      });
+      div.find('#thisprod_stock').css(`opacity`,`0`);
+      div.find('.discount').removeAttr('hide');
+    }
+    else{
+      div.find('.discount').css({
+        "height": "0",
+        "margin-top": "0",
+        "margin-right": "20",
+        "opacity": "0"
+      });
+      div.find('#thisprod_stock').css(`opacity`,`1`);
+      div.find('.discount').attr('hide','hide');
+    }
+  });
   // Change Quantity
   $('.quantity-input').keyup(function() {
     itemQtyControl($('#item-options'),'change')
@@ -511,7 +554,7 @@
   // DESIGN - Rating
   $(()=> {
     $('.productRating').barrating({
-      theme: 'fontawesome-stars-o'
+      theme: 'css-stars'
     });
     $('.br-widget > a:first-child').addClass('block-none');
     $('.br-widget > a').on('click', ()=>{

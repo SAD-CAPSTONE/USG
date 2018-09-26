@@ -11,12 +11,60 @@ const passw = 'testusg123';
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+router.post('/addUserAccount',(req,res)=>{
+  var user_no = "1000";
+  db.beginTransaction(function(err){
+    if(err) console.log(err);
+    else{
+      db.query(`Select * from tblUser order by intUserID desc limit 1`,(err1,res1,fie1)=>{
+        if(err1) console.log(err1);
+        else{
+          if(res1.length==0){} else{
+            user_no = parseInt(res1[0].intUserID) + 1;
+
+            bcrypt.hash(req.body.password,saltRounds,function(erra,hash){
+              if(erra) console.log(erra);
+              else{
+                db.query(`Insert into tblUser (intUserID, intUserTypeNo, strFname, strMname, strLname, strEmail, strUsername, strPassword)
+                values ("${user_no}",1,"${req.body.fname}","${req.body.mname}","${req.body.lname}", "${req.body.email}","${req.body.username}","${hash}")`,(err2,res2,fie2)=>{
+                  if(err2) console.log(err2);
+                  else{
+                    db.query(`Select * from tblAdmin where intUserID = "${req.user.intUserID}"`,(err3,res3,fie3)=>{
+                      if(err3) console.log(err3);
+                      else{
+                        db.query(`Insert into tblAdmin (intUserID, strBusinessName, strBusinessAddress, strBusinessEmail,
+                           businessTimeOpening, strBusinessPhone, strBusinessMobile, shippingFee,
+                          deliveryPeriod, paymentVoucherValidity, bankAccountNo, bankServiceFee, businessBank, intRole)
+                          values ("${user_no}", "${res3[0].strBusinessName}","${res3[0].strBusinessAddress}", "${res3[0].strBusinessEmail}",
+                          "${res3[0].businessTimeOpening}", "${res3[0].strBusinessPhone}", "${res3[0].strBusinessMobile}", "${res3[0].shippingFee}",
+                          "${res3[0].deliveryPeriod}", "${res3[0].paymentVoucherValidity}",
+                          "${res3[0].bankAccountNo}", "${res3[0].bankServiceFee}", "${res3[0].businessBank}", 2)`,(err4,res4,fie4)=>{
+                            if(err4) console.log(err4);
+                            else{
+                              db.commit(function(errb){
+                                if(errb) console.log(errb);
+                                else{
+                                  res.send("yes");
+                                }
+                              })
+                            }
+                          })
+                      }
+                    })
+                  }
+                })
+              }
+            });
+          }
+        }
+      })
+    }
+  })
+})
+
 
 router.post('/createAccount',(req,res)=>{
   var password = generatePassword(7, false);
-
-
-
   let transporter = nodemailer.createTransport({
    host: 'smtp.gmail.com',
    port: 465,
@@ -26,8 +74,6 @@ router.post('/createAccount',(req,res)=>{
      pass: passw
    }
 });
-
-
       bcrypt.hash(password,saltRounds,function(err,hash){
         if(err) console.log(err);
         console.log(req.body.no);

@@ -1,0 +1,22 @@
+<%- include('../../../templates/master.ejs') -%>
+
+<div id="container-messagepage" class="outer">
+  <div class="middle">
+    <div class="inner unselectable" style="width: 460px">
+      <img src="/customer-assets/images/static/usg-green.png" onContextMenu="return false"/>
+      <h1><%=message%></h1>
+      <a href="<%=messLink%>" role="button" aria-pressed="true" class="btn btn-secondary btn-md" style="min-width: 110px"><%=messBtn%></a>
+    </div>
+  </div>
+</div>
+
+<%- include('../../../templates/scripts.ejs') -%>
+<script type="text/javascript">
+  $(()=>{
+    $('.outer').css(`background`, `url('/customer-assets/images/static/login-bg.jpg')`)
+  })
+
+</script>
+
+<%- include('../../../templates/scripts.ejs') -%>
+<%- include('../../../templates/closer.ejs') -%>

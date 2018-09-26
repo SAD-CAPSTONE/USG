@@ -3,8 +3,9 @@
 
 <div id="summary-container" class="container">
   <div id="summary-main-pane" class="fl-l">
+    <div hidden></div>
     <div>
-      <p id="notice" class="m-0 fs-08em fw-400 inline-block">Products will be delivered within <%= admin.deliveryPeriod%> working days</p>
+      <p id="notice" class="m-0 fs-08em fw-400 inline-block">Products will be delivered within <%= admin.deliveryPeriod%> working day/s</p>
       <a id="refresh" class="inline-block fl-r" href="#"><p class="m-0 fs-08em fw-400">Refresh List</p></a>
       <svg version="1.1" id="SVG_refreshList" class="inline-block fl-r" hidden>
         <circle stroke="none" cx="5" cy="11" r="4">
@@ -131,10 +132,11 @@
                 <p class="mb-1">Do you wish to continue placing order?</p>
                 <div class="notice mt-2">
                   <ul class="pl-4 m-0">
-                    <li><p class="fs-09em fw-400 m-0"> Remember to refresh list before placing order</p></li>
-                    <li><p class="fs-09em fw-400 m-0"> Products will be delivered within <%= admin.deliveryPeriod%> working days</p></li>
-                    <li><p class="fs-09em fw-400 m-0"> For bank deposit, deposit slips are valid within 24 hours, failure to pay will cancel the order</p></li>
-                    <li><p class="fs-09em fw-400 m-0"> An item missing after placing order indicates that it is out of stock or no longer available</p></li>
+                    <li><p class="fs-09em fw-400 m-0"> Remember to refresh list before placing order.</p></li>
+                    <li><p class="fs-09em fw-400 m-0"> Products will be delivered within <%= admin.deliveryPeriod%> working day/s.</p></li>
+                    <li><p class="fs-09em fw-400 m-0"> For bank deposit, payment voucher is valid within 24 hours, failure to pay will cancel the order.</p></li>
+                    <li><p class="fs-09em fw-400 m-0"> We have a <strong>NO REFUND</strong> policy, payment cannot be refunded. &nbspProducts with defect are eligible for product replacement.</p></li>
+                    <li><p class="fs-09em fw-400 m-0"> An item missing after placing order indicates that it is out of stock or no longer available.</p></li>
                   </ul>
                 </div>
               </div>
@@ -211,6 +213,22 @@
         list.html('');
         res.cart.forEach((data) => {
           if (data.type == 1){
+            let priceDivM = data.discount ?
+              `<p class="mb-0 fs-1em fw-400 lh-p3em price-symbol discount-color-imp">
+                ${data.curPrice}
+                <i class="fas fa-tags" title="discounted price"></i>
+              </p>
+              <p class="mb-1 fs-09em lh-p3em text-muted price-symbol"><s>${data.oldPrice}</s></p>
+              <p class="mb-1 fs-09em lh-p3em text-muted">${data.discount}% off</p>`:
+              `<p class="mb-0 fs-1em fw-400 lh-p3em price-symbol">${data.curPrice}</p>`,
+            priceDivL = data.discount ?
+              `<p class="mb-1 fs-1em fw-400 lh-p3em price-symbol discount-color-imp">
+                ${data.curPrice}
+                <i class="fas fa-tags" title="discounted price"></i>
+              </p>
+              <p class="mb-1 fs-09em lh-p3em text-muted price-symbol"><s>${data.oldPrice}</s></p>
+              <p class="mb-1 fs-09em lh-p3em text-muted">${data.discount}% off</p>`:
+              `<p class="mb-1 fs-1em fw-400 lh-p3em price-symbol">${data.curPrice}</p>`
             list.append(`
               <div class="product-div pos-relative px-3">
                 <div class="inline-block va-t">
@@ -224,12 +242,12 @@
                     <p class="fs-08em fw-400 text-muted lh-p3em">${data.curSize}</p>
                     <a class="fw-400 remove cursor-pointer"><i class="fa fa-trash"></i></a>
                     <div class="price">
-                      <p class="mb-0 fs-1em fw-400 lh-p3em price-symbol">${data.curPrice}</p>
+                      ${priceDivM}
                     </div>
                   </div>
                 </div>
                 <div class="inline-block va-t mt-2">
-                  <p class="mb-1 fs-1em fw-400 lh-p3em price-symbol">${data.curPrice}</p>
+                  ${priceDivL}
                 </div>
                 <div class="inline-block va-t mt-2">
                   <p class="m-0 fs-09em fw-400 lh-p3em quantity">${data.curQty}</p>
@@ -351,7 +369,7 @@
     let text = [
       "Remember to refresh list before placing order",
       "Only one discount voucher per order is allowed",
-      "Products will be delivered within <%= admin.deliveryPeriod%> working days"],
+      "Products will be delivered within <%= admin.deliveryPeriod%> working day/s"],
     notice = $('#notice'), counter = 0, iNotice1 = setInterval(change, 8000), tNotice1;
     function change() {
       notice.css('opacity','0');
@@ -404,7 +422,7 @@
     }
 
     // Nav Cart
-    $('#nav-cart').css("cursor" , "not-allowed");
+    $('#nav-cart a').css("cursor" , "not-allowed");
     $('#nav-cart *').css("color", "rgba(255,255,255,.75)");
     $('.overlay').remove();
     $('#cartSidebarCollapse').on('click', function() {

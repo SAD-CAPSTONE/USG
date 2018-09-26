@@ -18,7 +18,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Ionicons -->
   <link rel="stylesheet" href="/assets/admin/bower_components/Ionicons/css/ionicons.min.css">
   <!-- DataTables -->
-<link rel="stylesheet" href="/assets/admin/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/admin/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="/assets/admin/dist/css/AdminLTE.min.css">
   <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
@@ -233,11 +233,12 @@ desired effect
           </a>
           <ul class="treeview-menu">
             <li class="navi"><a href="/inventory/allProducts"><i class="fa fa-circle-o"></i>All Products</a></li>
-            <li class="navi"><a href="/inventory/pulledOutStocks"><i class="fa fa-circle-o"></i>Expired Products</a></li>
+            <li class="navi"><a href="/inventory/expiredProducts"><i class="fa fa-circle-o"></i>Expired Products</a></li>
+            <li class="navi"><a href="/inventory/pullOutProduct"><i class="fa fa-circle-o"></i>Pull-out Products</a></li>
             <li class="navi"><a href="/inventory/adjustments"><i class="fa fa-circle-o"></i>Adjustments</a></li>
             <li class="navi"><a href="/inventory/supplierProducts"><i class="fa fa-circle-o"></i>Products per Supplier</a></li>
-            <li class="navi"><a href="/maintenance/package"><i class="fa fa-circle-o"></i>Package Discounts</a></li>
-            <li class="navi"><a href="/maintenance/promotion"><i class="fa fa-circle-o"></i>Promotions</a></li>
+            <li class="navi"><a href="/inventory/package"><i class="fa fa-circle-o"></i>Packages</a></li>
+            <li class="navi"><a href="/inventory/productDiscount"><i class="fa fa-circle-o"></i>Discounts</a></li>
 
           </ul>
         </li>
@@ -263,6 +264,7 @@ desired effect
             <li class="navi"><a href="/maintenance/batch"><i class="fa fa-genderless"></i>Product Batch</a></li>
 
             <li class="navi"><a href="/maintenance/measurements"><i class="fa fa-genderless"></i>Measurements</a></li>
+            <li class="navi"><a href="/maintenance/userAccounts"><i class="fa fa-genderless"></i>User Accounts</a></li>
 
 
 
@@ -279,13 +281,14 @@ desired effect
           </a>
           <ul class="treeview-menu">
               <li class="navi"><a href="/customerOrder/allOrders"><i class="fa fa-genderless"></i>Customer Orders</a></li>
-              <li class="navi"><a href="/customerPayment"><i class="fa fa-genderless"></i>Customer Payment</a></li>
+              <li class="navi"><a href="/customerPayment"><i class="fa fa-genderless"></i>Customer Payments</a></li>
               <li class="navi"><a href="/purchaseOrder"><i class="fa fa-genderless"></i>Order to Suppliers</a></li>
               <li class="navi"><a href="/receiveDelivery"><i class="fa fa-genderless"></i>Receive Delivery</a></li>
               <li class="navi"><a href="/returnProducts"><i class="fa fa-genderless"></i>Return to Supplier</a></li>
               <li  class="navi"><a href="/returnOrder"><i class="fa fa-genderless"></i>Return Orders</a></li>
               <li class="navi"><a href="/consApplication"><i class="fa fa-genderless"></i>Consignor Application</a></li>
               <li class="navi"><a href="/consAgreement"><i class="fa fa-genderless"></i>Consignor Agreement</a></li>
+              <li class="navi"><a href="/consignorRequests"><i class="fa fa-genderless"></i>Consignor Requests</a></li>
               <li class="navi"><a href="/consSales"><i class="fa fa-genderless"></i>Consignor Sales</a></li>
 
           </ul>
@@ -310,7 +313,23 @@ desired effect
           </ul>
         </li>
 
-		<li class="navi"><a href="reports.html"><i class="fa fa-link"></i> <span>Reports</span></a></li>
+        <li class="treeview">
+          <a href="#"><i class="fa fa-link"></i> <span>Reports</span>
+
+  				<span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+              <li class="navi"><a href="/reports/sales"><i class="fa fa-genderless"></i>Sales</a></li>
+              <li class="navi"><a href="/reports/inventory"><i class="fa fa-genderless"></i>Inventory</a></li>
+              <li class="navi"><a href="/reports/damage"><i class="fa fa-genderless"></i>Damages</a></li>
+              <li class="navi"><a href="/reports/customer"><i class="fa fa-genderless"></i>Customer</a></li>
+
+            </ul>
+          </li>
+
+
 
       </ul>
       <!-- /.sidebar-menu -->
