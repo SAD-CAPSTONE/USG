@@ -75,7 +75,21 @@ router.post('/newRequest', auth_cons,(req,res)=>{
 });
 
 router.get('/viewRequest',(req,res)=>{
-  
+  db.query(`Select * from tblConsignorRequest join tblProductRequest on tblConsignorRequest.intRequestNo = tblProductRequest.intRequestNo
+    where tblConsignorRequest.intRequestNo = "${req.query.q}"`,(err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+        db.query(`Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID
+          join tblConsignorRequest on tblConsignorRequest.intConsignorNo = tblUser.intUserID
+          where intRequestNo = "${req.query.q}"`,(err2,res2,fie2)=>{
+            if(err2) console.log(err2);
+            else{
+              res.render('cons-requests/views/viewRequest',{consignor: res2, re: res1, moment: moment, request: req.query.q  })
+
+            }
+          })
+      }
+    })
 })
 
 exports.consRequests = router;

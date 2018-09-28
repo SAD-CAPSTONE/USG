@@ -6,7 +6,7 @@
       <div id="main-content">
           <div class="col-lg-12">
               <div class="card-title">
-                  <h4 style="font-weight: bold;" align="center">New Request</h4>
+                  <h4 style="font-weight: bold;" align="center">Product Request</h4>
               </div>
 
 
@@ -31,9 +31,15 @@
                     <h6>info.ultrasupergreen@gmail.com</h6>
                   </div>
                   <div class="col-sm-3">
-                    <h6><strong>Request No: </strong>1000</h6>
-                    <h6><strong>Date Requested: </strong></h6>
-                    <h6><strong>Date Acknowledged: </strong></h6>
+                    <h6><strong>Request No: </strong><%= request %></h6>
+                    <h6><strong>Date Requested: </strong><%= moment(re[0].dateRequested).format("MM/DD/YYYY")%></h6>
+                    <h6><strong>Date Acknowledged: </strong>
+                      <% if (re[0].dateAcknowledged == null ){ %>
+                        <i>Waiting</i>
+                      <% }else{ %>
+                      <%= moment(re[0].dateAcknowledged).format("MM/DD/YYYY") %>
+                      <% } %>
+                    </h6>
                   </div>
                 </div>
 
@@ -41,7 +47,7 @@
 
 
                 <div class="table-responsive">
-                  <table   id="list" class="table table-bordered table-hover">
+                  <table  id="list" class="table table-bordered table-hover">
 
                     <thead>
                       <tr>
@@ -53,6 +59,25 @@
                       </tr>
                     </thead>
                     <tbody>
+                      <% if(re==null||re==undefined){ %>
+
+                      <% }else if(re.length==0){ %>
+
+                      <% }else{ %>
+                      <%   var count = 1; %>
+                      <%  re.forEach(function(i){ %>
+                          <tr>
+                            <td><%= count %></td>
+                            <td><%= i.strProductName %></td>
+                            <td><%= i.strDescription %></td>
+                            <td><%= i.strProductCategory %></td>
+                            <td><%= i.strCertifications %></td>
+
+                          </tr>
+                        <% count++ %>
+                      <%  }) %>
+
+                      <% } %>
 
                     </tbody>
                   </table>
