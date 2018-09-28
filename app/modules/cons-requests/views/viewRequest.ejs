@@ -1,0 +1,86 @@
+<%- include('../../../templates/consignor-dashboard.ejs') -%>
+
+<div id="consigner" class="container">
+  <div class="row">
+    <div class="col">
+      <div id="main-content">
+          <div class="col-lg-12">
+              <div class="card-title">
+                  <h4 style="font-weight: bold;" align="center">New Request</h4>
+              </div>
+
+
+              <div class="card-body">
+                <br>
+                <div class="row">
+
+                  <div class="col-sm-1">
+                  </div>
+                  <div class="col-sm-4">
+                    <h6><strong>Requested By:</strong></h6>
+                    <h6><%= consignor[0].strFname %> <%= consignor[0].strMname %> <%= consignor[0].strLname %></h6>
+                    <h6><%= consignor[0].strBusinessAddress%></h6>
+                    <h6><%= consignor[0].strBusinessEmail%></h6>
+                    <h6><%= consignor[0].strSupplierMobile%> | <%= consignor[0].strSupplierPhone %></h6>
+                  </div>
+                  <div class="col-sm-4">
+                    <h6><strong>Requested To:</strong></h6>
+                    <h6>Gustle Agulto - Operations Manager</h6>
+                    <h6>Ultra Super Green Trading Corp.</h6>
+                    <h6>Katipunan Ave., Quezon City</h6>
+                    <h6>info.ultrasupergreen@gmail.com</h6>
+                  </div>
+                  <div class="col-sm-3">
+                    <h6><strong>Request No: </strong>1000</h6>
+                    <h6><strong>Date Requested: </strong></h6>
+                    <h6><strong>Date Acknowledged: </strong></h6>
+                  </div>
+                </div>
+
+                <br>
+
+
+                <div class="table-responsive">
+                  <table   id="list" class="table table-bordered table-hover">
+
+                    <thead>
+                      <tr>
+                          <th>No</th>
+                          <th>Product Name</th>
+                          <th>Description</th>
+                          <th>Category</th>
+                          <th>Certifications</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                  </table>
+                </div>
+
+
+              </div>
+              <!-- Card body -->
+
+
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="/assets/consignor/jquery-slim.js"></script>
+<script src="/assets/consignor/popper.min.js"></script>
+<script src="/assets/consignor/bootstrap.min.js"></script>
+<script src="/assets/consignor/simplebar.js"></script>
+
+<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
+
+<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+
+</body>
+
+</html>
