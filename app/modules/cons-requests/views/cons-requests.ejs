@@ -44,16 +44,16 @@
                                   <% } %>
                                 </td>
                                 <td>
-                                  <% if(i.stat == 1){ %>
+                                  <% if(i.intStatus == 1){ %>
                                     Accepted
-                                  <% }else if(i.stat == 2){ %>
+                                  <% }else if(i.intStatus == 2){ %>
                                     Rejected
                                   <% }else{ %>
                                     Pending
                                   <% } %>
                                 </td>
                                 <td>
-                                  <button type="button" class="btn btn-success" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">View Request</button>
+                                  <a href="/consRequests/viewRequest?q=<%=i.intRequestNo%>"><button type="button" class="btn btn-success" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">View Request</button></a>
 
                                 </td>
 

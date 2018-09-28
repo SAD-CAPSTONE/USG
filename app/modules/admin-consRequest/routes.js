@@ -32,7 +32,7 @@ router.get('/productRequest',(req,res)=>{
 });
 
 router.post('/acceptRequest',(req,res)=>{
-  db.query(`Update tblConsignorRequest set intStatus = 1 where intRequestNo = "${req.body.no}"`,(err1,res1,fie1)=>{
+  db.query(`Update tblConsignorRequest set intStatus = 1, dateAcknowledged = NOW() where intRequestNo = "${req.body.no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{
       res.send("yes")
