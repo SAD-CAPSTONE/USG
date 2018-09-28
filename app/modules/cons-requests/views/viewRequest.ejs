@@ -32,6 +32,15 @@
                   </div>
                   <div class="col-sm-3">
                     <h6><strong>Request No: </strong><%= request %></h6>
+                    <h6><strong>Request Status: </strong>
+                      <% if (re[0].intStatus == 0){ %>
+                        Pending
+                      <% }else if(re[0].intStatus == 1){ %>
+                        Accepted
+                      <% }else{ %>
+                        Rejected
+                      <% } %>
+                    </h6>
                     <h6><strong>Date Requested: </strong><%= moment(re[0].dateRequested).format("MM/DD/YYYY")%></h6>
                     <h6><strong>Date Acknowledged: </strong>
                       <% if (re[0].dateAcknowledged == null ){ %>
