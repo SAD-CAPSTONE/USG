@@ -12,31 +12,38 @@
   <div class="row">
     <div id="sales-nav-pane" class="p-0">
       <div>
-        <a id="thisWeekBtn" class="no-decoration cursor-pointer">
-          <div class="sales-link">
-            <p class="fs-1em fw-400 mb-0 px-3">This Week</p>
-          </div>
-        </a>
-        <a id="thisMonthBtn" class="no-decoration cursor-pointer">
-          <div class="sales-link">
-            <p class="fs-1em fw-400 mb-0 px-3">This Month</p>
-          </div>
-        </a>
-        <a id="thisYearBtn" class="no-decoration cursor-pointer">
-          <div class="sales-link">
-            <p class="fs-1em fw-400 mb-0 px-3">This Year</p>
-          </div>
-        </a>
+        <div>
+          <p class="m-0 fw-400 lh-p3em">All Sales</p>
+        </div>
+        <div>
+          <a id="thisWeekBtn" class="no-decoration cursor-pointer">
+            <div class="sales-link">
+              <p class="fs-09em fw-400 mb-0 px-3">This Week</p>
+            </div>
+          </a>
+          <a id="thisMonthBtn" class="no-decoration cursor-pointer">
+            <div class="sales-link">
+              <p class="fs-09em fw-400 mb-0 px-3">This Month</p>
+            </div>
+          </a>
+          <a id="thisYearBtn" class="no-decoration cursor-pointer">
+            <div class="sales-link">
+              <p class="fs-09em fw-400 mb-0 px-3">This Year</p>
+            </div>
+          </a>
+        </div>
       </div>
       <div>
-        <p class="fs-1em fw-400 mb-0">Select Date</p>
+        <p class="fs-09em fw-400 mb-0">
+          <i class="fa fa-filter dateFilterIcon cursor-pointer" title="Use Filter"></i> Select Date
+        </p>
         <select id="month-filter" class="mb-1 custom-select" name="">
-          <option value="">Month</option>
+          <option value="0">Month</option>
         </select>
         <select id="year-filter" class="mb-2 custom-select" name="">
-          <option value="">Year</option>
+          <option value="0">Year</option>
         </select>
-        <button type="button" name="button" class="btn btn-sm btn-custom-primary btn-block">Submit</button>
+        <!-- <button type="button" name="button" class="btn btn-sm btn-custom-primary btn-block">Submit</button> -->
 
       </div>
     </div>
@@ -91,7 +98,6 @@
               </rect>
             </svg>
           </div>
-
         </div>
       </div>
     </div>
@@ -118,8 +124,8 @@ $(()=>{
   }
   function pushParams(filterBy,fMonth,fYear){
     filterBy != null ? 0 : filterBy = getParams('filterBy');
-    fMonth != null ? 0 : fMonth = getParams('fMonth');
-    fYear != null ? 0 : fYear = getParams('fYear');
+    fMonth != null ? 0 : null;
+    fYear != null ? 0 : null;
     newUrl = `${thisUrl}`;
 
     newUrl = filterBy ? `${newUrl}?filterBy=${filterBy}` : `${newUrl}?filterBy=thisWeek`;
@@ -139,16 +145,25 @@ $(()=>{
       filterBy = 'thisWeek';
     }
 
-    $('#sales-nav-pane > div:first-child > a').removeClass('selected');
+    filterBy ? filterBy = filterBy.indexOf("'") == -1 ? filterBy : 'thisWeek' : 0;
+    fMonth ? fMonth = fMonth.indexOf("'") == -1 ? fMonth : null : 0;
+    fYear ? fYear = fYear.indexOf("'") == -1 ? fYear : null : 0;
+
+    // filters design
+    $('#sales-nav-pane > div:first-child > div:nth-child(2) > a').removeClass('selected');
     switch (filterBy) {
       case 'thisWeek': $('#thisWeekBtn').addClass('selected'); break;
       case 'thisMonth': $('#thisMonthBtn').addClass('selected'); break;
       case 'thisYear': $('#thisYearBtn').addClass('selected'); break;
     }
-
-    filterBy ? filterBy = filterBy.indexOf("'") == -1 ? filterBy : 'thisWeek' : 0;
-    fMonth ? fMonth = fMonth.indexOf("'") == -1 ? fMonth : null : 0;
-    fYear ? fYear = fYear.indexOf("'") == -1 ? fYear : null : 0;
+    if (filterBy == 'specialDate'){
+      $('.dateFilterIcon').css('color','var(--primary-color)')
+      $('.dateFilterIcon').attr('title','Filter is Active')
+    }
+    else {
+      $('.dateFilterIcon').css('color','rgba(0,0,0,.3)')
+      $('.dateFilterIcon').attr('title','Use Filter')
+    }
 
     // loading
     let list = $(`#products-container`);
@@ -178,8 +193,8 @@ $(()=>{
       </div>`);
     list.css('padding-bottom','0px');
 
-    let tLoadStore = setTimeout(()=>{
-      list.css('padding-bottom','15px');
+    // load sales
+    let tLoadSales = setTimeout(()=>{
       postSales();
     },400);
 
@@ -191,11 +206,33 @@ $(()=>{
         let countCurrent = res.salesCountCurrent, countPrevious = res.salesCountPrevious,
         products = res.salesProducts, inv = res.salesInv, config = res.config
 
+        // filters design
+        $('#sales-nav-pane > div:first-child > div:nth-child(2) > a').removeClass('selected');
+        switch (config.filterBy) {
+          case 'thisWeek': $('#thisWeekBtn').addClass('selected'); break;
+          case 'thisMonth': $('#thisMonthBtn').addClass('selected'); break;
+          case 'thisYear': $('#thisYearBtn').addClass('selected'); break;
+        }
+        if (config.filterBy != 'specialDate'){
+          $('.dateFilterIcon').css('color','rgba(0,0,0,.3)')
+          $('.dateFilterIcon').attr('title','Use Filter')
+        }
+
+        // sales filter
         $('#month-filter').html('');
-        config.months.forEach((month)=>{
-          $('#month-filter').append(`<option value="${month.month}">${month.monthname}</option>`)
-        })
         $('#year-filter').html('');
+        if (config.months[0]){
+          $('#month-filter').append(`<option value="All">All Months</option>`);
+        }
+        else {
+          $('#month-filter').append(`<option value="0">Month</option>`);
+          $('#year-filter').append(`<option value="0">Year</option>`);
+        }
+        config.months.forEach((month)=>{
+          month.month == fMonth ?
+            $('#month-filter').append(`<option value="${month.month}" selected>${month.monthname}</option>`):
+            $('#month-filter').append(`<option value="${month.month}">${month.monthname}</option>`)
+        })
         config.years.forEach((year)=>{
           $('#year-filter').append(`<option value="${year.year}">${year.year}</option>`)
         })
@@ -214,8 +251,10 @@ $(()=>{
           $(`#sales-main-pane > div:nth-child(2) > div:nth-child(3) span`).text('0.00');
         }
 
+        // products & inv
         products[0] ? 0 : list.html(`
           <p class="fs-09em fw-400em" style="padding: 15px 15px 0px"><em>No Records Found</em></p>`);
+        list.css('padding-bottom','15px');
         products.forEach((thisProd)=>{
           prodString = `
             <div class="product-div">
@@ -286,11 +325,17 @@ $(()=>{
   });
 
   $(`#month-filter`).change(function(){
-    pushParams('specialDate',$(this).val(),$('#year-filter').val())
+    console.log($(this).val())
+    pushParams('specialDate',$('#month-filter').val(),$('#year-filter').val())
     loadSales()
   });
   $(`#year-filter`).change(function(){
-    pushParams('specialDate',$('#month-filter').val(),$(this).val())
+    pushParams('specialDate',$('#month-filter').val(),$('#year-filter').val())
+    loadSales()
+  });
+
+  $('.dateFilterIcon').click(function(){
+    pushParams('specialDate',$('#month-filter').val(),$('#year-filter').val())
     loadSales()
   });
 

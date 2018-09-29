@@ -275,6 +275,9 @@ textarea {
 .cursor-pointer {
   cursor: pointer;
 }
+.cursor-help {
+  cursor: help;
+}
 
 /* Input */
 input.material {
@@ -1419,23 +1422,46 @@ table th, table td {
   margin-right: 10px;
   width: 150px;
 }
-#sales-nav-pane > div:first-child {
-  padding: 15px 0px;
+
+#sales-nav-pane > div:nth-child(1) {
+  background: none;
+  margin-bottom: 0px;
+  padding: 0px;
+  box-shadow: none;
 }
-#sales-nav-pane > div:first-child > a.selected,
-#sales-nav-pane > div:first-child > a.selected *  {
+#sales-nav-pane > div:nth-child(1) > div {
+  background: white;
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  box-shadow: 0px 3px 6px #F2F2F2;
+}
+#sales-nav-pane > div:nth-child(1) > div:nth-child(2) {
+  padding: 10px 0px;
+}
+#sales-nav-pane > div:nth-child(1) > div:nth-child(2) > a.selected,
+#sales-nav-pane > div:nth-child(1) > div:nth-child(2) > a.selected *  {
   background: var(--primary-color);
   color: white;
 }
-#sales-nav-pane > div:first-child > a:not(.selected) * {
+#sales-nav-pane > div:nth-child(1) > div:nth-child(2) > a:not(.selected) * {
   background: white;
   color: black;
 }
-#sales-nav-pane > div:first-child > a:not(.selected):hover * {
+#sales-nav-pane > div:nth-child(1) > div:nth-child(2) > a:not(.selected):hover * {
   background: rgba(18, 187, 173, .3);
   color: white;
 }
 
+#sales-nav-pane > div:nth-child(2) {
+  background: white;
+  margin-bottom: 10px;
+  padding: 15px 15px;
+}
+#sales-nav-pane .dateFilterIcon {
+  font-size: 1.1em;
+  margin-right: 2px;
+  color: var(--primary-color);
+}
 #sales-nav-pane select {
   width: 100%;
   border-radius: 0px;
