@@ -184,7 +184,7 @@ $(()=>{
     },400);
 
     function postSales(){
-      $.post(`/consignor/loadSales`, {
+      $.post(`/consignorSales/loadSales`, {
         filterBy: filterBy, month: fMonth, year: fYear
       }).then((res) => {
         list.html('')
