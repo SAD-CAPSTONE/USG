@@ -218,8 +218,7 @@
                 ${data.curPrice}
                 <i class="fas fa-tags" title="discounted price"></i>
               </p>
-              <p class="mb-1 fs-09em lh-p3em text-muted price-symbol"><s>${data.oldPrice}</s></p>
-              <p class="mb-1 fs-09em lh-p3em text-muted">${data.discount}% off</p>`:
+              <p class="mb-1 fs-09em lh-p3em text-muted price-symbol"><s>${data.oldPrice}</s> (-${data.discount}%)</p>`:
               `<p class="mb-0 fs-1em fw-400 lh-p3em price-symbol">${data.curPrice}</p>`,
             priceDivL = data.discount ?
               `<p class="mb-1 fs-1em fw-400 lh-p3em price-symbol discount-color-imp">

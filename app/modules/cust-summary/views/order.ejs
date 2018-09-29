@@ -51,7 +51,7 @@
                       <%= data.purchasePrice%>
                       <i class="fas fa-tags" title="discounted price"></i>
                     </p>
-                    <p class="mb-0 fs-09em lh-p3em text-muted price-symbol"><s>0</s> (-0%)</p>
+                    <p class="mb-0 fs-09em lh-p3em text-muted price-symbol"><s><%= data.oldPrice%></s> (-<%= data.discount%>%)</p>
                   <% }else{ %>
                     <p class="mb-0 fs-1em fw-400 lh-p3em price-symbol"><%= data.purchasePrice%></p>
                   <% } %>
@@ -523,9 +523,16 @@
         console.log(res.status)
         res.status.forEach((data)=>{
           switch (data.intStatus) {
-            case 1: $(`.steps-form .step[title=Processing]`).addClass(`step-active`); break;
-            case 2: $(`.steps-form .step[title=Shipped]`).addClass(`step-active`); break;
-            case 3: $(`.steps-form .step[title=Delivered]`).addClass(`step-active`); break;
+            case 3:
+              $(`.steps-form .step[title=Delivered]`).hasClass(`step-active`) ?
+                0 : $(`.steps-form .step[title=Delivered]`).addClass(`step-active`);
+            case 2:
+              $(`.steps-form .step[title=Shipped]`).hasClass(`step-active`) ?
+                0 : $(`.steps-form .step[title=Shipped]`).addClass(`step-active`);
+            case 1:
+              $(`.steps-form .step[title=Processing]`).hasClass(`step-active`) ?
+                0 : $(`.steps-form .step[title=Processing]`).addClass(`step-active`);
+              break;
           }
         });
 

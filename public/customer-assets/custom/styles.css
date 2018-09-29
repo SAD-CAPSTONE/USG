@@ -427,7 +427,6 @@ input#mobile {
   color: var(--discount-color) !important;
 }
 
-
 #notice {
   transition: all 0.25s ease;
 }
@@ -1423,13 +1422,25 @@ table th, table td {
 #sales-nav-pane > div:first-child {
   padding: 15px 0px;
 }
-#sales-nav-pane > div:first-child > a:hover *  {
+#sales-nav-pane > div:first-child > a.selected,
+#sales-nav-pane > div:first-child > a.selected *  {
+  background: var(--primary-color);
+  color: white;
+}
+#sales-nav-pane > div:first-child > a:not(.selected) * {
+  background: white;
+  color: black;
+}
+#sales-nav-pane > div:first-child > a:not(.selected):hover * {
   background: rgba(18, 187, 173, .3);
   color: white;
 }
 
 #sales-nav-pane select {
   width: 100%;
+  border-radius: 0px;
+  border: 0px;
+  border-bottom: 1.5px solid var(--primary-color);
 }
 
 #sales-main-pane #header {
@@ -1448,6 +1459,10 @@ table th, table td {
   width: var(--sales-sales-col-width);
 }
 
+#sales-main-pane #products-container {
+  background: rgba(236, 239, 240, .25);
+  padding-bottom: 15px;
+}
 #sales-main-pane .product-div {
   padding: 15px 15px 0px;
 }
