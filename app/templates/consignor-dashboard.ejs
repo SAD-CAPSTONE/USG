@@ -1,19 +1,30 @@
-<%- include('master.ejs') -%>
+<html>
+<head>
+  <link rel="icon" type="image/png" href="/customer-assets/images/static/usg-green.png" />
   <title>Ultra Super Green</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
+
   <link rel="stylesheet" href="/assets/font-awesome-4.7.0/css/font-awesome.min.css" />
   <link rel="stylesheet" type="text/css" href="/assets/loginFiles/fonts/iconic/css/material-design-iconic-font.min.css">
   <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.css" />
-  <link rel="stylesheet" href="/assets/consignor/styles.css" type="text/css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
-  <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" >
+  <link rel="stylesheet" href="/assets/consignor/simplebar.css" />
+
+  <link rel="stylesheet" href="/assets/consignor/export.min.css" type="text/css" media="all" >
   <link rel="stylesheet" href="/assets/jquery/jquery-ui.min.css">
   <link rel="stylesheet" href="/assets/consignor/css/style.css" type="text/css">
   <link rel="stylesheet" href="/assets/consignor/css/consignor-dash.css" type="text/css">
 
+  <link rel="stylesheet" type="text/css" href="/customer-assets/loginFiles/fonts/iconic/css/material-design-iconic-font.min.css">
+
+  <link rel="stylesheet" href="/customer-assets/custom/styles.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="/assets/admin/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css"> -->
+
+
+</head>
+
+<body>
 
   <nav class="navbar navbar-expand-lg bg-custom-primary navbar-dark pt-0">
       <div class="container">
@@ -23,13 +34,13 @@
         <div class="collapse navbar-collapse text-center justify-content-end pt-1" id="navbar2SupportedContent">
           <ul class="navbar-nav">
             <li class="nav-item mr-2">
-              <a class="nav-link" href="products" style="padding-bottom: 16px;"><i class="fa d-inline fa-lg fa-leaf"></i>&nbsp; My Products</a>
+              <a class="nav-link" href="/consignor/products" style="padding-bottom: 16px;"><i class="fa d-inline fa-lg fa-leaf"></i>&nbsp; My Products</a>
             </li>
             <li class="nav-item drop-menu mr-2">
               <a class="nav-link dropdown-toggle pb-3" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa d-inline fa-lg fa-bar-chart"></i>&nbsp; Sales</a>
               <div class="drop-menu-content-con">
                 <p>
-                  <a href="sales">All Sales</a>
+                  <a href="/consignorSales">All Sales</a>
                 </p>
                 <p>
                   <a href="">Payment Receipts</a>
@@ -37,10 +48,21 @@
               </div>
             </li>
             <li class="nav-item mr-2">
-              <a class="nav-link" href="orders" style="padding-bottom: 16px;"><i class="fa d-inline fa-lg fa-cart-arrow-down"></i>&nbsp; Orders</a>
+              <a class="nav-link" href="/consignor/orders" style="padding-bottom: 16px;"><i class="fa d-inline fa-lg fa-cart-arrow-down"></i>&nbsp; Orders</a>
             </li>
             <li class="nav-item mr-2">
-              <a class="nav-link" href="returns" style="padding-bottom: 16px;"><i class="fa d-inline fa-lg fa-undo"></i>&nbsp; Returns</a>
+              <a class="nav-link" href="/consignor/returns" style="padding-bottom: 16px;"><i class="fa d-inline fa-lg fa-undo"></i>&nbsp; Returns</a>
+            </li>
+            <li class="nav-item drop-menu mr-2">
+              <a class="nav-link dropdown-toggle pb-3" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa d-inline fa-lg fa-bar-chart"></i>&nbsp; Requests</a>
+              <div class="drop-menu-content-con">
+                <p>
+                  <a href="/consRequests">New Product</a>
+                </p>
+                <p>
+
+                </p>
+              </div>
             </li>
             <li class="nav-item drop-menu mr-2">
               <a class="nav-link dropdown-toggle pb-3" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa d-inline fa-lg fa-gear"></i>&nbsp;</a>

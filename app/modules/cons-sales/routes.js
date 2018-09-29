@@ -6,6 +6,7 @@ const userTypeAuth = require('../cust-0extras/userTypeAuth');
 const auth_cons = userTypeAuth.cons;
 const pageLimit = 10;
 
+<<<<<<< HEAD
 function sizeString(obj){
   let curSize = ``;
   obj.strVariant ? curSize+= `${obj.strVariant}`: 0
@@ -51,11 +52,15 @@ function yearsAvailable(req,res,next){
 }
 
 router.get('/sales', checkUser, auth_cons, (req,res)=>{
+=======
+router.get('/', (req,res)=>{
+>>>>>>> f64fa912519ad3ac9c329cb8b8357980610b9dc0
   res.render('cons-sales/views/index',{
     thisUser: req.user
   });
 });
 
+<<<<<<< HEAD
 router.post('/loadSales', monthsAvailable, yearsAvailable, (req,res)=>{
   let sCountCurrent, sCountPrevious, sProducts, sInv, sDate,
   config = {
@@ -168,3 +173,6 @@ router.post('/loadSales', monthsAvailable, yearsAvailable, (req,res)=>{
 
 
 exports.consignor = router;
+=======
+exports.consignorSales = router;
+>>>>>>> f64fa912519ad3ac9c329cb8b8357980610b9dc0
