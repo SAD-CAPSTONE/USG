@@ -4,7 +4,7 @@ const db = require('../../lib/database')();
 const priceFormat = require('../cust-0extras/priceFormat');
 const userTypeAuth = require('../cust-0extras/userTypeAuth');
 const auth_cons = userTypeAuth.cons;
-const pageLimit = 2;
+const pageLimit = 10;
 const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 function sizeString(obj){
@@ -25,12 +25,11 @@ function checkUser(req, res, next){
   }
 }
 function monthsAvailable(req,res,next){
-  db.query(`SELECT MONTH(tblorderhistory.historyDate)month, monthname(tblorderhistory.historyDate)monthname FROM tblproductlist
+  db.query(`SELECT * FROM( SELECT MONTH(tblorder.paymentDate)month, monthname(tblorder.paymentDate)monthname FROM tblproductlist
     INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
     INNER JOIN tblorderdetails ON tblproductinventory.intInventoryNo= tblorderdetails.intInventoryNo
     INNER JOIN tblorder ON tblorderdetails.intOrderNo= tblorder.intOrderNo
-    INNER JOIN tblorderhistory ON tblorderhistory.intOrderNo= tblorder.intOrderNo
-    WHERE tblproductinventory.intUserID= ? AND tblorderhistory.intStatus= 3 GROUP BY month`,
+    WHERE tblproductinventory.intUserID= 1008 GROUP BY month)A WHERE A.month IS NOT NULL`,
     [req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
     req.monthsAvailable= results;
@@ -38,12 +37,11 @@ function monthsAvailable(req,res,next){
   });
 }
 function yearsAvailable(req,res,next){
-  db.query(`SELECT YEAR(tblorderhistory.historyDate)year FROM tblproductlist
+  db.query(`SELECT * FROM( SELECT YEAR(tblorder.paymentDate)year FROM tblproductlist
     INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
     INNER JOIN tblorderdetails ON tblproductinventory.intInventoryNo= tblorderdetails.intInventoryNo
     INNER JOIN tblorder ON tblorderdetails.intOrderNo= tblorder.intOrderNo
-    INNER JOIN tblorderhistory ON tblorderhistory.intOrderNo= tblorder.intOrderNo
-    WHERE tblproductinventory.intUserID= ? AND tblorderhistory.intStatus= 3 GROUP BY year`,
+    WHERE tblproductinventory.intUserID= ? GROUP BY year)A WHERE A.year IS NOT NULL`,
     [req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
     req.yearsAvailable= results;
@@ -91,31 +89,31 @@ router.post('/loadSales', monthsAvailable, yearsAvailable, (req,res)=>{
     : 0
   switch (config.filterBy) {
     case 'thisWeek':
-      sDate = 'WEEK(tblorderhistory.historyDate)= WEEK(CURDATE())';
+      sDate = 'WEEK(tblorder.paymentDate)= WEEK(CURDATE())';
       sDatePrev = `${sDate}-1`;
       break;
     case 'thisMonth':
-      sDate = 'MONTH(tblorderhistory.historyDate)= MONTH(CURDATE())';
+      sDate = 'MONTH(tblorder.paymentDate)= MONTH(CURDATE())';
       sDatePrev = `${sDate}-1`;
       config.curSel = 'This Month';
       config.prevSel = 'Previous Month';
       break;
     case 'thisYear':
-      sDate = 'YEAR(tblorderhistory.historyDate)= YEAR(CURDATE())';
+      sDate = 'YEAR(tblorder.paymentDate)= YEAR(CURDATE())';
       sDatePrev = `${sDate}-1`;
       config.curSel = 'This Year';
       config.prevSel = 'Previous Year';
       break;
     default:
       if(req.body.month == 'All'){
-        sDate = `YEAR(tblorderhistory.historyDate)= ${req.body.year}`;
+        sDate = `YEAR(tblorder.paymentDate)= ${req.body.year}`;
         sDatePrev = `${sDate}-1`;
         config.curSel = `Year ${req.body.year}`;
         config.prevSel = 'Previous Year';
       }
       else{
-        sDateMonth = `MONTH(tblorderhistory.historyDate)= ${req.body.month} `;
-        sDateYear = `AND YEAR(tblorderhistory.historyDate)= ${req.body.year}`;
+        sDateMonth = `MONTH(tblorder.paymentDate)= ${req.body.month} `;
+        sDateYear = `AND YEAR(tblorder.paymentDate)= ${req.body.year}`;
         sDate = `${sDateMonth} ${sDateYear}`;
         sDatePrev = `${sDateMonth}-1 ${sDateYear}`;
         config.curSel = `${monthNames[req.body.month-1]} ${req.body.year}`;
@@ -129,14 +127,13 @@ router.post('/loadSales', monthsAvailable, yearsAvailable, (req,res)=>{
       : 1
     : 1
 
-  let productsQuery = `SELECT tblproductlist.intProductNo, tblproductbrand.strBrand, tblproductlist.strProductName, tblproductlist.strProductPicture, tblorderhistory.historyDate,
+  let productsQuery = `SELECT tblproductlist.intProductNo, tblproductbrand.strBrand, tblproductlist.strProductName, tblproductlist.strProductPicture,
     SUM(tblorderdetails.intQuantity)QtySold, SUM(purchasePrice*tblorderdetails.intQuantity)TotalPrice FROM tblproductlist
     INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
     INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
     INNER JOIN tblorderdetails ON tblproductinventory.intInventoryNo= tblorderdetails.intInventoryNo
     INNER JOIN tblorder ON tblorderdetails.intOrderNo= tblorder.intOrderNo
-    INNER JOIN tblorderhistory ON tblorderhistory.intOrderNo= tblorder.intOrderNo
-    WHERE tblproductinventory.intUserID= ? AND tblorderhistory.intStatus= 3 AND ${sDate}
+    WHERE tblproductinventory.intUserID= ? AND ${sDate}
     GROUP BY tblproductlist.intProductNo ORDER BY tblproductlist.intProductNo `
 
   fsalesCountCurrent();
@@ -144,8 +141,8 @@ router.post('/loadSales', monthsAvailable, yearsAvailable, (req,res)=>{
     db.query(`SELECT SUM(tblorderdetails.intQuantity)QtySold, SUM(purchasePrice*tblorderdetails.intQuantity)TotalPrice FROM tblproductlist
       INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
       INNER JOIN tblorderdetails ON tblproductinventory.intInventoryNo= tblorderdetails.intInventoryNo
-      INNER JOIN tblorder ON tblorderdetails.intOrderNo= tblorder.intOrderNo INNER JOIN tblorderhistory ON tblorderhistory.intOrderNo= tblorder.intOrderNo
-      WHERE tblproductinventory.intUserID= ? AND tblorderhistory.intStatus= 3 AND ${sDate}`,
+      INNER JOIN tblorder ON tblorderdetails.intOrderNo= tblorder.intOrderNo
+      WHERE tblproductinventory.intUserID= ? AND ${sDate}`,
       [req.user.intUserID], (err, results, fields) => {
       if (err) console.log(err);
       if (results[0]){
@@ -159,8 +156,8 @@ router.post('/loadSales', monthsAvailable, yearsAvailable, (req,res)=>{
     db.query(`SELECT SUM(tblorderdetails.intQuantity)QtySold, SUM(purchasePrice*tblorderdetails.intQuantity)TotalPrice FROM tblproductlist
       INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
       INNER JOIN tblorderdetails ON tblproductinventory.intInventoryNo= tblorderdetails.intInventoryNo
-      INNER JOIN tblorder ON tblorderdetails.intOrderNo= tblorder.intOrderNo INNER JOIN tblorderhistory ON tblorderhistory.intOrderNo= tblorder.intOrderNo
-      WHERE tblproductinventory.intUserID= ? AND tblorderhistory.intStatus= 3 AND ${sDatePrev}`,
+      INNER JOIN tblorder ON tblorderdetails.intOrderNo= tblorder.intOrderNo
+      WHERE tblproductinventory.intUserID= ? AND ${sDatePrev}`,
       [req.user.intUserID], (err, results, fields) => {
       if (err) console.log(err);
       if (results[0]){
@@ -213,13 +210,12 @@ router.post('/loadSales', monthsAvailable, yearsAvailable, (req,res)=>{
   }
   function fsalesInv(){
     db.query(`SELECT tblproductlist.intProductNo, tblproductinventory.strVariant, tblproductinventory.intSize, tbluom.strUnitName, tblorderdetails.purchasePrice,
-      tblorderhistory.historyDate, SUM(tblorderdetails.intQuantity)QtySold, SUM(purchasePrice*tblorderdetails.intQuantity)TotalPrice FROM tblproductlist
+      SUM(tblorderdetails.intQuantity)QtySold, SUM(purchasePrice*tblorderdetails.intQuantity)TotalPrice FROM tblproductlist
       INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
       INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno
       INNER JOIN tblorderdetails ON tblproductinventory.intInventoryNo= tblorderdetails.intInventoryNo
       INNER JOIN tblorder ON tblorderdetails.intOrderNo= tblorder.intOrderNo
-      INNER JOIN tblorderhistory ON tblorderhistory.intOrderNo= tblorder.intOrderNo
-      WHERE tblproductinventory.intUserID= ? AND tblorderhistory.intStatus= 3 AND ${sDate}
+      WHERE tblproductinventory.intUserID= ? AND ${sDate}
       GROUP BY tblproductinventory.intInventoryNo ORDER BY tblproductlist.intProductNo`,
       [req.user.intUserID], (err, results, fields) => {
       if (err) console.log(err);
@@ -267,32 +263,31 @@ router.post('/prodSalesDetails', monthsAvailable, yearsAvailable, (req,res)=>{
     : 0
   switch (config.filterBy) {
     case 'thisWeek':
-      sDate = 'WEEK(tblorderhistory.historyDate)= WEEK(CURDATE())';
+      sDate = 'WEEK(tblorder.paymentDate)= WEEK(CURDATE())';
       break;
     case 'thisMonth':
-      sDate = 'MONTH(tblorderhistory.historyDate)= MONTH(CURDATE())';
+      sDate = 'MONTH(tblorder.paymentDate)= MONTH(CURDATE())';
       break;
     case 'thisYear':
-      sDate = 'YEAR(tblorderhistory.historyDate)= YEAR(CURDATE())';
+      sDate = 'YEAR(tblorder.paymentDate)= YEAR(CURDATE())';
       break;
     default:
       if(req.body.month == 'All'){
-        sDate = `YEAR(tblorderhistory.historyDate)= ${req.body.year}`;
+        sDate = `YEAR(tblorder.paymentDate)= ${req.body.year}`;
       }
       else{
-        sDateMonth = `MONTH(tblorderhistory.historyDate)= ${req.body.month} AND YEAR(tblorderhistory.historyDate)= ${req.body.year}`;
+        sDateMonth = `MONTH(tblorder.paymentDate)= ${req.body.month} AND YEAR(tblorder.paymentDate)= ${req.body.year}`;
       }
       break;
   }
 
-  db.query(`SELECT tblproductlist.intProductNo, tblproductbrand.strBrand, tblproductlist.strProductName, tblproductlist.strProductPicture, tblorderhistory.historyDate,
+  db.query(`SELECT tblproductlist.intProductNo, tblproductbrand.strBrand, tblproductlist.strProductName, tblproductlist.strProductPicture,
     SUM(tblorderdetails.intQuantity)QtySold, SUM(purchasePrice*tblorderdetails.intQuantity)TotalPrice FROM tblproductlist
     INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
     INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
     INNER JOIN tblorderdetails ON tblproductinventory.intInventoryNo= tblorderdetails.intInventoryNo
     INNER JOIN tblorder ON tblorderdetails.intOrderNo= tblorder.intOrderNo
-    INNER JOIN tblorderhistory ON tblorderhistory.intOrderNo= tblorder.intOrderNo
-    WHERE tblproductinventory.intUserID= ? AND tblproductlist.intProductNo= ? AND tblorderhistory.intStatus= 3 AND ${sDate}
+    WHERE tblproductinventory.intUserID= ? AND tblproductlist.intProductNo= ? AND ${sDate}
     GROUP BY tblproductlist.intProductNo ORDER BY tblproductlist.intProductNo`,
     [req.user.intUserID, req.body.prodid], (err, results, fields) => {
     if (err) console.log(err);
@@ -301,13 +296,12 @@ router.post('/prodSalesDetails', monthsAvailable, yearsAvailable, (req,res)=>{
     });
     sProducts = results
     db.query(`SELECT tblproductlist.intProductNo, tblproductinventory.strVariant, tblproductinventory.intSize, tbluom.strUnitName, tblorderdetails.purchasePrice,
-      tblorderhistory.historyDate, SUM(tblorderdetails.intQuantity)QtySold, SUM(purchasePrice*tblorderdetails.intQuantity)TotalPrice FROM tblproductlist
+      SUM(tblorderdetails.intQuantity)QtySold, SUM(purchasePrice*tblorderdetails.intQuantity)TotalPrice FROM tblproductlist
       INNER JOIN tblproductinventory ON tblproductlist.intProductNo= tblproductinventory.intProductNo
       INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno
       INNER JOIN tblorderdetails ON tblproductinventory.intInventoryNo= tblorderdetails.intInventoryNo
       INNER JOIN tblorder ON tblorderdetails.intOrderNo= tblorder.intOrderNo
-      INNER JOIN tblorderhistory ON tblorderhistory.intOrderNo= tblorder.intOrderNo
-      WHERE tblproductinventory.intUserID= ? AND tblproductlist.intProductNo= ? AND tblorderhistory.intStatus= 3 AND ${sDate}
+      WHERE tblproductinventory.intUserID= ? AND tblproductlist.intProductNo= ? AND ${sDate}
       GROUP BY tblproductinventory.intInventoryNo ORDER BY tblproductlist.intProductNo`,
       [req.user.intUserID, req.body.prodid], (err, results, fields) => {
       if (err) console.log(err);
