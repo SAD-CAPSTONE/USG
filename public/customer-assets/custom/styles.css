@@ -1458,7 +1458,7 @@ table th, table td {
   padding: 15px 15px;
 }
 #sales-nav-pane .dateFilterIcon {
-  font-size: 1.1em;
+  font-size: .9em;
   margin-right: 2px;
   color: var(--primary-color);
 }
@@ -1518,6 +1518,10 @@ table th, table td {
 }
 #sales-main-pane .product-div > .prod-row > div:nth-child(4) {
   width: var(--sales-sales-col-width);
+}
+
+#sales-main-pane #pagination {
+  margin: 15px 0px 0px;
 }
 
 /*Responsive Sizes------------------------------------------------------------*/
@@ -1744,7 +1748,9 @@ table th, table td {
   #sales-main-pane .product-sales-details {
     display: block;
   }
-
+  #sales-main-pane > div:nth-child(2) {
+    padding-bottom: 15px !important;
+  }
 }
 @media (max-width: 576px) {
   .search>input {
