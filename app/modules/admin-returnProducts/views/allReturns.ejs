@@ -58,7 +58,7 @@
                             <td><%=i.strBusinessName%></td>
                             <td><%=moment(i.dateReturned).format("MM/DD/YYYY")%></td>
                             <td>
-                              <button class="large ui teal button">View Details</button>
+                              <a href="/returnProducts/viewReturns?q=<%=i.intReturnProductsNo%>"<button class="large ui teal button">View Details</button>
                             </td>
                           </tr>
                           <% count++; %>

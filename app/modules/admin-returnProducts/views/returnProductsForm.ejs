@@ -138,6 +138,25 @@
              <div class="col-sm-12">
                <label for="note">Special Note:</label>
                <textarea class="form-control" name="specialnote" id="note"></textarea>
+               <!-- <input id="search"> -->
+
+               <script >
+            function activatePlacesSearch(){
+
+            var input = document.getElementById('search');
+            var options = {
+              types: ['(regions)'],
+              componentRestrictions: {country: "ph"}
+             };
+            var autocomplete = new google.maps.places.Autocomplete(input,options);
+
+
+
+          }
+          </script>
+
+               <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjfB95le9OEVAn2fYlLO05fIIqv4hY1UI&libraries=places&callback=activatePlacesSearch"></script>
+
             </div>
           </div>
          </div>
@@ -292,6 +311,7 @@
          <h4 class="modal-title">Product List</h4>
        </div>
        <div class="modal-body">
+         <h5 class="text-aqua">* Products that aren't here are out of stocks.</h5>
 
          <div id="productLoader" class="box-body table-responsive">
          </div>
@@ -363,6 +383,7 @@ $('.supplierSetter').on('click', function(){
 
   $(document).ready(function() {
 
+    // Swaaaaaaaaaaaaaaaaaal long alert
      $('#returnProductsForm').submit(function(e){
        e.preventDefault();
        $.ajax({

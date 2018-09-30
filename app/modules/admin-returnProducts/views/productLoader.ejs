@@ -54,17 +54,55 @@
   var count = 1;
 
   $('.productSetter').on('click',function(){
+    var number = $(this).data('no');
+    var product =  $(this).data('product');
+    var variant = $(this).data('variant');
+    var size = $(this).data('size');
 
-    t.row.add( [
-        count,
-        `<input type="hidden" name="ino[]" value="${$(this).data('no')}" class="form-control"> ${$(this).data('product')}`,
-        `${$(this).data('variant')}`,
-        `${$(this).data('size')}`,
-        `<input style="width: 90px" type="number" name="quantity[]" required  class="form-control">`,
-        `<input  type="text" name="reason[]" required  class="form-control">`
+    $.post('/returnProducts/checkReserved',{no: number }, function(data,status){
+      // no reserved items
+      if(data=="no"){
+        t.row.add( [
+            count,
+            `<input type="hidden" name="ino[]" value="${number}" class="form-control"> ${product}`,
+            `${variant}`,
+            `${size}`,
+            `<input style="width: 90px" type="number" name="quantity[]" required  class="form-control">`,
+            `<input  type="text" name="reason[]" required  class="form-control">`
 
-    ] ).draw( false );
-    count++;
+        ] ).draw( false );
+        count++;
+
+        // there are reserved items
+      }else{
+        swal({
+          title: 'Oops!',
+          text: 'There are pending orders in this product.',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Proceed anyway',
+          cancelButtonText: 'Cancel',
+          reverseButtons: true
+        }).then((result)=>{
+          if(result.value){
+            t.row.add( [
+                count,
+                `<input type="hidden" name="ino[]" value="${number}" class="form-control"> ${product}`,
+                `${variant}`,
+                `${size}`,
+                `<input style="width: 90px" type="number" name="quantity[]" required  class="form-control">`,
+                `<input  type="text" name="reason[]" required  class="form-control">`
+
+            ] ).draw( false );
+            count++;
+          }
+        })
+      }
+    })
+
+
   });
 
 
