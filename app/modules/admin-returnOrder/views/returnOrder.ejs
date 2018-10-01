@@ -34,7 +34,7 @@
                   <th>No</th>
                   <th>Order No</th>
                   <th>Return Date</th>
-
+                  <th>Status</th>
                   <th>Actions</th>
                 </tr>
                 </thead>
@@ -49,8 +49,25 @@
                       <td><%=i.intReturnOrderNo%></td>
                       <td><%=i.intOrderNo%></td>
                       <td><%=moment(i.dateReturned).format("MM/DD/YYYY")%></td>
+                      <td>
+                        <% if(i.intStatus == 1){ %>
+                          Replaced
+                        <% }else if(i.intStatus == 0){ %>
+                          Pending
+                        <% }else{ %>
+                          Rejected
+                        <% } %>
+                      </td>
+                      <td>
+                        <% if(i.intStatus == 1){ %>
+                          <button data-no="<%=i.intReturnOrderNo%>" class="view large ui teal button">View</button>
+                        <% }else if(i.intStatus == 0){ %>
+                          <button data-no="<%=i.intReturnOrderNo%>" class="assess large ui orange button">Assess</button>
+                        <% }else{ %>
 
-                      <td><button class="large ui teal button">View</button></td>
+                        <% } %>
+
+                      </td>
                     </tr>
                   <%  }) %>
                   <% } %>
@@ -84,6 +101,16 @@
 
   <%- include('../../../templates/admin-footer.ejs') -%>
 <!-- page script (new added) -->
+
+<script>
+  $('.view').on('click',function(){
+
+  });
+
+  $('.assess').on('click',function(){
+    location.href = `/returnOrder/assessForm?q=${$(this).data('no')}`;
+  })
+</script>
 <script>
   $(function () {
     $('#example2').DataTable({

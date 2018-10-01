@@ -1,0 +1,46 @@
+<div class="box-body table-responsive">
+  <table id="product_table" class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Product Name</th>
+        <th>Type of Changes</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <% if(re==null||re==undefined){ %>
+
+      <% }else if(re.length==0){ %>
+
+      <% }else{ %>
+      <%  var count = 1; %>
+      <%  re.forEach(function(i){ %>
+          <tr>
+            <td><%=moment(i.transactionDate).format("MM/DD/YYYY")%></td>
+            <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%> <%=i.strUnitName%></td>
+            <td><%=i.strTypeOfChanges%></td>
+            
+          </tr>
+      <%  count++; %>
+      <%  }) %>
+      <% } %>
+
+    </tbody>
+  </table>
+</div>
+
+<script>
+  $(function () {
+    $('#product_table').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : false,
+      'ordering'    : false,
+      'info'        : false,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>

@@ -3,7 +3,7 @@ var db = require('../../lib/database')();
 var moment = require('moment');
 var async = require('async');
 
-var adj_returned = 1001;
+var adj_returned = 0;
 
 
 router.get('/', (req,res)=>{
@@ -15,6 +15,32 @@ router.get('/', (req,res)=>{
     }
   })
 });
+
+router.get('/assessForm',(req,res)=>{
+  db.query(`Select * from tblReturnOrder where intReturnOrderNo = "${req.query.q}"`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      db.query(`Select tblReturnOrderList.intOrderQuantity as qty, tblReturnOrderList.*, tblProductInventory.*, tblProductList.*, tblUom.*
+         from tblReturnOrderList join tblProductInventory on tblReturnOrderList.intOrderDetailsNo = tblProductInventory.strBarcode
+        join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
+        join tblUom on tblUom.intUomno = tblProductInventory.intUomno
+        where intReturnOrderNo = "${req.query.q}"`,(err2,res2,fie2)=>{
+          if(err2) console.log(err2);
+          else{
+
+            db.query(`Select * from tblReturnOrder join tblOrder on tblReturnOrder.intOrderNo = tblOrder.intOrderNo
+              join tblUser on tblUser.intUserID = tblOrder.intUserID`,(err3,res3,fie3)=>{
+                if(err3) console.log(err3);
+                else{
+                  res.render('admin-returnOrder/views/assessOrderForm',{ret: res1, det: res2, cust: res3, moment: moment})
+
+                }
+              })
+          }
+        })
+    }
+  })
+})
 
 router.get('/form', (req,res)=>{
   db.query(`Select * from tblReturnOrder order by intReturnOrderNo desc limit 1`,(err1,res1,fie1)=>{
@@ -49,7 +75,6 @@ router.get('/loadOrderList',(req,res)=>{
     }
   })
 });
-
 
 
 router.post('/newReturn',(req,res)=>{
@@ -134,7 +159,7 @@ router.post('/newReturn',(req,res)=>{
                                                   } // end of batch FIFO
 
                                                   // insert to tblAdjustmentss
-                                                  db.query(`Insert into tblAdjustments (intAdjustmentNo, intAdjustmentTypeNo, strAdjustmentNote, intAdminID, intQuantity, intInventoryNo) values("${adj_no}", "${adj_returned}", "Returned", "1000", ${req.body.replacementQuantity[count]}, "${res8[0].intInventoryNo}")`,(err11,res11,fie11)=>{
+                                                  db.query(`Insert into tblAdjustments (intAdjustmentNo, intAdjustmentType, strAdjustmentNote, intAdminID, intQuantity, intInventoryNo) values("${adj_no}", "${adj_returned}", "Used for Replacement", "1000", ${req.body.replacementQuantity[count]}, "${res8[0].intInventoryNo}")`,(err11,res11,fie11)=>{
                                                     if(err11) console.log(err11);
                                                     else{
                                                       // insert into tblInventoryTransactions
@@ -201,6 +226,162 @@ router.post('/newReturn',(req,res)=>{
               })
             }
           })
+        }
+      })
+    }
+  })
+})
+
+router.post('/assessReturn',(req,res)=>{
+  var loop = req.body.replacementProduct;
+  var adj_no = "1000", transact_no = "1000", sales_no = "1000", count = 0;
+  var returnlist = "";
+  var total = 0;
+
+  db.beginTransaction(function(err){
+    if(err) console.log(err);
+    else{
+      db.query(`Select * from tblReturnOrderList where intReturnOrderNo = "${req.body.rno}"`,(err1,res1,fie1)=>{
+        if(err1) console.log(err1);
+        else{
+          returnlist = res1;
+          // Select adj_no
+          db.query(`Select * from tblAdjustments order by intAdjustmentNo desc limit 1`,(err2,res2,fie2)=>{
+            if(err2) console.log(err2);
+            else{
+              if(res2.length==0){} else{adj_no = parseInt(res2[0].intAdjustmentNo) + 1}
+
+              // select inventory transact
+              db.query(`Select * from tblInventoryTransactions order by inttransactionID desc limit 1`,(err3,res3,fie3)=>{
+                if(err3) console.log(err3);
+                else{
+                  if(res3.length==0){} else{transact_no = parseInt(res3[0].intTransactionID) + 1}
+
+                  // Select sales_no
+                  db.query(`Select * from tblSales order by intSalesNo desc limit 1`,(err4,res4,fie4)=>{
+                    if(err4) console.log(err4);
+                    else{
+
+                      async.eachSeries(loop,function(data,callback){
+                        // check stock from tblproductInventory
+                        db.query(`Select * from tblProductInventory where strBarcode = "${req.body.replacementProduct[count]}" and intQuantity  >= ${req.body.replacementQuantity[count]}`,(err6,res6,fie6)=>{
+                          if(err6) console.log(err6);
+                          else{
+                            if(res6.length==0){ db.rollback(function(){res.send("no");}) }
+                            else{
+
+                              // Deduct from tblProductInventory
+                              db.query(`Update tblProductInventory set intQuantity = intQuantity - ${req.body.replacementQuantity[count]} where intInventoryNo = ${res6[0].intInventoryNo}`,(err7,res7,fie7)=>{
+                                if(err7) console.log(err7);
+                                else{
+
+                                  // Deduct from tblBatch
+                                  db.query(`Select * from tblBatch where intInventoryNo = "${res6[0].intInventoryNo}" order by created_at `,(err8,batch,fie8)=>{
+                                    if(err8) console.log(err8);
+                                    else{
+
+                                      // FIFO deduct
+                                      var remaining = req.body.replacementQuantity[count];
+
+                                      for(a in batch){
+                                        if(remaining == 0){ break; }
+                                        else if(batch[a].intQuantity == remaining || batch[a].intQuantity < remaining){
+                                          let newValue = 0;
+                                          remaining -= batch[a].intQuantity;
+                                          db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(ee1,rr1,ff1)=>{
+                                            if(ee1) console.log(ee1);
+                                          })
+                                        }
+                                        else{
+                                          let newValue = batch[a].intQuantity - remaining;
+                                          remaining = 0;
+                                          db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(ee2,rr2,ff2)=>{
+                                            if(ee2) console.log(ee2);
+                                          })
+                                        }
+                                      } // end of batch FIFO
+
+                                      // Insert to tblAdjustments
+                                      db.query(`Insert into tblAdjustments (intAdjustmentNo, intAdjustmentType, strAdjustmentNote, intAdminID, intQuantity, intInventoryNo)
+                                        values("${adj_no}", "${adj_returned}", "Used for Replacement", "1000", ${req.body.replacementQuantity[count]}, "${res6[0].intInventoryNo}")`,(err9,res9,fie9)=>{
+                                        if(err9) console.log(err9);
+                                        else{
+
+                                          // insert into tblInventoryTransactions
+                                          db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intShelfNo, intCriticalLimit, productSRP, productPrice, intUserID, strTypeOfChanges)
+                                            values ("${transact_no}","${res6[0].intInventoryNo}",${res6[0].intShelfNo}, ${res6[0].intCriticalLimit}, ${res6[0].productSRP}, ${res6[0].productPrice},"1000","Used Product for Replacement")`,(err10,res10,fie10)=>{
+                                              if(err10) console.log(err10);
+                                              else{
+
+                                                // update tblReturnorderlist
+                                                db.query(`Update tblReturnOrderList set intInventoryNo = "${req.body.replacementProduct[count]}", intReplaceQuantity = ${req.body.replacementQuantity[count]}
+                                                  where intReturnOrderListNo = ${returnlist[count].intReturnOrderListNo}`,(err5,res5,fie5)=>{
+                                                    if(err5) console.log(err5);
+                                                    else{
+
+                                                      // add to total deduct to sales
+                                                      db.query(`Select * from tblOrder join tblOrderDetails on tblOrder.intOrderNo = tblOrderDetails.intOrderNo
+                                                        where tblOrderDetails.intOrderNo = "${req.body.order_no}" and tblOrderDetails.intInventoryNo = "${res6[0].intInventoryNo}"`,(err11,res11,fie11)=>{
+                                                          if(err11) console.log(err11);
+                                                          else{
+                                                            total += res11[0].purchasePrice * res11[0].intQuantity;
+                                                            adj_no++;
+                                                            transact_no++;
+                                                            count++;
+                                                            callback();
+                                                          }
+                                                        })
+
+                                                    }
+                                                })
+                                              }
+                                            })
+                                        }
+                                      })
+                                    }
+                                  })
+                                }
+                              });
+
+                            }
+
+
+                          }
+                        })
+
+                      }, function(erra,resultsa){
+                        if(erra) console.log(erra);
+                        else{
+
+                          // Insert into tblSales
+                          db.query(`Insert into tblSales (intSalesNo, intOrderNo, amount, intStatus) values ("${sales_no}", "${req.body.order_no}", ${total}, 0)`,(err12,res12,fie12)=>{
+                            if(err12) console.log(err12);
+                            else{
+                              // change status of return order
+                              db.query(`Update tblReturnOrder set intStatus = 1 where intReturnOrderNo = "${req.body.rno}"`,(err14,res14,fie14)=>{
+                                if(err14) console.log(err14);
+                                else{
+                                  db.commit(function(errb){
+                                    if(errb) console.log(errb);
+                                    else{
+                                      res.send("yes")
+                                    }
+                                  })
+                                }
+                              })
+
+                            }
+                          })
+
+                        }
+                      })
+                    }
+                  })
+                }
+              })
+            }
+          })
+
         }
       })
     }
