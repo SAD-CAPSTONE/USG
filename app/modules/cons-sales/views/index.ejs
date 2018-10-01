@@ -334,7 +334,6 @@
             list.append(prodString);
 
           })
-          console.log(res);
 
           // pagination
           let defaultOpts = {
@@ -374,7 +373,6 @@
       $.post(`/consignorSales/prodSalesDetails`,{
         prodid: prodid, filterBy: filterBy, month: fMonth, year: fYear
       }).then((res) => {
-        console.log(res);
         let div = $('#ProductSalesDetails .modal-body');
         div.html('')
         div.append(`

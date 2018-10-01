@@ -3,9 +3,10 @@
 
 <div id="summary-container" class="container">
   <div id="summary-main-pane" class="fl-l">
-    <div hidden></div>
     <div>
-      <p id="notice" class="m-0 fs-08em fw-400 inline-block">Products will be delivered within <%= admin.deliveryPeriod%> working day/s</p>
+      <p id="notice" class="m-0 fs-08em fw-400 inline-block">
+        <%= notices[0]%>
+      </p>
       <a id="refresh" class="inline-block fl-r" href="#"><p class="m-0 fs-08em fw-400">Refresh List</p></a>
       <svg version="1.1" id="SVG_refreshList" class="inline-block fl-r" hidden>
         <circle stroke="none" cx="5" cy="11" r="4">
@@ -18,6 +19,11 @@
           <animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.3"></animate>
         </circle>
       </svg>
+      <div class="notices" hidden>
+        <% notices.forEach((notice)=>{ %>
+          <span><%= notice %></span>
+        <% }) %>
+      </div>
     </div>
     <div class="p-0">
       <div id="header" class="px-3 py-1">
@@ -61,8 +67,9 @@
     </div>
   </div>
   <div id="summary-details-pane" class="fl-r">
+    <div hidden></div>
     <div>
-      <p class="m-0 mb-1 inline-block">Shipping & Billing</p>
+      <p class="m-0 mb-1 fs-09em fw-400 lh-p3em inline-block">Shipping & Billing</p>
       <a data-toggle="modal" data-target="#EditAddress" class="edit" href><small>Edit</small></a>
 
       <div>
@@ -87,7 +94,7 @@
 
     </div>
     <div>
-      <p class="m-0 mb-1">Order Summary</p>
+      <p class="m-0 mb-1 fs-09em fw-400 lh-p3em ">Order Summary</p>
       <small class="label">Subtotal (0)</small>
       <small class="price subtotal price-symbol">0.00</small>
       <br>
@@ -134,7 +141,7 @@
                   <ul class="pl-4 m-0">
                     <li><p class="fs-09em fw-400 m-0"> Remember to refresh list before placing order.</p></li>
                     <li><p class="fs-09em fw-400 m-0"> Products will be delivered within <%= admin.deliveryPeriod%> working day/s.</p></li>
-                    <li><p class="fs-09em fw-400 m-0"> For bank deposit, payment voucher is valid within 24 hours, failure to pay will cancel the order.</p></li>
+                    <li><p class="fs-09em fw-400 m-0"> For bank deposit, payment is valid within 24 hours. Failure to pay will cancel the order.</p></li>
                     <li><p class="fs-09em fw-400 m-0"> We have a <strong>NO REFUND</strong> policy, payment cannot be refunded. &nbspProducts with defect are eligible for product replacement.</p></li>
                     <li><p class="fs-09em fw-400 m-0"> An item missing after placing order indicates that it is out of stock or no longer available.</p></li>
                   </ul>
@@ -365,11 +372,11 @@
     $('#getSummary').click();
 
     // Notice
-    let text = [
-      "Remember to refresh list before placing order",
-      "Only one discount voucher per order is allowed",
-      "Products will be delivered within <%= admin.deliveryPeriod%> working day/s"],
-    notice = $('#notice'), counter = 0, iNotice1 = setInterval(change, 8000), tNotice1;
+    let text = [];
+    $('div.notices span').each(function(){
+      text.push($(this).text());
+    })
+    let notice = $('#notice'), counter = 1, iNotice1 = setInterval(change, 8000), tNotice1;
     function change() {
       notice.css('opacity','0');
       tNotice1 = setTimeout(()=>{

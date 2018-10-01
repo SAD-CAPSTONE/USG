@@ -404,6 +404,9 @@ input#mobile {
   border-radius: 0px;
   padding: 12px;
 }
+.notice.special {
+  background: #ffefea;
+}
 
 /* Character Count */
 .txtcount-div {
@@ -431,6 +434,9 @@ input#mobile {
 }
 
 #notice {
+  transition: all 0.25s ease;
+}
+#notice-special {
   transition: all 0.25s ease;
 }
 
@@ -1099,10 +1105,6 @@ table th, table td {
   padding-left: 10px;
   width: var(--summary-details-pane-width);
 }
-#summary-details-pane > div p:first-of-type{
-  font-size: .9em;
-  font-weight: 400;
-}
 #summary-details-pane > div a.edit{
   position: absolute;
   right: 15px;
@@ -1143,6 +1145,10 @@ table th, table td {
 }
 
 /* summary > order */
+#summary-main-pane .fa-minus-circle:hover {
+  color: var(--danger-hover);
+}
+
 #summary-details-pane #more-details {
   position: absolute;
   bottom: 15px;
@@ -1160,12 +1166,16 @@ table th, table td {
   margin-right: 3px;
 
 }
-#summary-main-pane .fa-minus-circle:hover {
-  color: var(--danger-hover);
-}
-#summary-details-pane > div:nth-child(2) > p:nth-of-type(2) {
+#summary-details-pane > div:nth-child(3) > p:nth-of-type(2) {
   color: var(--primary-color)
 }
+#summary-details-pane #notice {
+  height: 43px;
+}
+#summary-details-pane #notice-special {
+  color: #FE787C;
+}
+notice-special
 
 #bankslip-img {
   max-height: 250;
@@ -1638,12 +1648,19 @@ table th, table td {
     position: relative;
   }
   #summary-details-pane > div:nth-child(1) {
-    width: 49%;
-    float: left;
+    width: 100%;
   }
   #summary-details-pane > div:nth-child(2) {
     width: 49%;
+    float: left;
+  }
+  #summary-details-pane > div:nth-child(3) {
+    width: 49%;
     float: right;
+  }
+
+  #summary-details-pane #notice {
+    height: auto;
   }
 }
 @media (max-width: 768px) {
@@ -1675,20 +1692,17 @@ table th, table td {
     display: block;
   }
 
-  #summary-details-pane > div:first-child {
+  #summary-details-pane > div:nth-child(2) {
     width: 100%;
   }
-  #summary-details-pane > div:nth-child(2) {
+  #summary-details-pane > div:nth-child(3) {
     width: 100%;
     position: relative;
   }
-  #summary-main-pane > div:nth-child(2) a {
-    float: none;
+  #summary-details-pane #notice {
+    height: 43px;
   }
-  #summary-main-pane > div:nth-child(2) svg#SVG_refreshList {
-    float: none;
-    display: block
-  }
+
   #summary-main-pane #header {
     display: none;
   }
@@ -1869,6 +1883,14 @@ table th, table td {
   }
   #summary-main-pane > div:nth-child(2) a {
     display: block;
+  }
+
+  #summary-main-pane > div:nth-child(1) a {
+    float: none;
+  }
+  #summary-main-pane > div:nth-child(1) svg#SVG_refreshList {
+    float: none;
+    display: block
   }
 
   #sidebar #main-content #order-filter {

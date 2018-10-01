@@ -8,16 +8,16 @@ function popularProducts(req,res,next){
   /*Most Popular Products;
   *(tblproductlist)*(tblproductbrand)*(tblproductinventory)*(tblorderdetails)*(tblproductreview)*/
   db.query(`SELECT B.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating,
-    COUNT(Review.strReview)AS cntReview FROM
+    COUNT(Review.strReview)AS cntReview, IF(B.productRecorded > DATE_SUB(curdate(), INTERVAL 2 WEEK), 1, 0)newProduct FROM
     (
     	SELECT A.*, OrderCNT FROM
     	(
     		SELECT tblproductlist.*, Inv.intInventoryNo, min(Inv.productPrice)minPrice,max(Inv.productPrice)maxPrice,
-        Brand.strBrand, max(Inv.discount)maxDisc FROM tblproductlist
+        Brand.strBrand, max(Inv.discount)maxDisc, min(Inv.dateRecorded)productRecorded FROM tblproductlist
         INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
     		INNER JOIN
     		(
-    			SELECT tblproductinventory.intInventoryNo,intProductNo, discount,
+    			SELECT tblproductinventory.intInventoryNo,intProductNo, discount, dateRecorded,
     			IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, discountDueDate
     			FROM tblproductinventory LEFT JOIN
     			(
@@ -49,14 +49,14 @@ function newProducts(req,res,next){
   /*New Popular Products;
   *(tblproductlist)*(tblproductbrand)*(tblproductinventory)*(tblproductreview)*/
   db.query(`SELECT A.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating,
-    COUNT(Review.strReview)AS cntReview FROM
+    COUNT(Review.strReview)AS cntReview, IF(A.productRecorded > DATE_SUB(curdate(), INTERVAL 2 WEEK), 1, 0)newProduct FROM
     (
     	SELECT tblproductlist.*, Inv.intInventoryNo, min(Inv.productPrice)minPrice,max(Inv.productPrice)maxPrice,
-    	Brand.strBrand, max(Inv.discount)maxDisc FROM tblproductlist
+    	Brand.strBrand, max(Inv.discount)maxDisc, min(Inv.dateRecorded)productRecorded FROM tblproductlist
     	INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
     	INNER JOIN
     	(
-    		SELECT tblproductinventory.intInventoryNo,intProductNo, discount,
+    		SELECT tblproductinventory.intInventoryNo,intProductNo, discount, dateRecorded,
     		IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, discountDueDate
     		FROM tblproductinventory LEFT JOIN
     		(

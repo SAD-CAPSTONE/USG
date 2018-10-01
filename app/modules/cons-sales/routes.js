@@ -69,7 +69,6 @@ router.post('/loadSales', monthsAvailable, yearsAvailable, (req,res)=>{
   req.body.filterBy == 'specialDate' ?
     req.monthsAvailable[0] ?
       req.monthsAvailable.reduce((temp, month)=>{
-        console.log(temp)
         return month.month == req.body.month ? 1 : temp
       },0) ?
         0 :
@@ -81,7 +80,6 @@ router.post('/loadSales', monthsAvailable, yearsAvailable, (req,res)=>{
   req.body.filterBy == 'specialDate' ?
     req.yearsAvailable[0] ?
       req.yearsAvailable.reduce((temp, year)=>{
-        console.log(temp)
         return year.year == req.body.year ? 1 : temp
       },0) ?
         0 : config.filterBy = 'thisWeek'
@@ -243,7 +241,6 @@ router.post('/prodSalesDetails', monthsAvailable, yearsAvailable, (req,res)=>{
   req.body.filterBy == 'specialDate' ?
     req.monthsAvailable[0] ?
       req.monthsAvailable.reduce((temp, month)=>{
-        console.log(temp)
         return month.month == req.body.month ? 1 : temp
       },0) ?
         0 :
@@ -255,7 +252,6 @@ router.post('/prodSalesDetails', monthsAvailable, yearsAvailable, (req,res)=>{
   req.body.filterBy == 'specialDate' ?
     req.yearsAvailable[0] ?
       req.yearsAvailable.reduce((temp, year)=>{
-        console.log(temp)
         return year.year == req.body.year ? 1 : temp
       },0) ?
         0 : config.filterBy = 'thisWeek'

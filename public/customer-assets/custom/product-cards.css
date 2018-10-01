@@ -26,6 +26,34 @@
   overflow:hidden;
   border-radius: 0px;
 }
+.custom-card .card-img .tag-div {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  padding: 0px 7px;
+  z-index: 10;
+  color: white;
+}
+.custom-card .card-img .tag-div i {
+  color: white !important;
+  margin-right: 4px;
+}
+.custom-card .card-img .tag-div i {
+  vertical-align: 1.5px;
+}
+.custom-card .card-img .tag-div.sale {
+  background: linear-gradient(to right, #a79aea , #8571ed);;
+}
+.custom-card .card-img .tag-div.new {
+  background: linear-gradient(to right, #396afc , #2948ff);
+}
+.custom-card .card-img .tag-div.popular {
+  background: linear-gradient(to right, #f12711 , #f5af19);
+}
+/* .custom-card .card-img .tag-div.hot {
+  background: linear-gradient(to right, #f12711 , #f5af19);
+} */
+
 .custom-card img {
   height:100%;
   width:100%;

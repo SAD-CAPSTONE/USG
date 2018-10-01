@@ -280,10 +280,17 @@ function packages(req,res,next){
 }
 
 router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>{
+  let notices = [
+    `Products will be delivered within ${req.admin.deliveryPeriod} working day/s`,
+    `Remember to refresh list before placing order`,
+    `Only one discount voucher per order is allowed`
+  ];
+
   res.render('cust-summary/views/checkout', {
     thisUser: req.user,
     thisUserContact: req.contactDetails,
-    admin: req.admin
+    admin: req.admin,
+    notices: notices
   });
 });
 router.get('/order/:orderNo', checkUserOrder, auth_cust, orderTotal, orderPackages, admin, (req,res)=>{
@@ -303,7 +310,7 @@ router.get('/order/:orderNo', checkUserOrder, auth_cust, orderTotal, orderPackag
       results = results.concat(req.orderPackages)
       results.sort(orderArraySort);
       results.forEach((obj)=>{
-        obj.dateOrdered = moment(obj.dateOrdered).format('ll');
+        obj.dateOrdered = moment(obj.dateOrdered).format('LL');
         obj.productPrice ? obj.purchasePrice = priceFormat(obj.productPrice.toFixed(2)): 0
         obj.oldPrice ? obj.oldPrice = priceFormat(obj.oldPrice.toFixed(2)): 0
         obj.intSize = sizeString(obj);
@@ -311,6 +318,19 @@ router.get('/order/:orderNo', checkUserOrder, auth_cust, orderTotal, orderPackag
       let orderLength = results.reduce((temp, obj)=>{
         return temp += obj.orderQty
       },0);
+      let notices = {
+        special : [],
+        general : []
+      }
+      if (!results[0].intPaymentStatus && results[0].intPaymentMethod == 2){
+        notices.special.push(`Upload your deposit slip in the Order Summary section below`)
+        notices.special.push(`Order will be processed after payment verification`)
+      }
+      notices.general.push(`Products will be delivered within ${req.admin.deliveryPeriod} working day/s`)
+      notices.general.push(`Bank payments are valid within 24 hours of order, failure to pay cancels order`)
+      notices.general.push(`Online receipt is available after payment is verified`)
+      notices.general.push(`Option to return products is available within 2 days after they are delivered`)
+
       res.render('cust-summary/views/order', {
         thisUser: req.user,
         order: results,
@@ -318,7 +338,8 @@ router.get('/order/:orderNo', checkUserOrder, auth_cust, orderTotal, orderPackag
         orderOne: results[0],
         orderNumber: req.params.orderNo,
         orderTotal: req.orderTotal.totalPrice,
-        admin: req.admin
+        admin: req.admin,
+        notices: notices
       });
     }
     else{
