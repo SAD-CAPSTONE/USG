@@ -67,6 +67,7 @@ router.get('/history',(req,res)=>{
 router.post('/cancelOrder',(req,res)=>{
   var orderHistoryNo = "1000", message_no = "1000";
 
+  
   db.beginTransaction(function(err){
     if(err) console.log(err);
     else{
@@ -79,17 +80,18 @@ router.post('/cancelOrder',(req,res)=>{
             else{
               if(res2[0].length == 0){} else{message_no = parseInt(res2[0].intMessageNo) + 1}
               db.query(`Select * from tblOrder where intOrderNo = "${req.body.order_no}"`,(err3,order,fie3)=>{
+                console.log(order)
                 if(err3) console.log(err3);
                 else{
                   db.query(`Update tblOrder set intStatus = 6 where intOrderNo = "${req.body.order_no}"`,(err4,res4,fie4)=>{
                     if(err4) console.log(err4);
                     else{
-                      db.query(`Insert into tblMessages (intMessageNo, intOrderHistoryNo, strMessage, intAdminID) values
-                      ("${message_no}", "${orderHistoryNo}", "${req.body.message}", "1000")`,(err5,res5,fie5)=>{
+                      db.query(`Insert into tblMessages (intMessageNo, intCustomerID, strMessage, intAdminID) values
+                      ("${message_no}", "${order[0].intUserID}", "${req.body.message}", "1000")`,(err5,res5,fie5)=>{
                         if(err5) console.log(err5);
                         else{
-                          db.query(`Insert into tblOrderHistory (intOrderHistoryNo, strShippingMethod, strCourier, intStatus, intPaymentStatus, intAdminID, intMessageNo, strShippingAddress, strBillingAddress)
-                          values ("${orderHistoryNo}", "${order[0].strShippingMethod}", "${order[0].strCourier}", 6, ${order[0].intPaymentStatus}, "1000", "${message_no}", "${order[0].strShippingAddress}", "${order[0].strBillingAddress}")`,(err6,res6,fie6)=>{
+                          db.query(`Insert into tblOrderHistory (intOrderHistoryNo, strShippingMethod, strCourier, intStatus, intPaymentStatus, intAdminID,  strShippingAddress, strBillingAddress)
+                          values ("${orderHistoryNo}", "${order[0].strShippingMethod}", "${order[0].strCourier}", 6, ${order[0].intPaymentStatus}, "1000",  "${order[0].strShippingAddress}", "${order[0].strBillingAddress}")`,(err6,res6,fie6)=>{
 
                             db.query(`Select * from tblOrderDetails where intOrderNo = "${req.body.order_no}"`,(err7,details,fie7)=>{
                               if(err7) console.log(err7);
@@ -158,7 +160,7 @@ router.post('/changeStatus',(req,res)=>{
             else{
               if(res2.length==0){} else{ sales_no = parseInt(res2[0].intSalesNo) + 1;}
 
-              
+
             }
           })
         }
