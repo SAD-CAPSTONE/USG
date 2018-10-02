@@ -125,31 +125,11 @@ router.get('/assessOrder',(req,res)=>{
 });
 
 function pending(req,res){
-  if (req.body.paymentStatus == 0){
-    db.commit(function(erri){
-      if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
-      else{
-        res.send("yes")
 
-      }
-    });
-  }else if(req.body.paymentStatus == 1){
-    paid(req,res);
-  }
 } // end of pending
 
 function processing(req,res){
-  if (req.body.paymentStatus == 0){
-    db.commit(function(erri){
-      if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
-      else{
-        res.send("yes")
 
-      }
-    });
-  }else if(req.body.paymentStatus == 1){
-    paid(req,res);
-  }
 } // end of processing
 
 
@@ -158,7 +138,7 @@ function forPackage(req,res){
 }
 
 function shipped(req,res){
-var c = 0;
+  var c = 0;
   // update product inventory
   db.query(`Select * from tblorderdetails where intOrderNo = "${req.body.orderNo}"`,(errz,orders,fieldsz)=>{
     if(errz){db.rollback(function(){console.log(errz)})}
@@ -250,17 +230,7 @@ var c = 0;
       },function(erry,resultsy){
         if(erry){db.rollback(function(){console.log(erry)})}
         else{
-          if (req.body.paymentStatus == 0){
-            db.commit(function(erri){
-              if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
-              else{
-                res.send("yes");
 
-              }
-            });
-          }else if(req.body.paymentStatus == 1){
-            paid(req,res);
-          }
 
         }
 
@@ -271,59 +241,45 @@ var c = 0;
 } // end of Shipped
 
 function delivered(req,res){
-  if (req.body.paymentStatus == 0){
-    db.commit(function(erri){
-      if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
-      else{
-        res.send("yes")
 
-      }
-    });
-  }else if(req.body.paymentStatus == 1){
-    paid(req,res);
-  }
 } // end of delivered
 
 function notDeliver(req,res){
-  if (req.body.paymentStatus == 0){
-    db.commit(function(erri){
-      if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
-      else{
-        res.send("yes")
 
-      }
-    });
-  }else if(req.body.paymentStatus == 1){
-    paid(req,res);
-  }
 } // end of not delivered
 
 function returned(req,res){
-  if (req.body.paymentStatus == 0){
-    db.commit(function(erri){
-      if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
-      else{
-        res.send("yes")
 
-      }
-    });
-  }else if(req.body.paymentStatus == 1){
-    paid(req,res);
-  }
 } // end of returned
 
 function cancelled(req,res){
-  if (req.body.paymentStatus == 0){
-    db.commit(function(erri){
-      if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
-      else{
-        res.send("yes")
+  db.query(`Select * from tblOrderDetails where intOrderNo = "${req.body.orderNo}"`,(err1,details,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      details.forEach(function(i){
+        // For ordinary product
+        if(i.intProductType == 1){
+          db.query(`Update tblProductInventory set intReservedItems = intReservedItems - ${i.intQuantity} where intInventoryNo = ${i.intInventoryNo}`,(err2,res2,fie2)=>{
+            if(err2) console.log(err2);
+            else{
 
-      }
-    });
-  }else if(req.body.paymentStatus == 1){
-    paid(req,res);
-  }
+            }
+          })
+
+        }
+        // For package product
+        else{
+          db.query(`Update tblPackage set intReservedItems = intReservedItems - ${i.intQuantity} where intPackageNo = ${i.intInventoryNo}`,(err3,res3,fie3)=>{
+            if(err3) console.log(err3);
+            else{
+
+            }
+          })
+        }
+      })
+    }
+  })
+
 } // end of cancelled
 
 function paid(req,res){
@@ -361,91 +317,141 @@ function awaitingPayment(req,res){
 
 
 router.post('/assessOrder',(req,res)=>{
+  var orderStat = 0, paymentStat = 0, sameStat = 0;
 
-  db.beginTransaction(function(err){
+  if(req.body.orderStatus == ""){ orderStat = req.body.currentOrderStat } else{ orderStat = req.body.orderStatus}
+  if(req.body.paymentStatus == ""){ paymentStat = req.body.currentPaymentStat} else{ paymentStat = req.body.paymentStatus}
+
+  if (req.body.orderStatus == req.body.currentOrderStat){ sameStat = 1}
+
+  if(req.body.orderStatus == req.body.currentOrderStat && req.body.paymentStatus == req.body.currentPaymentStat){
+    res.send("same");
+  }else{
+
+    db.beginTransaction(function(err){
     if(err){ console.log(err);}
     else{
+
       // Update order status
-      db.query(`Update tblOrder set intStatus = ${req.body.orderStatus}, strShippingMethod ="${req.body.shippingMethod}",
-       strCourier = "${req.body.courier}", intPaymentStatus = ${req.body.paymentStatus} where intOrderNo = "${req.body.orderNo}" `, (err1,results1,fields1)=>{
+      db.query(`Update tblOrder set intStatus = ${orderStat}, strShippingMethod ="${req.body.shippingMethod}",
+       strCourier = "${req.body.courier}", intPaymentStatus = ${paymentStat} where intOrderNo = "${req.body.orderNo}" `, (err1,results1,fields1)=>{
           if(err1){db.rollback(function(){console.log(err1); res.send("no")})}
           else{
             var historynum = 1000, messagenum = 0;
-            // Select last orderhistory no
-            db.query(`Select * from tblOrderHistory order by intOrderHistoryNo desc limit 1`,
-              (err2,results2,fields2)=>{
-                if(err2){db.rollback(function(){console.log(err2); res.send("no")})}
-                else{
-                  if (results2 == null || results2 == undefined){}else if(results2.length == 0){}
-                  else{
-                    historynum = parseInt(results2[0].intOrderHistoryNo) + 1;
-                  }
-                  // Select last message no
-                  db.query(`Select * from tblMessages order by intMessageNo desc limit 1`,
-                    (err3,results3, fields3)=>{
-                      if(err3){db.rollback(function(){console.log(err3); res.send("no")})}
+
+            // Select customer ID
+            db.query(`Select * from tblOrder where intOrderNo = "${req.body.orderNo}"`,(err01,cust,fie01)=>{
+              if(err01) console.log(err01);
+              else{
+
+                // Select last orderhistory no
+                db.query(`Select * from tblOrderHistory order by intOrderHistoryNo desc limit 1`,
+                  (err2,results2,fields2)=>{
+                    if(err2){db.rollback(function(){console.log(err2); res.send("no")})}
+                    else{
+                      if (results2 == null || results2 == undefined){}else if(results2.length == 0){}
                       else{
-                        if (req.body.notify == 1){
-
-                          if(results3==null||results3==undefined){messagenum = "1000"}else if(results3.length==0){messagenum = "1000"}
-                          else{messagenum = parseInt(results3[0].intMessageNo)+1}
-                          // insert to message
-                          db.query(`Insert into tblMessages (intMessageNo, intOrderHistoryNo, strMessage,
-                            intAdminID) values ("${messagenum}", "${historynum}","${req.body.message}", "1000" )`,(err4,results4,fields4)=>{
-                            if (err4){db.rollback(function(){console.log(err4); res.send("no")})}
-                          });
-                        }
-                        // Insert into order history
-                        db.query(`Insert into tblOrderHistory (intOrderHistoryNo, intOrderNo,
-                          strShippingMethod, strCourier, intStatus, intAdminID, intMessageNo, intPaymentStatus) values ("${historynum}", "${req.body.orderNo}", "${req.body.shippingMethod}","${req.body.courier}", ${req.body.orderStatus}, "1000", "${messagenum}", ${req.body.paymentStatus})`, (err5,results5,fields5)=>{
-                            if(err5){db.rollback(function(){console.log(err5); res.send("no")})}
-                            else{
-
-                              if(req.body.orderStatus == 0){
-                                // execute pending function
-                                pending(req,res);
-                              }
-                              else if(req.body.orderStatus == 1){
-                                // execute processing function
-                                processing(req,res);
-                              }
-                              else if(req.body.orderStatus == 2){
-                                // execute shipped function
-                                shipped(req,res);
-                              }
-                              else if(req.body.orderStatus == 3){
-                                // execute delivered function
-                                delivered(req,res);
-                              }
-                              else if(req.body.orderStatus == 4){
-                                // execute will not deliver function
-                                notDeliver(req,res);
-                              }
-                              else if(req.body.orderStatus == 5){
-                                // execute returned function
-                                returned(req,res);
-                              }
-                              else{
-                                // execute cancelled function
-                              }
-
-
-
-                            }
-                        }) // End of Order History -------
-                        // End of insert to order history
+                        historynum = parseInt(results2[0].intOrderHistoryNo) + 1;
                       }
-                  });
-                  // End of last message no ----------------------
-                }
-            });
-            // End of last ordhist no -------------------------
+                      // Select last message no
+                      db.query(`Select * from tblMessages order by intMessageNo desc limit 1`,
+                        (err3,results3, fields3)=>{
+                          if(err3){db.rollback(function(){console.log(err3); res.send("no")})}
+                          else{
+                            if (req.body.notify == 1){
+
+                              if(results3==null||results3==undefined){messagenum = "1000"}else if(results3.length==0){messagenum = "1000"}
+                              else{messagenum = parseInt(results3[0].intMessageNo)+1}
+                              // insert to message
+                              db.query(`Insert into tblMessages (intMessageNo, intCustomerID, strMessage,
+                                intAdminID) values ("${messagenum}", "${cust[0].intUserID}","${req.body.message}", "1000" )`,(err4,results4,fields4)=>{
+                                if (err4){db.rollback(function(){console.log(err4); res.send("no")})}
+                              });
+                            }
+                            // Insert into order history
+                            db.query(`Insert into tblOrderHistory (intOrderHistoryNo, intOrderNo,
+                              strShippingMethod, strCourier, intStatus, intAdminID, intPaymentStatus)
+                              values ("${historynum}", "${req.body.orderNo}", "${req.body.shippingMethod}","${req.body.courier}", ${orderStat}, "1000",  ${paymentStat})`, (err5,results5,fields5)=>{
+                                if(err5){db.rollback(function(){console.log(err5); res.send("no")})}
+                                else{
+
+                                  // For order status ------------------------
+                                  if(orderStat == 0){
+                                    // execute pending function
+                                    pending(req,res);
+                                  }
+                                  else if(orderStat == 1){
+                                    // execute processing function
+                                    processing(req,res);
+                                  }
+                                  else if(orderStat == 2){
+                                    // you cannot set shipped twice
+                                    if(sameStat == 1) {
+
+                                    }else{
+                                      // execute shipped function
+                                      shipped(req,res);
+                                    }
+
+                                  }
+                                  else if(orderStat == 3){
+                                    // execute delivered function
+                                    delivered(req,res);
+                                  }
+                                  else if(orderStat == 4){
+                                    // execute will not deliver function
+                                    notDeliver(req,res);
+                                  }
+                                  else if(orderStat == 5){
+                                    // execute returned function
+                                    returned(req,res);
+                                  }
+                                  else if(orderStat == 6){
+                                    // execute cancelled function
+                                    cancelled(req,res);
+                                  }else{
+                                    // execute blank orderStat
+                                  }
+
+                                  // For payment status ----------------------
+                                  if (paymentStat == 0){
+
+                                      db.commit(function(erri){
+                                        if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
+                                        else{
+                                          res.send("yes")
+
+                                        }
+                                      });
+
+
+                                  }else if(paymentStat == 1){
+
+                                      paid(req,res);
+
+                                  }else{
+
+                                  }
+                                }
+                            }) // End of Order History -------
+                            // End of insert to order history
+                          }
+                      });
+                      // End of last message no ----------------------
+                    }
+                });
+                // End of last ordhist no -------------------------
+              }
+            })
+            // End of select customer no -------------------------
           }
       });
       // End of order status update -----------------------------
     }
   });
-  // END OF TRANSACTION ----------------
+    // END OF TRANSACTION ----------------
+  }
+
 });
 
 router.get('/orderHistory',(req,res)=>{

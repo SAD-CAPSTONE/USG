@@ -260,8 +260,9 @@ router.post('/assessReturn',(req,res)=>{
                   // Select sales_no
                   db.query(`Select * from tblSales order by intSalesNo desc limit 1`,(err4,res4,fie4)=>{
                     if(err4) console.log(err4);
-                    else{
 
+                    else{
+                      if(res4.length==0){} else{sales_no = parseInt(res4[0].intSalesNo) + 1}
                       async.eachSeries(loop,function(data,callback){
                         // check stock from tblproductInventory
                         db.query(`Select * from tblProductInventory where strBarcode = "${req.body.replacementProduct[count]}" and intQuantity  >= ${req.body.replacementQuantity[count]}`,(err6,res6,fie6)=>{
@@ -320,17 +321,24 @@ router.post('/assessReturn',(req,res)=>{
                                                     else{
 
                                                       // add to total deduct to sales
-                                                      db.query(`Select * from tblOrder join tblOrderDetails on tblOrder.intOrderNo = tblOrderDetails.intOrderNo
-                                                        where tblOrderDetails.intOrderNo = "${req.body.order_no}" and tblOrderDetails.intInventoryNo = "${res6[0].intInventoryNo}"`,(err11,res11,fie11)=>{
-                                                          if(err11) console.log(err11);
-                                                          else{
-                                                            total += res11[0].purchasePrice * res11[0].intQuantity;
-                                                            adj_no++;
-                                                            transact_no++;
-                                                            count++;
-                                                            callback();
-                                                          }
-                                                        })
+                                                      db.query(`Select * from tblProductInventory where strBarcode = "${returnlist[0].intOrderDetailsNo}"`,(err15,res15,fie15)=>{
+                                                        if(err15) console.log(err15);
+                                                        else{
+
+                                                          db.query(`Select * from tblOrder join tblOrderDetails on tblOrder.intOrderNo = tblOrderDetails.intOrderNo
+                                                            where tblOrderDetails.intOrderNo = "${req.body.order_no}" and tblOrderDetails.intInventoryNo = "${res15[0].intInventoryNo}"`,(err11,res11,fie11)=>{
+                                                              if(err11) console.log(err11);
+                                                              else{
+                                                                total += res11[0].purchasePrice * res11[0].intQuantity;
+                                                                adj_no++;
+                                                                transact_no++;
+                                                                count++;
+                                                                callback();
+                                                              }
+                                                            })
+                                                        }
+                                                      })
+
 
                                                     }
                                                 })
