@@ -60,7 +60,7 @@
                       </td>
                       <td>
                         <% if(i.intStatus == 1){ %>
-                          <button data-no="<%=i.intReturnOrderNo%>" class="view large ui teal button">View</button>
+                          <a href="/returnOrder/view?q=<%=i.intReturnOrderNo%>"><button data-no="<%=i.intReturnOrderNo%>" class="view large ui teal button">View</button></a>
                         <% }else if(i.intStatus == 0){ %>
                           <button data-no="<%=i.intReturnOrderNo%>" class="assess large ui orange button">Assess</button>
                         <% }else{ %>

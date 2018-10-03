@@ -16,6 +16,72 @@ router.get('/', (req,res)=>{
   })
 });
 
+router.get('/view',(req,res)=>{
+  db.query(`Select * from tblReturnOrder where intReturnOrderNo = "${req.query.q}"`,(err1,return_order,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      db.query(`Select * from tblReturnOrder join tblOrder on tblReturnOrder.intOrderNo = tblOrder.intOrderNo
+        join tblUser on tblOrder.intUserID = tblUser.intUserID
+        join tblCustomer on tblCustomer.intUserID = tblUser.intUserID
+        where tblReturnOrder.intReturnOrderNo = "${req.query.q}"`,(err2,customer,fie2)=>{
+          if(err2) console.log(err2);
+          else{
+            db.query(`Select Concat_WS(' ', a2.strProductName, a1.strVariant, a1.intSize, a3.strUnitName) as orderedProducts, intOrderQuantity as orderedQuantity,
+              Concat_WS(' ', b2.strProductName, b1.strVariant, b1.intSize, b3.strUnitName) as replacedProduct, intReplaceQuantity as replacedQuantity, z1.*
+
+              from tblReturnOrderList as z1 join tblProductInventory as a1 on z1.intOrderDetailsNo = a1.strBarcode
+              join tblProductlist as a2 on a1.intProductNo = a2.intProductNo
+              join tblUom as a3 on a3.intuomno = a1.intuomno
+
+              join tblProductInventory as b1 on z1.intInventoryNo = b1.strBarcode
+              join tblProductList as b2 on b2.intProductNo = b1.intProductNo
+              join tblUom as b3 on b3.intUomno = b1.intuomno
+
+              where intReturnOrderNo = "${req.query.q}"`,(err3,list,fie3)=>{
+                if(err3) console.log(err3);
+                else{
+                  res.render('admin-returnOrder/views/invoice',{return_order: return_order, customer: customer, list: list, moment: moment})
+                }
+              })
+          }
+        })
+    }
+  })
+});
+
+router.get('/invoice-print',(req,res)=>{
+  db.query(`Select * from tblReturnOrder where intReturnOrderNo = "${req.query.q}"`,(err1,return_order,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      db.query(`Select * from tblReturnOrder join tblOrder on tblReturnOrder.intOrderNo = tblOrder.intOrderNo
+        join tblUser on tblOrder.intUserID = tblUser.intUserID
+        join tblCustomer on tblCustomer.intUserID = tblUser.intUserID
+        where tblReturnOrder.intReturnOrderNo = "${req.query.q}"`,(err2,customer,fie2)=>{
+          if(err2) console.log(err2);
+          else{
+            db.query(`Select Concat_WS(' ', a2.strProductName, a1.strVariant, a1.intSize, a3.strUnitName) as orderedProducts, intOrderQuantity as orderedQuantity,
+              Concat_WS(' ', b2.strProductName, b1.strVariant, b1.intSize, b3.strUnitName) as replacedProduct, intReplaceQuantity as replacedQuantity, z1.*
+
+              from tblReturnOrderList as z1 join tblProductInventory as a1 on z1.intOrderDetailsNo = a1.strBarcode
+              join tblProductlist as a2 on a1.intProductNo = a2.intProductNo
+              join tblUom as a3 on a3.intuomno = a1.intuomno
+
+              join tblProductInventory as b1 on z1.intInventoryNo = b1.strBarcode
+              join tblProductList as b2 on b2.intProductNo = b1.intProductNo
+              join tblUom as b3 on b3.intUomno = b1.intuomno
+
+              where intReturnOrderNo = "${req.query.q}"`,(err3,list,fie3)=>{
+                if(err3) console.log(err3);
+                else{
+                  res.render('admin-returnOrder/views/invoice-print',{return_order: return_order, customer: customer, list: list, moment: moment})
+                }
+              })
+          }
+        })
+    }
+  })
+})
+
 router.get('/assessForm',(req,res)=>{
   db.query(`Select * from tblReturnOrder where intReturnOrderNo = "${req.query.q}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
