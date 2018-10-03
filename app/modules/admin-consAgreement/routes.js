@@ -17,7 +17,7 @@ router.get('/contract',(req,res)=>{
   db.query(`Select * from tblSupplier join tblContract on tblSupplier.intUserID = tblContract.intConsignorID join tblBusinessType on tblBusinessType.intBusinessTypeNo = tblSupplier.intBusinessTypeNo where tblSupplier.intUserID = "${req.query.q}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     if(!err1){
-
+      console.log(res1);      
       res.render('admin-consAgreement/views/contract',{contract: res1, moment: moment})
     }
   })
