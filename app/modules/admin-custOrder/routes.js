@@ -138,7 +138,7 @@ function forPackage(req,res){
 }
 
 function shipped(req,res){
-  var c = 0;
+  var c = 0, transact_no = "1000";
   // update product inventory
   db.query(`Select * from tblorderdetails where intOrderNo = "${req.body.orderNo}"`,(errz,orders,fieldsz)=>{
     if(errz){db.rollback(function(){console.log(errz)})}
@@ -161,41 +161,57 @@ function shipped(req,res){
                   where (tblproductinventory.intInventoryNo = "${orders[c].intInventoryNo}") and (intQuantity  >= ${orders[c].intQuantity})`,(errx,resultsx,fieldsx)=>{
                     if(errx){db.rollback(function(){console.log(errx); res.send("no");})}
 
-                    // batch deduct
                     else{
-                      var remaining = orders[c].intQuantity; // 22
-                      var remaining2 = orders[c].intQuantity;
+                      db.query(`Select * from tblInventoryTransactions order by intTransactionID desc limit 1`,(err01,res01,fie01)=>{
+                        if(err01) {db.rollback(function(){console.log(err01); res.send("no");})}
+                        else{
+                          if(res01.length==0){} else{ transact_no = parseInt(res01[0].intTransactionID) + 1}
 
-                        db.query(`Select * from tblBatch where intInventoryNo = "${orders[c].intInventoryNo}" order by created_at`,(e3,batch,f3)=>{
-                          if(e3) console.log(e3);
+                          db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intShelfNo, intCriticalLimit, strTypeOfChanges, intUSerID, productSRP, productPrice, currQuantity)
+                            values ("${transact_no}", "${orders[c].intInventoryNo}", ${resw[0].intShelfNo}, ${resw[0].intCriticalLimit}, "Sold Products (-${orders[c].intQuantity} deduct from Inventory)", "1000", ${resw[0].productSRP}, ${resw[0].productPrice}, ${resw[0].intQuantity - orders[c].intQuantity})`,(err02,res02,fie02)=>{
+                              if(err02) {db.rollback(function(){console.log(err02); res.send("no");})}
+                              else{
+                                // batch deduct
+                                var remaining = orders[c].intQuantity; // 22
+                                var remaining2 = orders[c].intQuantity;
 
-                          for(var a in batch){
-                            if(remaining == 0){
-                              break;
-                            }
-                            else if(batch[a].intQuantity < remaining || batch[a].intQuantity == remaining){
-                              let newValue = 0;
-                              remaining -= batch[a].intQuantity;
-                              console.log('newValue: '+newValue);
-                              console.log('remaining: '+remaining);
-                              db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(e4,r4,f4)=>{
-                                if(e4)console.log(e4);
-                              });
+                                  db.query(`Select * from tblBatch where intInventoryNo = "${orders[c].intInventoryNo}" order by created_at`,(e3,batch,f3)=>{
+                                    if(e3) console.log(e3);
 
-                            }
-                            else{
-                              let newValue = batch[a].intQuantity - remaining;
-                              remaining = 0;
-                              console.log('newValue: '+newValue);
-                              console.log('remaining: '+remaining);
-                              db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(e5,r5,f5)=>{
-                                if(e5)console.log(e5);
-                              });
-                            }
-                          }
-                            c++;
-                            callback();
-                        })
+                                    for(var a in batch){
+                                      if(remaining == 0){
+                                        break;
+                                      }
+                                      else if(batch[a].intQuantity < remaining || batch[a].intQuantity == remaining){
+                                        let newValue = 0;
+                                        remaining -= batch[a].intQuantity;
+                                        console.log('newValue: '+newValue);
+                                        console.log('remaining: '+remaining);
+                                        db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(e4,r4,f4)=>{
+                                          if(e4)console.log(e4);
+                                        });
+
+                                      }
+                                      else{
+                                        let newValue = batch[a].intQuantity - remaining;
+                                        remaining = 0;
+                                        console.log('newValue: '+newValue);
+                                        console.log('remaining: '+remaining);
+                                        db.query(`Update tblBatch set intQuantity = ${newValue} where intBatchNo = "${batch[a].intBatchNo}"`,(e5,r5,f5)=>{
+                                          if(e5)console.log(e5);
+                                        });
+                                      }
+                                    }
+                                      c++;
+                                      callback();
+                                  }) // end of batch deduct
+                              }
+
+                            }) // End of inventory transaction update
+                        }
+                      })
+
+
                     }
                   });
               }
