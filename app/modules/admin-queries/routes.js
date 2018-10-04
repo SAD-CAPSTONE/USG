@@ -15,10 +15,19 @@ router.get('/allProducts',(req,res)=>{
   })
 });
 
-var result ="";
+var result ="", string = 0;
 
 router.get('/loader',(req,res)=>{
-  res.render('admin-queries/views/inventoryTransactions',{re: result, moment: moment})
+  if(string == 2){
+    res.render('admin-queries/views/inventoryTransactions',{re: result, moment: moment})
+  }
+  else if(string == 3){
+    res.render('admin-queries/views/stockPullOut',{re: result, moment: moment})
+
+  }
+  else{
+
+  }
 
 })
 
@@ -39,9 +48,27 @@ router.post('/search',(req,res)=>{
       if(e) console.log(e);
       else{
         result = r;
+        string = 2;
         res.send("yes");
       }
     })
+  }
+
+  // stock pull out
+  if(req.body.string == 3){
+    db.query(`Select * from tblStockPullOut
+      join tblProductInventory on tblStockPullOut.intInventoryno = tblProductInventory.intInventoryno
+      join tblProductlist on tblProductlist.intProductNo = tblProductInventory.intProductNo
+      join tblUom on tblUom.intUOMno = tblProductInventory.intUomNo
+       where pullOutDate between '${newDate}' and '${newDate1}'`,(e1,r1,f1)=>{
+         if(e1) console.log(e1);
+         else{
+           result = r1;
+           string = 3;
+           res.send("yes");
+         }
+       })
+
   }
 })
 
