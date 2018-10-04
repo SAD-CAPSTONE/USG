@@ -224,8 +224,7 @@
       text: "You cannot revert this once you proceed",
       type: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
       reverseButtons: true
     }).then((result) => {
@@ -288,19 +287,19 @@
 
 <script>
   $('#add_error').hide();
-  $('add_save').attr('disabled',true);
+  $('#add_save').attr('disabled',true);
   $('#bType').on('keyup',function(){
 
     $.post('/maintenance2/businessType',{data: $(this).val()},function(data,status){
       if(data == "yes"){
         $('#add_error').show();
         $('#add_group').attr('class', 'form-group has-error');
-        $('add_save').attr('disabled',true);
+        $('#add_save').attr('disabled',true);
 
       }else{
         $('#add_error').hide();
         $('#add_group').attr('class', 'form-group has-success');
-        $('add_save').attr('disabled',false);
+        $('#add_save').attr('disabled',false);
       }
     });
   })

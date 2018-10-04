@@ -267,7 +267,7 @@ $('.certification_stat').on('change',function(){
 
 <script>
   $('#add_error').hide();
-  $('#save').attr('disabled',true);
+  $('#add_save').attr('disabled',true);
   $('#certification').on('keyup',function(){
 
     $.post('/maintenance2/certification',{data: $(this).val()},function(data,status){
