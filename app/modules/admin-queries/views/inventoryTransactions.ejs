@@ -20,7 +20,7 @@
             <td><%=moment(i.transactionDate).format("MM/DD/YYYY")%></td>
             <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%> <%=i.strUnitName%></td>
             <td><%=i.strTypeOfChanges%></td>
-            
+
           </tr>
       <%  count++; %>
       <%  }) %>
@@ -33,11 +33,11 @@
 <script>
   $(function () {
     $('#product_table').DataTable({
-      'paging'      : false,
-      'lengthChange': false,
-      'searching'   : false,
-      'ordering'    : false,
-      'info'        : false,
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
       'autoWidth'   : true,
 	  'select'		: true,
 	  'scroll'		: true
