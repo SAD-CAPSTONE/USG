@@ -358,7 +358,7 @@
       <form id="change_form">
   		  <div class="modal-body">
           <label >Payment Status:</label>
-          <input type="hidden" id="order_no" name="order_no">
+          <input type="hidden" class="order_no" name="order_no">
           <select class="form-control" id="payment_status" name="payment_status">
             <option value="0">Awaiting Payment</option>
             <option value="1">Paid</option>
@@ -383,7 +383,7 @@
 		  </div>
       <form id="cancel_form">
   		  <div class="modal-body">
-          <input type="hidden" name="order_no" id="order_no">
+          <input type="hidden" name="order_no" class="order_no">
           <br>
           <div class="form-group">
             <label>Please notify the customer why would you want to cancel the order.</label>
@@ -412,7 +412,7 @@
 
   <script>
     $('.change_status').on('click',function(){
-      $('#order_no').val($(this).data('no'))
+      $('.order_no').val($(this).data('no'))
       $('#payment_status').val($(this).data('status'))
     })
 
@@ -420,7 +420,7 @@
       e.preventDefault();
       $.post('/customerPayment/changeStatus',$('#change_form').serialize(), function(data,status){
         if(data=="yes"){
-          
+
         }else{
 
         }
@@ -431,7 +431,7 @@
 
   <script>
     $('.cancel_order').on('click',function(){
-      $('#order_no').val($(this).data('order'));
+      $('.order_no').val($(this).data('order'));
     })
 
     $('#cancel_form').submit(function(e){

@@ -21,8 +21,9 @@
       <div class="col-sm-12">
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs">
-            <li class="active"><a href="#inventory" data-toggle="tab"><i class="fa fa-bars"></i> Inventory</a></li>
+            <li class="active"><a href="#inventory" data-toggle="tab"> Inventory</a></li>
             <li><a href="#newProduct" data-toggle="tab"><i class="fa fa-plus"></i> New product item</a></li>
+            <li><a href="#inactiveProducts" data-toggle="tab"> Inactive Products</a></li>
           </ul>
           <div class="tab-content">
             <!-- Inventory -->
@@ -37,15 +38,16 @@
                 <table id="example2" class="table table-bordered table-hover">
                   <thead>
                   <tr>
+                    <th style="width: 140px"></th>
                     <th>No</th>
-                  
+
                     <th>Variant</th>
-                    <th>Size</th>
-                    <th>SRP</th>
+                    <th>Supplier</th>
+
                     <th>Price</th>
                     <th style="width: 20px">Quantity</th>
                     <th style="width: 10px">Status</th>
-                    <th ></th>
+
                   </tr>
                   </thead>
                   <tbody>
@@ -54,55 +56,57 @@
                   <% }else { %>
                     <% re.forEach(function(i){ %>
                       <tr>
+                        <form>
+                        <td>
+                          <center>
+                            <button type="button" data-number="<%=i.intInventoryNo%>" data-toggle="modal" data-target="#addStock" class="addStock large ui teal button" data-toggle="tooltip" title="Add Stock"><i class="fa fa-plus"></i></button>
+                            <!-- <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory" class="editbutton large ui blue button" ><i class="fa fa-edit"></i></button> -->
+
+                            <div class="btn-group">
+                              <button type="button" class="large ui blue button" data-toggle="dropdown">
+                                <i class="glyphicon glyphicon-option-horizontal"></i>
+
+                              </button>
+                              <ul class="dropdown-menu">
+                                <li><a type="button" class="editbutton" data-number="<%=i.intInventoryNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-toggle="modal" data-target="#editPrice">Edit Price</a></li>
+                                <li><a type="button" class="editbutton" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-variant="<%=i.strVariant%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory">Edit Details</a></li>
+                                <li><a href="/inventory/seeBatch?p=<%=i.intInventoryNo%>">See Batch Products</a></li>
+                                <li><a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>">Transactions</a></li>
+                              </ul>
+                            </div>
+                            <button data-product="<%=i.intInventoryNo%>" id="inactivate_product" class="large ui red button" data-toggle="tooltip" title="Inactivate"><i class="fa fa-close"></i></button>
+
+
+                          </center>
+
+                        </td>
+                      </form>
                         <td><%=i.intInventoryNo%></td>
 
-                      <td><%=i.strVariant%></td>
-                      <td><%=i.intSize%>&nbsp;<%=i.strUnitName%></td>
-                      <td>₱ <%=(i.productSRP).toFixed(2)%></td>
-                      <td>₱ <%=(i.productPrice).toFixed(2)%></td>
-                      <!-- <td><%= moment(i.expirationDate).format("MMM Do YYYY")%></td> -->
-                      <td><%=i.intQuantity%></td>
-                      <td>
-                        <% if (i.intStatus == 1){ %>
+                        <td><%=i.strVariant%> <%=i.intSize%>&nbsp;<%=i.strUnitName%></td>
+                        <td><%=i.strBusinessName%></td>
+                        <td>₱ <%=(i.productPrice).toFixed(2)%></td>
+                        <!-- <td><%= moment(i.expirationDate).format("MMM Do YYYY")%></td> -->
+                        <td><%=i.intQuantity%></td>
+                        <td>
+                          <% if (i.intStatus == 1){ %>
 
-                        <% }else{ %>
+                          <% }else{ %>
 
-                        <% } %>
+                          <% } %>
 
-                        <% if (i.intQuantity == 0){ %>
-                          <a class="ui red circular label"></a>
-                        <% }else if(i.intQuantity < i.intCriticalLimit || i.intQuantity == i.intCriticalLimit){ %>
-                          <a class="ui orange circular label"></a>
-                        <% }else{ %>
-                          <a class="ui green circular label"></a>
-                        <% } %>
-
+                          <% if (i.intQuantity == 0){ %>
+                            <a class="ui red circular label"></a>
+                          <% }else if(i.intQuantity < i.intCriticalLimit || i.intQuantity == i.intCriticalLimit){ %>
+                            <a class="ui orange circular label"></a>
+                          <% }else{ %>
+                            <a class="ui green circular label"></a>
+                          <% } %>
 
 
-                      </td>
-                      <form>
-                      <td>
-                        <center>
-                          <button type="button" data-number="<%=i.intInventoryNo%>" data-toggle="modal" data-target="#addStock" class="addStock large ui teal button" data-toggle="tooltip" title="Add Stock"><i class="fa fa-plus"></i></button>
-                          <!-- <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory" class="editbutton large ui blue button" ><i class="fa fa-edit"></i></button> -->
 
-                          <div class="btn-group">
-                            <button type="button" class="large ui blue button" data-toggle="dropdown">
-                              <i class="glyphicon glyphicon-option-horizontal"></i>
+                        </td>
 
-                            </button>
-                            <ul class="dropdown-menu">
-                              <li><a type="button" class="editbutton" data-number="<%=i.intInventoryNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-toggle="modal" data-target="#editPrice">Edit Price</a></li>
-                              <li><a type="button" class="editbutton" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-variant="<%=i.strVariant%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory">Edit Details</a></li>
-                              <li><a href="/inventory/seeBatch?p=<%=i.intInventoryNo%>">See Batch Products</a></li>
-                            </ul>
-                          </div>
-
-                          <a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>"><button type="button" class="large ui button" >Transactions</button></a>
-                        </center>
-
-                      </td>
-                    </form>
                     </tr>
                     <% }) %>
                   <% } %>
@@ -113,126 +117,219 @@
               </div>
               <!-- /.box-body -->
             </div>
-            <!-- /#fa-icons -->
+
 
 
             <!-- New product Item-->
             <div class="tab-pane " id="newProduct">
               <div class="row">
-                <div class="col-sm-12">
-                  <!-- form start -->
-                  <form role="form" id="newProductForm" >
-                    <div class="box-body">
+                  <div class="col-sm-12">
+                    <!-- form start -->
+                    <form role="form" id="newProductForm" >
+                      <div class="box-body">
 
 
 
-                      <div class="form-group">
+                        <div class="form-group">
 
-                        <% var number = "1000"; %>
-                        <% if (list == null || list == undefined) { %>
+                          <% var number = "1000"; %>
+                          <% if (list == null || list == undefined) { %>
 
-                        <% }else if(list.length == 0){ %>
+                          <% }else if(list.length == 0){ %>
 
-                        <% }else{ %>
-                          <% var number = parseInt(list[0].intInventoryNo) + 1 %>
-                          <!-- <input type="text" class="form-control" value="<%=number%>" disabled id="add_prodno" name="add_prodno" > -->
+                          <% }else{ %>
+                            <% var number = parseInt(list[0].intInventoryNo) + 1 %>
+                            <!-- <input type="text" class="form-control" value="<%=number%>" disabled id="add_prodno" name="add_prodno" > -->
 
-                        <% } %>
+                          <% } %>
+                            <div class="row">
+                              <div class="col-sm-4">
+                                <input type="hidden" class="form-control" value="<%=number%>"  id="add_inventoryno" name="add_inventoryno" >
+                                <input type="hidden" class="form-control" value="<%=product%>"  id="add_productno" name="add_productno" >
+                              </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                           <div class="row">
+                            <div class="col-sm-3">
+                            </br>
+                              <button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
+                            <p>  New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
+                            </div>
                             <div class="col-sm-4">
-                              <input type="hidden" class="form-control" value="<%=number%>"  id="add_inventoryno" name="add_inventoryno" >
-                              <input type="hidden" class="form-control" value="<%=product%>"  id="add_productno" name="add_productno" >
+                              <label for="add_sname">Supplier Name</label>
+                              <input type="hidden" class="form-control"  id="add_sno" name="add_sno" >
+                              <input type="text" required class="form-control" disabled id="add_sname" name="add_sname" >
+                            </div>
+
+                            <div class="col-sm-4">
+                              <label for="add_bname">Business Name</label>
+                              <input type="text" required class="form-control" disabled id="add_bname" name="add_bname" >
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-3">
+                              <label for="add_srp">Product SRP</label>
+                              <input type="number" placeholder="Original price" class="form-control" required id="add_srp" name="add_srp" >
+                            </div>
+                            <div class="col-sm-3">
+                              <label for="add_price">Product Price</label>
+                              <input type="number" placeholder="" class="form-control" required id="add_price" name="add_price" >
+                            </div>
+                            <div class="col-sm-3">
+                              <label for="add_size">Size</label>
+                              <input type="number" class="form-control" required id="add_size" name="add_size" >
+                            </div>
+                            <div class="col-sm-3">
+                              <label for="add_uom">Measure </label>
+                              <select class="form-control" required id="add_uom" name="add_uom"  >
+                                <% if (uom == null || uom == undefined || uom.length == 0){ %>
+                                  <option></option>
+                                <% }else{ %>
+                                  <% uom.forEach(function(s){ %>
+                                    <option value="<%=s.intUomNo%>"><%=s.strUnitName%></option>
+                                  <% }) %>
+
+                                <% } %>
+                              </select>
                             </div>
                           </div>
-                      </div>
-
-                      <div class="form-group">
-                        <div class="row">
-                          <div class="col-sm-3">
-                          </br>
-                            <button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
-                          <p>  New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
-                          </div>
-                          <div class="col-sm-4">
-                            <label for="add_sname">Supplier Name</label>
-                            <input type="hidden" class="form-control"  id="add_sno" name="add_sno" >
-                            <input type="text" required class="form-control" disabled id="add_sname" name="add_sname" >
-                          </div>
-
-                          <div class="col-sm-4">
-                            <label for="add_bname">Business Name</label>
-                            <input type="text" required class="form-control" disabled id="add_bname" name="add_bname" >
-                          </div>
-
                         </div>
 
-                      </div>
-
-                      <div class="form-group">
-                        <div class="row">
-                          <div class="col-sm-3">
-                            <label for="add_srp">Product SRP</label>
-                            <input type="number" placeholder="Original price" class="form-control" required id="add_srp" name="add_srp" >
-                          </div>
-                          <div class="col-sm-3">
-                            <label for="add_price">Product Price</label>
-                            <input type="number" placeholder="" class="form-control" required id="add_price" name="add_price" >
-                          </div>
-                          <div class="col-sm-3">
-                            <label for="add_size">Size</label>
-                            <input type="number" class="form-control" required id="add_size" name="add_size" >
-                          </div>
-                          <div class="col-sm-3">
-                            <label for="add_uom">Measure </label>
-                            <select class="form-control" required id="add_uom" name="add_uom"  >
-                              <% if (uom == null || uom == undefined || uom.length == 0){ %>
-                                <option></option>
-                              <% }else{ %>
-                                <% uom.forEach(function(s){ %>
-                                  <option value="<%=s.intUomNo%>"><%=s.strUnitName%></option>
-                                <% }) %>
-
-                              <% } %>
-                            </select>
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <label for="add_variant">Variant</label>
+                              <input type="text" class="form-control" id="add_variant" name="add_variant" >
+                            </div>
+                            <div class="col-sm-4">
+                              <label for="add_barcode">Barcode</label>
+                              <input type="number" required class="form-control" id="add_barcode" name="add_barcode" >
+                            </div>
+                            <div class="col-sm-2">
+                              <label for="shelf">Shelf No</label>
+                              <input type="number" class="form-control"id="add_shelf" name="add_shelf" >
+                            </div>
+                            <div class="col-sm-2">
+                              <label for="add_critical">Critical Limit</label>
+                              <input type="number" required class="form-control" required id="add_critical" name="add_critical" >
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div class="form-group">
-                        <div class="row">
-                          <div class="col-sm-4">
-                            <label for="add_variant">Variant</label>
-                            <input type="text" class="form-control" id="add_variant" name="add_variant" >
-                          </div>
-                          <div class="col-sm-4">
-                            <label for="add_barcode">Barcode</label>
-                            <input type="number" required class="form-control" id="add_barcode" name="add_barcode" >
-                          </div>
-                          <div class="col-sm-2">
-                            <label for="shelf">Shelf No</label>
-                            <input type="number" class="form-control"id="add_shelf" name="add_shelf" >
-                          </div>
-                          <div class="col-sm-2">
-                            <label for="add_critical">Critical Limit</label>
-                            <input type="number" required class="form-control" required id="add_critical" name="add_critical" >
-                          </div>
+
+                        <div class="box-footer">
+                          &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                           <button type="reset" class="large ui button">Clear Fields</button>
+                           <a href=""><button type="submit" class="large ui teal button">Submit</button></a>
                         </div>
                       </div>
+                    </form>
 
-
-                      <div class="box-footer">
-                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                         <button type="reset" class="large ui button">Clear Fields</button>
-                         <a href=""><button type="submit" class="large ui teal button">Submit</button></a>
-                      </div>
-                  </div>
-                </form>
-
+                </div>
               </div>
 
-
             </div>
-            <!-- /#ion-icons -->
+
+
+            <!-- Inactive Products -->
+            <div class="tab-pane" id="inactiveProducts">
+
+              <a data-toggle="modal" data-target="#legend_modal"><i style="font-size: 30px" class="glyphicon glyphicon-info-sign"></i> </a>
+
+
+              </br>
+              <!-- /.box-header -->
+              <div class="box-body table-responsive">
+                <table id="inactive_table" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th style="width: 140px" ></th>
+                    <th>No</th>
+
+                    <th>Variant</th>
+                    <th>Supplier</th>
+
+                    <th>Price</th>
+                    <th style="width: 20px">Quantity</th>
+                    <th style="width: 10px">Status</th>
+
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <% if (re_inactive == null || re_inactive == undefined || re_inactive.length == 0) { %>
+
+                    <% }else { %>
+                      <% re_inactive.forEach(function(i){ %>
+                        <tr>
+                          <form>
+                            <td>
+                              <center>
+                                <button type="button" data-number="<%=i.intInventoryNo%>" data-toggle="modal" data-target="#addStock" class="addStock large ui teal button" ><i class="fa fa-plus"></i></button>
+
+                                <!-- <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory" class="editbutton large ui blue button" ><i class="fa fa-edit"></i></button> -->
+
+                                <div class="btn-group">
+                                  <button type="button" class="large ui blue button" data-toggle="dropdown">
+                                    <i class="glyphicon glyphicon-option-horizontal"></i>
+
+                                  </button>
+                                  <ul class="dropdown-menu">
+                                    <li><a type="button" class="editbutton" data-number="<%=i.intInventoryNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-toggle="modal" data-target="#editPrice">Edit Price</a></li>
+                                    <li><a type="button" class="editbutton" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-variant="<%=i.strVariant%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory">Edit Details</a></li>
+                                    <li><a href="/inventory/seeBatch?p=<%=i.intInventoryNo%>">See Batch Products</a></li>
+                                    <li><a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>">See Transactions</a></li>
+                                  </ul>
+                                </div>
+                                <button id="activate_product" data-product="<%=i.intInventoryNo%>" data-toggle="tooltip" title="Activate" class="large ui orange button"><i class="fa fa-check"></i></button>
+
+
+                              </center>
+
+                            </td>
+                          </form>
+                          <td><%=i.intInventoryNo%></td>
+
+                          <td><%=i.strVariant%> <%=i.intSize%>&nbsp;<%=i.strUnitName%></td>
+                          <td><%=i.strBusinessName%></td>
+                          <td>₱ <%=(i.productPrice).toFixed(2)%></td>
+                          <!-- <td><%= moment(i.expirationDate).format("MMM Do YYYY")%></td> -->
+                          <td><%=i.intQuantity%></td>
+                          <td>
+                            <% if (i.intStatus == 1){ %>
+
+                            <% }else{ %>
+
+                            <% } %>
+
+                            <% if (i.intQuantity == 0){ %>
+                              <a class="ui red circular label"></a>
+                            <% }else if(i.intQuantity < i.intCriticalLimit || i.intQuantity == i.intCriticalLimit){ %>
+                              <a class="ui orange circular label"></a>
+                            <% }else{ %>
+                              <a class="ui green circular label"></a>
+                            <% } %>
+
+
+
+                          </td>
+
+                      </tr>
+                      <% }) %>
+                    <% } %>
+
+                  </tbody>
+
+                </table>
+              </div>
+              <!-- /.box-body -->
+            </div>
 
           </div>
           <!-- /.tab-content -->
@@ -554,6 +651,61 @@
 
   </script>
 
+  <script>
+    $('#activate_product').on('click',function(){
+
+      swal({
+       title: 'Are you sure?',
+       text: "Your customers will be able to see this product",
+       type: 'warning',
+       showCancelButton: true,
+       confirmButtonColor: '#3085d6',
+       confirmButtonText: 'Yes, activate this!',
+       reverseButtons: true
+      }).then((result) => {
+       if (result.value) {
+         $.post('/inventory/activateProduct',{product: $('#activate_product').data('product')}, function(data,status){
+           if(data){
+             swal({title: "Success!", text:"", type: "success"}).then(()=>{
+               location.reload();
+             })
+           }
+         })
+       }
+      })
+
+    })
+
+    $('#inactivate_product').on('click',function(){
+
+      swal({
+       title: 'Are you sure?',
+       text: "Your customers won't be able to see this product",
+       type: 'warning',
+       showCancelButton: true,
+       confirmButtonColor: '#3085d6',
+       confirmButtonText: 'Yes, inactivate this!',
+       reverseButtons: true
+      }).then((result) => {
+       if (result.value) {
+         $.post('/inventory/inactivateProduct',{product: $('#inactivate_product').data('product')}, function(data,status){
+           if(data=="reserved"){
+             swal({title: "Error!", text:"You have orders for this product. Please assess the orders first.", type: "error"});
+           }else{
+             swal({title: "Success!", text:"", type: "success"}).then(()=>{
+               location.reload();
+             })
+
+           }
+         })
+
+       }
+      })
+
+
+    })
+  </script>
+
 
 
   <script>
@@ -659,6 +811,20 @@
   <script>
     $(function () {
       $('#example1').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+      'select'		: true,
+      'scroll'		: true,
+      'searching' : true
+      })
+    })
+
+    $(function () {
+      $('#inactive_table').DataTable({
         'paging'      : true,
         'lengthChange': true,
         'searching'   : true,

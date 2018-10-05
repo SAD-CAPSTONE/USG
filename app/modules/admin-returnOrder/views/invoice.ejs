@@ -1,0 +1,151 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      Return Order
+      <small># <%= return_order[0].intReturnOrderNo %></small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="#">Return Orders</a></li>
+      <li class="active">Details</li>
+    </ol>
+  </section>
+
+
+
+  <!-- Main content -->
+  <section class="invoice">
+    <!-- title row -->
+    <div class="row">
+      <div class="col-xs-12">
+        <h2 class="page-header">
+          <i class="fa fa-shopping-cart"></i> Ultra Super Green Trading  Corporation.
+          <small class="pull-right">Date: <%= moment(return_order[0].dateReturned).format("MM/DD/YYYY")%> </small>
+
+        </h2>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- info row -->
+    <div class="row invoice-info">
+      <div class="col-sm-4 invoice-col">
+        From
+        <address>
+          <strong><%= customer[0].strFname %> <%= customer[0].strMname %> <%= customer[0].strLname %></strong><br>
+          <%= customer[0].strShippingAddress %>
+          <%= customer[0].strBillingAddress %>
+          Email: <%= customer[0].strEmail %>
+        </address>
+      </div>
+      <!-- /.col -->
+      <div class="col-sm-4 invoice-col">
+
+        To
+        <address>
+          <strong>Guslte Agulto</strong><br>
+          Elizabeth Building, Katipunan Ave.,<br>
+          Quezon City, Metro Manila 94107<br>
+          Phone: (804) 123-5432<br>
+          Email: info.ultrasupergreen@gmail.com
+        </address>
+      </div>
+      <!-- /.col -->
+
+      <div class="col-sm-4 invoice-col">
+        <b>Return_Order #<%=return_order[0].intReturnOrderNo%></b><br>
+        <br>
+        <b>Order No:</b> <%= return_order[0].intOrderNo %><br>
+        <b>Tracking Number:</b> 123235435<br>
+
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    <!-- Table row -->
+    <div class="row">
+      <div class="col-xs-12 table-responsive">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>Ordered Product</th>
+            <th>Quantity</th>
+            <th>Replaced Product</th>
+            <th>Quantity</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% if (list == null || list == undefined){ %>
+
+          <% }else if(list.length == 0){ %>
+
+          <% }else{ %>
+            <% list.forEach(function(i){ %>
+              <tr>
+                <td><%= i.orderedProducts %></td>
+                <td><%= i.orderedQuantity %></td>
+                <td><%= i.replacedProduct %></td>
+                <td><%= i.replacedQuantity %></td>
+              </tr>
+            <%  }) %>
+
+          <% } %>
+
+
+
+          </tbody>
+        </table>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    <div class="row">
+      <!-- accepted payments column -->
+      <div class="col-xs-6">
+
+
+        <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
+          <b>Additional Information:</b><br>
+          <%= return_order[0].returnReason %>
+        </p>
+      </div>
+      <!-- /.col -->
+      <div class="col-xs-6">
+
+
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    <!-- this row will not appear when printing -->
+    <div class="row no-print">
+      <div class="col-xs-12">
+        <a href="/returnOrder/invoice-print?q=<%=return_order[0].intReturnOrderNo%>" target="_blank" class="huge ui teal button pull-right"><i class="fa fa-print"></i> Print</a>
+
+      </div>
+    </div>
+  </section>
+  <!-- /.content -->
+  <div class="clearfix"></div>
+</div>
+<!-- /.content-wrapper -->
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- ./wrapper -->
+
+
+<!-- REQUIRED JS SCRIPTS -->
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+<!-- page script (new added) -->
+
+</body>
+</html>

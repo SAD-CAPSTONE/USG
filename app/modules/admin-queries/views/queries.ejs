@@ -1,13 +1,11 @@
 <%- include('../../../templates/admin-navbar.ejs') -%>
 
  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper" id="queries">
-
-
+  <div class="content-wrapper" >
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Queries
+
         <small></small>
       </h1>
       <ol class="breadcrumb">
@@ -17,36 +15,74 @@
     </section>
 
     <!-- Main content -->
-    <section class="content container-fluid">
+    <section class="content">
 
       <!-- Small boxes (Stat box) -->
       <div class="row">
-
-
+        <div class="col-sm-12">
+          <div class="box">
+            <div class="box-header">
+              <h4 align="center">Return Orders from Customers</h4>
+            </div>
             <div class="box-body">
-              <div class="form-group">
-                <label>Query:</label>
-                <select id="query" class="form-control select2" style="width: 100%;">
-                  <option value="1" selected="selected">All Products</option>
-                  <option>All customers</option>
-                  <option>All Suppliers</option>
-                  <option>All outright suppliers</option>
-                  <option>All Consignor suppliers</option>
+              <div class="row">
+                <div class="col-sm-6">
 
-                </select>
+                  <div class="form-group">
+                    <label>Query:</label>
+                    <select id="query" class="form-control select2" style="width: 100%;">
+                      <option id="1" disabled selected="selected">No selected</option>
+                      <option value="2">Inventory Transactions</option>
+                      <option value="3">Pulled-out Stocks</option>
+                      <option value="4">Product Batch</option>
+                      <option>All Consignor suppliers</option>
+
+                    </select>
+                  </div>
+
+
+                </div>
+
+                <div class="col-sm-4">
+
+                  <div class="form-group">
+                    <label>Select date range:</label>
+
+                    <div class="input-group">
+                      <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                      <input type="text" class="form-control pull-right" id="range">
+
+                    </div>
+                  </div>
+
+
+                </div>
+
+                <div class="col-sm-2">
+
+                  <br>
+                  <button id="search" class="large ui green button">Search</button>
+
+                </div>
               </div>
-
+              <br>
               <div class="row">
                 <div class="col-sm-12">
                   <div id="result">
                   </div>
                 </div>
               </div>
-
-        <!-- ./col -->
             </div>
+          </div>
+        </div>
+
+
       <!-- /.row -->
-    </div>
+      </div>
+
+
       <!-- =========================================================== -->
 
     </section>
@@ -69,6 +105,11 @@
 <script src="/assets/admin/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
 <script src="/assets/admin/plugins/input-mask/jquery.inputmask.extensions.js"></script>
 
+<!-- Moment -->
+<script src="/assets/admin/bower_components/moment/min/moment.min.js"></script>
+<!-- Date range picker -->
+<script src="/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+
 <script>
 $('#title').html("USG | Queries");
 $(".navi a:contains('Queries')").parent().addClass("active");
@@ -76,14 +117,27 @@ $(".navi a:contains('Queries')").parent().addClass("active");
 //Initialize Select2 Elements
 $('.select2').select2()
 
+//Date range picker
+$('#range').daterangepicker();
+
 </script>
 
 <script>
-  $('#query').on('select2:change',function(e){
-    console.log($(this).select2('data'))
+  $('#search').on('click',function(e){
+    console.log($('#range').val())
+    var stringDate = $('#range').val().toString();
+    console.log(stringDate)
+    //console.log($(this).select2('data')[0].id)
     // switch($(this).val()){
     //   case 1: $('#result').load('/queries/allProducts');
+    // string=${$('#query').select2('data')[0].id}
     // }
+    $.post('/queries/search',{string: $('#query').select2('data')[0].id, date: $('#range').val()},function(data,status){
+      if(data=="yes"){
+        $('#result').load('/queries/loader');
+      }
+    })
+
   })
 </script>
 

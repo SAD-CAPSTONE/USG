@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Return Order</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="/assets/admin/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/assets/admin/bower_components/font-awesome/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="/assets/admin/bower_components/Ionicons/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/assets/admin/dist/css/AdminLTE.min.css">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+<!-- Google Font -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body onload="window.print();"  >
+<div class="wrapper">
+  <!-- Main content -->
+  <section class="invoice">
+    <!-- title row -->
+    <div class="row">
+      <div class="col-xs-12">
+        <h2 class="page-header">
+          <i class="fa fa-shopping-cart"></i> Ultra Super Green Trading  Corporation.
+          <small class="pull-right">Date: <%= moment(return_order[0].dateReturned).format("MM/DD/YYYY")%> </small>
+
+        </h2>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- info row -->
+    <div class="row invoice-info">
+      <div class="col-sm-4 invoice-col">
+        From
+        <address>
+          <strong><%= customer[0].strFname %> <%= customer[0].strMname %> <%= customer[0].strLname %></strong><br>
+          <%= customer[0].strShippingAddress %>
+          <%= customer[0].strBillingAddress %>
+          Email: <%= customer[0].strEmail %>
+        </address>
+      </div>
+      <!-- /.col -->
+      <div class="col-sm-4 invoice-col">
+
+        To
+        <address>
+          <strong>Guslte Agulto</strong><br>
+          Elizabeth Building, Katipunan Ave.,<br>
+          Quezon City, Metro Manila 94107<br>
+          Phone: (804) 123-5432<br>
+          Email: info.ultrasupergreen@gmail.com
+        </address>
+      </div>
+      <!-- /.col -->
+
+      <div class="col-sm-4 invoice-col">
+        <b>Return_Order #<%=return_order[0].intReturnOrderNo%></b><br>
+        <br>
+        <b>Order No:</b> <%= return_order[0].intOrderNo %><br>
+        <b>Tracking Number:</b> 123235435<br>
+
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    <!-- Table row -->
+    <div class="row">
+      <div class="col-xs-12 table-responsive">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>Ordered Product</th>
+            <th>Quantity</th>
+            <th>Replaced Product</th>
+            <th>Quantity</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% if (list == null || list == undefined){ %>
+
+          <% }else if(list.length == 0){ %>
+
+          <% }else{ %>
+            <% list.forEach(function(i){ %>
+              <tr>
+                <td><%= i.orderedProducts %></td>
+                <td><%= i.orderedQuantity %></td>
+                <td><%= i.replacedProduct %></td>
+                <td><%= i.replacedQuantity %></td>
+              </tr>
+            <%  }) %>
+
+          <% } %>
+
+
+
+          </tbody>
+        </table>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    <div class="row">
+      <!-- accepted payments column -->
+      <div class="col-xs-6">
+
+
+        <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
+          <b>Additional Information:</b><br>
+          <%= return_order[0].returnReason %>
+        </p>
+      </div>
+      <!-- /.col -->
+      <div class="col-xs-6">
+
+
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    <!-- this row will not appear when printing -->
+    <div class="row no-print">
+      <div class="col-xs-12">
+        <a href="/customerOrder/invoice-print?order=<%=customer[0].intOrderNo%>" target="_blank" class="huge ui teal button pull-right"><i class="fa fa-print"></i> Print</a>
+
+      </div>
+    </div>
+  </section>
+  <!-- /.content -->
+</div>
+<!-- ./wrapper -->
+</body>
+</html>

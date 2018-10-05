@@ -32,6 +32,7 @@
                  <th>No</th>
                  <th>Date</th>
                  <th>Status</th>
+                 <th>Notes</th>
 
                </tr>
                </thead>
@@ -60,6 +61,7 @@
 
                         <% } %>
                       </td>
+                      <td><%=i.strChanges%> </td>
 
                     </tr>
                   <% }) %>
@@ -113,7 +115,7 @@
 <script>
 $('#title').html("USG | Contract History");
 $(".treeview a:contains('Transactions')").parent().addClass("active");
-$(".navi a:contains('Consignment Agreement')").parent().addClass("active");
+$(".navi a:contains('Consignor Agreement')").parent().addClass("active");
 </script>
 
 

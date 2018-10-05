@@ -262,7 +262,7 @@
     }).then((result)=>{
       if(result.value){
          $.ajax({
-           url: '/inventory/pullOutItem',
+           url: '/inventory/pullOutItemNotExp',
            method: 'post',
            datatype: "json",
            data: {batch: $(this).data('batch')},

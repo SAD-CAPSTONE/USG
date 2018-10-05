@@ -31,7 +31,7 @@
            <table id="category" class="table table-bordered table-hover">
            <thead>
              <tr>
-
+               <th style="width: 5px">#</th>
                <th>Certification</th>
                <th>Status</th>
                <th style="width: 20%">Actions</th>
@@ -43,9 +43,9 @@
            <% }else if(certification.length == 0){ %>
 
            <% }else{ %>
-           <%  certification.forEach(function(i){ %>
+           <%  certification.forEach(function(i,index){ %>
                <tr>
-
+                 <td><%=index+1%></td>
                  <td><%=i.strCertification%></td>
                  <td>
                    <input type="checkbox"
@@ -267,7 +267,7 @@ $('.certification_stat').on('change',function(){
 
 <script>
   $('#add_error').hide();
-  $('#save').attr('disabled',true);
+  $('#add_save').attr('disabled',true);
   $('#certification').on('keyup',function(){
 
     $.post('/maintenance2/certification',{data: $(this).val()},function(data,status){
