@@ -272,7 +272,7 @@
 				</button>
         <button type="button" id="downloadContract" class="large ui teal button pull-right"><i class="fa fa-download"></i> Download
   				</button>
-				<button type="button" data-contract="<%=contract[0].intContractNo%>" class="renew large ui blue button pull-right" id="renew" style="margin-right: 5px;">
+				<button type="button" data-supplier="<%=contract[0].intConsignorID%>" data-contract="<%=contract[0].intContractNo%>" class="renew large ui blue button pull-right" id="renew" style="margin-right: 5px;">
 				 Renew Contract
 				</button>
 
@@ -553,7 +553,7 @@
       reverseButtons: true
     }).then((result)=>{
       if(result.value){
-        $.post('/consAgreement/renew',{no: $('.renew').data('contract')}, function(data,success){
+        $.post('/consAgreement/renew',{no: $('.renew').data('contract'), supplier: $('.renew').data('supplier')}, function(data,success){
           swal({title: 'Success', text: 'This contract is now active', type:'success'}).then(()=>{
             $('.renew').html('Terminate Contract');
             $('.renew').attr('class','terminate large ui red button pull-right');
@@ -578,13 +578,18 @@
       reverseButtons: true
     }).then((result)=>{
       if(result.value){
-        $.post('/consAgreement/terminate',{no: $('.terminate').data('contract')}, function(data,success){
-          swal({title: 'Success', text: 'This contract is now terminated', type:'success'}).then(()=>{
-            $('.terminate').html('Renew Contract');
-            $('.terminate').attr('class','renew large ui blue button pull-right');
+        $.post('/consAgreement/terminate',{no: $('.terminate').data('contract'), supplier: $('.terminate').data('supplier')}, function(data,success){
+          if(data=="reserved"){
+            swal({title: "Error!",text: "There are remaining orders from this supplier. Please assess the orders first", type: "error"})
+          }else{
+            swal({title: 'Success', text: 'This contract is now terminated', type:'success'}).then(()=>{
+              $('.terminate').html('Renew Contract');
+              $('.terminate').attr('class','renew large ui blue button pull-right');
 
-            location.reload();
-          })
+              location.reload();
+            })
+          }
+
         })
       }
     })

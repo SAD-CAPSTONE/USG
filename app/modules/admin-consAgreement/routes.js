@@ -50,8 +50,39 @@ router.post('/renew',(req,res)=>{
   })
 });
 
-router.post('/terminate',(req,res)=>{
-  console.log(req.body.no)
+function checkItems(req,res,next){
+  var alert = 0;
+  var x = 0;
+  db.query(`Select * from tblProductInventory where intUserID = "${req.body.supplier}"`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      if(res1.length==0){
+        next();
+      }else{
+        for(x = 0; x < res1.length; x++){
+          if(res1[x].intReservedItems > 0){
+            alert = 1;
+            break;
+          }else{
+            console.log('janelle');
+          }
+        }
+
+        if(alert==1){
+          res.send("reserved");
+        }else{
+          next();
+        }
+
+      }
+    }
+
+  })
+
+}
+
+router.post('/terminate',checkItems,(req,res)=>{
+
   var history_no = "1000";
   db.query(`Update tblContract set intContractStatus = 4 where intContractNo = "${req.body.no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
@@ -68,7 +99,13 @@ router.post('/terminate',(req,res)=>{
               db.query(`Insert into tblContractHistory (intContractHistoryNo, intContractNo, intContractStatus, strChanges) values ("${history_no}", "${req.body.no}", 4, "Terminated Contract ${moment().format("MM/DD/YYYY")}")`,(err4,res4,fie4)=>{
                 if(err4) console.log(err4);
                 else{
-                  res.send("yes");
+                  db.query(`Update tblProductInventory set intStatus = 0 where intUserID = "${req.body.supplier}"`,(err01,res01,fie01)=>{
+                    if(err01) console.log(err01);
+                    else{
+                      res.send("yes");
+                      
+                    }
+                  })
                 }
               })
             }

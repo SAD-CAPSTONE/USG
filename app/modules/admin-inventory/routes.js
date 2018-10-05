@@ -130,38 +130,49 @@ router.get('/productInventory', (req,res)=>{
     join tbluser on tbluser.intuserid = tblproductinventory.intuserid
     join tblsupplier on tblsupplier.intuserid = tblproductinventory.intuserid
     join tbluom on tbluom.intuomno = tblproductinventory.intuomno
-    where tblproductinventory.intProductNo = ${product}`, (err1,results1,fields1)=>{
-    //console.log(results1[0].tblProductInventory.intStatus);
+    where tblproductinventory.intProductNo = ${product} and tblProductInventory.intStatus = 1`, (err1,results1,fields1)=>{
+
     if (err1) console.log(err1);
+    else{
+      db.query(`
+        Select * from tblproductinventory join tblproductlist on tblproductinventory.intProductno = tblproductlist.intproductno
+        join tblproductbrand on tblproductlist.intbrandno = tblproductbrand.intbrandno
+        join tbluser on tbluser.intuserid = tblproductinventory.intuserid
+        join tblsupplier on tblsupplier.intuserid = tblproductinventory.intuserid
+        join tbluom on tbluom.intuomno = tblproductinventory.intuomno
+        where tblproductinventory.intProductNo = ${product} and tblProductInventory.intStatus = 0`,(err01,res01,fie01)=>{
+          if(err01) console.log(err01);
+          else{
+            db.query(`Select * from tblProductInventory order by intInventoryno desc limit 1`, (err2,results2,fields2)=>{
+              if (err2) console.log(err2);
+              else{
+                db.query(`Select * from tbluom`, (err3,results3,fields3)=>{
+                  if (err3) console.log(err3);
+                  else{
+                    db.query(`Select * from tblSupplier join tblUser on tblSupplier.intUserID = tblUser.intUserID where intStatus = 1`, (err4,results4,fields4)=>{
+                      if (err4) console.log(err4);
+                      else{
+                        db.query(`Select * from tblproductlist where intProductNo = ${product}`, (err5,results5,fields5)=>{
+                          if (err5) console.log(err5);
+                          else{
+                            db.query(`Select * from tblbatch order by intBatchNo desc limit 1`,(err6,results6,fields6)=>{
+                              if (err6) console.log(err6);
+                              else{
+                                res.render('admin-inventory/views/productInventory', {re: results1, re_inactive: res01, moment: moment, list: results2, uom: results3, su: results4, product: product, title: results5, lastbatch: results6});
 
-    db.query(`Select * from tblProductInventory order by intInventoryno desc limit 1`, (err2,results2,fields2)=>{
-      if (err2) console.log(err2);
-
-      db.query(`Select * from tbluom`, (err3,results3,fields3)=>{
-        if (err3) console.log(err3);
-
-        db.query(`Select * from tblSupplier join tblUser on tblSupplier.intUserID = tblUser.intUserID where intStatus = 1`, (err4,results4,fields4)=>{
-          if (err4) console.log(err4);
-
-          db.query(`Select * from tblproductlist where intProductNo = ${product}`, (err5,results5,fields5)=>{
-            if (err5) console.log(err5);
-
-            db.query(`Select * from tblbatch order by intBatchNo desc limit 1`,(err6,results6,fields6)=>{
-              if (err6) console.log(err6);
-
-              res.render('admin-inventory/views/productInventory', {re: results1, moment: moment, list: results2, uom: results3, su: results4, product: product, title: results5, lastbatch: results6});
-
+                              }
+                            });
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+              }
             });
-
-
-          });
-
-
-        });
-
-      });
-
-    });
+          }
+        })
+    }
   });
 
 
@@ -1570,6 +1581,33 @@ router.post('/changeDiscountStat',(req,res)=>{
     else{
 
       res.send("");
+    }
+  })
+});
+
+router.post('/inactivateProduct',(req,res)=>{
+  db.query(`Select * from tblProductInventory where intReservedItems = 0 and intInventoryno = "${req.body.product}"`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      if(res1.length==0){
+        res.send("reserved");
+      }else{
+        db.query(`Update tblProductInventory set intStatus = 0 where intInventoryno = "${req.body.product}"`,(err2,res2,fie2)=>{
+          if(err2) console.log(err2);
+          else{
+            res.send("yes");
+          }
+        })
+      }
+    }
+  })
+})
+
+router.post('/activateProduct',(req,res)=>{
+  db.query(`Update tblProductInventory set intStatus = 1 where intInventoryno = "${req.body.product}"`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      res.send("yes")
     }
   })
 })
