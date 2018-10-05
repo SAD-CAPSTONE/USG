@@ -17,7 +17,7 @@ router.get('/contract',(req,res)=>{
   db.query(`Select * from tblSupplier join tblContract on tblSupplier.intUserID = tblContract.intConsignorID join tblBusinessType on tblBusinessType.intBusinessTypeNo = tblSupplier.intBusinessTypeNo where tblSupplier.intUserID = "${req.query.q}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     if(!err1){
-      console.log(res1);      
+      //console.log(res1);
       res.render('admin-consAgreement/views/contract',{contract: res1, moment: moment})
     }
   })
@@ -35,7 +35,8 @@ router.post('/renew',(req,res)=>{
             if(res3==null||res3==undefined){} else if(res3.length==0) {}
             else{ history_no = parseInt(res3[0].intContractHistoryNo) + 1}
 
-            db.query(`Insert into tblContractHistory (intContractHistoryNo, intContractNo, intContractStatus) values ("${history_no}", "${req.body.no}", 1)`,(err4,res4,fie4)=>{
+            db.query(`Insert into tblContractHistory (intContractHistoryNo, intContractNo, intContractStatus, strChanges)
+            values ("${history_no}", "${req.body.no}", 1, "Renewed Contract ${moment().format("MM/DD/YYYY")}")`,(err4,res4,fie4)=>{
               if(err4) console.log(err4);
               else{
                 res.send("yes");
@@ -64,7 +65,7 @@ router.post('/terminate',(req,res)=>{
               if(res3==null||res3==undefined){} else if(res3.length==0) {}
               else{ history_no = parseInt(res3[0].intContractHistoryNo) + 1}
 
-              db.query(`Insert into tblContractHistory (intContractHistoryNo, intContractNo, intContractStatus) values ("${history_no}", "${req.body.no}", 4)`,(err4,res4,fie4)=>{
+              db.query(`Insert into tblContractHistory (intContractHistoryNo, intContractNo, intContractStatus, strChanges) values ("${history_no}", "${req.body.no}", 4, "Terminated Contract ${moment().format("MM/DD/YYYY")}")`,(err4,res4,fie4)=>{
                 if(err4) console.log(err4);
                 else{
                   res.send("yes");
@@ -111,6 +112,43 @@ router.get('/history',(req,res)=>{
       res.render('admin-consAgreement/views/history',{re: res1, moment: moment})
     }
   })
+});
+
+router.post('/modifyContract',(req,res)=>{
+  var history_no = "1000";
+  var sheet =  (req.body.sheet == undefined) ? 0 : 1;
+  var receipt = (req.body.deliveryreceipt == undefined) ? 0 : 1;
+  var profile = (req.body.companyprofile == undefined) ? 0 : 1;
+  var certification = (req.body.ecocert == undefined) ? 0 : 1;
+
+  db.beginTransaction(function(err){
+    if(err) console.log(err);
+    else{
+      db.query(`Select * from tblContractHistory order by intContractHistoryNo desc limit 1`,(err1,res1,fie1)=>{
+        if(err1) console.log(err1);
+        else{
+          if(res1.length==0){} else{history_no = parseInt(res1[0].intContractHistoryNo)+1}
+
+          db.query(`Update tblContract set consignmentPrice = ${req.body.price}, strCategories = "${req.body.category}", strProductCertifications = "${req.body.certification}",
+            deliverySchedule = "${req.body.delivery}", strFrequencyOfDelivery = "${req.body.frequency}", remittanceSchedule = "${req.body.remittance}",
+            intProductInfoSheet = ${sheet}, intDeliveryReceipt = ${receipt}, intCompanyProfile = ${profile}, intEcoCertification = ${certification}
+            where intContractNo = "${req.body.cont_no}"`,(err2,res2,fie2)=>{
+              if(err2) console.log(err2);
+              else{
+                db.query(`Insert into tblContractHistory (intContractHistoryNo, intContractNo, intContractStatus, strChanges)
+                values("${history_no}", "${req.body.cont_no}", 1, "${req.body.changes}")`,(err3,res3,fie3)=>{
+                  if(err3) console.log(err3);
+                  else{
+                    res.send("yes")
+                  }
+                })
+              }
+            })
+        }
+      })
+    }
+  })
+
 })
 
 exports.consAgreement = router;

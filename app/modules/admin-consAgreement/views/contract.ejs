@@ -219,13 +219,8 @@
 				<h5>Product Information sheet</h5>
 				</div>
 				<div class="col-md-5">
-          <input type="checkbox" value="1" id="product_info" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
-				<!-- <h5><% if (contract[0].intProductInfoSheet == 0){ %>
-          <span class="label label-danger">Not Available</span>
-        <% }else{ %>
-          <span class="label label-success">Available</span>
-        <% } %>
-           </h5> -->
+          <input type="checkbox" value="1" id="product_info" class="product_info" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+
 				</div>
 			</div>
 
@@ -235,14 +230,8 @@
 				<h5>Delivery Receipt</h5>
 				</div>
 				<div class="col-md-5">
-          <input type="checkbox" id="delivery_receipt" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+          <input type="checkbox" id="delivery_receipt" class="delivery_receipt" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
 
-				<!-- <h5><% if (contract[0].intDeliveryReceipt == 0){ %>
-          <span class="label label-danger">Not Available</span>
-        <% }else{ %>
-          <span class="label label-success">Available</span>
-        <% } %>
-           </h5> -->
 				</div>
 			</div>
 
@@ -254,14 +243,9 @@
 				<h5>Company Profile</h5>
 				</div>
 				<div class="col-md-5">
-          <input type="checkbox" id="company_profile" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+          <input type="checkbox" id="company_profile" class="company_profile" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
 
-				<!-- <h5><% if (contract[0].intCompanyProfile == 0){ %>
-          <span class="label label-danger">Not Available</span>
-        <% }else{ %>
-          <span class="label label-success">Available</span>
-        <% } %>
-           </h5> -->
+
 				</div>
 			</div>
 
@@ -271,14 +255,9 @@
 				<h5>Eco Certification</h5>
 				</div>
 				<div class="col-md-5">
-          <input type="checkbox" id="eco_certification" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+          <input type="checkbox" id="eco_certification" class="eco_certification" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
 
-				<!-- <h5><% if (contract[0].intEcoCertification == 0){ %>
-          <span class="label label-danger">Not Available</span>
-        <% }else{ %>
-          <span class="label label-success">Available</span>
-        <% } %>
-           </h5> -->
+
 				</div>
 			</div>
 
@@ -319,7 +298,7 @@
 		    <div class="modal-header">
 			    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			    <span aria-hidden="true">&times;</span></button>
-			    <h4 class="modal-title">Modify Contract</h4>
+			    <h4 class="modal-title"></h4>
 		    </div>
 		        <div class="modal-body">
               <% if(contract==null||contract==undefined){ %>
@@ -335,63 +314,76 @@
                     <ul class="nav nav-tabs">
                       <li class="active"><a href="#contract_details" data-toggle="tab">Contract Details</a></li>
                       <li><a href="#consignor_details" data-toggle="tab">Consignor Details</a></li>
-                      <!-- <li><a href="#quantity" data-toggle="tab"><i class=""></i>Quantity</a></li> -->
                     </ul>
 
                     <div class="tab-content">
                       <!-- Active -->
                       <div class="tab-pane active" id="contract_details">
+                        <form id="modify_contract">
                         <div class="box-body">
                           <div class="form-group">
+                            <input type="hidden" class="form-control" id="commrate" name="cont_no" value="<%=i.intContractNo%>">
+
                             <label for="commrate">Commission Rate:</label>
-                            <input type="text" class="form-control" id="commrate"  value="<%=i.consignmentPrice%>%">
+                            <input type="number" class="form-control" id="commrate" name="price"  value="<%=i.consignmentPrice%>">
                           </div>
                           <div class="form-group">
                             <label for="prodcateg">Product Categories:</label>
-                            <input type="text" class="form-control" id="prodcateg" value="<%=i.strCategories%>">
+                            <input type="text" class="form-control" id="prodcateg" name="category" value="<%=i.strCategories%>">
                           </div>
                           <div class="form-group">
                               <label for="prodcert">Product Certifications:</label>
-                              <input type="text" class="form-control" id="prodcert" value="<%=i.strProductCertifications%>">
+                              <input type="text" class="form-control" id="prodcert" name="certification" value="<%=i.strProductCertifications%>">
                             </div>
                           <div class="form-group">
                               <label for="deliverysched">Delivery Schedule:</label>
-                              <input type="text" class="form-control" id="deliverysched" value="<%=i.deliverySchedule%>">
-                            </div> 
-                          <div class="form-group">
-                              <label for="freqdelivery">Frequency of Delivery:</label>
-                              <input type="text" class="form-control" id="deliverysched" value="<%=i.strFrequencyOfDelivery%>">
+                              <input type="text" class="form-control" id="deliverysched" name="delivery" value="<%=i.deliverySchedule%>">
                             </div>
                           <div class="form-group">
-                                <label for="freqdelivery">Remittance Schedule:</label>
-                                <input type="text" class="form-control" id="remitsched" value="<%=i.remittanceSchedule%>">
-                            </div> 
+                              <label for="freqdelivery">Frequency of Delivery:</label>
+                              <input type="text" class="form-control" id="deliverysched" name="frequency" value="<%=i.strFrequencyOfDelivery%>">
+                            </div>
+                          <div class="form-group">
+                                <label for="freqdelivery">Preferred Remittance Schedule:</label>
+                                <input type="text" class="form-control" name="remittance" id="remitsched" value="<%=i.remittanceSchedule%>">
+                            </div>
                           <div class="row">
                               <div class="col-md-5">
                                 <label for="prodinfosheet">Product Information Sheet:</label></div>
-                                <input type="checkbox" id="prodinfosheet" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                                <input type="checkbox" class="product_info"  name="sheet" data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
                               </div>
                           </br>
                           <div class="row">
                               <div class="col-md-5">
                                 <label for="deliveryreceipt">Delivery Receipt:</label></div>
-                                <input type="checkbox" id="deliveryreceipt" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                                <input type="checkbox" class="delivery_receipt" name="deliveryreceipt"  data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
                               </div>
                           </br>
                           <div class="row">
                               <div class="col-md-5">
                                 <label for="companyprof">Company Profile:</label></div>
-                                <input type="checkbox" id="companyprof" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                                <input type="checkbox" class="company_profile" name="companyprofile"  data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
                               </div>
                           </br>
                           <div class="row">
-                              <div class="col-md-5">  
+                              <div class="col-md-5">
                                 <label for="ecocert">Eco Certification:</label></div>
-                                <input type="checkbox" id="ecocert" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                                <input type="checkbox" class="eco_certification" name="ecocert"  data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
                           </div>
                         </div>
+
+                        <input type="hidden" name="changes"  id="changes">
+
+
+                        <div class="modal-footer">
+                        <button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
+                        <button type="button" onclick="ax()" data-dismiss="modal" class="large ui teal button">Save changes</button>
+                        </div>
+                      </form>
                       </div>
-                       
+
+
+
                       <div class="tab-pane" id="consignor_details">
                         <!--Other tab-->
                         <div class="box-body">
@@ -430,10 +422,7 @@
               <% }) %>
               <% } %>
             </div>
-		  <div class="modal-footer">
-			<button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
-			<button type="button" data-dismiss="modal" class="large ui teal button">Save changes</button>
-		  </div>
+
     </div>
   </div>
 		<!-- /.modal-content -->
@@ -453,6 +442,46 @@
 
 
 <!-- page script (new added) -->
+
+<script>
+
+  function ax(){
+
+    swal({
+      title: 'Please note your modifications before you submit',
+      text: 'This will help you and the consignor track the changes in the contract',
+      input: 'text',
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      inputValidator: (value) => {
+        return !value && 'You need to write something!'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Look up',
+      showLoaderOnConfirm: true,
+      preConfirm: (login) => {
+
+          $('#changes').val(login);
+
+
+
+      },
+      allowOutsideClick: () => !swal.isLoading()
+    }).then((result) => {
+      if (result.value) {
+        $.post('/consAgreement/modifyContract', $('#modify_contract').serialize(), function(data,status){
+          if(data){
+            swal({title: 'Success', text: 'You successfuly modified a contract, this will also notify the consignor', type: 'success'}).then(()=>{
+              location.reload();
+            })
+          }
+        })
+      }
+    })
+  }
+</script>
+
 
 
 <script>
@@ -564,37 +593,37 @@
 
 <script>
   <% if (contract[0].intDeliveryReceipt == 0){ %>
-    $('#delivery_receipt').attr('checked',false);
-    $('#delivery_receipt').val(0);
+    $('.delivery_receipt').attr('checked',false);
+    $('.delivery_receipt').val(0);
   <% }else{ %>
-    $('#delivery_receipt').attr('checked',true);
-    $('#delivery_receipt').val(1);
+    $('.delivery_receipt').attr('checked',true);
+    $('.delivery_receipt').val(1);
   <% } %>
 
   <% if (contract[0].intProductInfoSheet == 0){ %>
-    $('#product_info').attr('checked',false);
-    $('#product_info').val(0);
+    $('.product_info').attr('checked',false);
+    $('.product_info').val(0);
 
   <% }else{ %>
-    $('#product_info').attr('checked',true);
-    $('#product_info').val(1);
+    $('.product_info').attr('checked',true);
+    $('.product_info').val(1);
 
   <% } %>
 
   <% if (contract[0].intCompanyProfile == 0){ %>
-    $('#company_profile').attr('checked',false);
-    $('#company_profile').val(0);
+    $('.company_profile').attr('checked',false);
+    $('.company_profile').val(0);
   <% }else{ %>
-    $('#company_profile').val(1);
-    $('#company_profile').attr('checked',true);
+    $('.company_profile').val(1);
+    $('.company_profile').attr('checked',true);
   <% } %>
 
   <% if (contract[0].intEcoCertification == 0){ %>
-    $('#eco_certification').attr('checked',false);
-    $('#eco_certification').val(0);
+    $('.eco_certification').attr('checked',false);
+    $('.eco_certification').val(0);
   <% }else{ %>
-    $('#eco_certification').attr('checked',true);
-    $('#eco_certification').val(1);
+    $('.eco_certification').attr('checked',true);
+    $('.eco_certification').val(1);
   <% } %>
 </script>
 
