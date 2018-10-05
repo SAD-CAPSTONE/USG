@@ -5,6 +5,7 @@ const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
 const userTypeAuth = require('../cust-0extras/userTypeAuth');
 const auth_cust = userTypeAuth.cust;
+const makeId = require('../cust-0extras/makeId');
 const fs = require('fs');
 const firstID = 1000;
 const quantLimit = 50;
@@ -53,22 +54,57 @@ function newMessageNo (req, res, next){
     return next();
   });
 }
+function newReturnOrderNo (req, res, next){
+  db.query(`SELECT * FROM tblreturnorder ORDER BY intReturnOrderNo DESC LIMIT 1`, (err, results, fields) => {
+    if (err) console.log(err);
+    req.newReturnOrderNo = results[0] ? parseInt(results[0].intReturnOrderNo)+1 : firstID;
+    return next();
+  });
+}
+function newReturnOrderListNo (req, res, next){
+  db.query(`SELECT * FROM tblreturnorderlist ORDER BY intReturnOrderListNo DESC LIMIT 1`, (err, results, fields) => {
+    if (err) console.log(err);
+    req.newReturnOrderListNo = results[0] ? parseInt(results[0].intReturnOrderListNo)+1 : firstID;
+    return next();
+  });
+}
+function uniqueMakeIdReturnOrder (req, res, next){
+  function make (){
+    newId = makeId(15,'numbers');
+    db.query(`SELECT * FROM tblreturnorder WHERE intReturnOrderNo= ?`, [newId], (err, results, fields) => {
+      if (err) console.log(err);
+      if (results[0]){
+        make();
+      }
+      else{
+        req.uniqueMakeIdReturnOrder = newId;
+        return next();
+      }
+    });
+  }
+  make();
+}
+function uniqueMakeIdOrderRef (req, res, next){
+  function make (){
+    newId = makeId(15,'numbers');
+    db.query(`SELECT * FROM tblorder WHERE strReferenceNo= ?`, [newId], (err, results, fields) => {
+      if (err) console.log(err);
+      if (results[0]){
+        make();
+      }
+      else{
+        req.uniqueMakeIdOrderRef = newId;
+        return next();
+      }
+    });
+  }
+  make();
+}
 
 function checkUser (req, res, next){
   if(!req.user){
     req.session.pendRoute = 2;
     req.flash('regSuccess', 'Login to proceed to Checkout');
-    res.redirect('/login');
-  }
-  else{
-    req.session.pendRoute = 0;
-    return next();
-  }
-}
-function checkUserAccount(req, res, next){
-  if(!req.user){
-    req.session.pendRoute = 1;
-    req.flash('regSuccess', 'Login to view Account Information');
     res.redirect('/login');
   }
   else{
@@ -167,9 +203,50 @@ function thisOrder (req, res, next){
     return next();
   });
 }
-function orderPackages (req, res, next){
-  db.query(`SELECT *, (tblorder.intStatus)orderStatus, (tblorderdetails.intQuantity)orderQty FROM tblorder
+function thisOrderParams (req, res, next){
+  db.query(`SELECT * FROM tblorder WHERE intOrderNo= ?`, [req.params.orderNo], (err, results, fields) => {
+    if (err) console.log(err);
+    req.thisOrderParams = results[0];
+    return next();
+  });
+}
+function replaceable (req, res, next){
+  db.query(`SELECT tblorder.*, (tblorder.intStatus)orderStatus, IF(tblorder.intStatus = 3 && historyDate IS NOT NULL, 1, 0)replaceable FROM tblorder
+    LEFT JOIN (SELECT intOrderNo, historyDate, intStatus FROM tblorderhistory
+		WHERE intStatus= 3 AND now() < DATE_ADD(historyDate, INTERVAL 2 DAY))hist USING(intOrderNo)
+    WHERE intOrderNo= ?`, [req.params.orderNo], (err, results, fields) => {
+    if (err) console.log(err);
+    req.replaceable = results[0];
+    return next();
+  });
+}
+function orderProducts (req, res, next){
+  db.query(`SELECT tblproductlist.*, tblproductbrand.*, tblproductinventory.intInventoryNo, tbluom.*, tblproductinventory.intSize, tblproductinventory.strVariant,
+    tblorder.*, tblorderdetails.intOrderDetailsNo, tblorderdetails.intProductType, tblorderdetails.intQuantity,
+    (productPrice)oldPrice, discount, IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice,
+    (tblorder.intStatus)orderStatus, (tblorderdetails.intQuantity)orderQty FROM tblorder
     INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
+    INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
+    INNER JOIN tblproductlist ON tblproductinventory.intProductNo= tblproductlist.intProductNo
+    INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
+    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUomNo
+    WHERE tblorder.intOrderNo= ? AND tblorder.intUserID= ? AND tblorderdetails.intProductType= 1`,
+    [req.params.orderNo, req.user.intUserID], (err, results, fields) => {
+    if (err) console.log(err);
+    if (results[0]){
+      results.forEach((obj)=>{
+        obj.productPrice ? obj.purchasePrice = priceFormat(obj.productPrice.toFixed(2)): 0
+        obj.oldPrice ? obj.oldPrice = priceFormat(obj.oldPrice.toFixed(2)): 0
+        obj.intSize = sizeString(obj);
+      });
+    }
+    req.orderProducts = results;
+    return next();
+  });
+}
+function orderPackages (req, res, next){
+  db.query(`SELECT *, (tblorder.intStatus)orderStatus, (tblorderdetails.intQuantity)orderQty
+    FROM tblorder INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
     INNER JOIN tblpackage ON tblorderdetails.intInventoryNo= tblpackage.intPackageNo
     WHERE tblorder.intOrderNo= ? AND tblorder.intUserID= ? AND tblorderdetails.intProductType= 2`,
     [req.params.orderNo, req.user.intUserID], (err, results, fields) => {
@@ -191,6 +268,39 @@ function receiptPackages (req, res, next){
     [req.params.orderNo, req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
     req.receiptPackages = results;
+    return next();
+  });
+}
+function thisReturnProducts (req, res, next){
+  db.query(`SELECT tblreturnorder.*, (tblreturnorderlist.strReturnReason)reason, (tblreturnorderlist.intOrderQuantity)qty,
+    tblproductlist.*, tblproductbrand.*, tbluom.*, tblproductinventory.intSize, tblproductinventory.strVariant,
+    tblorderdetails.intOrderDetailsNo, tblorderdetails.intProductType FROM tblreturnorder
+    INNER JOIN tblreturnorderlist USING (intReturnOrderNo) INNER JOIN tblorderdetails USING (intOrderDetailsNo)
+    INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
+    INNER JOIN tblproductlist ON tblproductinventory.intProductNo= tblproductlist.intProductNo
+    INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
+    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUomNo
+    WHERE tblreturnorder.intOrderNo= ? AND tblreturnorder.intStatus= 0 AND tblorderdetails.intProductType= 1`,
+    [req.params.orderNo], (err, results, fields) => {
+    if (err) console.log(err);
+    if (results[0]){
+      results.forEach((obj)=>{
+        obj.intSize = sizeString(obj);
+      });
+    }
+    req.thisReturnProducts = results;
+    return next();
+  });
+}
+function thisReturnPackages (req, res, next){
+  db.query(`SELECT tblreturnorder.*, (tblreturnorderlist.strReturnReason)reason,
+    (tblreturnorderlist.intOrderQuantity)qty, tblpackage.*, tblorderdetails.intProductType FROM tblreturnorder
+    INNER JOIN tblreturnorderlist USING (intReturnOrderNo) INNER JOIN tblorderdetails USING (intOrderDetailsNo)
+    INNER JOIN tblpackage ON tblorderdetails.intInventoryNo= tblpackage.intPackageNo
+    WHERE tblreturnorder.intOrderNo= ? AND tblreturnorder.intStatus= 0 AND tblorderdetails.intProductType= 2`,
+    [req.params.orderNo], (err, results, fields) => {
+    if (err) console.log(err);
+    req.thisReturnPackages = results;
     return next();
   });
 }
@@ -293,60 +403,84 @@ router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>
     notices: notices
   });
 });
-router.get('/order/:orderNo', checkUserOrder, auth_cust, orderTotal, orderPackages, admin, (req,res)=>{
-  db.query(`SELECT tblproductlist.*, tblproductbrand.*, tbluom.*, tblproductinventory.intSize, tblproductinventory.strVariant,
-    tblorder.*, tblorderdetails.intOrderDetailsNo, tblorderdetails.intProductType, tblorderdetails.intQuantity,
-    (productPrice)oldPrice, discount, IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice,
-    (tblorder.intStatus)orderStatus, (tblorderdetails.intQuantity)orderQty FROM tblorder
-    INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
-    INNER JOIN tblproductinventory ON tblorderdetails.intInventoryNo= tblproductinventory.intInventoryNo
-    INNER JOIN tblproductlist ON tblproductinventory.intProductNo= tblproductlist.intProductNo
-    INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
-    INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUomNo
-    WHERE tblorder.intOrderNo= ? AND tblorder.intUserID= ? AND tblorderdetails.intProductType= 1`,
-    [req.params.orderNo, req.user.intUserID], (err, results, fields) => {
-    if (err) console.log(err);
-    if (results[0] || req.orderPackages[0]){
-      results = results.concat(req.orderPackages)
-      results.sort(orderArraySort);
-      results.forEach((obj)=>{
-        obj.dateOrdered = moment(obj.dateOrdered).format('LL');
-        obj.productPrice ? obj.purchasePrice = priceFormat(obj.productPrice.toFixed(2)): 0
-        obj.oldPrice ? obj.oldPrice = priceFormat(obj.oldPrice.toFixed(2)): 0
-        obj.intSize = sizeString(obj);
-      });
-      let orderLength = results.reduce((temp, obj)=>{
-        return temp += obj.orderQty
-      },0);
-      let notices = {
-        special : [],
-        general : []
-      }
-      if (!results[0].intPaymentStatus && results[0].intPaymentMethod == 2){
-        notices.special.push(`Upload your deposit slip in the Order Summary section below`)
-        notices.special.push(`Order will be processed after payment verification`)
-      }
-      notices.general.push(`Products will be delivered within ${req.admin.deliveryPeriod} working day/s`)
-      notices.general.push(`Bank payments are valid within 24 hours of order, failure to pay cancels order`)
-      notices.general.push(`Online receipt is available after payment is verified`)
-      notices.general.push(`Option to return products is available within 2 days after they are delivered`)
+router.get('/order/:orderNo', checkUserOrder, auth_cust, orderTotal, replaceable, orderPackages, orderProducts, admin, (req,res)=>{
+  if (req.orderProducts[0] || req.orderPackages[0]){
+    results = req.orderProducts.concat(req.orderPackages)
+    results.sort(orderArraySort);
+    results.forEach((obj)=>{
+      obj.dateOrdered = moment(obj.dateOrdered).format('LL');
+    });
+    let orderLength = results.reduce((temp, obj)=>{
+      return temp += obj.orderQty
+    },0);
+    let notices = {
+      special : [],
+      general : []
+    }
+    if (!results[0].intPaymentStatus && results[0].intPaymentMethod == 2){
+      notices.special.push(`Upload your deposit slip in the Order Summary section below`)
+      notices.special.push(`Order will be processed after payment verification`)
+    }
+    notices.general.push(`Products will be delivered within ${req.admin.deliveryPeriod} working day/s`)
+    notices.general.push(`Bank payments are valid within 24 hours of order, failure to pay cancels order`)
+    notices.general.push(`Online receipt is available after payment is verified`)
+    notices.general.push(`Option to return products is available within 2 days after they are delivered`)
 
-      res.render('cust-summary/views/order', {
-        thisUser: req.user,
-        order: results,
-        orderLength: orderLength,
-        orderOne: results[0],
-        orderNumber: req.params.orderNo,
-        orderTotal: req.orderTotal.totalPrice,
-        admin: req.admin,
-        notices: notices
-      });
-    }
-    else{
-      res.redirect('/summary')
-    }
-  });
+    res.render('cust-summary/views/order', {
+      thisUser: req.user,
+      order: results,
+      orderLength: orderLength,
+      orderOne: results[0],
+      orderNumber: req.params.orderNo,
+      orderTotal: req.orderTotal.totalPrice,
+      admin: req.admin,
+      notices: notices,
+      replaceable: req.replaceable.replaceable
+    });
+  }
+  else{
+    res.redirect('/summary')
+  }
 });
+router.get('/order/:orderNo/returnform', checkUserOrder, auth_cust, replaceable, orderPackages, orderProducts, (req,res)=>{
+  if (!req.replaceable.replaceable){
+    res.redirect(`/summary/order/${req.params.orderNo}`)
+  }
+  else if (req.orderProducts[0] || req.orderPackages[0]){
+    results = req.orderProducts.concat(req.orderPackages)
+    results.sort(orderArraySort);
+    res.render('cust-summary/views/returnForm', {
+      thisUser: req.user,
+      order: results,
+      orderNumber: req.params.orderNo
+    });
+  }
+  else{
+    res.redirect('/summary')
+  }
+});
+router.get('/order/:orderNo/returnformsuccess', checkUserOrder, auth_cust, replaceable, thisReturnProducts, thisReturnPackages, (req,res)=>{
+  if (!req.replaceable.replaceable && req.replaceable.orderStatus != '5'){
+    console.log(req.replaceable.orderStatus)
+    res.redirect(`/summary/order/${req.params.orderNo}`)
+  }
+  else if (req.thisReturnProducts[0] || req.thisReturnPackages[0]){
+    results = req.thisReturnProducts.concat(req.thisReturnPackages)
+    results.sort(orderArraySort);
+    results.forEach((obj)=>{
+      obj.dateReturned = moment(obj.dateReturned).format('LL');
+    });
+    res.render('cust-summary/views/returnFormSuccess', {
+      thisUser: req.user,
+      order: results,
+      orderNumber: req.params.orderNo
+    });
+  }
+  else{
+    res.redirect('/summary')
+  }
+});
+
 router.get('/voucher/:orderNo', checkUserOrder, auth_cust, orderTotal, (req,res)=>{
   if (!req.user){
     res.send('none')
@@ -422,25 +556,25 @@ router.get('/tracker/:orderNo', checkUserOrder, auth_cust, (req,res)=>{
     if (err) console.log(err);
     res.send({status: results})
   });
-
 });
 
 router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOrderDetailsNo, newOrderHistoryNo,
- newMessageNo, cartCheck, admin, popularProducts, newProducts, packages, (req,res)=>{
+  newMessageNo, uniqueMakeIdOrderRef, cartCheck, admin, popularProducts, newProducts, packages, (req,res)=>{
   req.session.cart.forEach((data,i)=>{
     data.curQty == 0 ? req.session.cart.splice(i,1) : 0
   })
   db.beginTransaction(function(err) {
     if (err) console.log(err);
     let thisOrderNo = req.newOrderNo, thisOrderHistoryNo = req.newOrderHistoryNo, thisMessageNo = req.newMessageNo;
-    db.query(`INSERT INTO tblorder (intOrderNo, intUserID, intPaymentMethod, strShippingAddress, strBillingAddress, paymentDue)
-      VALUES (?,?,?,?,?,CURDATE() + INTERVAL 1 DAY)`,[thisOrderNo, req.user.intUserID, req.body.paymentMethod, req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress ], (err, results, fields) => {
+    db.query(`INSERT INTO tblorder (intOrderNo, intUserID, intPaymentMethod, strReferenceNo, strShippingAddress, strBillingAddress, paymentDue)
+      VALUES (?,?,?,?,?,?,CURDATE() + INTERVAL 1 DAY)`,[thisOrderNo, req.user.intUserID, req.body.paymentMethod, req.uniqueMakeIdOrderRef,
+      req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress], (err, results, fields) => {
       if (err) console.log(err);
       db.query(`INSERT INTO tblorderhistory (intOrderHistoryNo, intOrderNo, intAdminID, intMessageNo, strShippingAddress, strBillingAddress)
         VALUES (?,?,?,0,?,?)`,[thisOrderHistoryNo, thisOrderNo, 1000, req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress ], (err, results, fields) => {
         if (err) console.log(err);
-        db.query(`INSERT INTO tblmessages (intMessageNo, intOrderHistoryNo, strMessage, intAdminID)
-          VALUES (?,?,?,?)`,[thisMessageNo, thisOrderHistoryNo, `Order #${thisOrderNo} has been placed`, 1000], (err, results, fields) => {
+        db.query(`INSERT INTO tblmessages (intMessageNo, intCustomerID, strMessage, intAdminID)
+          VALUES (?,?,?,?)`,[thisMessageNo, req.user.intUserID,`Order #${thisOrderNo} has been placed`, 1000], (err, results, fields) => {
           if (err) console.log(err);
           function multiInsert(i){
             let cart = req.session.cart;
@@ -649,6 +783,44 @@ router.post('/order/upload-slip', checkUserOrder, thisOrder, (req,res)=>{
 
   }
 
+});
+router.post('/order/:orderNo/returnform', checkUserOrder, newReturnOrderNo, newReturnOrderListNo, uniqueMakeIdReturnOrder,
+  newOrderHistoryNo, newMessageNo, thisOrderParams, (req,res)=>{
+  req.body.returnItem ?
+    req.body.returnItem = req.body.returnItem.map(item => (Array.isArray(item) && item[1]) || null): 0
+  db.query(`UPDATE tblorder SET intStatus= 5 WHERE intOrderNo= ?`,[req.params.orderNo], (err, results, fields) => {
+    if (err) console.log(err);
+    db.query(`INSERT INTO tblorderhistory (intOrderHistoryNo, intOrderNo, intAdminID, intMessageNo, strShippingAddress, strBillingAddress)
+      VALUES (?,?,?,0,?,?)`,[req.newOrderHistoryNo, req.params.orderNo, 1000, req.thisOrderParams.strShippingAddress, req.thisOrderParams.strBillingAddress], (err, results, fields) => {
+      if (err) console.log(err);
+      db.query(`INSERT INTO tblmessages (intMessageNo, intCustomerID, strMessage, intAdminID)
+        VALUES (?,?,?,?)`,[req.newMessageNo, req.user.intUserID, `Order #${req.params.orderNo} return form has been submitted`, 1000], (err, results, fields) => {
+        if (err) console.log(err);
+        db.query(`INSERT INTO tblreturnorder (intReturnOrderNo, intOrderNo, strReturnReason, trackingNumber) VALUES (?,?,?,?)`,
+        [req.newReturnOrderNo, req.params.orderNo, req.body.returndesc, req.uniqueMakeIdReturnOrder], (err, results, fields) => {
+          if (err) console.log(err);
+          let bodyarray1 = [], count = 0, stringquery1 = `INSERT INTO tblreturnorderlist (intReturnOrderListNo, intReturnOrderNo, intOrderDetailsNo, intOrderQuantity, strReturnReason) VALUES (?,?,?,?,?)`
+          req.body.detailsNo.forEach((data, i)=>{
+            if (req.body.returnItem[i]){
+              count == 0 ? 0 :
+                stringquery1 += `,(?,?,?,?,?)`
+              bodyarray1.push(Number(req.newReturnOrderListNo)+count)
+              bodyarray1.push(req.newReturnOrderNo)
+              bodyarray1.push(data)
+              bodyarray1.push(req.body.returnQty[i])
+              bodyarray1.push(req.body.reason[i])
+              count++
+            }
+          })
+
+          db.query(stringquery1, bodyarray1, (err, results, fields) => {
+            if (err) console.log(err);
+            res.redirect(`/summary/order/${req.params.orderNo}/returnformsuccess`)
+          });
+        });
+      });
+    });
+  });
 });
 
 exports.summary = router;

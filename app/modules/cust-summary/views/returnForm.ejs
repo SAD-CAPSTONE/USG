@@ -1,0 +1,211 @@
+<%- include('../../../templates/navbar.ejs') -%>
+<%- include('../../../templates/modals/cart-modal.ejs') -%>
+<%- include('../../../templates/modals/package-modal.ejs') -%>
+
+<div id="returnForm-container" class="container">
+  <form action="" method="POST">
+    <div class="row">
+      <div id="returnForm-main-pane" class="p-0 col-md-12 col-lg">
+        <div>
+          <p class="m-0 fs-09em fw-400"><a href="/summary/order/<%= orderNumber%>">Order#1015</a> Return Form</p>
+        </div>
+        <div id="order-products-pane" class="p-0">
+          <div id="header" class="px-3 py-1">
+            <div class="checkbox-col inline-block">
+            </div>
+            <div class="products-col inline-block">
+              <p class="inline m-0 fs-08em fw-400">Product</p>
+            </div>
+            <div class="price-col inline-block">
+              <p class="inline m-0 fs-08em fw-400">Reason</p>
+            </div>
+            <div class="quantity-col inline-block">
+              <p class="inline m-0 fs-08em fw-400">Quantity</p>
+            </div>
+          </div>
+          <% order.forEach((data,i)=>{ %>
+            <div class="product-div pos-relative px-3">
+              <div class="inline-block va-t">
+                <div class="form-check">
+                  <input type="hidden" name="detailsNo[<%=i%>]" value="<%= data.intOrderDetailsNo%>">
+                  <input type="hidden" name="returnItem[<%=i%>]" value="0">
+
+                  <input type="checkbox" name="returnItem[<%=i%>]" class="form-check-input" style="margin-top: .2rem"  value="1"/>
+                </div>
+              </div>
+              <div class="inline-block va-t">
+                <% if(data.intProductType == 1){ %>
+                  <a href="/item/<%= data.intProductNo%>" class="img-link">
+                    <img src="/assets/images/products/<%= data.strProductPicture%>" height="100" width="100" alt="product">
+                  </a>
+                  <div class="px-2">
+                    <p class="m-0 fs-08em fw-400 lh-p3em"><span class="text-brand"><%= data.strBrand%></span> <%= data.strProductName%></p>
+                    <p class="fs-08em fw-400 text-muted lh-p3em"><%= data.intSize%></p>
+                    <div class="reason-div">
+                      <select class="m-0 fs-08em fw-400 lh-p3em custom-select" name="reasonMini[<%= i%>]">
+                        <option value="defective">defective</option>
+                        <option value="not as advertised">not as advertised</option>
+                        <option value="wrong item">wrong item</option>
+                        <option value="missing accessories">missing accessories</option>
+                        <option value="missing freebies">missing freebies</option>
+                        <option value="wrong size">wrong size</option>
+                        <option value="damaged">damaged</option>
+                        <option value="counterfeit">counterfeit</option>
+                      </select>
+                    </div>
+                  </div>
+                <% }else{ %>
+                  <input class="inventory-id" value="<%= data.intPackageNo%>" hidden/>
+                  <a href class="package-img img-link" data-toggle="modal" data-target="#package-modal">
+                    <img src="/customer-assets/images/static/package.jpg" height="100" width="100" alt="product">
+                  </a>
+                  <div class="px-2">
+                    <p class="m-0 fs-08em fw-400 lh-p3em"><span class="text-package"><%= data.strPackageName%></span></p>
+                    <p class="package-details-modal fs-08em fw-400 text-muted w-fit" data-toggle="modal" data-target="#package-modal">View Details</p>
+                    <div class="reason-div">
+                      <select class="m-0 fs-08em fw-400 lh-p3em custom-select" name="reasonMini[<%= i%>]">
+                        <option value="defective">defective</option>
+                        <option value="not as advertised">not as advertised</option>
+                        <option value="wrong item">wrong item</option>
+                        <option value="missing accessories">missing accessories</option>
+                        <option value="missing freebies">missing freebies</option>
+                        <option value="wrong size">wrong size</option>
+                        <option value="damaged">damaged</option>
+                        <option value="counterfeit">counterfeit</option>
+                      </select>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+              <div class="inline-block va-t">
+                <select class="m-0 fs-08em fw-400 lh-p3em custom-select main-reason" name="reason[<%= i%>]">
+                  <option value="defective">defective</option>
+                  <option value="not as advertised">not as advertised</option>
+                  <option value="wrong item">wrong item</option>
+                  <option value="missing accessories">missing accessories</option>
+                  <option value="missing freebies">missing freebies</option>
+                  <option value="wrong size">wrong size</option>
+                  <option value="damaged">damaged</option>
+                  <option value="counterfeit">counterfeit</option>
+                </select>
+              </div>
+              <div class="inline-block va-t mt-2">
+                <input class="orderQty" type="hidden" value="<%= data.orderQty%>">
+                <p class="m-0 fs-09em fw-400 lh-p3em">
+                  <div class="input-group quantity">
+                    <div class="input-group-prepend addon">
+                      <button class="btn btn-primary quantity-buttons minus" type="button">
+                      <small class="quantity-text quantity-text-minus">-</small>
+                    </button>
+                    </div>
+                    <input class="form-control quantity-input" type="text" value="<%= data.orderQty%>" name="returnQty[<%= i%>]">
+                    <div class="input-group-append addon">
+                      <button class="btn btn-primary quantity-buttons plus" type="button">
+                      <small class="quantity-text quantity-text-plus">+</small>
+                    </button>
+                    </div>
+                  </div>
+                </p>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+        <div>
+          <p class="m-0 fs-08em fw-400">Additional Information (Optional)</p>
+          <textarea class="form-control fs-08em my-2" name="returndesc" placeholder="Specify Reason" rows="4" maxlength="150"></textarea>
+          <div class="form-check">
+            <input id="agree" type="checkbox" class="form-check-input" style="margin-top: .2rem"/>
+            <label for="agree" class="form-check-label fs-08em fw-400">I have read and accept the <a href="#ReturnPolicyLink">Return Policy</a></label>
+          </div>
+          <button type="submit" class="btn btn-custom-primary mt-2" disabled>Submit</button>
+        </div>
+      </div>
+      <div id="returnForm-side-pane" class="p-0">
+        <div>
+          <p class="m-0 fs-08em fw-400 mb-2">Select the products you wish to return, together with the reason for replacement and its quantity</p>
+          <p class="m-0 fs-08em fw-400 mb-2">Be detailed on elaborating the reason for return for us to conduct Quality Check accurately</p>
+          <p class="m-0 fs-08em fw-400">Select atleast one product and accept the Return Policy to sumbit form, do not leave the quantities blank</p>
+        </div>
+        <div>
+          <a id="ReturnPolicyLink" style="display: block; position: relative; top: -71px;"></a>
+          <p class="mb-1 fs-09em fw-400">Return Policy</p>
+          <p class="mb-2 fs-08em fw-400 mb-2">Returning products are available within 2 days after being delivered</p>
+          <p class="m-0 fs-08em fw-400 mb-2">Products covered by 2 days return are only valid for return within 2 calendar days after receiving it</p>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<%- include('../../../templates/footer.ejs') -%>
+<%- include('../../../templates/scripts.ejs') -%>
+<%- include('../../../templates/scripts-customer.ejs') -%>
+<script type="text/javascript">
+  $(()=>{
+    allQtyValidate()
+  });
+  function allQtyValidate(){
+    $('.product-div').each(function(index){
+      stock = Number($(this).find(`.orderQty`).val())
+      $(this).find(`.quantity-input`).val() <= 1 ?
+        $(this).find(`.minus`).attr('disabled','disabled') :
+        $(this).find(`.minus`).removeAttr('disabled')
+      $(this).find(`.quantity-input`).val() >= stock ?
+        $(this).find(`.plus`).attr('disabled','disabled') :
+        $(this).find(`.plus`).removeAttr('disabled')
+    })
+  }
+  function thisQtyValidate(qty,stock,thisDiv){
+    $(thisDiv).find(`.quantity-input`).val() <= 1 ?
+      $(thisDiv).find(`.minus`).attr('disabled','disabled') :
+      $(thisDiv).find(`.minus`).removeAttr('disabled')
+    $(thisDiv).find(`.quantity-input`).val() >= stock ?
+      $(thisDiv).find(`.plus`).attr('disabled','disabled') :
+      $(thisDiv).find(`.plus`).removeAttr('disabled')
+  }
+
+  $(`.product-div input[type=checkbox], #returnForm-main-pane #agree`).click(function(){
+    let checkVal = 1;
+
+    checkVal = $(`.product-div input[type=checkbox]:checked`).length && $(`#returnForm-main-pane #agree:checked`).length ? 0 : 1
+
+    checkVal ?
+      $(`button[type=submit]`).attr('disabled','disabled') :
+      $(`button[type=submit]`).removeAttr('disabled')
+  });
+
+  $(`.product-div select`).change(function(){
+    let value = $(this).val()
+
+    $(this).closest(`.product-div`).find(`select.main-reason`).val(value)
+    $(this).closest(`.product-div`).find(`.reason-div > select`).val(value)
+  });
+
+  // PUT - Plus Button, Get New Quantity
+  $('.product-div .plus').click(function() {
+    let thisInput = Number($(this).closest(`.product-div`).find(`.quantity-input`).val()),
+    orderQty = Number($(this).closest(`.product-div`).find(`.orderQty`).val());
+    thisInput < orderQty ?
+      $(this).closest(`.product-div`).find(`.quantity-input`).val(thisInput+1) : 0
+    thisQtyValidate(thisInput,orderQty,$(this).closest(`.product-div`))
+  });
+
+  // PUT - Minus Button, Get New Quantity
+  $('.product-div .minus').click(function() {
+    let thisInput = Number($(this).closest(`.product-div`).find(`.quantity-input`).val()),
+    orderQty = Number($(this).closest(`.product-div`).find(`.orderQty`).val());
+    thisInput > 1 ?
+      $(this).closest(`.product-div`).find(`.quantity-input`).val(thisInput-1) : 0
+    thisQtyValidate(thisInput,orderQty,$(this).closest(`.product-div`))
+  });
+
+  $('.product-div .quantity-input').keyup(function() {
+    let thisInput = parseInt($(this).closest(`.product-div`).find(`.quantity-input`).val()),
+    orderQty = Number($(this).closest(`.product-div`).find(`.orderQty`).val());
+
+    thisInput == 0 ?  $(this).closest(`.product-div`).find(`.quantity-input`).val(1) : 0
+    thisInput > orderQty ? $(this).closest(`.product-div`).find(`.quantity-input`).val(orderQty) : 0
+  });
+
+</script>
+<%- include('../../../templates/closer.ejs') -%>

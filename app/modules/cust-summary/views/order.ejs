@@ -16,6 +16,10 @@
         <a class="inline-block fl-r" href data-toggle='modal' data-target='#CancelModal'><p class="m-0 fs-08em fw-400">Cancel Order</p></a>
       <% }else if(orderOne.orderStatus == 6){ %>
         <a class="inline-block fl-r"><p class="m-0 fs-08em fw-400 text-danger">Cancelled</p></a>
+      <% }else if(replaceable){ %>
+        <a class="inline-block fl-r" href="/summary/order/<%= orderOne.intOrderNo%>/returnform"><p class="m-0 fs-08em fw-400">Return Products</p></a>
+      <% }else if(orderOne.orderStatus == 5){ %>
+        <a class="inline-block fl-r text-package" href="/summary/order/<%= orderOne.intOrderNo%>/returnformsuccess"><p class="m-0 fs-08em fw-400">Returned</p></a>
       <% } %>
 
     </div>
@@ -29,7 +33,6 @@
         </div>
       </div>
     </div>
-
     <div id="order-products-pane" class="p-0">
       <div id="header" class="px-3 py-1">
         <div class="products-col inline-block">
@@ -178,7 +181,7 @@
       <div id="more-details">
         <!-- <a href=""><small class="block fs-08em fw-400">Vouchers Used</small></a> -->
         <small class="block fs-08em fw-400">Reference #</small>
-        <small class="fw-500">2492772490</small>
+        <small class="fw-500"><%= orderOne.strReferenceNo%></small>
       </div>
       <div class="clearfix"></div>
     </div>
