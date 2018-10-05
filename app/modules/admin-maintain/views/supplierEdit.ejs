@@ -1,0 +1,295 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+
+ <!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Maintenance</a></li>
+        <li class="active">Suppliers</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+		<div class="box box-success">
+			<div class="box-header with-border">
+				<h3 class="box-title">Supplier Information Form</h3>
+			</div>
+
+			<!--  body -->
+			<div class="box-body">
+
+
+        <form class="form-horizontal" id="supplierForm">
+				<div id="suppForm" class="row">
+
+						<div class="form-group">
+
+              <input type="hidden" required class="input-sm form-control" value="<%=details[0].intUserID%>" name="number" >
+
+							<label for="FName" class="col-sm-2 control-label">Name</label>
+							<div class="col-sm-2">
+								<input type="text" required class="input-sm form-control" value="<%=details[0].strFname%>" name="fname" id="FName" placeholder="First Name">
+							</div>
+
+
+							<div class="col-sm-2">
+								<input type="text" class="input-sm form-control" value="<%=details[0].strMname%>" id="MName" name="mname" placeholder="Middle Name">
+							</div>
+
+
+							<div class="col-sm-2">
+								<input type="text" required class="input-sm form-control" value="<%=details[0].strLname%>" id="LName" name="lname" placeholder="Last Name">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="BName" class="col-sm-2 control-label">Business Name</label>
+							<div class="col-sm-4">
+								<input type="text" required value="<%=details[0].strBusinessName%>" class="input-sm form-control" id="BName" name="bname" placeholder="">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="address" class="col-sm-2 control-label">Business Address</label>
+							<div class="col-sm-4">
+								<input type="text" required value="<%=details[0].strBusinessAddress%>" class="input-sm form-control" name="address" id="address" placeholder="">
+							</div>
+						</div>
+
+            <div class="form-group">
+							<label for="email" class="col-sm-2 control-label">Business Email</label>
+							<div class="col-sm-4">
+								<input type="email" class="input-sm form-control" value="<%=details[0].strBusinessEmail%>" id="email" name="email" placeholder="">
+							</div>
+						</div>
+
+            <div class="form-group">
+							<label for="brands" class="col-sm-2 control-label">Brands</label>
+							<div class="col-sm-4">
+								<input type="text" required value="<%=details[0].strBrands%>" class="input-sm form-control" name="brands" id="brands" placeholder="Separate with commas">
+							</div>
+						</div>
+
+            <div class="form-group">
+							<label for="phone" class="col-sm-2 control-label">Contact numbers</label>
+							<div class="col-sm-2">
+								<input type="text" class="input-sm form-control" value="<%=details[0].strSupplierPhone%>" name="phone" id="phone" placeholder="Phone">
+							</div>
+
+
+							<div class="col-sm-2">
+								<input type="text" class="input-sm form-control" value="<%=details[0].strSupplierMobile%>" name="mobile" id="mobile" placeholder="Mobile">
+							</div>
+						</div>
+
+            <div class="form-group">
+							<label for="tin" class="col-sm-2 control-label">Business TIN</label>
+							<div class="col-sm-4">
+								<input type="text" class="input-sm form-control" value="<%=details[0].strBusinessTIN%>" name="tin" id="tin" placeholder="">
+							</div>
+						</div>
+
+            <div class="form-group">
+              <label for="invoice" class="col-sm-2 control-label">Invoice Available?</label>
+
+              <% if (details[0].intInvoiceAvailable == 0) { %>
+                <div class="col-sm-4">
+                  <label>
+                    <input type="radio" id="invoice" value="1" name="inv" class="flat-red">
+                    Yes
+                  </label>
+
+                  <label>
+                    <input type="radio" name="inv" value="0" checked class="flat-red">
+                    No
+                  </label>
+                </div>
+              <% }else{ %>
+                <div class="col-sm-4">
+                  <label>
+                    <input type="radio" id="invoice" value="1" name="inv" class="flat-red" checked>
+                    Yes
+                  </label>
+
+                  <label>
+                    <input type="radio" name="inv" value="0" class="flat-red">
+                    No
+                  </label>
+                </div>
+
+              <% } %>
+
+            </div>
+
+            <div class="form-group">
+							<label for="" class="col-sm-2 control-label">Business Type</label>
+							<div class="col-sm-4">
+                <select id="businesstype"  name="busstype" class="input-sm form-control">
+                  <% if (businesstype == null || businesstype == undefined){ %>
+
+                  <% }else if (businesstype.length == 0){ %>
+
+                  <% }else{ %>
+                  <%  businesstype.forEach(function(i){ %>
+                      <option value="<%=i.intBusinessTypeNo%>"><%= i.strBusinessType%></option>
+                  <%  }) %>
+                  <% } %>
+                </select>
+							</div>
+						</div>
+
+
+
+            <div class="form-group">
+							<label for="" class="col-sm-2 control-label">Supplier Type</label>
+							<div class="col-sm-4">
+                <select id="type"  name="supptype" class="input-sm form-control">
+
+                  <option  value="2">Outright</option>
+                  <option value="1">Consignor</option>
+                </select>
+
+
+							</div>
+              <div class="col-sm-4">
+                <button id="addContract_btn" class="large ui primary basic button">Click to add Contract</button>
+              </div>
+						</div>
+
+
+
+
+				</div>
+
+
+
+        <div class="box-footer">
+        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+          <a href="/maintenance/supplier"><button type="button" class="big ui button">Back</button></a>
+          <button type="submit" class="big ui teal  button">Submit</button>
+        </div>
+                <!-- /.box-footer -->
+      </form>
+			</div>
+
+
+		</div>
+
+	</section>
+
+</div>
+
+  <!-- /.content-wrapper -->
+
+
+
+  <%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+<!-- page script (new added) -->
+<script>
+  $(function () {
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+
+</script>
+
+<script>
+$(document).ready(function(){
+
+    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+      checkboxClass: 'icheckbox_flat-green',
+      radioClass   : 'iradio_flat-green'
+    })
+    $('#response').hide();
+})
+</script>
+
+<script>
+$('#type').val('<%=details[0].intSupplierType%>')
+  $('#businesstype').val('<%=details[0].intBusinessTypeNo%>')
+</script>
+
+<script>
+  $('#supplierForm').submit(function(e){
+    e.preventDefault();
+
+    swal({
+      title: "Are you sure?",
+      text: "Please review all the data you've entered",
+      type: "warning",
+      confirmButtonText: "Submit!",
+      showCancelButton: true,
+      reverseButtons: true
+    }).then((result)=>{
+      if(result.value){
+        $.ajax({
+          url: '/maintenance/supplierEdit',
+          method: 'post',
+          data: $('#supplierForm').serialize(),
+          success: function(response,status,http){
+            if(response){
+              swal({title:"Success!",text:"You've edited a supplier",type:"success"}).then(()=>{
+                  window.location.href = '/maintenance/supplier';
+              })
+
+            }
+          }
+        })
+      }
+    })
+
+
+
+  })
+</script>
+
+
+<script>
+$('#addContract_btn').hide();
+$('#contract_form').hide();
+$('#type').on('change',function(){
+  if($(this).val() == 1){$('#addContract_btn').show(); }else {$('#addContract_btn').hide(); $('#contract_form').hide();}
+});
+
+$('#addContract_btn').on('click',function(){
+  $('#contract_form').show();
+})
+</script>
+
+
+<script>
+$('#title').html("USG | Suppliers");
+$(".treeview a:contains('Maintenance')").parent().addClass("active");
+$(".navi a:contains('Suppliers')").parent().addClass("active");
+</script>
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>

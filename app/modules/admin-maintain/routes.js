@@ -8,7 +8,7 @@ var voucher_codes = require('voucher-code-generator');
 router.get('/adjustmentTypes',(req,res)=>{
   db.query(`Select * from tblAdjustmentTypes where intStatus <> 2`,(err1,res1,fie1)=>{
     if(err1) console.log(err1)
-  
+
     if(!err1) res.render('admin-maintain/views/adjustmentType', {re: res1, moment: moment});
   });
 });
@@ -148,6 +148,39 @@ router.get('/supplierForm',(req,res)=>{
   });
 });
 
+router.get('/supplierEdit',(req,res)=>{
+  db.query(`Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID
+    left join tblContract on tblUser.intUserID = tblContract.intConsignorID
+    where tblUser.intUserID = "${req.query.supplier}"`,(err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+        db.query(`Select * from tblBusinessType`,(err2,res2,fie2)=>{
+          if(err2) console.log(err2);
+          else{
+            res.render('admin-maintain/views/supplierEdit', {details: res1, moment: moment, businesstype: res2})
+
+          }
+        })
+      }
+    })
+});
+
+router.post('/supplierEdit',(req,res)=>{
+  db.query(`Update tblUser set  strFname = "${req.body.fname}", strMname = "${req.body.mname}", strLname = "${req.body.lname}" where intUserID = "${req.body.number}"`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      db.query(`Update tblSupplier set strBusinessName = "${req.body.bname}", strBusinessAddress = "${req.body.address}", strBusinessEmail = "${req.body.email}",
+      strBrands = "${req.body.brands}", strSupplierPhone = "${req.body.phone}", strSupplierMobile = "${req.body.mobile}", strBusinessTIN = "${req.body.tin}", intInvoiceAvailable = ${req.body.inv}, intBusinessTypeNo = "${req.body.busstype}", intSupplierType = ${req.body.supptype}
+      where intUserID = "${req.body.number}" `,(err2,res2,fie2)=>{
+        if(err2) console.log(err2);
+        else{
+          res.send("yes");
+        }
+      })
+    }
+  })
+})
+
 router.post('/addSupplier',(req,res)=>{
   var no = "1000";
   var cont_no = "1000";
@@ -254,10 +287,13 @@ router.get('/supplierDetails',(req,res)=>{
 });
 
 router.get('/contract',(req,res)=>{
-  db.query(`Select * from tblContract where intConsignorID = "${req.query.c}" order by applicationDate desc`,(err1,results1,fields1)=>{
+  db.query(`
+    Select * from tblSupplier join tblContract on tblSupplier.intUserID = tblContract.intConsignorID
+      join tblBusinessType on tblBusinessType.intBusinessTypeNo = tblSupplier.intBusinessTypeNo
+      where tblContract.intConsignorID = "${req.query.c}"`,(err1,results1,fields1)=>{
     if(err1) console.log(err1);
     if(!err1){
-      res.render('admin-maintain/views/contracts',{re: results1, moment: moment})
+      res.render('admin-maintain/views/contract',{contract: results1, moment: moment})
     }
   });
 });

@@ -59,18 +59,21 @@
                     </td>
                     <td>
                       <% if (i.Stats == 1){ %>
-                        <button data-no="<%=i.intUserID%>" class="ui toggle button active inactivate_supplier">Active</button>
-
+                        <!-- <button data-no="<%=i.intUserID%>" class="ui toggle button active inactivate_supplier">Active</button> -->
+                        Active
                       <% }else if(i.Stats == 4){ %>
-                        <button data-no="<%=i.intUserID%>" class="ui toggle button inactive activate_supplier">Inactive</button>
-
+                        <!-- <button data-no="<%=i.intUserID%>" class="ui toggle button inactive activate_supplier">Inactive</button> -->
+                        Inactive
                       <% }else{ %>
 
                       <% } %>
                       </td>
 
 
-                    <td><a href="/maintenance/supplierDetails?supplier=<%= i.intUserID %>"><button class="large ui teal button"><i class="glyphicon glyphicon-edit"></i></button></a></td>
+                    <td>
+                      <a href="/maintenance/supplierDetails?supplier=<%= i.intUserID %>"><button class="large ui teal button">View</button></a>
+                      <a href="/maintenance/supplierEdit?supplier=<%= i.intUserID %>"><button class="large ui grey button">Edit</button></a>
+                    </td>
                   </tr>
                 <%  }) %>
                 <% } %>
