@@ -246,4 +246,13 @@ router.post('/banCustomer',(req,res)=>{
   });
 });
 
+router.post('/unbanCustomer',(req,res)=>{
+  db.query(`UPDATE tblcustomer SET intStatus = 1 where intUserID = "${req.body.number}"`,(err,results,fields)=>{
+    if(err) console.log(err);
+    else{
+      res.send("yes");
+    }
+  });
+})
+
 exports.maintenance2 = router;

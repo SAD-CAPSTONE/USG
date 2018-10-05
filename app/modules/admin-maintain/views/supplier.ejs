@@ -31,7 +31,7 @@
               <table id="example2" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-
+                  <th style="width: 5px">#</th>
                   <th>Supplier Name</th>
                   <th>Business Name</th>
                   <th>Type</th>
@@ -45,9 +45,9 @@
                 <% }else if (re.length == 0){ %>
 
                 <% }else{ %>
-                <%  re.forEach(function(i){ %>
+                <%  re.forEach(function(i,index){ %>
                   <tr>
-
+                    <td><%= index+1%></td>
                     <td><%= i.strFname%> <%=i.strMname %> <%=i.strLname %></td>
                     <td><%= i.strBusinessName %></td>
                     <td>

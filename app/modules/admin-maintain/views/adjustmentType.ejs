@@ -31,7 +31,7 @@
               <table id="example2" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                  <th style="width: 20px">No</th>
+                  <th style="width: 5px">#</th>
                   <th>Adjustment</th>
                   <th>Type</th>
                   <th>Date Added</th>
@@ -46,9 +46,9 @@
                   <% }else if (re.length == 0){ %>
 
                   <% }else{ %>
-                  <%  re.forEach(function(i){ %>
+                  <%  re.forEach(function(i,index){ %>
                       <tr>
-                        <td><%= count %></td>
+                        <td><%=index+1%></td>
                         <td><%=i.strAdjustment%></td>
                         <td>
                           <% if( i.intAdjustmentType == 0){ %>

@@ -315,53 +315,127 @@
 
 	<div class="modal fade" id="modify">
 	  <div class="modal-dialog">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title">Modify Contract</h4>
-		  </div>
-		  <div class="modal-body">
-			<!-- Horizontal Form -->
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="nav-tabs-custom">
-              <ul class="nav nav-tabs">
-                <li class="active"><a href="#contract_details" data-toggle="tab">Contract Details</a></li>
-                <li ><a href="#consignor_details" data-toggle="tab">Consignor Details</a></li>
-                <!-- <li><a href="#quantity" data-toggle="tab"><i class=""></i>Quantity</a></li> -->
-              </ul>
+		  <div class="modal-content">
+		    <div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			    <span aria-hidden="true">&times;</span></button>
+			    <h4 class="modal-title">Modify Contract</h4>
+		    </div>
+		        <div class="modal-body">
+              <% if(contract==null||contract==undefined){ %>
 
-              <div class="tab-content">
-                <!-- Active -->
-                <div class="tab-pane active" id="contract_details">
-                  <div class="box-body">
-                    <div class="form-group">
-                      <label for="receiver">To:</label>
-                      <input type="text" class="form-control" id="receiver" disabled value="PICOLE" placeholder="">
-                    </div>
-                    <div class="form-group">
-                      <label for="exampleInputEmail1">Set Preferred Schedules for Product Presentation:</label>
-                      <input type="text" class="form-control" id="exampleInputEmail1" placeholder="ex. June 10, 2018 8:00 onwards">
+              <% }else if(contract.length == 0){ %>
+
+              <% }else{ %>
+                <% contract.forEach(function(i){ %>
+              <!-- Horizontal Form -->
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                      <li class="active"><a href="#contract_details" data-toggle="tab">Contract Details</a></li>
+                      <li><a href="#consignor_details" data-toggle="tab">Consignor Details</a></li>
+                      <!-- <li><a href="#quantity" data-toggle="tab"><i class=""></i>Quantity</a></li> -->
+                    </ul>
+
+                    <div class="tab-content">
+                      <!-- Active -->
+                      <div class="tab-pane active" id="contract_details">
+                        <div class="box-body">
+                          <div class="form-group">
+                            <label for="commrate">Commission Rate:</label>
+                            <input type="text" class="form-control" id="commrate"  value="<%=i.consignmentPrice%>%">
+                          </div>
+                          <div class="form-group">
+                            <label for="prodcateg">Product Categories:</label>
+                            <input type="text" class="form-control" id="prodcateg" value="<%=i.strCategories%>">
+                          </div>
+                          <div class="form-group">
+                              <label for="prodcert">Product Certifications:</label>
+                              <input type="text" class="form-control" id="prodcert" value="<%=i.strProductCertifications%>">
+                            </div>
+                          <div class="form-group">
+                              <label for="deliverysched">Delivery Schedule:</label>
+                              <input type="text" class="form-control" id="deliverysched" value="<%=i.deliverySchedule%>">
+                            </div> 
+                          <div class="form-group">
+                              <label for="freqdelivery">Frequency of Delivery:</label>
+                              <input type="text" class="form-control" id="deliverysched" value="<%=i.strFrequencyOfDelivery%>">
+                            </div>
+                          <div class="form-group">
+                                <label for="freqdelivery">Remittance Schedule:</label>
+                                <input type="text" class="form-control" id="remitsched" value="<%=i.remittanceSchedule%>">
+                            </div> 
+                          <div class="row">
+                              <div class="col-md-5">
+                                <label for="prodinfosheet">Product Information Sheet:</label></div>
+                                <input type="checkbox" id="prodinfosheet" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                              </div>
+                          </br>
+                          <div class="row">
+                              <div class="col-md-5">
+                                <label for="deliveryreceipt">Delivery Receipt:</label></div>
+                                <input type="checkbox" id="deliveryreceipt" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                              </div>
+                          </br>
+                          <div class="row">
+                              <div class="col-md-5">
+                                <label for="companyprof">Company Profile:</label></div>
+                                <input type="checkbox" id="companyprof" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                              </div>
+                          </br>
+                          <div class="row">
+                              <div class="col-md-5">  
+                                <label for="ecocert">Eco Certification:</label></div>
+                                <input type="checkbox" id="ecocert" checked data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                          </div>
+                        </div>
+                      </div>
+                       
+                      <div class="tab-pane" id="consignor_details">
+                        <!--Other tab-->
+                        <div class="box-body">
+                          <div class="form-group">
+                            <label for="businessname">Business Name:</label>
+                            <input type="text" class="form-control" id="businessname" value="<%=i.strBusinessName%>">
+                          </div>
+                          <div class="form-group">
+                            <label for="businessaddress">Business Address:</label>
+                            <input type="text" class="form-control" id="businessaddress" value="<%=i.strBusinessAddress%>">
+                          </div>
+                          <div class="form-group">
+                            <label for="businessemail">Business Email:</label>
+                            <input type="text" class="form-control" id="businessemail" value="<%=i.strBusinessEmail%>">
+                          </div>
+                          <div class="form-group">
+                            <label for="brands">Brands:</label>
+                            <input type="text" class="form-control" id="brands" value="<%=i.strBrands%>">
+                          </div>
+                          <div class="form-group">
+                            <label for="businesspnumber">Business Phone Number:</label>
+                            <input type="text" class="form-control" id="businesspnumber" value="<%=i.strSupplierPhone%>">
+                          </div>
+                          <div class="form-group">
+                            <label for="businessmnumber">Business Mobile Number:</label>
+                            <input type="text" class="form-control" id="businessmnumber" value="<%=i.strSupplierMobile%>">
+                          </div>
+                          <div class="form-group">
+                            <label for="businesstnumber">Business TIN Number:</label>
+                            <input type="text" class="form-control" id="businesstnumber" value="<%=i.strBusinessTIN%>">
+                          </div>
+                      </div>
                     </div>
                   </div>
-
                 </div>
-
-                <div class="tab-pane active" id="contract_details">
-                </div>
-              </div>
+              <% }) %>
+              <% } %>
             </div>
-          </div>
-        </div>
-
-
-		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
 			<button type="button" data-dismiss="modal" class="large ui teal button">Save changes</button>
 		  </div>
-		</div>
+    </div>
+  </div>
 		<!-- /.modal-content -->
 	</div>
   <!-- /.modal-dialog -->
