@@ -31,7 +31,7 @@
               <table id="example2" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-
+                  <th style="width: 5px">#</th>
                   <th>Measurement</th>
                   <th>Prefix</th>
 				          <th style="width: 40%">Status</th>
@@ -42,9 +42,9 @@
                 <% if (re == undefined || re == null || re.length == 0){ %>
 
                 <% }else{ %>
-                <%  re.forEach(function(i){ %>
+                <%  re.forEach(function(i, index){ %>
                   <tr>
-
+                    <td><%= index+1%></td>
                     <td><%=i.strDescription%></td>
                     <td><%=i.strUnitName%></td>
                     <td>

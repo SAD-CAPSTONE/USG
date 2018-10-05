@@ -5,9 +5,24 @@ const nodemailer = require('nodemailer');
 const xoauth2 = require('xoauth2');
 const generatePassword = require('password-generator');
 var mailAccountUse = "imjanellealag@gmail.com";
+var path = require('path');
 
 const excel = require('node-excel-export');
+const csv = require('csvtojson');
+const csvFilePath= path.join(__dirname,'sample.csv');
 
+csv().fromFile(csvFilePath).then((jsonObj)=>{
+    //console.log(jsonObj);
+    /**
+     * [
+     * 	{a:"1", b:"2", c:"3"},
+     * 	{a:"4", b:"5". c:"6"}
+     * ]
+     */
+})
+
+// Async / await usage
+//const jsonArray=await csv().fromFile(csvFilePath);
 
 
 // You can define styles as json object
@@ -83,10 +98,14 @@ const specification = {
 // specification provided above. But you should have all the fields
 // that are listed in the report specification
 const dataset = [
-  {customer_name: 'IBM', status_id: 1, note: 'some note', misc: 'not shown'},
+   {customer_name: 'IBM', status_id: 1, note: 'some note', misc: 'not shown'},
   {customer_name: 'HP', status_id: 0, note: 'some note'},
   {customer_name: 'MS', status_id: 0, note: 'some note', misc: 'not shown'}
 ]
+
+
+
+//console.log(dataset);
 
 // Define an array of merges. 1-1 = A:1
 // The merges are independent of the data.
@@ -103,9 +122,9 @@ const report = excel.buildExport(
   [ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report
     {
       name: 'Report', // <- Specify sheet name (optional)
-      heading: heading, // <- Raw heading array (optional)
-      merges: merges, // <- Merge cell ranges
-      specification: specification, // <- Report specification
+       heading: heading, // <- Raw heading array (optional)
+      // merges: merges, // <- Merge cell ranges
+       specification: specification, // <- Report specification
       data: dataset // <-- Report data
     }
   ]
@@ -147,8 +166,10 @@ var areaChartData = {
 
 router.get('/try',(req,res)=>{
 
-  // res.attachment('report.csv'); // This is sails.js specific (in general you need to set headers)
-  // return res.send(report);
+
+
+   res.attachment('report.csv'); // This is sails.js specific (in general you need to set headers)
+   return res.send(report);
 });
 
 router.get('/',(req,res)=>{

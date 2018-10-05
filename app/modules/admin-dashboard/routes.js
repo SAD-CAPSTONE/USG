@@ -12,7 +12,21 @@ router.get('/', (req,res)=>{
           if (err1) console.log(err1)
           db.query(`SELECT * FROM tblorder JOIN tbluser ON tblorder.intUserID = tbluser.intUserID WHERE dateOrdered <= NOW() ORDER BY dateOrdered DESC LIMIT 7`,(err1,results4)=>{
             if(err1) console.log(err1)
-            db.query(`SELECT * FROM tblproductinventory JOIN tblproductlist ON tblproductinventory.intProductNo = tblproductlist.intProductNo JOIN tbluom ON tblproductinventory.intUOMno = tbluom.intUomNo WHERE dateRecorded <= NOW() ORDER BY dateRecorded DESC LIMIT 4`,(err1,results5)=>{
+            // best seller
+            db.query(`Select
+                      count(*) as total_quantity,
+                      sum((details.purchasePrice - (details.purchasePrice * (details.discount / 100) ))) as sum_discounted, details.intOrderDetailsNo,
+                      details.purchasePrice, details.discount, tblOrder.*, details.*, tblProductInventory.*,
+                      tblProductlist.*, tblUom.*
+                      from tblOrder join tblOrderdetails as details on tblOrder.intOrderNo = details.intOrderNo
+                      join tblProductInventory on details.intInventoryNo = tblProductInventory.intInventoryno
+                      join tblUom on tblProductInventory.intUomNo = tblUom.intUomNo
+
+                      join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductNo
+
+                      where tblOrder.intPaymentStatus = 1 and details.intProductType = 1
+                      group by details.intInventoryNo
+                      order by total_quantity, sum_discounted desc limit 4`,(err1,results5)=>{
               if(err1) console.log(err1)
               db.query(`SELECT *,(tblproductlist.strDescription)proddesc FROM tblbatch
                         JOIN tblproductinventory ON tblproductinventory.intInventoryNo = tblbatch.intInventoryNo

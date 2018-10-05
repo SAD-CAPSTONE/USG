@@ -35,6 +35,7 @@
                   <thead>
                   <tr>
                     <th>Inventory No</th>
+                    <th>Barcode</th>
                     <th>Product Name</th>
                     <th>Reserved Items</th>
                     <th>Inventory Quantity</th>
@@ -50,6 +51,7 @@
                     <% re.forEach(function(i){ %>
                       <tr>
                       <td><%= i.inv%></td>
+                      <td><%=i.strBarcode%></td>
                       <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%></td>
                       <td><%=i.intReservedItems%></td>
                       <td><%=i.invqty%></td>

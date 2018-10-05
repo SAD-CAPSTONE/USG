@@ -31,7 +31,7 @@
               <table id="example2" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-
+                  <th style="width: 5px">#</th>
                   <th>Supplier Name</th>
                   <th>Business Name</th>
                   <th>Type</th>
@@ -45,9 +45,9 @@
                 <% }else if (re.length == 0){ %>
 
                 <% }else{ %>
-                <%  re.forEach(function(i){ %>
+                <%  re.forEach(function(i,index){ %>
                   <tr>
-
+                    <td><%= index+1%></td>
                     <td><%= i.strFname%> <%=i.strMname %> <%=i.strLname %></td>
                     <td><%= i.strBusinessName %></td>
                     <td>
@@ -59,18 +59,21 @@
                     </td>
                     <td>
                       <% if (i.Stats == 1){ %>
-                        <button data-no="<%=i.intUserID%>" class="ui toggle button active inactivate_supplier">Active</button>
-
+                        <!-- <button data-no="<%=i.intUserID%>" class="ui toggle button active inactivate_supplier">Active</button> -->
+                        Active
                       <% }else if(i.Stats == 4){ %>
-                        <button data-no="<%=i.intUserID%>" class="ui toggle button inactive activate_supplier">Inactive</button>
-
+                        <!-- <button data-no="<%=i.intUserID%>" class="ui toggle button inactive activate_supplier">Inactive</button> -->
+                        Inactive
                       <% }else{ %>
 
                       <% } %>
                       </td>
 
 
-                    <td><a href="/maintenance/supplierDetails?supplier=<%= i.intUserID %>"><button class="large ui teal button"><i class="glyphicon glyphicon-edit"></i></button></a></td>
+                    <td>
+                      <a href="/maintenance/supplierDetails?supplier=<%= i.intUserID %>"><button class="large ui teal button">View</button></a>
+                      <a href="/maintenance/supplierEdit?supplier=<%= i.intUserID %>"><button class="large ui grey button">Edit</button></a>
+                    </td>
                   </tr>
                 <%  }) %>
                 <% } %>

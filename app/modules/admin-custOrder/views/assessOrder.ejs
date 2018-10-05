@@ -86,59 +86,65 @@
                     <!-- /.box-header -->
                     <div class="row">
                       <div class="box-body">
-                        <table class="table table-bordered">
-                          <tr>
-                            <th class ="bg-success">Shipping Address</th>
-                            <th class ="bg-success">Billing Address</th>
+                        <div class="box-body table-responsive">
+                          <table class="table table-bordered">
+                            <tr>
+                              <th class ="bg-success">Shipping Address</th>
+                              <th class ="bg-success">Billing Address</th>
 
-                          </tr>
-                          <tr>
+                            </tr>
+                            <tr>
 
-                            <td><%= customer[0].strShippingAddress %></td>
-                            <td><%= customer[0].strBillingAddress %></td>
+                              <td><%= customer[0].strShippingAddress %></td>
+                              <td><%= customer[0].strBillingAddress %></td>
 
-                          </tr>
+                            </tr>
 
-                        </table>
+                          </table>
+
+                        </div>
                       </div>
                     </div>
                   </br>
                     <div class="row">
                       <div class="box-body">
-                        <table class="table table-bordered">
-                          <thead class ="bg-success">
-                            <tr>
-
-                              <th>Product Name</th>
-                              <th>Quantity</th>
-                              <th>Product Price</th>
-                              <th>Discount</th>
-                              <th>Subtotal</th>
-
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <% orderlist.forEach(function(i){ %>
+                        <div class="box-body table-responsive">
+                          <table class="table table-bordered">
+                            <thead class ="bg-success">
                               <tr>
 
-                                <td><%= i.productName%></td>
-                                <td><%= i.intQuantity %></td>
-                                <td>₱ <%= (i.purchasePrice).toFixed(2) %></td>
-                                <% if(i.discount == null){ %>
-
-                                <% }else{ %>
-
-                                <% } %>
-                                <td><%= parseFloat(i.discount)  %> %</td>
-                                <% var subT = ((i.intQuantity * i.purchasePrice).toFixed(2)) * (parseFloat(i.discount) / 100) %>
-                                <td>₱ <%= (i.intQuantity * i.purchasePrice).toFixed(2) - subT %></td>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Product Price</th>
+                                <th>Discount</th>
+                                <th>Subtotal</th>
 
                               </tr>
-                            <% }) %>
+                            </thead>
+                            <tbody>
+                              <% orderlist.forEach(function(i){ %>
+                                <tr>
 
-                          </tbody>
+                                  <td><%= i.productName%></td>
+                                  <td><%= i.intQuantity %></td>
+                                  <td>₱ <%= (i.purchasePrice).toFixed(2) %></td>
+                                  <% if(i.discount == null){ %>
 
-                        </table>
+                                  <% }else{ %>
+
+                                  <% } %>
+                                  <td><%= parseFloat(i.discount)  %> %</td>
+                                  <% var subT = ((i.intQuantity * i.purchasePrice).toFixed(2)) * (parseFloat(i.discount) / 100) %>
+                                  <td>₱ <%= (i.intQuantity * i.purchasePrice).toFixed(2) - subT %></td>
+
+                                </tr>
+                              <% }) %>
+
+                            </tbody>
+
+                          </table>
+
+                        </div>
                       </div>
                     </div>
 
@@ -149,8 +155,8 @@
                       <div class="box-body">
                         <table class="table table-bordered">
                           <tr>
-                            <th style="width: 50%"></th>
-                            <th style="width: 100px"></th>
+                            <th hidden style="width: 50%"></th>
+                            <th hidden style="width: 100px"></th>
                           </tr>
                           <tr>
                             <td><strong>Total: </strong></td>
@@ -351,7 +357,7 @@
                     <label for="stats">Order Status:</label>
                     <select class="form-control" id="orderstatus">
                       <option id="order_pending" value="0">Pending</option>
-                      <option id="order_processing" value="1">Processing</option>
+                      <option disabled id="order_processing" value="1">Processing</option>
                       <option id="order_shipped" value="2">Shipped</option>
                       <option id="order_delivered" value="3">Delivered</option>
                       <option id="order_notDeliver" value="4">Will not Deliver</option>
@@ -493,7 +499,7 @@
   if(<%= customer[0].Stat %> == 2){
     $('#order_pending').attr('disabled',true);
     $('#order_processing').attr('disabled',true);
-  //  $('#order_shipped').attr('disabled',true);
+    $('#order_cancelled').attr('disabled',true);
 
   }
 
@@ -580,34 +586,57 @@ $('#submit').on('click',function(){
   }else{
     notifyCustomer = 0;
   }
-  $.ajax({
-    url: '/customerOrder/assessOrder',
-    method: 'POST',
-    datatype: "json",
-    data: {orderNo: '<%= customer[0].intOrderNo %>',
-          shippingMethod: $('#shippingmethod').val(),
-          courier: $('#courier').val(),
-          orderStatus: $('#orderstatus').val(),
-          paymentStatus: $('#paymentstatus').val(),
-          notify: notifyCustomer,
-          message: $('#message').val(),
-          total: '<%=total%>'
-          },
-    success: function(response,status,http){
-      if (response){
-        if (response == "yes"){
-          confirm_alert();
 
-        }else if(response == "false"){
-          swal("Error!","You don't have enough stocks","error");
+  var condition = `
+    Make sure you review the items in this order. Changing the order status to "Shipped" will cause deduction from inventory.
+    Changing the order status to "Cancelled" will void the order.`;
 
-        }else{
-          swal("Error!","","error");
+  swal({
+    title: 'Please read before you proceed',
+    text: condition ,
+    showCancelButton: true,
+    confirmButtonText: 'Proceed',
+    cancelButtonText: 'Back',
+    reverseButtons: true
+  }).then((result)=>{
+    if(result.value){
+      $.ajax({
+        url: '/customerOrder/assessOrder',
+        method: 'POST',
+        datatype: "json",
+        data: {
+              orderNo: '<%= customer[0].intOrderNo %>',
+              currentOrderStat: '<%= customer[0].Stat %>',
+              currentPaymentStat: '<%= customer[0].intPaymentStatus %>',
+              shippingMethod: $('#shippingmethod').val(),
+              courier: $('#courier').val(),
+              orderStatus: $('#orderstatus').val(),
+              paymentStatus: $('#paymentstatus').val(),
+              notify: notifyCustomer,
+              message: $('#message').val(),
+              total: '<%=total%>'
+              },
+        success: function(response,status,http){
+          if (response){
+            if (response == "yes"){
+              confirm_alert();
 
+            }else if(response == "false"){
+              swal("Error!","You don't have enough stocks","error");
+
+            }else if(response == "same"){
+              swal("Oops!", "Please update order or payment status", "warning");
+            }
+            else{
+              swal("Error!","","error");
+
+            }
+          }
         }
-      }
-    }
-  });
+      });
+    } // end of OK in conditions
+  })
+
 
 });
 

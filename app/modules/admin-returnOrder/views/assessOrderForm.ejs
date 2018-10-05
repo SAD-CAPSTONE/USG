@@ -1,0 +1,332 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+
+ <!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Transaction</a></li>
+        <li><a href="#">Return Orders</a></li>
+        <li class="active">Form</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+    <div class="row">
+      <div class="col-sm-1">
+      </div>
+      <div class="col-sm-10">
+
+            <div class="box box-success">
+          			<div class="box-header with-border">
+          				<h3 class="box-title">Return Order Form</h3>
+          			</div>
+
+          			<!-- purchase order body -->
+          			<div class="box-body">
+                  <form id="returnForm">
+                  <br>
+
+                  <div class="row">
+                    <div class="col-sm-7">
+                      <div class="form-group">
+          							<label for="purcNo">Receive Order Number:</label>
+                        <input type="text" disabled value="<%= ret[0].intReturnOrderNo %>" class="form-control">
+                        <input type="hidden" name="rno" value="<%= ret[0].intReturnOrderNo %>" class="form-control">
+
+          						</div>
+
+                      <div class="form-group">
+          							<label for="purcNo">Return Order Date:</label>
+
+          							<input type="date" disabled value="<%= moment(ret[0].dateReturned).format("YYYY-MM-DD") %>" class="form-control">
+          						</div>
+
+                      <div class="form-group" id="formgroup">
+                        <label for="POno">Enter Order number:</label>
+                        <input value="<%=ret[0].intOrderNo%>" type="text" class="rono form-control" disabled required  >
+                        <input value="<%=ret[0].intOrderNo%>" type="hidden" class="rono form-control" name="order_no" required id="ROno" >
+
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-sm-5">
+
+                    </div>
+                  </div>
+
+                  <br>
+
+
+          				<div class="row">
+          					<div class="col-sm-12">
+          					<div class="box">
+          						<div class="box-header">
+          						  <h3 class="box-title">Order List</h3>
+          						</div>
+
+          						<!-- buttons -->
+
+          						<!-- /.box-header -->
+          						<div id="returnList" class="box-body table-responsive">
+                        <table id="example2" class="table table-bordered table-hover">
+                          <thead>
+
+                            <th style="width: 10px">#</th>
+                            <th>Ordered Products</th>
+                            <th>Quantity</th>
+                            <th>Replaced with</th>
+                            <th>Quantity</th>
+
+
+                          </thead>
+                          <tbody>
+                            <% if(det==null||det==undefined){ %>
+
+                            <% }else if(det.length==0){ %>
+
+                            <% }else{ %>
+                            <%  var count = 1; %>
+                            <%  det.forEach(function(i){ %>
+                                <tr>
+                                  <td><%= count %></td>
+                                  <td><%= i.strProductName %> <%=i.strVariant%> <%=i.intSize%><%=i.strUnitName%></td>
+                                  <td><%=i.qty%></td>
+                                  <td>
+                                    <input type="num" class="form-control" name="replacementProduct[]">
+                                  </td>
+                                  <td>
+                                    <input type="num" class="form-control" name="replacementQuantity[]">
+                                  </td>
+                                </tr>
+                            <%  }) %>
+                            <% } %>
+
+                          </tbody>
+
+                        </table>
+          						</div>
+          						<!-- /.box-body -->
+
+          					</div>
+          					  <!-- /.box -->
+          					</div>
+          				</div>
+
+
+          			</div>
+
+          			<div class="box-footer">
+                    <a href="/receiveDelivery"><button type="button" class="large ui button">Back</button></a>
+                    <button  id="sub" type="submit" class="large ui teal button">Submit Form</button>
+                    <br><small class="text-aqua">Please review your form before you proceed.</small>
+
+                </div>
+                        <!-- /.box-footer -->
+                </form>
+        		</div>
+
+      </div>
+      <div class="col-sm-1">
+      </div>
+    </div>
+
+
+
+	</section>
+
+</div>
+
+  <!-- /.content-wrapper -->
+
+	<!-- Modals -->
+
+
+
+
+
+  <%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+<!-- page script (new added) -->
+<script>
+  $(function () {
+    $('#example1').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $(function () {
+    $('#example2').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'info'        : false,
+      'autoWidth'   : true,
+      'searching'   : false,
+      'ordering'    : false
+
+    })
+  })
+</script>
+
+
+
+<script>
+$(document).ready(function(){
+
+  $('#errorhelpBlock').hide();
+  $('#successhelpBlock').hide();
+
+  $('#ROno').on('keyup', function(){
+    var text = $('#ROno').val();
+    $.ajax({
+      url: '/returnOrder/findOrderNo',
+      method: 'POST',
+      datatype: "json",
+      data: {o: text},
+      success: function(response,status,http){
+        if (response == "no"){
+          $('#formgroup').attr('class', 'form-group has-error');
+          $('#errorhelpBlock').show();
+          $('#successhelpBlock').hide();
+          $('#starthelpBlock').hide();
+          $('#addButton').attr('disabled', true);
+          $('#sub').attr('disabled', true);
+          $('#returnList').load('/returnOrder/loadOrderList');
+
+
+        }else{
+          $('#formgroup').attr('class', 'form-group has-success');
+          $('#successhelpBlock').show();
+          $('#starthelpBlock').hide();
+          $('#errorhelpBlock').hide();
+          $('#addButton').attr('disabled', false);
+          $('#sub').attr('disabled', false);
+
+          $('#returnList').load('/returnOrder/loadOrderList');
+        }
+      }
+    })
+
+  });
+
+
+  var count = 1;
+    $('.addRow').on( 'click', function () {
+      var t = $('#example').DataTable();
+      var table = document.getElementById("example");
+      var row = table.getElementsByTagName("tr");
+      var rows = t.rows( '.selected' );
+      var tr = table.getElementsByTagName("tr");
+      var validity = 1;
+
+
+      if (validity){
+        t.row.add( [
+            "",
+            '<input style="width: 250px" required type="text" required name="inventory[]" placeholder="Scan barcode" class="form-control">',
+            '<input style="width: 90px" required type="number" name="orderQuantity[]"  class="form-control">',
+            '<input style="width: 200px" type="text" name="replacementProduct[]" placeholder="Scan Barcode"  class="form-control">',
+            '<input style="width: 90px" type="number" required name="replacementQuantity[]"  class=" form-control">'
+
+        ] ).draw( false );
+
+        count++;
+      }
+    } );
+
+
+    $('#returnForm').submit(function(e){
+      e.preventDefault();
+
+      $.ajax({
+        url: '/returnOrder/assessReturn',
+        type: 'post',
+        data: $('#returnForm').serialize(),
+        success: function(response,status,http){
+          if (response == "yes"){
+            swal({title:"Success!", text:"", type:"success"}).then(()=>{
+              window.location.href = '/returnOrder';
+            })
+          }
+          else{
+              swal("Error!","You do not have enough stocks for replacement", "error");
+          }
+        },
+        error: function(){
+          swal("Error!","Please review the details of your returns", "error");
+
+        }
+      })
+    })
+
+
+
+})
+</script>
+
+
+<script>
+$('#title').html("USG | Return Orders");
+$(".treeview a:contains('Transactions')").parent().addClass("active");
+$(".navi a:contains('Return Orders')").parent().addClass("active");
+</script>
+
+<script>
+  //Flat red color scheme for iCheck
+  $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+    checkboxClass: 'icheckbox_flat-green',
+    radioClass   : 'iradio_flat-green'
+  })
+</script>
+
+<script>
+  $('#active').on('change',function(){
+    if($(this).prop('checked')==true){
+      $('#addButton').attr('disabled', false);
+      $('#sub').attr('disabled', false);
+      $('.pono').attr('disabled', true);
+    }else{
+      $('#addButton').attr('disabled',true);
+      $('#sub').attr('disabled', true);
+      $('.pono').attr('disabled', false);
+
+    }
+  })
+</script>
+
+</body>
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+
+
+
+</html>
