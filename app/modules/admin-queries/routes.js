@@ -25,6 +25,10 @@ router.get('/loader',(req,res)=>{
     res.render('admin-queries/views/stockPullOut',{re: result, moment: moment})
 
   }
+  else if(string == 4){
+    res.render('admin-queries/views/productBatch',{re: result, moment: moment})
+
+  }
   else{
 
   }
@@ -69,6 +73,23 @@ router.post('/search',(req,res)=>{
          }
        })
 
+  }
+
+  // product Batch
+  if(req.body.string == 4){
+    db.query(`Select tblBatch.intQuantity as qty, tblBatch.*, tblProductInventory.*,
+      tblProductList.*, tblUom.*
+       from tblBatch join tblProductInventory on tblBatch.intInventoryno = tblProductInventory.intInventoryno
+       join tblProductlist on tblProductlist.intProductNo = tblProductInventory.intProductNo
+       join tblUom on tblUom.intUOMno = tblProductInventory.intUomNo
+        where created_at between '${newDate}' and '${newDate1}'`,(e2,r2,f2)=>{
+          if(e2) console.log(e2);
+          else{
+            result = r2;
+            string = 4;
+            res.send("yes");
+          }
+        })
   }
 })
 
