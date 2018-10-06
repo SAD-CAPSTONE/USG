@@ -1,0 +1,144 @@
+<%- include('../../../templates/navbar.ejs') -%>
+<%- include('../../../templates/modals/cart-modal.ejs') -%>
+<%- include('../../../templates/modals/package-modal.ejs') -%>
+
+<div id="returnFormSuccess-container" class="container">
+  <div class="row">
+    <div id="returnFormSuccess-main-pane" class="p-0 col-md-12 col-lg">
+      <div>
+        <p class="mb-2 fs-1em fw-400">Return Form Submitted</p>
+        <p class="mb-0 fs-08em fw-400 text-muted">OrderNumber: <span class="text-black"><%= order[0].intOrderNo%></span></p>
+        <p class="mb-0 fs-08em fw-400 text-muted">Return Request Date: <span class="text-black"><%= order[0].dateReturned%></span></p>
+        <p class="mb-0 fs-08em fw-400 text-muted">Tracking Number: <span class="text-black"><%= order[0].trackingNumber%></span></p>
+        <p class="mb-2 mt-3 fs-09em fw-400">What are the next steps to return?</p>
+        <!-- <div class="steps-div">
+          <div class="step">
+            <div>
+              <div class="circle">1</div>
+            </div>
+            <div>
+              <div class="title">Pack Item(s)</div>
+              <div class="caption">
+                Please pack the items(s) and include the following documents if applicable: manual, user guide and invoice
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div>
+              <div class="circle">2</div>
+            </div>
+            <div>
+              <div class="title">Write Tracking Number</div>
+              <div class="caption">
+                Please write the tracking number 79277498381 & RA 2015-886294 on top of the box.
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div>
+              <div class="circle">3</div>
+            </div>
+            <div>
+              <div class="title">Drop off</div>
+              <div class="caption">
+                Please take the package to the nearest drop off LBC Inform the shipping provider that you would like to ship
+                the return package to Ultra Super Green.  The shipping cost is covered by Ultra Super Green
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div>
+              <div class="circle">4</div>
+            </div>
+            <div>
+              <div class="title">Wait for replacement</div>
+              <div class="caption">
+                You will be informed by the admin when your returned product(s) are eligible for replacement.
+                The replacement will be delivered as soon as possible.
+              </div>
+            </div>
+          </div>
+        </div> -->
+          <div class="bs-vertical-wizard">
+            <ul>
+                <li class="current">
+                    <a>Pack Item(s)
+                        <span class="desc">Please pack the items(s) and include the following documents if applicable: manual, user guide and invoice</span>
+                    </a>
+                </li>
+                <li class="current">
+                    <a>Write Tracking Number
+                        <span class="desc">Please write the tracking number 79277498381 & RA 2015-886294 on top of the box</span>
+                    </a>
+                </li>
+                <li class="current">
+                    <a>Drop off
+                        <span class="desc">Please take the package to the nearest drop off LBC Inform the shipping provider that you would like to ship
+                        the return package to Ultra Super Green.  The shipping cost is covered by Ultra Super Green</span>
+                    </a>
+                </li>
+                <li class="current">
+                    <a>Wait for replacement
+                        <span class="desc">You will be informed by the admin when your returned product(s) are eligible for replacement.
+                        The replacement will be delivered as soon as possible</span>
+                    </a>
+                </li>
+            </ul>
+          </div>
+        <p class="mb-0 mt-3 fs-08em fw-400">
+          <a href="/account/orders">Back to Orders</a>
+          <span class="text-muted">|</span>
+          <a href="/summary/order/<%= orderNumber%>">Back to Order#<%= orderNumber%></a>
+        </p>
+      </div>
+    </div>
+    <div id="returnFormSuccess-side-pane" class="p-0">
+      <div>
+        <p class="m-0 fs-09em fw-400">Products to Return</p>
+        <div id="order-products-pane" class="p-0">
+          <% order.forEach((data,i)=>{ %>
+            <div class="product-div pos-relative">
+              <div class="inline-block va-t">
+                <% if(data.intProductType == 1){ %>
+                  <a href="/item/<%= data.intProductNo%>" class="img-link">
+                    <img src="/assets/images/products/<%= data.strProductPicture%>" height="100" width="100" alt="product">
+                  </a>
+                  <div class="px-2">
+                    <p class="m-0 fs-08em fw-400 lh-p3em"><span class="text-brand"><%= data.strBrand%></span> <%= data.strProductName%></p>
+                    <p class="fs-08em fw-400 text-muted lh-p3em"><%= data.intSize%></p>
+                    <div class="reason-div">
+                      <p class="fs-08em fw-400 text-muted lh-p3em"><%= data.reason%></p>
+                    </div>
+                  </div>
+                <% }else{ %>
+                  <input class="inventory-id" value="<%= data.intPackageNo%>" hidden/>
+                  <a href class="package-img img-link" data-toggle="modal" data-target="#package-modal">
+                    <img src="/customer-assets/images/static/package.jpg" height="100" width="100" alt="product">
+                  </a>
+                  <div class="px-2">
+                    <p class="m-0 fs-08em fw-400 lh-p3em"><span class="text-package"><%= data.strPackageName%></span></p>
+                    <p class="package-details-modal fs-08em fw-400 text-muted w-fit" data-toggle="modal" data-target="#package-modal">View Details</p>
+                    <div class="reason-div">
+                      <p class="fs-08em fw-400 text-muted lh-p3em"><%= data.reason%></p>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+              <div class="inline-block va-t mt-2">
+                <p class="m-0 fs-09em fw-400 lh-p3em"><%= data.qty%></p>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../../templates/footer.ejs') -%>
+<%- include('../../../templates/scripts.ejs') -%>
+<%- include('../../../templates/scripts-customer.ejs') -%>
+<script type="text/javascript">
+
+</script>
+<%- include('../../../templates/closer.ejs') -%>

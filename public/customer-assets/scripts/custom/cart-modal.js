@@ -93,6 +93,7 @@ function qtyControl(modal,type){
 
   stock > limit ? stock = limit : 0
   qty == 0 ? qtyInput.val(1) : 0
+  console.log(qty)
 
   if(type == 'change'){
     qty > stock ? qtyInput.val(stock) : 0

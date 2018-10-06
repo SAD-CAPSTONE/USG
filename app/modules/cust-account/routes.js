@@ -40,15 +40,11 @@ router.get('/orders', checkUser, auth_cust, (req,res)=>{
   res.render('cust-account/views/orders', {thisUser: req.user});
 });
 router.get('/messages', checkUser, auth_cust, (req,res)=>{
-  db.query(`SELECT * FROM tblmessages
-    INNER JOIN tblorderhistory ON tblmessages.intOrderHistoryNo= tblorderhistory.intOrderHistoryNo
-    INNER JOIN tblorder ON tblorderhistory.intOrderNo= tblorder.intOrderNo
-    WHERE intUserID = ? ORDER BY tblmessages.intMessageNo DESC`,[req.user.intUserID], (err, results, fields) => {
+  db.query(`SELECT * FROM tblmessages WHERE intCustomerID = ? ORDER BY intMessageNo DESC`,[req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
     results[0] ? results.map( obj => obj.historyDate = moment(obj.historyDate).format('MM - DD - YYYY') ) : 0;
-    db.query(`UPDATE tblmessages INNER JOIN tblorderhistory ON tblmessages.intOrderHistoryNo= tblorderhistory.intOrderHistoryNo
-      INNER JOIN tblorder ON tblorderhistory.intOrderNo= tblorder.intOrderNo
-      SET seenStatus= 1 WHERE tblmessages.seenStatus= 0 AND tblorder.intUserID= ?`,[req.user.intUserID], (err, update, fields) => {
+    db.query(`UPDATE tblmessages SET seenStatus= 1 WHERE seenStatus= 0 AND intCustomerID= ?`,
+      [req.user.intUserID], (err, update, fields) => {
       if (err) console.log(err);
       res.render('cust-account/views/messages', {
         thisUser: req.user,

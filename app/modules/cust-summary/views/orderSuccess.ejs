@@ -149,8 +149,8 @@
 <script type="text/javascript">
 $(() => {
   let bankAccountNo = `<%= admin.bankAccountNo%>`,
-  bankServiceFee = `<%= admin.bankServiceFee%>`;
-  $('#download-file').val() == 2 ? download_voucher(bankAccountNo,bankServiceFee) : 0
+  businessBank = `<%= admin.businessBank%>`;
+  $('#download-file').val() == 2 ? download_voucher(bankAccountNo,businessBank) : 0
 });
 
 </script>

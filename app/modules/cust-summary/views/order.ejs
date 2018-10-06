@@ -5,6 +5,25 @@
 <div id="summary-container" class="container">
   <div id="summary-main-pane" class="fl-l">
     <div>
+      <p class="fs-08em fw-500 m-0 inline-block">
+        <a href="/account/orders" class="no-decoration" title="Back to Orders">
+          <i class="fas fa-angle-double-left"></i>
+        </a>
+        &nbspOrder#<%= orderOne.intOrderNo%>
+        <span class="text-muted"> <%= orderOne.dateOrdered%></span>
+      </p>
+      <% if ((orderOne.orderStatus == 0 || orderOne.orderStatus == 1) && orderOne.intPaymentStatus == 0){ %>
+        <a class="inline-block fl-r" href data-toggle='modal' data-target='#CancelModal'><p class="m-0 fs-08em fw-400">Cancel Order</p></a>
+      <% }else if(orderOne.orderStatus == 6){ %>
+        <a class="inline-block fl-r"><p class="m-0 fs-08em fw-400 text-danger">Cancelled</p></a>
+      <% }else if(replaceable){ %>
+        <a class="inline-block fl-r" href="/summary/order/<%= orderOne.intOrderNo%>/returnform"><p class="m-0 fs-08em fw-400">Return Products</p></a>
+      <% }else if(orderOne.orderStatus == 5){ %>
+        <a class="inline-block fl-r text-package" href="/summary/order/<%= orderOne.intOrderNo%>/returnformsuccess"><p class="m-0 fs-08em fw-400">Returned</p></a>
+      <% } %>
+
+    </div>
+    <div>
       <div class="steps-form">
         <div class="steps-row d-flex justify-content-between">
           <div class="step step-active" title="Pending"><i class="fa fa-file-signature text-white fs-09em"></i><span> Pending</span></div>
@@ -13,14 +32,6 @@
           <div class="step" title="Delivered"><i class="fa fa-box text-white fs-09em"></i><span> Delivered</span></div>
         </div>
       </div>
-    </div>
-    <div>
-      <p id="notice" class="m-0 fs-08em fw-400 inline-block">Products will be delivered within <%= admin.deliveryPeriod%> working day/s</p>
-      <% if ((orderOne.orderStatus == 0 || orderOne.orderStatus == 1) && orderOne.intPaymentStatus == 0){ %>
-        <a class="inline-block fl-r" href data-toggle='modal' data-target='#CancelModal'><p class="m-0 fs-08em fw-400">Cancel Order</p></a>
-      <% }else if(orderOne.orderStatus == 6){ %>
-        <a class="inline-block fl-r"><p class="m-0 fs-08em fw-400 text-danger">Cancelled</p></a>
-      <% } %>
     </div>
     <div id="order-products-pane" class="p-0">
       <div id="header" class="px-3 py-1">
@@ -51,7 +62,7 @@
                       <%= data.purchasePrice%>
                       <i class="fas fa-tags" title="discounted price"></i>
                     </p>
-                    <p class="mb-0 fs-09em lh-p3em text-muted price-symbol"><s>0</s> (-0%)</p>
+                    <p class="mb-0 fs-09em lh-p3em text-muted price-symbol"><s><%= data.oldPrice%></s> (-<%= data.discount%>%)</p>
                   <% }else{ %>
                     <p class="mb-0 fs-1em fw-400 lh-p3em price-symbol"><%= data.purchasePrice%></p>
                   <% } %>
@@ -96,7 +107,19 @@
   </div>
   <div id="summary-details-pane" class="fl-r">
     <div>
-      <p class="m-0 mb-1">Shipping & Billing</p>
+      <!-- <button class="inline btn btn-custom-primary btn-sm" href data-toggle='modal' data-target='#CancelModal'><i class="fas fa-clipboard-list"></i></button> -->
+      <% if (notices.special[0]){ %>
+        <p id="notice-special" class="m-0 fs-08em fw-400 ">
+          <%= notices.special[0]%>
+        </p>
+      <% } %>
+      <p id="notice" class="m-0 fs-08em fw-400 ">
+        <%= notices.general[0]%>
+      </p>
+      <a class="" href data-toggle='modal' data-target='#ViewMessages'><p class="m-0 fs-08em fw-400">View Messages</p></a>
+    </div>
+    <div>
+      <p class="m-0 mb-1 fs-09em fw-400 lh-p3em ">Shipping & Billing</p>
       <small>Shipping Address</small>
       <small class="address block px-1 mb-1">
         <%= orderOne.strShippingAddress%>
@@ -107,8 +130,8 @@
       </small>
     </div>
     <div>
-      <p class="m-0 mb-1 fl-l">Order Summary</p>
-      <p class="fl-r mb-0 fw-400">#<%= orderNumber%></p>
+      <p class="m-0 mb-1 fs-09em fw-400 lh-p3em fl-l">Order Summary</p>
+      <p class="fl-r mb-0 fs-09em fw-400 lh-p3em">#<%= orderNumber%></p>
       <div style="clear: both"></div>
       <small class="label">Subtotal (<%= orderLength%>)</small>
       <small class="price price-symbol"><%= orderTotal%></small>
@@ -156,8 +179,9 @@
         </button>
       <% } %>
       <div id="more-details">
-        <a href=""><small class="block fs-08em fw-400">Vouchers Used</small></a>
-        <small>Date: <%= orderOne.dateOrdered%></small>
+        <!-- <a href=""><small class="block fs-08em fw-400">Vouchers Used</small></a> -->
+        <small class="block fs-08em fw-400">Reference #</small>
+        <small class="fw-500"><%= orderOne.strReferenceNo%></small>
       </div>
       <div class="clearfix"></div>
     </div>
@@ -205,6 +229,41 @@
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-custom-primary" disabled>Submit</button>
+          <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div id="ViewMessages" tabindex="-1" role="dialog" aria-labelledby="ViewMessagesTitle" aria-hidden="true" class="modal fade">
+  <div role="document" class="modal-dialog">
+    <div class="modal-content">
+      <form action="/summary/order/cancel" method="POST" class="m-0">
+        <div class="modal-header">
+          <h5 id="ViewMessagesTitle" class="modal-title">Messages</h5>
+          <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+        </div>
+        <div class="modal-body pt-2">
+          <% if (notices.special[0]){ %>
+            <div class="notice special mt-2 mb-3">
+              <p class="fs-09em fw-400 m-0">Special Messages</p>
+              <ul class="pl-4 fs-09em fw-400 mb-0">
+                <% notices.special.forEach((notice)=>{ %>
+                  <li><%= notice%></li>
+                <% }) %>
+              </ul>
+            </div>
+          <% } %>
+          <div class="notice general mt-2">
+            <p class="fs-09em fw-400 m-0">General Messages</p>
+            <ul class="pl-4 fs-09em fw-400 mb-0">
+              <% notices.general.forEach((notice)=>{ %>
+                <li><%= notice%></li>
+              <% }) %>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
           <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
         </div>
       </form>
@@ -433,8 +492,8 @@
     })
     $('#bs-print-btn').on('click', ()=>{
       let bankAccountNo = `<%= admin.bankAccountNo%>`,
-      bankServiceFee = `<%= admin.bankServiceFee%>`;
-      download_voucher(bankAccountNo,bankServiceFee);
+      businessBank = `<%= admin.businessBank%>`;
+      download_voucher(bankAccountNo,businessBank);
     })
     $('select').on('change', function(){
       if($(this).val()=='other'){
@@ -463,21 +522,49 @@
       submitBtn();
     });
     // Notice
-    let text = [
-      "Bank Payment vouchers are valid for 24 hours, failure to pay cancels order",
-      "Online receipt is available after payment",
-      "Products will be delivered within <%= admin.deliveryPeriod%> working day/s"],
-    notice = $('#notice'), counter = 0, iNotice1 = setInterval(change, 8000), tNotice1;
+
+    let text = [];
+    $('.notice.general li').each(function(){
+      text.push($(this).text());
+    })
+    let notice = $('#notice'), counter = 1, iNotice1 = setInterval(change, 8000), tNotice1;
     function change() {
-      notice.css('opacity','0');
-      tNotice1 = setTimeout(()=>{
-        notice.css('opacity','1');
-        notice.text(text[counter])
-        counter++;
-        if (counter >= text.length) {
-          counter = 0;
-        }
-      },350);
+      if (text.length > 1){
+        notice.css('opacity','0');
+        tNotice1 = setTimeout(()=>{
+          notice.css('opacity','1');
+          notice.text(text[counter])
+          counter++;
+          if (counter >= text.length) {
+            counter = 0;
+          }
+        },350);
+      }
+      else{
+        clearInterval(iNotice1)
+      }
+    }
+
+    let textSpecial = [];
+    $('.notice.special li').each(function(){
+      textSpecial.push($(this).text());
+    })
+    let noticeSpecial = $('#notice-special'), counterSpecial = 1, iNoticeSpecial1 = setInterval(changeSpecial, 8000), tNoticeSpecial1;
+    function changeSpecial() {
+      if (textSpecial.length > 1){
+        noticeSpecial.css('opacity','0');
+        tNoticeSpecial1 = setTimeout(()=>{
+          noticeSpecial.css('opacity','1');
+          noticeSpecial.text(textSpecial[counterSpecial])
+          counterSpecial++;
+          if (counterSpecial >= textSpecial.length) {
+            counterSpecial = 0;
+          }
+        },350);
+      }
+      else{
+        clearInterval(iNoticeSpecial1)
+      }
     }
 
     // Img Preview
@@ -523,9 +610,16 @@
         console.log(res.status)
         res.status.forEach((data)=>{
           switch (data.intStatus) {
-            case 1: $(`.steps-form .step[title=Processing]`).addClass(`step-active`); break;
-            case 2: $(`.steps-form .step[title=Shipped]`).addClass(`step-active`); break;
-            case 3: $(`.steps-form .step[title=Delivered]`).addClass(`step-active`); break;
+            case 3:
+              $(`.steps-form .step[title=Delivered]`).hasClass(`step-active`) ?
+                0 : $(`.steps-form .step[title=Delivered]`).addClass(`step-active`);
+            case 2:
+              $(`.steps-form .step[title=Shipped]`).hasClass(`step-active`) ?
+                0 : $(`.steps-form .step[title=Shipped]`).addClass(`step-active`);
+            case 1:
+              $(`.steps-form .step[title=Processing]`).hasClass(`step-active`) ?
+                0 : $(`.steps-form .step[title=Processing]`).addClass(`step-active`);
+              break;
           }
         });
 
