@@ -37,27 +37,35 @@
 
                 <br>
 
-                <a data-toggle="modal" data-target="#addProduct_modal"> <button   class=" btn btn-success" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">Add</button></a>
-
-
+                <form id="request_form">
+                <a data-toggle="modal" data-target="#addProduct_modal"> <button   class=" btn btn-info" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">Add</button></a>
 
                 <div class="table-responsive">
-                  <table id="list" class="table table-bordered table-hover">
-                      <thead>
-                          <tr>
-                              <th>No</th>
-                              <th>Product Name</th>
-                              <th>Description</th>
-                              <th>Category</th>
-                              <th>Certifications</th>
-                          </tr>
-                      </thead>
-                      <tbody>
+                  <table   id="list" class="table table-bordered table-hover">
 
-                      </tbody>
+                    <thead>
+                      <tr>
+                          <th>No</th>
+                          <th>Product Name</th>
+                          <th>Description</th>
+                          <th>Category</th>
+                          <th>Certifications</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
                   </table>
                 </div>
+
+                <br>
+                <button class=" btn btn-default pull-right">Cancel</button>
+
+                <button class=" btn btn-success pull-right">Submit</button>
+                <br>
               </div>
+              <!-- Card body -->
+            </form>
 
           </div>
       </div>
@@ -79,29 +87,30 @@
       <div class="row">
         <div class="col">
           <label ><b>Product</b></label>
-          <input class="form-control material mb-3">
+          <input id="product" class="form-control material mb-3">
+
         </div>
       </div>
       <div class="row">
         <div class="col">
           <label ><b>Description</b></label>
-          <input class="form-control material mb-3">
+          <input id="description" class="form-control material mb-3">
         </div>
       </div>
       <div class="row">
         <div class="col">
           <label ><b>Category</b></label>
-          <input class="form-control material mb-3">
+          <input id="category" placeholder="If multiple, please separate by comma" class="form-control material mb-3">
         </div>
       </div>
       <div class="row">
         <div class="col">
           <label ><b>Certifications</b></label>
-          <input class="form-control material mb-3">
+          <input id="certifications" placeholder="If multiple, please separate by comma" class="form-control material mb-3">
         </div>
       </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" type='button', data-dismiss='modal'>Close</button>
+      <button id="addRow" class="btn btn-secondary" type='button', data-dismiss='modal'>Submit</button>
     </div>
     </div>
   </div>
@@ -111,26 +120,35 @@
 
 
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.js"></script>
-<!-- <script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script> -->
+<script src="/assets/consignor/jquery-slim.js"></script>
+<script src="/assets/consignor/popper.min.js"></script>
+<script src="/assets/consignor/bootstrap.min.js"></script>
+<script src="/assets/consignor/simplebar.js"></script>
 
-<!--
+<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
+
+<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+
 <script>
 
+  $('#request_form').submit(function(e){
+    e.preventDefault();
 
+    $.post('/consRequests/newRequest',$('#request_form').serialize(), function(data,status){
+      if(data=="yes"){
+        location.href = '/consRequests'
+      }
+    })
+  })
 
   var t = $('#list').DataTable({
     'paging'      : false,
     'lengthChange': false,
     'ordering'    : false,
     'info'        : false,
-    'autoWidth'   : false,
-  'selecting'		: false,
+    'autoWidth'   : true,
   'scroll'		: false,
   'searching' : false
   });
@@ -140,19 +158,24 @@
   var count = 1;
 
 
-  $('.addProdRow').on('click',function(){
+  $('#addRow').on('click',function(){
 
     t.row.add( [
         count,
-        "",
-        "",
-        "",
-        ""
+        $('#product').val() + `<input type="hidden" name="product[]" value="${$('#product').val()}">`,
+        $('#description').val() + `<input type="hidden" name="description[]" value="${$('#description').val()}">`,
+        $('#category').val() + `<input type="hidden" name="category[]" value="${$('#category').val()}">`,
+        $('#certifications').val() + `<input type="hidden" name="certifications[]" value="${$('#certifications').val()}">`
 
     ] ).draw( false );
     count++;
+
+    $('#product').val("");
+    $('#description').val("");
+    $('#category').val("");
+    $('#certifications').val("");
   });
-</script> -->
+</script>
 
 </body>
 
