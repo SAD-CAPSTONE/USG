@@ -25,41 +25,39 @@
               <h3 class="box-title">All Products and Respective Suppliers</h3>
             </div>
 
-            <!-- /.box-header -->
             <div class="box-body table-responsive">
-              <table id="example2" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Supplier Name</th>
-                  <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                    <% if (re == null || re == undefined){ %>
-                          
-                    <% }else if (re.length == 0){ %>9
-
-                    <% }else{ %>
+                <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <td>Business Name</td>
+                            <td>Products</td>
+                            <td>Vairant</td>
+                            <td>Size</td>
+                            <td>Quantity</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% if (re == null || re == undefined || re.length == 0){ %>
+                    <% } else { %>
                     <%  re.forEach(function(i){ %>
-                <tr>
-                  <td><%= i.intUserID%></td>
-                  <td><%= i.strBusinessName%></td>
-                  <td style="width:170px;">
-                    <button type="button" data-toggle="modal">View Details</button>
-                    </div>
-                  </td>
-                </tr>
-                  <%  }) %>
-                  <% } %>
-                </tbody>
-
-              </table>
-            </div>
-          </div>
-        </div>
+                        <tr>
+                            <td><%= i.strBusinessName%></td>
+                            <td><%= i.strProductName%></td>
+                            <td><%= i.strVariant%></td>
+                            <td><%= i.intSize%></td>
+                            <td><%= i.intQuantity%></td>
+                        </tr>
+                    <%  }) %>
+                    <% } %>
+                    </tbody>
+                    </table>
         
-      </div>
+        
+                </div>
+              </div>
+            </div>
+            
+          </div>
             <!-- /.box-body -->
 
             <div class="box-footer">

@@ -7,20 +7,23 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
+                        <% if (re == null || re == undefined){ %>
+
+                        <% }else if (re.length == 0){ %>
+        
+                        <% }else{ %>
+                        <%  re.forEach(function(i){ %>
                             <div id="content" class="clearfix rep">
-                                <div id="userphoto"><img src="images/avatar.png" alt="default avatar"></div>
-                                <h1>Business Name</h1>
+                                <h1><%= i.strBusinessName%></h1>
                                 <nav id="profiletabs">
                                 <ul class="clearfix">
-                                    <li><a href="#bio" class="sel">Bio</a></li>
-                                    <li><a href="#activity">Brands</a></li>
                                 </ul>
                                 </nav>
                                 
                                 <section id="bio">
                                 <div class="row">
                                     <div class="col" style="padding-left: 0px;">
-                                        <p>Name: Representative's Name</p>
+                                        <p>Name: <%=i.strFname%> <%=i.strMname%> <%=i.strLname%></p>
                                     </div>
                                     <div class="col" style="padding-left: 0px;">
                                         <p>Business Name: Keto Lines</p>
@@ -28,28 +31,19 @@
                                 </div>
                                 <div class="row" style="margin-top:10px;">
                                     <div class="col" style="padding-left: 0px;">
-                                        <p>Contact: 09162912053</p>
+                                        <p>Contact: <%=i.strSupplierPhone%> / <%=i.strSupplierMobile%></p>
                                     </div>
                                     <div class="col" style="padding-left: 0px;">
-                                        <p>Email: KetoLines@yahoo.com</p>
+                                        <p>Email: <%=i.strBusinessEmail%></p>
                                     </div>
                                 </div>
                                 <div class="row" style="margin-top:10px;">
                                     <div class="col" style="padding-left: 0px;">
-                                        <p>Address: Tandang Sora, Quezon City
+                                        <p>Address: <%=i.strBusinessAddress%> </p>
                                 </section>
-                                
-                                <section id="activity" class="hidden">
-                                
-                                <p class="activity">Super Scoops Ice Cream</p>
-                                
-                                <p class="activity">Coco Natura</p>
-                                
-                                <p class="activity">Coco Keto Breadery</p>
-                                
-                                <p class="activity">Kala Milk</p>
-                                </section>
-                            </div><!-- @end #content -->
+                            </div><!-- @end #content -->			
+                            <%  }) %>
+                            <% } %>
                         </div>
                     </div>
                 </div>

@@ -5,58 +5,59 @@
         <div id="main-content">
           <h4 class="lead pl-1 pb-2"><b>Dashboard</b> </h4>
           <div class="row">
-			<div class="col-md-3">
-				<div class="card p-30">
-					<div class="media">
-						<div class="media-left meida media-middle">
-							<span><i class="fa fa-usd f-s-40 color-primary"></i></span>
-						</div>
-						<div class="media-body media-text-right">
-							<h2>6805</h2>
-							<p class="m-b-0">Total Revenue</p>
+							<div class="col-md-3">
+								<div class="card p-30">
+									<div class="media">
+										<div class="media-left meida media-middle">
+											<span><i class="fa fa-usd f-s-40 color-primary"></i></span>
+										</div>
+										<div class="media-body media-text-right">
+											<h2>price</h2>
+											<p class="m-b-0">Total Revenue</p>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="card p-30">
+									<div class="media">
+										<div class="media-left meida media-middle">
+											<span><i class="fa fa-shopping-cart f-s-40 color-success"></i></span>
+										</div>
+										<div class="media-body media-text-right">
+											<h2>1178</h2>
+											<p class="m-b-0">Products Sold</p>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="card p-30">
+									<div class="media">
+										<div class="media-left meida media-middle">
+											<span><i class="fa fa-archive f-s-40 color-warning"></i></span>
+										</div>
+										<div class="media-body media-text-right">
+											<h2><%=${re2[0].intQuantity}%></h2>
+											<p class="m-b-0">Overall Stock</p>
+										</div>
+									</div>
+								</div>
+				</div>
+				<div class="col-md-3">
+					<div class="card p-30">
+						<div class="media">
+							<div class="media-left meida media-middle">
+								<span><i class="fa fa-suitcase f-s-40 color-danger"></i></span>
+							</div>
+							<div class="media-body media-text-right">
+								<h2><%= re3%></h2>
+								<p class="m-b-0">Products</p>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card p-30">
-					<div class="media">
-						<div class="media-left meida media-middle">
-							<span><i class="fa fa-shopping-cart f-s-40 color-success"></i></span>
-						</div>
-						<div class="media-body media-text-right">
-							<h2>1178</h2>
-							<p class="m-b-0">Products Sold</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card p-30">
-					<div class="media">
-						<div class="media-left meida media-middle">
-							<span><i class="fa fa-archive f-s-40 color-warning"></i></span>
-						</div>
-						<div class="media-body media-text-right">
-							<h2>437</h2>
-							<p class="m-b-0">Overall Stock</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card p-30">
-					<div class="media">
-						<div class="media-left meida media-middle">
-							<span><i class="fa fa-suitcase f-s-40 color-danger"></i></span>
-						</div>
-						<div class="media-body media-text-right">
-							<h2>8</h2>
-							<p class="m-b-0">Products</p>
-						</div>
-					</div>
-				</div>
-			</div>
+		</div>
 	<div class="col-lg-12">
 		<div class="card">
 			<div class="card-title">
@@ -75,12 +76,12 @@
 							</tr>
 						</thead>
 						<tbody>
-              <% if (re == null || re == undefined){ %>
+              <% if (re4 == null || re4 == undefined){ %>
 
-                <% }else if (re.length == 0){ %>
+                <% }else if (re4.length == 0){ %>
 
                 <% }else{ %>
-                  <%  re.forEach(function(i){ %>
+                  <%  re4.forEach(function(i){ %>
 
 							<tr>
 								<td>

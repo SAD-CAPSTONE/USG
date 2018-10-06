@@ -114,10 +114,17 @@ router.post('/editProduct',(req,res)=>{
 
 router.get('/supplierProducts', (req,res)=>{
   db.query(`
-    SELECT * from tblproductinventory join tblproductlist on tblproductinventory.intProductNo = tblproductlist.intproductno
-    join tblsupplier on tblsupplier.intUserID = tblproductinventory.intUserID`,(err1,results1)=>{
+    SELECT * from tblsupplier`,(err1,results1)=>{
     if (err1) console.log(err1);
-    res.render('admin-inventory/views/supplierProducts', {re: results1});
+    res.render('admin-inventory/views/supplierProducts', {re: results1}); 
+  });
+});
+
+router.get('/supplierProductsPS', (req,res)=>{
+  db.query(`SELECT * from tblproductinventory join tblproductlist on tblproductinventory.intProductNo = tblproductlist.intproductno
+    inner join tblsupplier on tblsupplier.intUserID = tblproductinventory.intUserID`, (err1,results1)=>{
+    if (err1) console.log(err1);
+    res.render('admin-inventory/views/supplierProductsPS', {re: results1}); 
   });
 });
 
