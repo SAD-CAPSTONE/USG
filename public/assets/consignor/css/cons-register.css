@@ -13,12 +13,15 @@ html {
 	background-image: url("/assets/images/static2/herbs4.jpg");
     background-size:     cover;
     background-repeat:   no-repeat;
-    background-position: center center;  
+    background-position: center center;
 }
 
 body {
-	font-family: montserrat, arial, verdana;
+	/* font-family: montserrat, arial, verdana; */
 	background-color: transparent !important;
+	font-family: 'Poppins', sans-serif;
+  font-size: 1em;
+  font-weight: 300;
 }
 /*form styles*/
 #msform {
@@ -51,7 +54,7 @@ body {
 	margin-bottom: 10px;
 
 	box-sizing: border-box;
-	font-family: montserrat;	
+	font-family: montserrat;
 	color: rgb(14, 23, 32);
 	font-size: 13px;
 }

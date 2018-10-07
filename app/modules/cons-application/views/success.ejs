@@ -1,0 +1,27 @@
+<%- include('../../../templates/master.ejs') -%>
+
+<div id="container-messagepage" class="outer">
+  <div class="middle">
+    <div class="inner unselectable" style="width: 460px">
+      <img src="/customer-assets/images/static/usg-green.png" onContextMenu="return false"/>
+      <h1 class="mb-1">Your Application has been created.</h1>
+      <p class="mb-3 fs-1em fw-400"><span class="fw-500">What's Next? </span>
+        <br> Upload the required documents through email
+        <br> <a href="mailto:mktg.ultrasupergreen@gmail.com">mktg.ultrasupergreen@gmail.com</a>
+      </p>
+      <a href="/home" role="button" aria-pressed="true" class="btn btn-secondary btn-md" style="min-width: 110px">Home</a>
+
+    </div>
+  </div>
+</div>
+
+<%- include('../../../templates/scripts.ejs') -%>
+<script type="text/javascript">
+  $(()=>{
+    $('.outer').css(`background`, `url('/customer-assets/images/static/login-bg.jpg')`)
+  })
+
+</script>
+
+<%- include('../../../templates/scripts.ejs') -%>
+<%- include('../../../templates/closer.ejs') -%>
