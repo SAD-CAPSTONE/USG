@@ -104,13 +104,13 @@
 
                             <th style="width: 10px">#</th>
                             <th>Product Name</th>
-                            <th>Variant (if any)</th>
+                            <th>Variant</th>
                             <th>Size</th>
                             <th>Quantity</th>
                             <th>Expiration Date</th>
                             <th>Status</th>
                             <th>SRP</th>
-                            <th>Total Amount</th>
+                            <th>Product Price</th>
 
                           </thead>
                           <tbody>
@@ -143,7 +143,7 @@
                     <a href="/receiveDelivery"><button type="button" class="large ui button">Back</button></a>
                     <button disabled id="sub" type="submit" class="large ui teal button">Submit Form</button>
                     <br><small class="text-aqua">Please review your form before you proceed.</small>
-                    
+
                 </div>
                         <!-- /.box-footer -->
                 </form>
@@ -334,7 +334,8 @@ $(document).ready(function(){
         success: function(response,status,http){
           if (response){
             swal({title:"Success!", text:"You just created a delivery record", type:"success"}).then(()=>{
-              window.location.href = '/receiveDelivery';
+              location.href = `/receiveDelivery/deliveryDetails?delivery=${response}`
+
             })
           }
         },

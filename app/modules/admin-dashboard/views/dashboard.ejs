@@ -17,8 +17,6 @@
    <!-- Main content -->
    <section  class="content container-fluid">
 
-
-
       <div id="l"></div>
 
      <!-- Small boxes (Stat box) -->
@@ -71,6 +69,21 @@
            <a href="/inventory/pulledOutStocks" class="small-box-footer">
              More info <i class="fa fa-arrow-circle-right"></i>
            </a>
+         </div>
+       </div>
+
+       <div class="col-lg-3 col-xs-6">
+         <!-- small box -->
+         <div class="small-box bg-green">
+           <div class="inner">
+             <h3>10<sup style="font-size: 20px">%</sup></h3>
+
+             <p>Cart Abandonment Rate</p>
+           </div>
+           <div class="icon">
+             <i class="ion ion-stats-bars"></i>
+           </div>
+           <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
          </div>
        </div>
        <!-- ./col -->
@@ -155,13 +168,15 @@
        </div>
 
      </div>
+
+
      <!-- End of row  -->
      <div class="row">
        <div class="col-sm-8">
          <!-- TABLE: LATEST ORDERS -->
          <div class="box box-info">
            <div class="box-header with-border">
-             <h3 class="box-title">Latest Orders</h3>
+             <h3 class="box-title">Recent Order Activities</h3>
 
              <div class="box-tools pull-right">
                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -175,38 +190,37 @@
                <table class="table no-margin">
                  <thead>
                  <tr>
-                   <th>Order No</th>
-                   <th>Customer Name</th>
                    <th>Order Date</th>
-                   <th>Status</th>
+                   <th>Customer Name</th>
+                   <th>Activity</th>
                  </tr>
                  </thead>
                  <tbody>
-                  <% if (re4 == null || re4 == undefined){ %>
+                  <% if (hist == null || hist == undefined){ %>
 
-                  <% }else if (re4.length == 0){ %>
+                  <% }else if (hist.length == 0){ %>
 
                   <% }else{ %>
-                    <%  re4.forEach(function(i){ %>
+                    <%  hist.forEach(function(i){ %>
                   <tr>
-                      <td><%= i.intOrderNo %></td>
-                      <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
                       <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
+                      <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
+
                       <td>
-                        <% if (i.intStatus == 0){ %>
-                          <span class="label label-warning">Pending</span>
-                        <% }else if(i.intStatus == 1){ %>
-                          <span class="label label-info">Processing</span>
-                        <% }else if(i.intStatus == 2){ %>
-                          <span class="label label-default">Shipped</span>
-                        <% }else if (i.intStatus == 3){ %>
-                          <span class="label label-default">Delivered</span>
-                        <% }else if(i.intStatus == 4){ %>
-                          <span class="label label-default">Will not deliver</span>
-                        <% }else if(i.intStatus == 5){ %>
-                          <span class="label label-default">Returned</span>
+                        <% if (i.stat == 0){ %>
+                          Placed an Order
+                        <% }else if(i.stat == 1){ %>
+                          Processing the order
+                        <% }else if(i.stat == 2){ %>
+                          The order has been shipped
+                        <% }else if (i.stat == 3){ %>
+                          The order has been delivered
+                        <% }else if(i.stat == 4){ %>
+                          The order will not be delivered
+                        <% }else if(i.stat == 5){ %>
+                          The order is returned
                         <% }else{ %>
-                          <span class="label label-danger">Cancelled</span>
+                          The order is cancelled
 
                         <% } %>
                   </tr>
@@ -221,13 +235,7 @@
              <!-- /.table-responsive -->
            </div>
            <!-- /.box-body -->
-           <div class="box-footer clearfix">
-              <% if (re4 == 0 || re4 == null){ %>
 
-                <% }else if (re4 != 0 || re4 == null){ %>
-                  <a href="customerOrder/allOrders" class="btn btn-sm btn-primary btn-flat pull-right">View All Orders</a>
-                <%} %>
-           </div>
            <!-- /.box-footer -->
          </div>
          <!-- /.box -->

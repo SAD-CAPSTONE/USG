@@ -59,7 +59,8 @@ router.get('/loadOrderList',(req,res)=>{
 });
 
 router.get('/deliveryDetails',(req,res)=>{
-  db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.delivery}"`,(err1,results,fields1)=>{
+  db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo
+    where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.delivery}"`,(err1,results,fields1)=>{
     if(err1) console.log(err1);
       db.query(`Select * from tblReceiveOrder join tblPurchaseOrder on tblReceiveOrder.intPurchaseOrderNo = tblPurchaseOrder.intPurchaseOrderNo join tblSupplier on tblSupplier.intUserID = tblPurchaseOrder.intSupplierID join tblUser on tblSupplier.intUserID = tblUser.intUserID where intReceiveOrderNo = "${req.query.delivery}"`,(err3,results2,f3)=>{
         if(err3) console.log(err3);
@@ -74,7 +75,7 @@ router.get('/deliveryDetails',(req,res)=>{
 router.post('/newDeliveryRecord', (req,res)=>{
 
   var counter = 0;
-  var startNo = "";
+  var startNo = "1000";
   var loop = req.body.product;
 
   db.beginTransaction(function(err){
@@ -115,11 +116,8 @@ router.post('/newDeliveryRecord', (req,res)=>{
                     console.log(exdate);
                     var d = "2001-02-31";
                     db.query(`INSERT INTO tblreceiveorderlist (intOrderReceivedNo, intReceiveOrderNo, strProduct, strSize, strConsignmentPrice, intQuantity, SRP, dateExpiration, intOrderStatus, strVariant) VALUES ("${startNo}", "${req.body.rno}", "${req.body.product[counter]}", "${req.body.size[counter]}", "", "${req.body.quantity[counter]}", "${req.body.srp[counter]}", "${exdate}", "${req.body.status[counter]}", "${req.body.variant[counter]}")`, (err3,results3,fields3)=>{
-                      if (err3){
-                        db.rollback(function(){
-                          console.log(err3);
-                        })
-                      }else{
+                      if (err3){db.rollback(function(){console.log(err3);})}
+                      else{
                         counter++;
                         startNo++;
                         callback();
@@ -138,8 +136,8 @@ router.post('/newDeliveryRecord', (req,res)=>{
                             console.log(e1);
                           })
                         }else{
-                          res.send("yes");
-                          console.log("Receive Delivery Done!");
+                          res.send(`${req.body.rno}`);
+
                         }
                       })
                     }

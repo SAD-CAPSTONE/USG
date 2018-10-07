@@ -40,27 +40,7 @@ function confirm_alert(){
     // new order notification
 
 
-    $.ajax({
-      url: '/customerOrder/checkNewOrders',
-      method: 'POST',
-      datatype: "json",
-      data: {
 
-            },
-      success: function(response,status,http){
-        if (response){
-          if (response == "no"){
-
-          }else if(response[0].qty ==0){
-            $('#notiforder').hide();
-          }else{
-            $('#notiforder').show();
-            $('#notiforder').html(response[0].qty);
-
-          }
-        }
-      }
-    });
 
     // theme
     $('#dark_theme').on('click',function(){

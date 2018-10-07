@@ -10,6 +10,7 @@ router.get('/', (req,res)=>{
         if (err1) console.log(err1)
         db.query(`SELECT COUNT(intBatchNo) cnt FROM tblbatch WHERE intStatus = 1 AND expirationDate >= NOW() AND expirationDate <= NOW() + INTERVAL 7 DAY`,(err1,results3)=>{
           if (err1) console.log(err1)
+          // latest orders
           db.query(`SELECT * FROM tblorder JOIN tbluser ON tblorder.intUserID = tbluser.intUserID WHERE dateOrdered <= NOW() ORDER BY dateOrdered DESC LIMIT 7`,(err1,results4)=>{
             if(err1) console.log(err1)
             // best seller
@@ -34,18 +35,28 @@ router.get('/', (req,res)=>{
                         JOIN tbluom ON tblproductinventory.intUOMno = tbluom.intUomNo
                         WHERE tblbatch.intStatus = 1 AND expirationDate >= NOW()
                         AND expirationDate <= NOW() + INTERVAL 7 DAY ORDER BY expirationDate ASC LIMIT 4`, (err1,results6)=>{
-                if(err1) console.log(err1)
-        //  console.log(results6)
-      res.render('admin-dashboard/views/dashboard', {
-        re1: results1[0].cnt,
-        re2: results2[0].cnt,
-        re3: results3[0].cnt,
-        re4: results4,
-        re5: results5,
-        re6: results6,
-        moment: moment,
-        name: "name"
-      });
+                if(err1) console.log(err1);
+                else{
+                  db.query(`SELECT tblorderhistory.intStatus as stat, tblUser.* FROM tblorderhistory join tblOrder on tblorderhistory.intOrderNo = tblOrder.intOrderNo
+                    join tblUser on tblOrder.intUserID = tblUser.intUserID  order by historyDate desc limit 8`,(err01,history,fie01)=>{
+                    if(err01) console.log(err01);
+                    else{
+                      res.render('admin-dashboard/views/dashboard', {
+                        re1: results1[0].cnt,
+                        re2: results2[0].cnt,
+                        re3: results3[0].cnt,
+                        re4: results4,
+                        re5: results5,
+                        re6: results6,
+                        moment: moment,
+                        name: "name",
+                        hist: history
+                      });
+                    }
+                  })
+                }
+
+
                 })
               });
             })

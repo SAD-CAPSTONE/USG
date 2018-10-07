@@ -3,7 +3,7 @@
 
  <!-- Content Wrapper. Contains page content -->
 
-<div class="content-wrapper">
+<div style="" class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
@@ -32,7 +32,7 @@
                     <!-- /.box-tools -->
                   </div>
                   <!-- /.box-header -->
-                  <div class="box-body">
+                  <div class="box-body" style="">
                     <p style="font-size:16px">
                      <strong>Store:</strong>&nbsp;&nbsp; Ultra Super Green, Quezon City Branch </br>
                      <strong>Order Date: </strong>&nbsp;&nbsp; <%= moment(customer[0].dateOrdered).format("MM/DD/YYYY") %> </br>
@@ -43,7 +43,7 @@
                          Bank Deposit
                          <% } %>
                        </br>
-                       <br>
+
                     </p>
 
                   </div>
@@ -80,7 +80,7 @@
             <div class="row">
               <!-- Order Details -->
               <div class="col-md-12">
-                <div class="box">
+                <div class="box box-default ">
                     <div class="box-header with-border">
                     </div>
                     <!-- /.box-header -->
@@ -259,7 +259,7 @@
 
               <!-- Shipping information -->
               <div class="col-md-12">
-                <div class="box box-info">
+                <div class="box box-success box-solid">
                   <div class="box-header with-border">
                     <h3 class="box-title">Shipping Information</h3>
 
@@ -330,9 +330,9 @@
             <div class="row">
               <!-- Order status -->
               <div class="col-md-12">
-                <div class="box box-warning">
+                <div class="box box-success box-solid">
                   <div class="box-header with-border">
-                    <h3 class="box-title"></h3>
+                    <h3 class="box-title">Status</h3>
 
                     <!-- /.box-tools -->
                   </div>
@@ -379,7 +379,7 @@
                 </br>
                     <label for="notify">
 
-                      <input type="checkbox" id="notify" class="flat-red">
+                      <input type="checkbox" id="notify" checked class="flat-red">
                       &nbsp;Notify Customer
 
                     </label>
@@ -387,7 +387,7 @@
                   </br>
                 </br>
                     <label for="comment">Message to Customer</label>
-                    <textarea id="message" class="form-control"></textarea>
+                    <textarea id="message" placeholder="Your order  has been shipped" class="form-control"></textarea>
                   </br>
                   <button id="submit" class="fluid large ui teal button pull-right">Submit</button>
                   </div>
@@ -440,59 +440,8 @@
 
 
 <!-- page script (new added) -->
-<script>
-  $(function () {
-    $('#example2').DataTable({
-      'paging'      : true,
-      'lengthChange': true,
-      'searching'   : true,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : true,
-	  'select'		: true,
-	  'scroll'		: true
-    })
-  })
-</script>
 
-<script>
-  $(function () {
-    $('#history_table').DataTable({
-      'paging'      : false,
-      'lengthChange': false,
-      'searching'   : false,
-      'ordering'    : false,
-      'info'        : false,
-      'autoWidth'   : true,
-	  'select'		: true,
-	  'scroll'		: true
-    })
-  })
-</script>
-
-<script>
-  $('#title').html("USG | All Orders");
-  $(".treeview a:contains('Transactions')").parent().addClass("active");
-  $(".treeview a:contains('Customer Orders')").parent().addClass("active");
-  $(".navi a:contains('All Orders')").parent().addClass("active");
-</script>
-
-<script>
-  //Flat red color scheme for iCheck
-  $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
-    checkboxClass: 'icheckbox_flat-green',
-    radioClass   : 'iradio_flat-green'
-  })
-
-  $('#message').attr('disabled', true);
-  $('#notify').on('ifChecked',function(){
-    $('#message').attr('disabled', false);
-  })
-  $('#notify').on('ifUnchecked',function(){
-    $('#message').attr('disabled', true);
-  })
-
-</script>
+<script src="/assets/admin/assessOrder.js"></script>
 
 <script>
   // shipped

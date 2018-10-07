@@ -7,87 +7,235 @@
     <section class="content-header">
       <h1>
 
-        <small>Note: Change order status by clicking assess button.</small>
+        <small>Order Updates</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Orders</a></li>
-        <li class="active">New Orders</li>
+        <li class="active">Order Updates</li>
       </ol>
     </section>
 
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <div class="col-xs-12">
-          <div class="box">
-            <div class="box-header">
-              <h4 align="center">Customer Orders</h4>
-            </br>
-              <h5 class="text-aqua"></h5>
+        <div class="col-sm-12">
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+
+              <li class="active">
+                <a href="#pendingorders" data-toggle="tab"> Pending Orders &nbsp;<span class="pull-right-container">
+                <small class="notifPending label pull-right bg-green"></small></a>
+              </li>
+
+              <li>
+                <a href="#bankdeposits" data-toggle="tab"> Bank Deposits &nbsp;<span class="pull-right-container">
+                  <small class="notifBank label pull-right bg-green"></small></a>
+              </li>
+
+              <li>
+                <a href="#orderreturns" data-toggle="tab"> Order Returns &nbsp;<span class="pull-right-container">
+                  <small class="notifReturns label pull-right bg-green"></small></a>
+              </li>
+
+              <li>
+                <a href="#cancelledorders" data-toggle="tab"> Cancelled Orders &nbsp;<span class="pull-right-container">
+                  <small class="notifCancel label pull-right bg-green"></small></a>
+              </li>
+
+            </ul>
+
+            <div class="tab-content">
+
+              <!-- Pending Orders -->
+              <div class="tab-pane active" id="pendingorders">
+
+                <h5 class="text-green">Note: These are the pending orders.</h5>
+
+
+                <div class="box-body table-responsive">
+                  <table id="example1" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                      <th>Order No</th>
+                      <th>Customer Name</th>
+                      <th>Order Date</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% if (pending == null || pending == undefined || pending.length == 0){ %>
+
+                    <% }else{ %>
+                    <%  pending.forEach(function(i){ %>
+                      <tr>
+                        <td><%= i.intOrderNo %></td>
+                        <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
+                        <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
+                        <td>
+                          <% if (i.Stat == 0){ %>
+                            <span class="label label-warning">Pending</span>
+                          <% }else if(i.Stat == 1){ %>
+                            <span class="label label-info">Processing</span>
+                          <% }else if(i.Stat == 2){ %>
+                            <span class="label label-default">Shipped</span>
+                          <% }else if (i.Stat == 3){ %>
+                            <span class="label label-default">Delivered</span>
+                          <% }else if(i.Stat == 4){ %>
+                            <span class="label label-default">Will not deliver</span>
+                          <% }else if(i.Stat == 5){ %>
+                            <span class="label label-default">Returned</span>
+                          <% }else{ %>
+                            <span class="label label-danger">Cancelled</span>
+
+                          <% } %>
+                        </td>
+                        <td>
+                          <center>
+                          <% orderno = i.intOrderNo %>
+                          <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="large ui button">View Invoice</button></a>
+
+                            <a href="/customerOrder/assessOrder?order=<%=orderno%>"><button class="large ui blue button">Assess</button></a>
+
+                          </center>
+                        </td>
+                      </tr>
+                    <% }) %>
+                    <% } %>
+
+
+                    </tbody>
+
+                  </table>
+                </div>
+                <!-- /.box-body -->
+
+              </div>
+
+              <!-- Bank Deposits -->
+              <div class="tab-pane" id="bankdeposits">
+
+                <h5 class="text-green">Note: These are the bank deposits of unpaid customers. Click the order number to assess.</h5>
+
+                <div class="box-body table-responsive">
+                  <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                      <th>Order No</th>
+                      <th>Customer Name</th>
+                      <th>Order Date</th>
+                      <th>View Slip</th>
+                      <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% if (bank == null || bank == undefined || bank.length == 0){ %>
+                    <% }else{ %>
+                    <%  bank.forEach(function(i){ %>
+                      <tr>
+                        <td><a href="/customerOrder/assessOrder?order=<%=i.intOrderNo%>"><%= i.intOrderNo %></a></td>
+                        <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
+                        <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
+                        <td>
+                          <button class="deposit small ui green button" data-name="<%=i.depositSlip%>" data-toggle="modal" data-target="#depositSlip_modal">View</button>
+
+                        </td>
+                        <td>
+                          <center>
+                            <a href="/customerOrder/invoice?order=<%=i.intOrderNo%>"><button class="large ui button">View Invoice</button></a>
+                            <button class="large ui teal button">Change Status</button>
+                            <button class="large ui orange button">Message</button>
+                          </center>
+                      </td>
+                      </tr>
+                    <% }) %>
+                    <% } %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Order Returns -->
+              <div class="tab-pane" id="orderreturns">
+                <h5 class="text-green">Note: These are the product returns from customers.</h5>
+
+                <div class="box-body table-responsive">
+                  <table id="example3" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                      <th>Order No</th>
+                      <th>Customer Name</th>
+                      <th>Order Date</th>
+                      <th>Return Date</th>
+                      <th>Reason</th>
+                      <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% if (returns == null || returns == undefined || returns.length == 0){ %>
+                    <% }else{ %>
+                    <%  returns.forEach(function(i){ %>
+                      <tr>
+                        <td><a href="/customerOrder/orderHistory?order=<%=i.intOrderNo%>"><%= i.intOrderNo %></a></td>
+                        <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
+                        <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
+                        <td><%= moment(i.dateReturned).format("MM/DD/YYYY") %></td>
+                        <td><%=i.trackingNumber%></td>
+                        <td>
+                          <% orderno = i.intOrderNo %>
+                          <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="large ui button">View Invoice</button></a>
+                          <button data-no="<%=i.intReturnOrderNo%>" class="assess large ui orange button">Assess</button>
+
+                        </td>
+                      </tr>
+                    <% }) %>
+                    <% } %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Order Returns -->
+              <div class="tab-pane" id="cancelledorders">
+                <h5 class="text-green">Note: These are only cancelled orders from 3 days ago until now.</h5>
+
+                <div class="box-body table-responsive">
+                  <table id="example4" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                      <th>Order No</th>
+                      <th>Customer Name</th>
+                      <th>Order Date</th>
+                      <th>Reason</th>
+                      <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% if (cancel == null || cancel == undefined || cancel.length == 0){ %>
+                    <% }else{ %>
+                    <%  cancel.forEach(function(i){ %>
+                      <tr>
+                        <td><a href="/customerOrder/orderHistory?order=<%=i.intOrderNo%>"><%= i.intOrderNo %></a></td>
+                        <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
+                        <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
+
+                        <td><%=i.strCancellationReason%></td>
+                        <td>
+                          <% orderno = i.intOrderNo %>
+                          <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="large ui button">View Invoice</button></a>
+                        </td>
+                      </tr>
+                    <% }) %>
+                    <% } %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-			<!-- buttons -->
-
-            <!-- /.box-header -->
-            <div class="box-body table-responsive">
-              <table id="example2" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                  <th>Order No</th>
-                  <th>Customer Name</th>
-                  <th>Order Date</th>
-				          <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <% if (re == null || re == undefined || re.length == 0){ %>
-
-                <% }else{ %>
-                <%  re.forEach(function(i){ %>
-                  <tr>
-                    <td><%= i.intOrderNo %></td>
-                    <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
-                    <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
-                    <td>
-                      <% if (i.Stat == 0){ %>
-                        <span class="label label-warning">Pending</span>
-                      <% }else if(i.Stat == 1){ %>
-                        <span class="label label-info">Processing</span>
-                      <% }else if(i.Stat == 2){ %>
-                        <span class="label label-default">Shipped</span>
-                      <% }else if (i.Stat == 3){ %>
-                        <span class="label label-default">Delivered</span>
-                      <% }else if(i.Stat == 4){ %>
-                        <span class="label label-default">Will not deliver</span>
-                      <% }else if(i.Stat == 5){ %>
-                        <span class="label label-default">Returned</span>
-                      <% }else{ %>
-                        <span class="label label-danger">Cancelled</span>
-
-                      <% } %>
-                    </td>
-                    <td>
-                      <center>
-                      <% orderno = i.intOrderNo %>
-                      <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="large ui button">View Invoice</button></a>
-
-                        <a href="/customerOrder/assessOrder?order=<%=orderno%>"><button class="large ui blue button">Assess</button></a>
-
-                      </center>
-                    </td>
-                  </tr>
-                <% }) %>
-                <% } %>
-
-
-                </tbody>
-
-              </table>
-            </div>
-            <!-- /.box-body -->
           </div>
-          <!-- /.box -->
+
+
 
 	    </div>
         <!-- /.col -->
@@ -99,63 +247,27 @@
 
   <!-- /.content-wrapper -->
 
-	<!-- Modals -->
+  <div class="modal fade" id="depositSlip_modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 align="center">Deposit Slip</h4>
+        </div>
 
-	<div class="modal fade" id="addProduct">
-	  <div class="modal-dialog">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title">Product Information Form</h4>
-		  </div>
-		  <div class="modal-body">
-			<!-- Horizontal Form -->
+        <div class="modal-body">
 
-					<!-- form start -->
-						<form class="form-horizontal">
-						  <div class="box-body">
-							<div class="form-group">
-							  <label for="inputProductCode" class="col-sm-2 control-label">Product Code</label>
+          <div class="row">
+            <div class="col-sm-12">
+              <img id="image" src="" class="img-responsive"  >
 
-							  <div class="col-sm-10">
-								<input type="text" class="form-control" id="inputProductCode" placeholder="">
-							  </div>
-							</div>
-
-							<div class="form-group">
-							  <label for="inputProductName" class="col-sm-2 control-label">Product Name</label>
-
-							  <div class="col-sm-10">
-								<input type="text" class="form-control" id="inputProductName" placeholder="">
-							  </div>
-
-							</div>
-
-							<div class="form-group">
-							  <label for="inputConsignorName" class="col-sm-2 control-label">Consignor Name</label>
-
-							  <div class="col-sm-10">
-								<input type="text" class="form-control" id="inputConsignorName" placeholder="">
-							  </div>
-
-							</div>
-
-						  </div>
-						  <!-- /.box-body -->
-
-						</form>
-
-			  </div>
-			  <div class="modal-footer">
-				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Save changes</button>
-			  </div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-  <!-- /.modal-dialog -->
-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 <%- include('../../../templates/admin-aside.ejs') -%>
@@ -166,8 +278,43 @@
 
 <%- include('../../../templates/admin-footer.ejs') -%>
 
-
 <!-- page script (new added) -->
+
+<script>
+  $('.deposit').on('click',function(){
+    $('#image').attr('src', `/customer-assets/images/userImages/bankslips/${$(this).data('name')}`);
+  })
+
+  $('.assess').on('click',function(){
+    location.href = `/returnOrder/assessForm?q=${$(this).data('no')}`;
+  })
+
+  <% var all = ((pending.length + bank.length + returns.length + cancel.length) == 0) ? "" : (pending.length + bank.length + returns.length + cancel.length) %>
+
+  $('#notiforder').html('<%=all%>')
+
+  $('.notifPending').html('<% var valuePending = (pending.length == 0) ? "" : pending.length %><%= valuePending%>')
+  $('.notifBank').html('<% var valueBank = (bank.length == 0) ? "" : bank.length %><%= valueBank%>')
+  $('.notifReturns').html('<% var valueReturns = (returns.length == 0) ? "" : returns.length %><%= valueReturns%>')
+  $('.notifCancel').html('<% var valueCancel = (cancel.length == 0) ? "" : cancel.length %><%= valueCancel%>')
+</script>
+
+<script>
+  $(function () {
+    $('#example1').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'order'       : [[0, "desc"]],
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
 <script>
   $(function () {
     $('#example2').DataTable({
@@ -184,8 +331,39 @@
 </script>
 
 <script>
+  $(function () {
+    $('#example3').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $(function () {
+    $('#example4').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+
+<script>
 $('#title').html("USG | All Orders");
-$(".navi a:contains('Orders')").parent().addClass("active");
+$(".navi a:contains('Order Updates')").parent().addClass("active");
 </script>
 
 

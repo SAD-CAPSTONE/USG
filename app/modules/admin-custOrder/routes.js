@@ -5,7 +5,31 @@ var async = require('async');
 
 
 router.get('/', (req,res)=>{
-  res.render('admin-custOrder/views/allOrders');
+  db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from
+    tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID `, (err1,results1,fields1)=>{
+    if (err1) console.log(err1);
+    else{
+      db.query(`
+        Select CURDATE() - INTERVAL 5 DAY as DatesFrom, tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+        join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where dateOrdered >= CURDATE() - INTERVAL 5 DAY`, (err2,results2,fiels2)=>{
+        if (err2) console.log(err2);
+        else{
+          db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+            join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where tblOrder.intStatus = 6`, (err3,results3,fields3)=>{
+              if (err3) console.log(err3);
+              else{
+                res.render('admin-custOrder/views/allOrders', {re: results1, re2: results2, re3: results3,  moment: moment});
+
+              }
+
+          });
+        }
+      });
+    }
+
+
+  });
 });
 
 router.post('/checkNewOrders',(req,res)=>{
@@ -23,19 +47,47 @@ router.post('/checkNewOrders',(req,res)=>{
 });
 
 router.get('/checkNewOrders',(req,res)=>{
-  db.query(`Select CURDATE() - INTERVAL 2 DAY as DatesFrom, tblOrder.intStatus as Stat,
+  // pending orders
+  db.query(`Select tblOrder.intStatus as Stat,
     tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
-    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where  tblOrder.intStatus = 0`,(err1,results1,fields1)=>{
+    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where  tblOrder.intStatus = 0`,(err1,pending,fields1)=>{
       if (err1) console.log(err1);
+      else{
+        // bank deposits
+        db.query(`Select * from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+          where intpaymentstatus = 0 and  depositSlip <> ""`,(err2,bank,fie1)=>{
+            if(err2) console.log(err2);
+            else{
+              // returned orders
+              db.query(`Select * from tblReturnOrder join tblOrder on tblReturnOrder.intOrderNo = tblOrder.intOrderNo
+                join tblUser on tblOrder.intUserID = tblUser.intUserID
+                where tblReturnOrder.intStatus = 0`,(err3,returns,fie3)=>{
+                  if(err3) console.log(err3);
+                  else{
+                    // cancelled orders
+                    db.query(`Select * from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+                      where tblOrder.intStatus = 6 and (dateOrdered >= CURDATE() - INTERVAL 3 DAY)`,(err4,cancel,fie4)=>{
+                        if(err4) console.log(err4);
+                        else{
+                          res.render('admin-custOrder/views/newOrders', {pending: pending, moment: moment, bank: bank, returns: returns,cancel: cancel })
 
-      res.render('admin-custOrder/views/newOrders', {re: results1, moment: moment})
+                        }
+                      })
+                  }
+                })
+            }
+
+          })
+      }
+
     });
 });
 
 router.get('/allOrders', (req,res)=>{
   db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from
     tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
-    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID `, (err1,results1,fields1)=>{
+    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID
+    order by intOrderNo desc`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
     else{
       db.query(`
@@ -376,11 +428,13 @@ router.post('/assessOrder',(req,res)=>{
                           else{
                             if (req.body.notify == 1){
 
+                              var new_message = `${req.body.message}`+ ` `+ `(Order #${req.body.orderNo})`;
+
                               if(results3==null||results3==undefined){messagenum = "1000"}else if(results3.length==0){messagenum = "1000"}
                               else{messagenum = parseInt(results3[0].intMessageNo)+1}
                               // insert to message
                               db.query(`Insert into tblMessages (intMessageNo, intCustomerID, strMessage,
-                                intAdminID) values ("${messagenum}", "${cust[0].intUserID}","${req.body.message}", "1000" )`,(err4,results4,fields4)=>{
+                                intAdminID) values ("${messagenum}", "${cust[0].intUserID}","${new_message}", "1000" )`,(err4,results4,fields4)=>{
                                 if (err4){db.rollback(function(){console.log(err4); res.send("no")})}
                               });
                             }
