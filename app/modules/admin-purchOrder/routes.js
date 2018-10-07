@@ -114,7 +114,7 @@ router.post('/submit',(req,res)=>{
                             console.log(erra);
                           });
                         }else{
-                          res.send("yes");
+                          res.send(`${ponum}`);
                         }
                       })
                     });

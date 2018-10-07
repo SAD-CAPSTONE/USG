@@ -1,0 +1,75 @@
+<div class="col-sm-8">
+  <!-- TABLE: LATEST ORDERS -->
+  <div class="box box-info">
+    <div class="box-header with-border">
+      <h3 class="box-title">Latest Orders</h3>
+
+      <div class="box-tools pull-right">
+        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+        </button>
+        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <div class="table-responsive">
+        <table class="table no-margin">
+          <thead>
+          <tr>
+            <th>Order No</th>
+            <th>Customer Name</th>
+            <th>Order Date</th>
+            <th>Status</th>
+          </tr>
+          </thead>
+          <tbody>
+           <% if (re4 == null || re4 == undefined){ %>
+
+           <% }else if (re4.length == 0){ %>
+
+           <% }else{ %>
+             <%  re4.forEach(function(i){ %>
+           <tr>
+               <td><%= i.intOrderNo %></td>
+               <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
+               <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
+               <td>
+                 <% if (i.intStatus == 0){ %>
+                   <span class="label label-warning">Pending</span>
+                 <% }else if(i.intStatus == 1){ %>
+                   <span class="label label-info">Processing</span>
+                 <% }else if(i.intStatus == 2){ %>
+                   <span class="label label-default">Shipped</span>
+                 <% }else if (i.intStatus == 3){ %>
+                   <span class="label label-default">Delivered</span>
+                 <% }else if(i.intStatus == 4){ %>
+                   <span class="label label-default">Will not deliver</span>
+                 <% }else if(i.intStatus == 5){ %>
+                   <span class="label label-default">Returned</span>
+                 <% }else{ %>
+                   <span class="label label-danger">Cancelled</span>
+
+                 <% } %>
+           </tr>
+           <%  }) %>
+           <% } %>
+          </tbody>
+          <% if (re4 == 0 || re4 == null){ %>
+           <span class ="label label-danger">No latest orders for now.</span>
+          <%} %>
+        </table>
+      </div>
+      <!-- /.table-responsive -->
+    </div>
+    <!-- /.box-body -->
+    <div class="box-footer clearfix">
+       <% if (re4 == 0 || re4 == null){ %>
+
+         <% }else if (re4 != 0 || re4 == null){ %>
+           <a href="customerOrder/allOrders" class="btn btn-sm btn-primary btn-flat pull-right">View All Orders</a>
+         <%} %>
+    </div>
+    <!-- /.box-footer -->
+  </div>
+  <!-- /.box -->
+</div>

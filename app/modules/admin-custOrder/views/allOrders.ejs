@@ -38,6 +38,7 @@
                       <th>Customer Name</th>
                       <th>Order Date</th>
                       <th>Status</th>
+                      <th>Payment</th>
                       <th>Actions</th>
                     </tr>
                     </thead>
@@ -57,13 +58,23 @@
                           <% }else if(i.Stat == 2){ %>
                             <span class="label label-default">Shipped</span>
                           <% }else if (i.Stat == 3){ %>
-                            <span class="label label-default">Delivered</span>
+                            <span class="label label-success">Delivered</span>
                           <% }else if(i.Stat == 4){ %>
                             <span class="label label-default">Will not deliver</span>
                           <% }else if(i.Stat == 5){ %>
                             <span class="label label-default">Returned</span>
                           <% }else{ %>
                             <span class="label label-danger">Cancelled</span>
+                          <% } %>
+                        </td>
+
+                        <td>
+                          <% if (i.intPaymentStatus == 0){ %>
+                            <span class="label label-warning">Not Paid</span>
+
+                          <% }else{ %>
+                            <span class="label label-success">Paid</span>
+
                           <% } %>
                         </td>
                         <td>
@@ -220,6 +231,7 @@
       'lengthChange': true,
       'searching'   : true,
       'ordering'    : true,
+      'order'       : [[0, "desc"]],
       'info'        : true,
       'autoWidth'   : true,
 	  'select'		: true,

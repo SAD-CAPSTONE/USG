@@ -29,7 +29,8 @@ router.get('/view',(req,res)=>{
             db.query(`Select Concat_WS(' ', a2.strProductName, a1.strVariant, a1.intSize, a3.strUnitName) as orderedProducts, intOrderQuantity as orderedQuantity,
               Concat_WS(' ', b2.strProductName, b1.strVariant, b1.intSize, b3.strUnitName) as replacedProduct, intReplaceQuantity as replacedQuantity, z1.*
 
-              from tblReturnOrderList as z1 join tblProductInventory as a1 on z1.intOrderDetailsNo = a1.strBarcode
+              from tblReturnOrderList as z1 join tblOrderDetails as o1 on z1.intOrderDetailsNo = o1.intOrderDetailsNo
+              join tblProductInventory as a1 on o1.intInventoryNo = a1.intInventoryNo
               join tblProductlist as a2 on a1.intProductNo = a2.intProductNo
               join tblUom as a3 on a3.intuomno = a1.intuomno
 
@@ -62,7 +63,8 @@ router.get('/invoice-print',(req,res)=>{
             db.query(`Select Concat_WS(' ', a2.strProductName, a1.strVariant, a1.intSize, a3.strUnitName) as orderedProducts, intOrderQuantity as orderedQuantity,
               Concat_WS(' ', b2.strProductName, b1.strVariant, b1.intSize, b3.strUnitName) as replacedProduct, intReplaceQuantity as replacedQuantity, z1.*
 
-              from tblReturnOrderList as z1 join tblProductInventory as a1 on z1.intOrderDetailsNo = a1.strBarcode
+              from tblReturnOrderList as z1 join tblOrderDetails as o1 on z1.intOrderDetailsNo = o1.intOrderDetailsNo
+              join tblProductInventory as a1 on o1.intInventoryNo = a1.intInventoryNo
               join tblProductlist as a2 on a1.intProductNo = a2.intProductNo
               join tblUom as a3 on a3.intuomno = a1.intuomno
 
@@ -86,8 +88,9 @@ router.get('/assessForm',(req,res)=>{
   db.query(`Select * from tblReturnOrder where intReturnOrderNo = "${req.query.q}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{
-      db.query(`Select tblReturnOrderList.intOrderQuantity as qty, tblReturnOrderList.*, tblProductInventory.*, tblProductList.*, tblUom.*
-         from tblReturnOrderList join tblProductInventory on tblReturnOrderList.intOrderDetailsNo = tblProductInventory.strBarcode
+      db.query(`Select tblReturnOrderList.intOrderQuantity as qty, tblReturnOrderList.*, tblOrderDetails.*, tblProductInventory.*, tblProductList.*, tblUom.*
+        from tblReturnOrderList join tblOrderDetails on tblReturnOrderList.intOrderDetailsNo = tblOrderDetails.intOrderDetailsNo
+        join tblProductInventory on tblOrderDetails.intInventoryNo = tblProductInventory.intInventoryNo
         join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
         join tblUom on tblUom.intUomno = tblProductInventory.intUomno
         where intReturnOrderNo = "${req.query.q}"`,(err2,res2,fie2)=>{
@@ -134,7 +137,10 @@ router.post('/findOrderNo',(req,res)=>{
 })
 
 router.get('/loadOrderList',(req,res)=>{
-  db.query(`Select tblOrderDetails.intQuantity as quantity, tblOrder.*, tblOrderDetails.*, tblProductList.*, tblProductInventory.*, tblUom.* from tblOrder join tblOrderDetails on tblOrder.intOrderNo = tblOrderDetails.intOrderNo join tblProductInventory on tblOrderdetails.intInventoryNo = tblProductInventory.intInventoryNo join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo join tbluom on tblProductInventory.intUomno = tbluom.intuomno where tblOrder.intOrderNo = "${order_no}"`,(err1,res1,fie1)=>{
+  db.query(`Select tblOrderDetails.intQuantity as quantity, tblOrder.*, tblOrderDetails.*, tblProductList.*, tblProductInventory.*, tblUom.*
+    from tblOrder join tblOrderDetails on tblOrder.intOrderNo = tblOrderDetails.intOrderNo
+    join tblProductInventory on tblOrderdetails.intInventoryNo = tblProductInventory.intInventoryNo join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
+    join tbluom on tblProductInventory.intUomno = tbluom.intuomno where tblOrder.intOrderNo = "${order_no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1)
     else{
       res.render('admin-returnOrder/views/productLoader',{re:res1})
@@ -185,12 +191,13 @@ router.post('/newReturn',(req,res)=>{
                               async.eachSeries(loop,function(data,callback){
 
                                 // Insert to tblReturnOrderList
-                                db.query(`Insert into tblReturnOrderList (intReturnOrderListNo, intReturnOrderNo, intOrderDetailsNo, intOrderQuantity, intInventoryNo, intReplaceQuantity) values ("${list_no}", "${return_no}", "${req.body.inventory[count]}", ${req.body.orderQuantity[count]}, "${req.body.replacementProduct[count]}", ${req.body.replacementQuantity[count]})`,(err7,res7,fie7)=>{
+                                db.query(`Insert into tblReturnOrderList (intReturnOrderListNo, intReturnOrderNo, intOrderDetailsNo, intOrderQuantity, intInventoryNo, intReplaceQuantity)
+                                  values ("${list_no}", "${return_no}", "${req.body.inventory[count]}", ${req.body.orderQuantity[count]}, "${req.body.replacementProduct[count]}", ${req.body.replacementQuantity[count]})`,(err7,res7,fie7)=>{
                                   if(err7) console.log(err7);
 
                                   else{
                                     // Check stock from tblProductInventory
-                                    db.query(`Select * from tblProductInventory where strBarcode = "${req.body.replacementProduct[count]}" and intQuantity  >= ${req.body.replacementQuantity[count]}`,(err8,res8,fie8)=>{
+                                    db.query(`Select * from tblProductInventory where strBarcode = "${req.body.replacementProduct[count]}" and ((intQuantity - intReservedItems)  >= ${req.body.replacementQuantity[count]})`,(err8,res8,fie8)=>{
                                       if(err8) console.log(err8);
                                       else{
                                         if(res8.length==0){ db.rollback(function(){res.send("no");}) }
@@ -233,9 +240,11 @@ router.post('/newReturn',(req,res)=>{
                                                         if(err12) console.log(err12);
                                                         else{
                                                           // add to total deduct to sales
-                                                          db.query(`Select * from tblProductInventory where strBarcode = "${req.body.inventory[count]}"`,(err15,res15,fie15)=>{
+                                                          db.query(`Select tblOrderDetails.intInventoryNo from tblProductInventory join tblOrderDetails on tblProductInventory.intInventoryNo = tblOrderDetails.intInventoryNo
+                                                            where tblOrderDetails.intOrderDetailsNo = "${req.body.inventory[count]}"`,(err15,res15,fie15)=>{
                                                             if(err15) console.log(err15);
-                                                            db.query(`Select * from tblOrder join tblOrderDetails on tblOrder.intOrderNo = tblOrderDetails.intOrderNo where tblOrderDetails.intOrderNo = "${req.body.order_no}" and tblOrderDetails.intInventoryNo = "${res15[0].intInventoryNo}"`,(err13,res13,fie13)=>{
+                                                            db.query(`Select * from tblOrder join tblOrderDetails on tblOrder.intOrderNo = tblOrderDetails.intOrderNo
+                                                              where tblOrderDetails.intOrderNo = "${req.body.order_no}" and tblOrderDetails.intInventoryNo = "${res15[0].intInventoryNo}"`,(err13,res13,fie13)=>{
                                                               if(err13) console.log(err13);
                                                               else{
                                                                 total += res13[0].purchasePrice * res13[0].intQuantity;
@@ -269,12 +278,18 @@ router.post('/newReturn',(req,res)=>{
                                 db.query(`Insert into tblSales (intSalesNo, intOrderNo, amount, intStatus) values ("${sales_no}", "${req.body.order_no}", ${total}, 0)`,(err14,res14,fie14)=>{
                                   if(err14) console.log(err14);
                                   else{
-                                    db.commit(function(err){
-                                      if(err){db.rollback(function(){console.log(err);})}
+                                    db.query(`Update tblReturnOrder set intStatus = 1 where intReturnOrderNo = ${return_no}`,(err01,res01,fie01)=>{
+                                      if(err01) console.log(err01);
                                       else{
-                                        res.send("yes");
+                                        db.commit(function(err){
+                                          if(err){db.rollback(function(){console.log(err);})}
+                                          else{
+                                            res.send("yes");
+                                          }
+                                        })
                                       }
                                     })
+
                                   }
                                 })
 
@@ -387,7 +402,8 @@ router.post('/assessReturn',(req,res)=>{
                                                     else{
 
                                                       // add to total deduct to sales
-                                                      db.query(`Select * from tblProductInventory where strBarcode = "${returnlist[0].intOrderDetailsNo}"`,(err15,res15,fie15)=>{
+                                                      db.query(`Select * from tblProductInventory join tblOrderDetails on tblProductInventory.intInventoryNo = tblOrderDetails.intInventoryNo
+                                                         where tblOrderDetails.intOrderDetailsNo = "${returnlist[0].intOrderDetailsNo}"`,(err15,res15,fie15)=>{
                                                         if(err15) console.log(err15);
                                                         else{
 

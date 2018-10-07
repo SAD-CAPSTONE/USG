@@ -16,19 +16,24 @@
     <% }else if(re.length == 0){ %>
 
     <% }else{ %>
+    <% var count = 1; %>
     <%  re.forEach(function(i){ %>
         <tr>
-          <td></td>
+          <td><%=count%></td>
           <td>
-            <input type="hidden" style="width: 250px" required type="text" required name="inventory[]" value="<%=i.strBarcode%>" class="form-control">
+            <input type="hidden" style="width: 250px" required type="text" required name="inventory[]" value="<%=i.intOrderDetailsNo%>" class="form-control">
 
-            <input style="width: 250px" required type="text" required name="orderProduct[]" value="<%=i.strProductName%> <%=i.intSize%> <%=i.strUnitName%>" class="form-control">
+          <%=i.strProductName%> <%=i.intSize%> <%=i.strUnitName%>
           </td>
-          <td><input style="width: 90px" required type="number" name="orderQuantity[]" value="<%=i.quantity%>" class="form-control"></td>
+          <td>
+            <input style="width: 90px" required type="hidden" name="orderQuantity[]" value="<%=i.quantity%>" class="form-control">
+            <%=i.quantity%>
+          </td>
           <td><input style="width: 200px" type="text" name="replacementProduct[]" placeholder="Scan Barcode"  class="form-control"></td>
           <td><input style="width: 90px" type="number" required name="replacementQuantity[]"  class=" form-control"></td>
 
         </tr>
+        <% count++;%>
     <%  }) %>
     <% } %>
   </tbody>

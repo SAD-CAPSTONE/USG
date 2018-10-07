@@ -4,13 +4,13 @@
 
     <th style="width: 10px">#</th>
     <th>Product Name</th>
-    <th>Variant (if any)</th>
+    <th>Variant</th>
     <th>Size</th>
     <th>Quantity</th>
     <th>Expiration Date</th>
     <th>Status</th>
     <th>SRP</th>
-    <th>Total Amount</th>
+    <th>Product Price</th>
 
   </thead>
   <tbody>
@@ -19,9 +19,10 @@
     <% }else if(re.length == 0){ %>
 
     <% }else{ %>
+      <% var count = 1; %>
     <%  re.forEach(function(i){ %>
         <tr>
-          <td></td>
+          <td><%= count%></td>
           <td><input style="width: 200px" required type="text" required name="product[]" value="<%=i.strProduct%>" class="form-control"></td>
           <td><input style="width: 80px"  type="text" name="variant[]" value="<%=i.strVariant%>" class="form-control"></td>
           <td><input style="width: 80px" type="text" name="size[]" value="<%=i.strSize%>" class="form-control"></td>
@@ -31,6 +32,7 @@
           <td><input style="width: 80px" type="text" name="srp[]" value="" class=" form-control"></td>
           <td><input style="width: 80px" type="text" name="total[]" value="" class=" form-control"></td>
         </tr>
+        <% count++ %>
     <%  }) %>
     <% } %>
   </tbody>
@@ -40,8 +42,8 @@
 <script>
   $(function () {
     $('#example').DataTable({
-      'paging'      : true,
-      'lengthChange': true,
+      'paging'      : false,
+      'lengthChange': false,
       'info'        : false,
       'autoWidth'   : true,
       'searching'   : false,

@@ -23,7 +23,7 @@
       <div class="col-sm-12">
         <div class="box">
           <div class="box-header with-border">
-            <h3 class="box-title">Monthly Recap Report</h3>
+            <h3 class="box-title">Sales Overview 2018</h3>
           </div>
 
           <div class="box-body">
@@ -88,6 +88,84 @@
     <!-- /.row -->
 
     <div class="row">
+      <div class="col-sm-12">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title">Monthly Sales Report</h3>
+          </div>
+
+          <div class="box-body">
+            <br>
+            <div class="row">
+              <!-- <div class="col-sm-4">
+                <label>Sort by:</label>
+              </div> -->
+
+              <div class="col-sm-3">
+                <select class="form-control">
+                  <option>October</option>
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <select class="form-control">
+                  <option>2018</option>
+                </select>
+              </div>
+
+              <div class="col-sm-5">
+                <button class="large ui teal button">Apply Changes</button>
+
+                <button class="large ui  button">Print</button>
+                <button class="large ui  button">Excel</button>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-sm-12">
+
+                <div class="table-responsive">
+                  <table class="table no-margin">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Total Revenue</th>
+                        <th style="width: 20%">Products Sold</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+                        <td>10/06/2018</td>
+                        <td>Php 1,000</td>
+                        <td>100</td>
+                        <td><button class="large ui green button">Review</button></td>
+                      </tr>
+                      <tr>
+                        <td>10/20/2018</td>
+                        <td>Php 500</td>
+                        <td>2</td>
+                        <td><button class="large ui green button">Review</button></td>
+                      </tr>
+
+
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
+            <!-- <div class="box-footer clearfix">
+
+              <a href="javascript:void(0)" class="large ui teal button pull-right">View All</a>
+            </div> -->
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
       <!-- Daily Sales Report -->
       <div class="col-sm-8">
         <div class="box">
@@ -97,12 +175,20 @@
 
           <div class="box-body">
             <div class="row">
+              <div class="col-sm-4">
+                <input type="date" class="form-control">
+              </div>
+              <div class="col-sm-3">
+                <button class="large ui teal button">Apply changes</button>
+              </div>
+            </div>
+            <div class="row">
               <div class="col-md-12">
                 <div class="table-responsive">
                   <table class="table no-margin">
                     <thead>
                       <tr>
-                        <th>SKU</th>
+                        <th>No</th>
                         <th>Product Name</th>
                         <th style="width: 20%">Quantity Bought</th>
                         <th>Sales</th>

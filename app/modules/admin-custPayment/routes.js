@@ -67,7 +67,7 @@ router.get('/history',(req,res)=>{
 router.post('/cancelOrder',(req,res)=>{
   var orderHistoryNo = "1000", message_no = "1000";
 
-  
+
   db.beginTransaction(function(err){
     if(err) console.log(err);
     else{
@@ -80,7 +80,7 @@ router.post('/cancelOrder',(req,res)=>{
             else{
               if(res2[0].length == 0){} else{message_no = parseInt(res2[0].intMessageNo) + 1}
               db.query(`Select * from tblOrder where intOrderNo = "${req.body.order_no}"`,(err3,order,fie3)=>{
-                console.log(order)
+                //console.log(order)
                 if(err3) console.log(err3);
                 else{
                   db.query(`Update tblOrder set intStatus = 6 where intOrderNo = "${req.body.order_no}"`,(err4,res4,fie4)=>{
@@ -160,6 +160,22 @@ router.post('/changeStatus',(req,res)=>{
             else{
               if(res2.length==0){} else{ sales_no = parseInt(res2[0].intSalesNo) + 1;}
 
+              if(req.body.payment_status == 1){
+                db.query(`Update tblOrder set intPaymentStatus = 1 where intOrderNo = "${req.body.order_no}"`,(err3,res3,fie3)=>{
+                  if(err3) console.log(err3);
+                  else{
+
+                    // test amount only
+                    db.query(`Insert into tblSales (intSalesNo, intOrderNo, amount, intStatus)
+                      values("${sales_no}", "${req.body.order_no}", 100, 1)`,(err4,res4,fie4)=>{
+                        if(err4) console.log(err4);
+                        else{
+                          res.send("yes");
+                        }
+                      })
+                  }
+                })
+              }
 
             }
           })
