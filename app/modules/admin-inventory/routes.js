@@ -122,15 +122,22 @@ router.get('/supplierProducts', auth_admin, (req,res)=>{
   });
 });
 
-router.get('/loadProducts', auth_admin,(req,res)=>{
+var results_products = "";
+router.get('/loadProducts2',(req,res)=>{
+  res.render('admin-inventory/views/loadSupplierProducts', {re: results_products});
+
+})
+
+router.post('/loadProducts', auth_admin,(req,res)=>{
   db.query(`Select * from tblProductInventory join tblProductlist on tblProductInventory.intProductNo = tblProductlist.intProductNo
     join tbluom on tblProductInventory.intUOMno = tblUom.intUOMno
     join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo
     join tblSubCategory on tblProductlist.intSubCategoryNo = tblSubCategory.intSubcategoryno
-    where tblProductInventory.intUserID = "${req.query.user}"`,(err1,res1,fie1)=>{
+    where tblProductInventory.intUserID = "${req.body.user}"`,(err1,res1,fie1)=>{
       if(err1) console.log(err1);
       else{
-        res.render('admin-inventory/views/loadSupplierProducts', {re: res1});
+        results_products = res1;
+        res.send("yes");
       }
     })
 })
@@ -234,7 +241,7 @@ router.post('/addProductItem',auth_admin, (req,res)=>{
 
 
         if (results2 == null || results2 == undefined || results2.length == 0){
-           db.query(`Insert into tblinventorytransactions (intTransactionID,intInventoryNo, intBatchNo, intShelfNo, intCriticalLimit,  strTypeOfChanges, intUserID ) values ("1000","${req.body.add_inventoryno}",${req.body.add_batch},${req.body.add_shelf},${req.body.add_critical},"New Product Item","1000")`, (err3,results3,fields3)=>{
+           db.query(`Insert into tblinventorytransactions (intTransactionID,intInventoryNo,  intShelfNo, intCriticalLimit,  strTypeOfChanges, intUserID ) values ("1000","${req.body.add_inventoryno}",${req.body.add_shelf},${req.body.add_critical},"New Product Item","1000")`, (err3,results3,fields3)=>{
              if (err3) console.log(err3);
 
              res.send(url);
@@ -242,7 +249,7 @@ router.post('/addProductItem',auth_admin, (req,res)=>{
 
         }else{
           var ino = parseInt(results2[0].intTransactionID) + 1;
-          db.query(`Insert into tblinventorytransactions (intTransactionID,intInventoryNo, intBatchNo, intShelfNo, intCriticalLimit,  strTypeOfChanges, intUserID ) values ("${ino}","${req.body.add_inventoryno}",${req.body.add_batch},${req.body.add_shelf},${req.body.add_critical},"New Product Item","1000")`, (err4,results4,fields4)=>{
+          db.query(`Insert into tblinventorytransactions (intTransactionID,intInventoryNo, intShelfNo, intCriticalLimit,  strTypeOfChanges, intUserID ) values ("${ino}","${req.body.add_inventoryno}",${req.body.add_shelf},${req.body.add_critical},"New Product Item","1000")`, (err4,results4,fields4)=>{
             if (err4) console.log(err4);
             res.send(url);
 

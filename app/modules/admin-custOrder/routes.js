@@ -222,15 +222,72 @@ router.get('/assessOrder', auth_admin,(req,res)=>{
 });
 
 function pending(req,res){
+  // For payment status ----------------------
+  if (req.body.paymentStatus == 0){
+
+      db.commit(function(erri){
+        if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
+        else{
+          res.send("yes")
+
+        }
+      });
+
+
+  }else if(req.body.paymentStatus == 1){
+
+      paid(req,res);
+
+  }else{
+
+  }
 
 } // end of pending
 
 function processing(req,res){
+  // For payment status ----------------------
+  if (req.body.paymentStatus == 0){
+
+      db.commit(function(erri){
+        if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
+        else{
+          res.send("yes")
+
+        }
+      });
+
+
+  }else if(req.body.paymentStatus == 1){
+
+      paid(req,res);
+
+  }else{
+
+  }
 
 } // end of processing
 
 
 function forPackage(req,res){
+  // For payment status ----------------------
+  if (req.body.paymentStatus == 0){
+
+      db.commit(function(erri){
+        if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
+        else{
+          res.send("yes")
+
+        }
+      });
+
+
+  }else if(req.body.paymentStatus == 1){
+
+      paid(req,res);
+
+  }else{
+
+  }
 
 }
 
@@ -251,7 +308,7 @@ function shipped(req,res){
             if(errw){db.rollback(function(){console.log(errw); res.send("no")})}
             else{
               if(resw==undefined||resw==null){db.rollback(function(){ res.send("false")})}
-              else if(resw.length==0){db.rollback(function(){ res.send("false")})}
+              else if(resw.length==0){db.rollback(function(){console.log('here'); res.send("false")})}
               else{
                 // Update inventory (less quantity , reserved items )
                 db.query(`Update tblproductinventory set intQuantity = intQuantity - ${orders[c].intQuantity}, intReservedItems = intReservedItems - ${orders[c].intQuantity}
@@ -344,7 +401,25 @@ function shipped(req,res){
         if(erry){db.rollback(function(){console.log(erry)})}
         else{
 
+          // For payment status ----------------------
+          if (req.body.paymentStatus == 0){
 
+              db.commit(function(erri){
+                if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
+                else{
+                  res.send("yes")
+
+                }
+              });
+
+
+          }else if(req.body.paymentStatus == 1){
+
+              paid(req,res);
+
+          }else{
+
+          }
         }
 
       })
@@ -354,14 +429,71 @@ function shipped(req,res){
 } // end of Shipped
 
 function delivered(req,res){
+  // For payment status ----------------------
+  if (req.body.paymentStatus == 0){
+
+      db.commit(function(erri){
+        if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
+        else{
+          res.send("yes")
+
+        }
+      });
+
+
+  }else if(req.body.paymentStatus == 1){
+
+      paid(req,res);
+
+  }else{
+
+  }
 
 } // end of delivered
 
 function notDeliver(req,res){
+  // For payment status ----------------------
+  if (req.body.paymentStatus == 0){
+
+      db.commit(function(erri){
+        if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
+        else{
+          res.send("yes")
+
+        }
+      });
+
+
+  }else if(req.body.paymentStatus == 1){
+
+      paid(req,res);
+
+  }else{
+
+  }
 
 } // end of not delivered
 
 function returned(req,res){
+  // For payment status ----------------------
+  if (req.body.paymentStatus == 0){
+
+      db.commit(function(erri){
+        if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
+        else{
+          res.send("yes")
+
+        }
+      });
+
+
+  }else if(req.body.paymentStatus == 1){
+
+      paid(req,res);
+
+  }else{
+
+  }
 
 } // end of returned
 
@@ -375,6 +507,25 @@ function cancelled(req,res){
           db.query(`Update tblProductInventory set intReservedItems = intReservedItems - ${i.intQuantity} where intInventoryNo = ${i.intInventoryNo}`,(err2,res2,fie2)=>{
             if(err2) console.log(err2);
             else{
+              // For payment status ----------------------
+              if (req.body.paymentStatus == 0){
+
+                  db.commit(function(erri){
+                    if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
+                    else{
+                      res.send("yes")
+
+                    }
+                  });
+
+
+              }else if(req.body.paymentStatus == 1){
+
+                  paid(req,res);
+
+              }else{
+
+              }
 
             }
           })
@@ -385,6 +536,25 @@ function cancelled(req,res){
           db.query(`Update tblPackage set intReservedItems = intReservedItems - ${i.intQuantity} where intPackageNo = ${i.intInventoryNo}`,(err3,res3,fie3)=>{
             if(err3) console.log(err3);
             else{
+              // For payment status ----------------------
+              if (req.body.paymentStatus == 0){
+
+                  db.commit(function(erri){
+                    if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
+                    else{
+                      res.send("yes")
+
+                    }
+                  });
+
+
+              }else if(req.body.paymentStatus == 1){
+
+                  paid(req,res);
+
+              }else{
+
+              }
 
             }
           })
@@ -534,25 +704,25 @@ router.post('/assessOrder',auth_admin,(req,res)=>{
                                     // execute blank orderStat
                                   }
 
-                                  // For payment status ----------------------
-                                  if (paymentStat == 0){
-
-                                      db.commit(function(erri){
-                                        if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
-                                        else{
-                                          res.send("yes")
-
-                                        }
-                                      });
-
-
-                                  }else if(paymentStat == 1){
-
-                                      paid(req,res);
-
-                                  }else{
-
-                                  }
+                                  // // For payment status ----------------------
+                                  // if (paymentStat == 0){
+                                  //
+                                  //     db.commit(function(erri){
+                                  //       if(erri){db.rollback(function(){console.log(erri); res.send("no")})}
+                                  //       else{
+                                  //         res.send("yes")
+                                  //
+                                  //       }
+                                  //     });
+                                  //
+                                  //
+                                  // }else if(paymentStat == 1){
+                                  //
+                                  //     paid(req,res);
+                                  //
+                                  // }else{
+                                  //
+                                  // }
                                 }
                             }) // End of Order History -------
                             // End of insert to order history

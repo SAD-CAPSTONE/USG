@@ -92,7 +92,7 @@ router.get('/', (req,res)=>{
 var resultset = "", completeset = "", ranges = "";
 
 router.get('/loadTransactions',(req,res)=>{
-  console.log(resultset)
+  //console.log(resultset)
   res.render('admin-reports/views/transactionLoader',{re: resultset, moment: moment})
 })
 
@@ -106,11 +106,14 @@ router.post('/loadTransactions',(req,res)=>{
   var newDate = moment(dates[0]).format("YYYY/MM/DD");
   var newDate1 = moment(dates[1]).format("YYYY/MM/DD");
 
+  // 10/07/2018
+  // 10/01/2018 - 10/31/2018
+
   db.query(`Select * from tblInventoryTransactions
     join tblProductInventory on tblInventoryTransactions.intInventoryno = tblProductinventory.intInventoryno
     join tblProductlist on tblProductlist.intProductNo = tblProductInventory.intProductNo
     join tblUom on tblUom.intUOMno = tblProductInventory.intUomNo
-    where transactionDate between '${newDate}' and '${newDate1}' limit 7`,(err1,res1,fie1)=>{
+    where transactionDate >= '${newDate}' or transactionDate <= '${newDate1}' limit 7`,(err1,res1,fie1)=>{
       if(err1) console.log(err1);
       else{
         db.query(`Select * from tblInventoryTransactions
