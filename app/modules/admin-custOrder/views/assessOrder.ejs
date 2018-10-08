@@ -444,77 +444,103 @@
 <script src="/assets/admin/assessOrder.js"></script>
 
 <script>
-  // shipped
-  if(<%= customer[0].Stat %> == 2){
-    $('#order_pending').attr('disabled',true);
-    $('#order_processing').attr('disabled',true);
-    $('#order_cancelled').attr('disabled',true);
 
-  }
 
   // Pending
   if(<%= customer[0].Stat %> == 0){
-  //  $('#order_pending').attr('disabled',true);
-    $('#order_delivered').attr('disabled',true);
+    $('#order_pending').attr('hidden',true);
+    $('#order_processing').attr('hidden',false);
+    $('#order_cancelled').attr('hidden',false);
+    $('#order_shipped').attr('hidden',false);
+    $('#order_delivered').attr('hidden',true);
+
+    $('#order_notDeliver').attr('hidden',false);
+    $('#order_returned').attr('hidden',true);
 
   }
 
   // Processing
   if(<%= customer[0].Stat %> == 1){
-    $('#order_pending').attr('disabled',true);
-    //$('#order_processing').attr('disabled',true);
+    $('#order_pending').attr('hidden',true);
+    $('#order_processing').attr('hidden',true);
+    $('#order_cancelled').attr('hidden',false);
+    $('#order_shipped').attr('hidden',false);
+    $('#order_delivered').attr('hidden',true);
 
+    $('#order_notDeliver').attr('hidden',false);
+    $('#order_returned').attr('hidden',true);
+
+  }
+
+  // shipped
+  if(<%= customer[0].Stat %> == 2){
+    $('#order_pending').attr('hidden',true);
+    $('#order_processing').attr('hidden',true);
+    $('#order_cancelled').attr('disabled',false);
+    $('#order_shipped').attr('hidden',true);
+    $('#order_delivered').attr('hidden',false);
+
+    $('#order_notDeliver').attr('hidden',false);
+    $('#order_returned').attr('hidden',true);
 
   }
 
   // delivered
   if(<%= customer[0].Stat %> == 3){
-    $('#order_pending').attr('disabled',true);
-    $('#order_processing').attr('disabled',true);
-    $('#order_shipped').attr('disabled',true);
-    $('#order_notDeliver').attr('disabled',true);
-    $('#order_cancelled').attr('disabled',true);
-  //  $('#order_delivered').attr('disabled',true);
+    $('#order_pending').attr('hidden',true);
+    $('#order_processing').attr('hidden',true);
+    $('#order_cancelled').attr('hidden',true);
+    $('#order_shipped').attr('hidden',true);
+    $('#order_notDeliver').attr('hidden',true);
+    $('#order_returned').attr('hidden',false);
+    $('#order_delivered').attr('hidden',true);
+
 
   }
 
-  // cancelled
-  if(<%= customer[0].Stat %> == 3){
-    $('#order_pending').attr('disabled',true);
-    $('#order_processing').attr('disabled',true);
-    $('#order_shipped').attr('disabled',true);
-    $('#order_notDeliver').attr('disabled',true);
-    $('#order_cancelled').attr('disabled',true);
-
-  }
 
   // will not delivered
   if(<%= customer[0].Stat %> == 4){
-    $('#order_pending').attr('disabled',true);
-    $('#order_processing').attr('disabled',true);
-    $('#order_shipped').attr('disabled',true);
-    $('#order_delivered').attr('disabled',true);
-  //  $('#order_notDeliver').attr('disabled',true);
-    $('#order_returned').attr('disabled',true);
+    $('#order_pending').attr('hidden',true);
+    $('#order_processing').attr('hidden',true);
+    $('#order_cancelled').attr('hidden',true);
+    $('#order_shipped').attr('hidden',true);
+    $('#order_notDeliver').attr('hidden',true);
+    $('#order_returned').attr('hidden',true);
+    $('#order_delivered').attr('hidden',true);
+
+
+  }
+
+  // returned
+  if(<%= customer[0].Stat %> == 5){
+    $('#order_pending').attr('hidden',true);
+    $('#order_processing').attr('hidden',true);
+    $('#order_shipped').attr('hidden',true);
+    $('#order_delivered').attr('hidden',true);
+    $('#order_notDeliver').attr('hidden',false);
+    $('#order_returned').attr('hidden',true);
+    $('#order_cancelled').attr('hidden',true);
+
 
   }
 
   // cancelled
   if(<%= customer[0].Stat %> == 6){
-    $('#order_pending').attr('disabled',true);
-    $('#order_processing').attr('disabled',true);
-    $('#order_shipped').attr('disabled',true);
-    $('#order_delivered').attr('disabled',true);
-    $('#order_notDeliver').attr('disabled',true);
-  $('#order_returned').attr('disabled',true);
-    $('#order_cancelled').attr('disabled',true);
+    $('#order_pending').attr('hidden',true);
+    $('#order_processing').attr('hidden',true);
+    $('#order_shipped').attr('hidden',true);
+    $('#order_delivered').attr('hidden',true);
+    $('#order_notDeliver').attr('hidden',true);
+  $('#order_returned').attr('hidden',true);
+    $('#order_cancelled').attr('hidden',true);
 
   }
 
   // not working
-  $('#payment_partially').attr('disabled',true);
-  $('#payment_refunded').attr('disabled',true);
-  $('#payment_cancelled').attr('disabled',true);
+  $('#payment_partially').attr('hidden',true);
+  $('#payment_refunded').attr('hidden',true);
+  $('#payment_cancelled').attr('hidden',true);
 
 
 </script>

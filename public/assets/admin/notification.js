@@ -39,6 +39,24 @@ function confirm_alert(){
 
     // new order notification
 
+    update();
+    //  setInterval(update,2000);
+
+
+    function update(){
+      $.post('/customerOrder/checkNewOrders','',function(data,status){
+        if(data == 0){
+
+        }else{
+          $('#notiforder').html(data)
+
+        }
+      })
+
+
+    }
+
+
 
 
 

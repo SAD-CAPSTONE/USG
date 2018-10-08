@@ -26,6 +26,10 @@ router.get('/', (req,res)=>{
 
 router.get('/sales',(req,res)=>{
   res.render('admin-reports/views/sales');
+});
+
+router.get('/reviewMonthlySales',(req,res)=>{
+  res.render('admin-reports/views/reviewMonthlySales');
 })
 
 router.get('/inventory',(req,res)=>{

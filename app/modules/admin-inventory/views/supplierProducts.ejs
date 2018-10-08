@@ -11,8 +11,8 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Maintenance</a></li>
-        <li class="active">Products per Supplier</li>
+        <li><a href="#">Inventory</a></li>
+        <li class="active">Supplier Products</li>
       </ol>
     </section>
 
@@ -22,7 +22,7 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">All Products and Respective Suppliers</h3>
+              <h3 class="box-title">Supplier Products</h3>
             </div>
 
             <!-- /.box-header -->
@@ -31,7 +31,8 @@
                 <thead>
                 <tr>
                   <th>No</th>
-                  <th>Product Name</th>
+                  <th>Business Name</th>
+                  <th>Supplier Type</th>
                   <th>Supplier Name</th>
                   <th>Actions</th>
                 </tr>
@@ -40,16 +41,25 @@
                     <% if (re == null || re == undefined){ %>
 
                       <% }else if (re.length == 0){ %>
-    
+
                       <% }else{ %>
+                        <% var count = 1; %>
                        <%  re.forEach(function(i){ %>
                           <tr>
-                            <td><%= i.intUserID%></td>
-                            <td><%= i.product%></td>
+                            <td><%= count%></td>
                             <td><%= i.strBusinessName%></td>
+                            <td>
+                              <% if(i.intSupplierType == 1){ %>
+                                Consignor
+                              <% }else{ %>
+                                Outright
+                              <% } %>
+                            </td>
+                            <td><%= i.strFname%> <%=i.strMname%> <%=i.strLname%></td>
 
-                            <td><button type="button" data-toggle="modal" data-target="#viewProduct" class="viewDetailsButton btn btn-default btn-sm">View Product</button></a>
+                            <td><button data-id="<%=i.intUserID%>" type="button" data-toggle="modal" data-target="#viewProduct" class="viewDetailsButton large ui teal button">View Product</button></a>
                           </tr>
+                          <% count++ %>
                         <%  }) %>
                         <% } %>
                 </tbody>
@@ -58,10 +68,6 @@
             </div>
             <!-- /.box-body -->
 
-            <div class="box-footer">
-              <a href="voucher.html"><button type="submit" class="btn btn-default">Back</button></a>
-
-            </div>
           </div>
           <!-- /.box -->
 
@@ -76,6 +82,21 @@
   <!-- /.content-wrapper -->
 
   <!-- Modals -->
+
+  <div class="modal fade" id="viewProduct">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4>
+        </div>
+        <div class="modal-body">
+          <div id="loadProducts"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <%- include('../../../templates/admin-aside.ejs') -%>
 
@@ -106,6 +127,12 @@ $('#title').html("USG | Supplier Products");
 
 $(".treeview a:contains('Inventory')").parent().addClass("active");
 $(".navi a:contains('Products per Supplier')").parent().addClass("active");
+</script>
+
+<script>
+  $('.viewDetailsButton').on('click',function(){
+    $('#loadProducts').load(`/inventory/loadProducts?user=${$('.viewDetailsButton').data('id')}`)
+  })
 </script>
 
 

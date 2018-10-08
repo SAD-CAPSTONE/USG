@@ -6,15 +6,15 @@ const auth_cons = userTypeAuth.cons;
 
 router.get('/consignor-dash', auth_cons, (req,res)=>{
   db.query(`
-    SELECT * from tblproductinventory join tblproductlist on tblproductinventory.intProductNo = tblproductlist.intproductno
+    SELECT * from tblproductinventory
+    join tblproductlist on tblproductinventory.intProductNo = tblproductlist.intproductno
+    join tblUom on tblUom.intUomNo = tblproductinventory.intUomNo
     join tbluser on tbluser.intUserID = tblproductinventory.intUserID
-    join tblsubcategory on tblsubcategory.intSubCategoryNo = tblproductlist.intSubCategoryNo
-    join tblcategory on tblcategory.intcategoryno = tblsubcategory.intcategoryno
-    join tblsupplier on tblsupplier.intUserID = tblproductinventory.intUserID
-    where tbluser.intUserID = ${req.user.intUserID}`,(err1,results1)=>{
+    join tblsupplier on tblsupplier.intUserID = tblUser.intUserID
+    where tbluser.intUserID = ${req.user.intUserID} and tblproductinventory.intStatus = 1`,(err1,results1)=>{
     if (err1) console.log(err1);
-    res.render('cons-dashboard/views/cons-dashboard', {re: results1});
-    console.log(results1);
+    res.render('cons-dashboard/views/cons-dashboard', {re: results1, moment: moment});
+
   });
 });
 

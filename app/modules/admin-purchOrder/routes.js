@@ -2,6 +2,109 @@ var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
 var async = require('async');
+const nodemailer = require('nodemailer');
+
+const user_name = 'test.ultrasupergreen@gmail.com';
+const email_to = 'imjanellealag@gmail.com';
+const passw = 'testusg123';
+
+var header = '';
+var body = '';
+var count = 0;
+
+router.get('/email',(req,res)=>{
+  let transporter = nodemailer.createTransport({
+   host: 'smtp.gmail.com',
+   port: 465,
+   secure: true,
+   auth: {
+     user: user_name,
+     pass: passw
+   }
+  });
+  var html = "";
+
+
+  var orderno = req.query.order;
+
+  db.query(`Select * from tblPurchaseOrder join tblUser on tblPurchaseOrder.intSupplierID = tblUser.intUserID
+    join tblSupplier on tblUser.intUserID = tblSupplier.intUserID
+    where intPurchaseOrderNo = "${orderno}"`,(err1,results1,fields1)=>{
+      if (err1) console.log(err1);
+
+      db.query(`Select * from tblPurchaseOrderList where intPurchaseOrderNo = ${orderno}`,(err2,results2,fields2)=>{
+        if (err2) console.log(err2);
+        else{
+          console.log(results2)
+          for(count = 0; count < results2.length; count++){
+            body = `${count+1}. ` + `${results2[count].strProduct}` + ' ' + `${results2[count].strVariant}` + '<br>'
+          }
+          console.log(body);
+          html = buildHtml();
+          mailOptions = {
+              from    : user_name, // sender address
+              to      : email_to, // list of receivers
+              subject : 'USG ', // Subject line
+              text    : '', // plaintext body
+              html    : html, // html body
+
+          };
+
+          exec();
+        }
+      });
+    });
+
+
+  function buildHtml() {
+
+            return '<!DOCTYPE html>'
+                 + '<html>'
+                 +'<head>' + header + '</head>'
+                 +'<body>'
+                 + '<h3>From: </h3> &nbsp;'
+                 + 'Gustle Agulto' + '<br>'
+                 + '<br>'
+
+                 + '<h3>To: </h3> &nbsp;'
+                 + 'Your company' + '<br>'
+                 + '<br>'
+                 + '<br>'
+
+                 + '<p>Good day! We would like to request an order to your shop.</p>'
+                 + '<p>Here is the list</p>'
+                 + '<br>'
+                 + '<strong> Order List </strong> <br>'
+                 + body
+                 + '</body>'
+                 + '</html>';
+
+
+    // concatenate header string
+    // concatenate body string
+
+
+  };
+  let mailOptions = ""
+
+  function exec(){
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            res.send("error");
+        }else{
+          res.send("yes")
+          
+        }
+
+
+      });
+  }
+
+
+
+})
+
 
 router.get('/', (req,res)=>{
 
@@ -129,94 +232,6 @@ router.post('/submit',(req,res)=>{
 
 });
 
-router.post('/test',(req,res)=>{
-  var product = req.body.product; //[prod1,prod2,prod3]
-  var quantity = req.body.quantity; // [quan1,quan2,quan3]
-  var counter = 0;
-  var startProdListNo = 1000;
-
-  db.query(`Select * from tblPurchaseOrderList order by intPOrderlistno desc limit 1`,(e1,r1,f1)=>{
-    if (e1) console.log(e1);
-    if (r1 == undefined || r1 == null){
-
-    }else if(r1.length == 0){
-
-    }else{
-      startProdListNo = parseInt(r1[0].intPOrderListNo) + 1;
-    }
-
-    async.eachSeries(product,function(data,c){
-      db.query(`Insert into tblPurchaseOrderList (intPOrderListNo, intPurchaseOrderNo, strProduct, intQuantity) values ("${startProdListNo}", "1000", "${product[counter]}", "${quantity[counter]}")`, (err3,results3,fields3)=>{
-         if (err3) console.log(err3);
-         console.log(results3)
-         counter++;
-         startProdListNo++;
-         c();
-    });
-
-    }, function(err, results){
-      if (err){
-        res.send(err);
-      }else{
-        res.send("yes");
-      }
-
-
-    });
-
-
-  });
-
-
-});
-
-
-router.post('/submitForm',(req,res)=>{
-
-  console.log(`Entering 1`);
-
-  // query the last list no
-  db.query(`Select * from tblPurchaseOrderList order by intPOrderlistno desc limit 1`,(err1,results1,fields1)=>{
-    if (err1) console.log(err1);
-
-    var product = req.body.product; //[prod1,prod2,prod3]
-    var quantity = req.body.quantity; // [quan1,quan2,quan3]
-    var counter = 0;
-    var startProdListNo = 1000;
-
-    console.log(`entering 2`);
-
-    // insert to purchase Order table
-    db.query(`Insert into tblPurchaseOrder (intPurchaseOrderNo, intSupplierID, intAdminID, strSpecialNote) values ("${req.body.POnum}","${req.body.supplier}", "1000", "${req.body.specialnote}")`, (err2,results2,fields2)=>{
-      if (err2) console.log(err2);
-    });
-
-    // get the PO List no
-    if (results1 == null || results1 == undefined || results1.length == 0 ){
-      startProdListNo = 1000;
-    }else{
-      startProdListNo = parseInt(results1[0].intPOrderlistno) + 1;
-    }
-
-    console.log(`Entering 3`);
-
-    // insert each purchase order list in db
-      async.eachSeries(product,function(data,callback){
-        db.query(`Insert into tblPurchaseOrderList (intPOrderlistno, intPurchaseOrderNo,      strProduct, intQuantity) values ("${startProdListNo}", "${req.body.POnum}", "${product[counter]}", "${quantity[counter]}")`, (err3,results3,fields3)=>{
-           if (err3) console.log(err3);
-
-           counter++;
-           startProdListNo++;
-           callback();
-      });
-
-      }, function(err, results){
-        console.log("Puchase order done!");
-        res.send("yes");
-      });
-
-  });
-});
 
 router.post('/addSupplier', (req,res)=>{
 

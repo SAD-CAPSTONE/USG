@@ -126,7 +126,7 @@
     <div class="row no-print">
       <div class="col-xs-12">
         <a href="/purchaseOrder/invoice-print?order=<%=order%>" target="_blank" class="big ui button pull-right"><i class="fa fa-print"></i> Print</a>
-        <button type="button" disabled class="big ui green button pull-right"><i class="fa fa-envelope"></i>  Email
+        <button type="button" id="email" data-order="<%=order%>" class="big ui green button pull-right"><i class="fa fa-envelope"></i>  Email
         </button>
 
       </div>
@@ -147,6 +147,37 @@
 <%- include('../../../templates/admin-footer.ejs') -%>
 
 <!-- page script (new added) -->
+
+<script>
+const toast = swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000
+});
+
+
+  $('#email').on('click',function(){
+    $('#email').attr('disabled',true)
+    $.ajax({
+      url: `/purchaseOrder/email?order=${$('#email').data('order')}`,
+      type: 'GET',
+      success: function(data,status){
+        if(data=="yes"){
+          toast({
+            type: 'success',
+            title: 'Email Sent'
+          })
+        }else{
+          toast({
+            type: 'error',
+            title: 'no internet connection'
+          })
+        }
+      }
+    })
+  })
+</script>
 
 <script>
 $('#title').html("USG | Purchase Order");
