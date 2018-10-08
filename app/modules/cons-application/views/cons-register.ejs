@@ -1,7 +1,69 @@
 <%- include('../../../templates/cons-master.ejs') -%>
 <!--  -->
+<!-- <link rel="stylesheet" href="/customer-assets/custom/styles.css" type="text/css" /> -->
 <style>
+  /* Font */
+  .fw-300 {
+    font-weight: 300 !important;
+  }
+  .fw-400 {
+    font-weight: 400 !important;
+  }
+  .fw-500 {
+    font-weight: 500 !important;
+  }
+  .fs-1em {
+    font-size: 1em !important;
+  }
+  .fs-09em {
+    font-size: .9em !important;
+  }
+  .fs-08em {
+    font-size: .8em !important;
+  }
+  .fs-07em {
+    font-size: .7em !important;
+  }
+  .lh-p3em {
+    line-height: 1.3em !important;
+  }
+
+  #msform fieldset {
+    display: none;
+    opacity: 0;
+    transition: all 0.25s ease;
+  }
+  #msform fieldset:first-of-type {
+    display: block;
+    opacity: 1;
+  }
+
+  #fieldsets-div {
+    background: white;
+    margin: auto;
+    width: 80%;
+    border-radius: 3px;
+    box-shadow: 0 0 25px 5px rgba(0, 0, 0, 0.796);
+  }
+  #fieldsets-div fieldset {
+    width: 100%;
+    box-shadow: none;
+    padding-top: 30;
+  }
+  #fieldsets-div fieldset:first-of-type {
+    padding-top: 20;
+  }
+
+  input:focus, select:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  select:focus {
+    border-color: #ccc !important;
+  }
+
   input, select {
+    font-weight: 300;
     border-radius: 0px !important;
   }
   input:disabled, button:disabled {
@@ -19,7 +81,7 @@
     content: attr(mess);
     position: absolute;
     right: 0;
-    top: 0;
+    top: -3;
     color: white;
     display: block;
     background: #e74c3c;
@@ -31,438 +93,445 @@
   }
 
 </style>
-
+<a id="top-link"></a>
 <form id="msform" method="POST" action='/consRegistration/register-consignor' novalidate>
     <!-- progressbar -->
     <ul id="progressbar">
-      <li class="active tes">Start</li>
-      <li class="tes">Business Profile</li>
-      <li class="tes">Supplier Details</li>
-      <li class="tes">Consignment Details</li>
-      <li class="tes">Products</li>
-      <li class="tes">Product Details</li>
-      <li class="tes">Agreement</li>
+      <li class="active tes fw-400">Start</li>
+      <li class="tes fw-400">Business Profile</li>
+      <li class="tes fw-400">Supplier Details</li>
+      <li class="tes fw-400">Consignment Details</li>
+      <li class="tes fw-400">Products</li>
+      <li class="tes fw-400">Product Details</li>
+      <li class="tes fw-400">Agreement</li>
     </ul>
     <!-- fieldsets -->
      <!--START-->
-    <fieldset class=" box-shadow-mini">
-        <img src="/assets/images/static2/img10.jpg" style="padding-left:0px; padding-bottom:30px; width:95%;">
-        <h2 class="text-center">USG Supplier Information Sheet (Consignment Application)</h2>
+
+    <div id="fieldsets-div">
+      <fieldset class="box-shadow-mini">
+        <img src="/assets/images/static2/img10.jpg" style="padding-left:0px; padding-bottom:25px; width:95%;">
+        <h3 class="text-center" style="font-size: 1.3em">USG Supplier Information Sheet <br>(Consignment Application)</h2>
         <hr>
-        <p>Thank you for your interest in becoming one of our health & wellness partner. </p>
+        <p class="fs-1em fw-300">Thank you for your interest in becoming one of our health & wellness partner. </p>
 
-        <p>Please fill out this form and email the following documents to info.ultrasupergreen@gmail.com and mktg.ultrasupergreen@gmail.com. Use the subject line: "Consignment Application - (Name of your Brand or Company)" : </p>
+        <p class="fs-1em fw-300">Please fill out this form and email the following documents to info.ultrasupergreen@gmail.com and mktg.ultrasupergreen@gmail.com. Use the subject line: "Consignment Application - (Name of your Brand or Company)" : </p>
+        <p class="fs-1em fw-300">•	Company Profile </p>
+        <p class="fs-1em fw-300">•	Product Information Sheet with complete list of ingredients - Excel format </p>
+        <p class="fs-1em fw-300">•	Price list  </p>
+        <p class="fs-1em fw-300">•	DTI /SEC Registration
+        <p class="fs-1em fw-300">•	Official Receipt and/or BIR Registration  </p>
+        <p class="fs-1em fw-300">•	Sales Invoice and Delivery receipt  </p>
+        <p class="fs-1em fw-300">•	FDA Registration (if any) </p>
+        <p class="fs-1em fw-300">•	Eco Certification or Third Party Laboratory Results for product safety and efficacy (if any)  </p>
+        <p class="fs-1em fw-300">•	If your product has no certification, you must indicate on your label that your product is either  </p>
+        <p class="fs-1em fw-300">All Natural, homemade or herbal </p>
+        <a href="#top-link"><input type="button" name="next" class="next action-button" value="Start" style="margin-left: 240px;" /></a>
+        </fieldset>
 
-        <p>•	Company Profile </p>
-        <p>•	Product Information Sheet with complete list of ingredients - Excel format </p>
-        <p>•	Price list  </p>
-        <p>•	DTI /SEC Registration
-        <p>•	Official Receipt and/or BIR Registration  </p>
-        <p>•	Sales Invoice and Delivery receipt  </p>
-        <p>•	FDA Registration (if any) </p>
-        <p>•	Eco Certification or Third Party Laboratory Results for product safety and efficacy (if any)  </p>
-        <p>•	If your product has no certification, you must indicate on your label that your product is either  </p>
-               <p>All Natural, homemade or herbal </p>
-        <input type="button" name="next" class="next action-button" value="Start" style="margin-left: 240px;" />
+      <!--STEP 1 Business Profile-->
+      <fieldset>
+        <div role="alert" class="alert alert-info text-primary fs-09em fw-300" style="">All fields with * are required</div>
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="control-label fs-09em fw-300" for="businessname">Business Name<span class="text-info">*</span></label>
+          <div class="">
+          <input id="businessname" name="businessname" class="form-control input-md mt-1 mb-0 fs-09em" min="1" max="50" type="text">
+          <span class="fs-08em fw-300 text-muted">Specify Business Name</span>
+          </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="control-label fs-09em fw-300" for="brandname">Brand Name<span class="text-info">*</span></label>
+          <div class="">
+          <input id="brandname" name="brands" class="form-control mt-1 mb-0 fs-09em" min="1" max="100" type="text">
+          <span class="fs-08em fw-300 text-muted">List all if you have multiple brands, separated by a comma</span>
+          </div>
+        </div>
+
+        <!-- Select Basic -->
+        <div class="form-group">
+          <label class="control-label fs-09em fw-300" for="businesstype">Type of Business<span class="text-info">*</span></label>
+          <div class="">
+            <select id="businesstype" name="businessType"  class="form-control mt-1 fs-09em fw-300">
+              <% if (btype == null || btype == undefined){ %>
+
+              <% }else if(btype.length == 0){ %>
+
+              <% }else{ %>
+                <% btype.forEach(function(i){ %>
+                  <option value="<%=i.intBusinessTypeNo%>"><%=i.strBusinessType%></option>
+                <% }) %>
+              <% } %>
+
+            </select>
+          </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="control-label fs-09em fw-300" for="businessaddress">Business Address<span class="text-info">*</span></label>
+          <div class="">
+          <input id="businessaddress" name="businessaddress" class="form-control input-md mt-1 fs-09em" min='1' max='100' type="text">
+
+          </div>
+        </div>
+        <a href="#top-link">
+          <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
+          <input type="button" name="next" class="next action-button" value="Next" disabled />
+        </a>
       </fieldset>
 
-    <!--STEP 1 Business Profile-->
-    <fieldset>
-      <div role="alert" class="alert alert-info text-primary" style=""><i>All fields are required in order to successfully register</i></div>
-      <!-- Text input-->
-      <div class="form-group">
-        <label class="control-label" for="businessname">Business Name</label>
-        <div class="">
-        <input id="businessname" name="businessname" placeholder="Your Answer" class="form-control input-md" min="1" max="50" type="text">
-        <span class="help-block">Specify Business Name</span>
-        </div>
-      </div>
-
-      <!-- Text input-->
-      <div class="form-group">
-        <label class="control-label" for="brandname">Brand Name</label>
-        <div class="">
-        <input id="brandname" name="brands" placeholder="Your Answer" class="form-control" min="1" max="100" type="text">
-        <span class="help-block">List all if you have multiple brands, separated by a comma</span>
-        </div>
-      </div>
-
-      <!-- Select Basic -->
-      <div class="form-group">
-        <label class="control-label" for="businesstype">Type of Business</label>
-        <div class="">
-          <select id="businesstype" name="businessType"  class="form-control">
-            <% if (btype == null || btype == undefined){ %>
-
-            <% }else if(btype.length == 0){ %>
-
-            <% }else{ %>
-              <% btype.forEach(function(i){ %>
-                <option value="<%=i.intBusinessTypeNo%>"><%=i.strBusinessType%></option>
-              <% }) %>
-            <% } %>
-
-          </select>
-        </div>
-      </div>
-
-      <!-- Text input-->
-      <div class="form-group">
-        <label class="control-label" for="businessaddress">Business Address</label>
-        <div class="">
-        <input id="businessaddress" name="businessaddress" placeholder="Your Answer" class="form-control input-md" min='1' max='100' type="text">
-
-        </div>
-      </div>
-      <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
-      <input type="button" name="next" class="next action-button" value="Next" disabled />
-    </fieldset>
-
-    <!--STEP 2 Supplier Details-->
-    <fieldset>
-      <!-- Text input-->
-      <div class="form-group">
-        <label class="control-label" for="businessTIN">Business TIN</label>
-        <div class="">
-        <input id="businessTIN" name="businesstin" placeholder="Your Answer" class="form-control input-md" min='1' max='10' type="text">
-
-        </div>
-      </div>
-
-      <!-- BIR stats -->
-      <div class="form-group">
-        <label class="control-label" for="BIRstatus">Is your business BIR registered? If not, we would require a sales invoice</label>
-        <div class="">
-          <select id="BIRstatus" name="birstat" class="form-control">
-
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-            <option value="2">We are working on it</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- DTI stats -->
-      <div class="form-group">
-        <label class="control-label" for="DTIstatus">Is your business DTI registered?</label>
-        <div class="">
-          <select id="DTIstatus" name="dtistat" class="form-control">
-
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-            <option value="2">We are working on it</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Supplier Type -->
-      <!-- <div class="form-group">
-        <label class="control-label" for="suppliertype">Type of Supplier </label>
-        <div class="">
-          <select id="suppliertype" name="suppliertype" class="form-control">
-
-            <option value="1">Consignment</option>
-            <option value="2">Kiosk / Booth (500 rental per day / minimum of 3 days)</option>
-          </select>
-        </div>
-      </div> -->
-
-      <!-- Text input-->
-      <div class="form-group mb-0">
-        <label class="control-label" for="fname">Supplier Information</label>
-      </div>
-      <div class="form-group mb-0">
-        <input id="fname" name="fname" placeholder="First Name" class="form-control input-md mini" min='1' max='50' type="text">
-      </div>
-      <div class="form-group mb-0">
-        <input id="mname" name="mname" placeholder="Middle Name (Optional)" class="form-control input-md optional mini" max='50' type="text">
-      </div>
-      <div class="form-group">
-        <input id="lname" name="lname" placeholder="Last Name" class="form-control input-md mini" min='1' max='50' type="text">
-      </div>
-
-      <!-- Text input-->
-      <div class="form-group mb-0">
-        <label class="control-label" for="mobile">Contact Number</label>
-      </div>
-      <div class="form-group mb-0">
-        <input id="mobile" name="mobile" placeholder="Mobile(PH): eg. 09236835707 " class="form-control input-md mobile mini" type="text">
-      </div>
-      <div class="form-group">
-        <input id="phone" name="phone" placeholder="Phone: (Area Code)XXX-XXXX" class="form-control input-md phone mini" type="text">
-      </div>
-
-      <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
-      <input type="button" name="next" class="next action-button" value="Next" disabled/>
-    </fieldset>
-
-    <!--STEP 3 Consignment Details-->
-    <fieldset>
-      <!-- Text input-->
-      <div class="form-group">
-        <label class="control-label" for="textinput">Best Time &amp; Day to reach you</label>
-        <div class="">
-        <input id="textinput" name="besttime" placeholder="Your Answer (Optional)" class="form-control input-md optional" max='100' type="text">
-
-        </div>
-      </div>
-
-      <!-- Email-->
-      <div class="form-group">
-        <label class="control-label" for="textinput">Email address</label>
-        <div class="">
-        <input id="textinput" name="email" placeholder="Your Answer" class="form-control input-md" min='1' max='100' type="email">
-
-        </div>
-      </div>
-
-      <!-- Consignment Price -->
-      <div class="form-group">
-        <label class="control-label" for="checkboxes">Consignment Discount</label>
-        <div class=""></div>
-        <div class="">
-          <label class="radio">
-            <input type="radio" name="consignment" value="40">
-            We agree with the 40% discount/ commision on all product consignment
-          </label>
-          <div></div>
-          <label class="radio">
-            <input type="radio" name="consignment" value="0">
-            We have a higher offer for Ultra Super Green - (email proposal)
-          </label>
-        </div>
-      </div>
-
-      <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
-      <input type="button" name="next" class="next action-button" value="Next" disabled/>
-    </fieldset>
-
-    <!--STEP 4 Products-->
-    <fieldset>
-        <!-- Category -->
-        <div class="form-group mb-1">
-          <label class="control-label" for="checkboxes">Product category</label>
-          <hr>
-          <div class="">
-
-          <div class="checkbox">
-            <% if (category){ %>
-              <% category.forEach(function(data,i){ %>
-                <input name="category[<%=i%>]" id="<%=data.strCategory%>-<%=data.strSubCategory%>" value="<%=data.strCategory%> - <%=data.strSubCategory%>" type="checkbox">
-                <label for="<%=data.strCategory%>-<%=data.strSubCategory%>"><%=data.strCategory%> - <%=data.strSubCategory%></label>
-                </br>
-              <% }) %>
-            <% } %>
-
-          </div>
-
-          </div>
-        </div>
-
-        <!-- Prepended checkbox -->
+      <!--STEP 2 Supplier Details-->
+      <fieldset>
+        <!-- Text input-->
         <div class="form-group">
-          <label class="control-label" for="prependedcheckbox"></label>
+          <label class="control-label fs-09em fw-300" for="businessTIN">Business TIN<span class="text-info">*</span></label>
           <div class="">
-            <div class="input-group">
-              <span class="input-group-addon">
-                <input type="checkbox" class="others" name="others" value='1'>
-              </span>
-              <input id="prependedcheckbox" name="specify" class="form-control others-input optional" placeholder="Other please specify" type="text" max='45'>
-            </div>
+          <input id="businessTIN" name="businesstin" class="form-control input-md mt-1 fs-09em" min='1' max='10' type="text">
 
           </div>
         </div>
-        <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
-        <input type="button" name="next" class="next action-button" value="Next" disabled/>
-    </fieldset>
 
-    <!--STEP 5 Product Details-->
-    <fieldset>
-      <div class="form-group">
-        <label class="control-label" for="checkboxes">Product Certifications / Awards &amp; Recognition </label>
-        <hr>
-        <div class="checkbox">
-          <% if (certification){ %>
-            <% certification.forEach(function(data,i){ %>
-              <input name="certification[<%=i%>]" id="<%=data.strCertification%>" value="<%=data.strCertification%>" type="checkbox" class="optional">
-              <label for="<%=data.strCertification%>"><%= data.strCertification %></label>
-              </br>
-            <% }) %>
-          <% } %>
+        <!-- BIR stats -->
+        <div class="form-group">
+          <label class="control-label fs-09em fw-300" for="BIRstatus">Is your business BIR registered? If not, we would require a sales invoice<span class="text-info">*</span></label>
+          <div class="">
+            <select id="BIRstatus" name="birstat" class="form-control mt-1 fs-09em fw-300">
+
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+              <option value="2">We are working on it</option>
+            </select>
+          </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label class="control-label" for="fdastat">FDA Registration Status</label>
-        <select id="fdastat" name="fdastat" class="form-control">
+        <!-- DTI stats -->
+        <div class="form-group">
+          <label class="control-label fs-09em fw-300" for="DTIstatus">Is your business DTI registered?<span class="text-info">*</span></label>
+          <div class="">
+            <select id="DTIstatus" name="dtistat" class="form-control mt-1 fs-09em fw-300">
 
-            <option value="1">Registered</option>
-            <option value="2">In-Process</option>
-            <option value="3">We have not registered but our products have an accreditation or third party lab results as proof of authenticity and efficacy</option>
-            <option value="4">N/A - for non food only except for beauty products and cosmetics</option>
-            <option value="5">None</option>
-          </select>
-      </div>
-
-      <div class="form-group">
-        <label class="control-label" for="fda">FDA Registration ID Number </label>
-        <input id="fda" name="fda" placeholder="Your Answer (Optional)" class="form-control input-md optional" max='45' type="text">
-      </div>
-
-      <div class="form-group">
-        <label class="control-label" for="deliverysched">Proposed Schedule of Product Delivery </label>
-        <input id="deliverysched" name="deliverysched" placeholder="Your Answer" class="form-control input-md" min='1' max='100' type="text">
-      </div>
-
-      <div class="form-group">
-        <label class="control-label" for="freq">Frequency of Delivery </label>
-        <input id="freq" name="freq" placeholder="Your Answer" class="form-control input-md" min='1' max='100' type="text">
-      </div>
-
-      <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
-      <input type="button" name="next" class="next action-button" value="Next" disabled/>
-    </fieldset>
-
-    <!--STEP 6 Agreement-->
-    <fieldset>
-      <!-- Text input-->
-      <!-- Multiple Checkboxes -->
-      <div class="form-group">
-        <label class="control-label" for="replacement">Product Replacement and Replenishment</label>
-        <div class="">
-        <div class="checkbox">
-          <input name="replacement" id="replacement" value="1" type="checkbox">
-          <label for="replacement">
-            I hereby agree to replace any goods/products that are about to expire, non-moving, damaged upon delivery or with valid customer complaints
-          </label>
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+              <option value="2">We are working on it</option>
+            </select>
+          </div>
         </div>
-        </div>
-      </div>
 
-      <!-- Multiple Checkboxes -->
-      <div class="form-group">
-        <label class="control-label" for="marketing">Marketing &amp; Promotions</label>
-        <div class="">
-          <div class="checkbox">
-            <input name="marketing" id="marketing" value="1" type="checkbox" class="optional">
-            <label for="marketing">
-              I / Our company would like to actively participate and support any marketing and promotional activities of Ultra Super Green (e.g. product sampling, special events and other local market events)
+        <!-- Supplier Type -->
+        <!-- <div class="form-group">
+          <label class="control-label" for="suppliertype">Type of Supplier </label>
+          <div class="">
+            <select id="suppliertype" name="suppliertype" class="form-control">
+
+              <option value="1">Consignment</option>
+              <option value="2">Kiosk / Booth (500 rental per day / minimum of 3 days)</option>
+            </select>
+          </div>
+        </div> -->
+
+        <!-- Text input-->
+        <div class="form-group mb-0">
+          <label class="control-label fs-09em fw-300" for="fname">Supplier Information<span class="text-info">*</span></label>
+        </div>
+        <div class="form-group mb-0">
+          <input id="fname" name="fname" placeholder="First Name" class="form-control input-md mini mt-1 fs-09em" min='1' max='50' type="text">
+        </div>
+        <div class="form-group mb-0">
+          <input id="mname" name="mname" placeholder="Middle Name (Optional)" class="form-control input-md fs-09em optional mini" max='50' type="text">
+        </div>
+        <div class="form-group">
+          <input id="lname" name="lname" placeholder="Last Name" class="form-control input-md fs-09em mini" min='1' max='50' type="text">
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group mb-0">
+          <label class="control-label fs-09em fw-300" for="mobile">Contact Number<span class="text-info">*</span></label>
+        </div>
+        <div class="form-group mb-0">
+          <input id="mobile" name="mobile" placeholder="Mobile(PH): eg. 09236835707 " class="form-control input-md fs-09em mobile mini mt-1" type="text">
+        </div>
+        <div class="form-group">
+          <input id="phone" name="phone" placeholder="Phone: (Area Code)XXX-XXXX" class="form-control input-md fs-09em phone mini" type="text">
+        </div>
+
+        <a href="#top-link">
+          <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
+          <input type="button" name="next" class="next action-button" value="Next" disabled/>
+        </a>
+      </fieldset>
+
+      <!--STEP 3 Consignment Details-->
+      <fieldset>
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="control-label fs-09em fw-300" for="textinput">Best Time &amp; Day to reach you</label>
+          <div class="">
+            <input id="textinput" name="besttime" class="form-control input-md mt-1 fs-09em optional" max='100' type="text">
+          </div>
+        </div>
+
+        <!-- Email-->
+        <div class="form-group">
+          <label class="control-label fs-09em fw-300" for="textinput">Email address<span class="text-info">*</span></label>
+          <div class="">
+            <input id="textinput" name="email" class="form-control input-md mt-1 fs-09em" min='1' max='100' type="email">
+          </div>
+        </div>
+
+        <!-- Consignment Price -->
+        <div class="form-group mb-2">
+          <label class="control-label fs-09em fw-300" for="checkboxes">Consignment Discount<span class="text-info">*</span></label>
+          <div class=""></div>
+          <div class="mt-1">
+            <label class="radio fs-09em fw-300">
+              <input type="radio" name="consignment" value="40">
+              We agree with the 40% discount/ commision on all product consignment
+            </label>
+            <div></div>
+            <label class="radio fs-09em fw-300">
+              <input type="radio" name="consignment" value="0">
+              We have a higher offer for Ultra Super Green - (email proposal)
             </label>
           </div>
         </div>
-      </div>
 
-      <p>Kindly allow a maximum of 5 business days for review and approval.  </p>
+        <a href="#top-link">
+          <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
+          <input type="button" name="next" class="next action-button" value="Next" disabled/>
+        </a>
+      </fieldset>
 
-      <p>Once your application has been reviewed and pass our initial requirements, the consignor is required to do an in-store product sampling and/or demo activity to test the market to get instant feedback from our customers.  </p>
+      <!--STEP 4 Products-->
+      <fieldset>
+          <!-- Category -->
+          <div class="form-group mb-1">
+            <label class="control-label fs-1em fw-300" for="checkboxes">Product Category<span class="text-info">*</span></label>
+            <div class="fs-09em fw-300 mt-1">
 
-      <p>This will be scheduled by appointment. (Monday or Sundays only) 12:00nn to 6:00pm. First come, first served basis.  </p>
+              <div class="checkbox">
+                <% if (category){ %>
+                  <% category.forEach(function(data,i){ %>
+                    <input name="category[<%=i%>]" id="<%=data.strCategory%>-<%=data.strSubCategory%>" value="<%=data.strCategory%> - <%=data.strSubCategory%>" type="checkbox">
+                    <label for="<%=data.strCategory%>-<%=data.strSubCategory%>"><%=data.strCategory%> - <%=data.strSubCategory%></label>
+                    </br>
+                  <% }) %>
+                <% } %>
 
-      <p>If everything goes well, we would proceed with our partnership and we can start carrying your brand. </p>
-      <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
-      <button type="submit" class="submit action-button" disabled>Submit</button>
-    </fieldset>
+              </div>
 
-  </form>
+            </div>
+          </div>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
-  <!-- jQuery 3 -->
-  <script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
-  <script src="/assets/jquery/jquery-ui.min.js"></script>
-  <script src="/assets/jquery-validation-1.17.0/dist/jquery.validate.js"></script>
+          <!-- Prepended checkbox -->
+          <div class="form-group">
+            <label class="control-label" for="prependedcheckbox"></label>
+            <div class="">
+              <div class="input-group">
+                <span class="input-group-addon">
+                  <input type="checkbox" class="others" name="others" value='1'>
+                </span>
+                <input id="prependedcheckbox" name="specify" class="form-control ml-1 others-input fs-09em optional" placeholder="Other please specify" type="text" max='45'>
+              </div>
+            </div>
+          </div>
+          <a href="#top-link">
+            <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
+            <input type="button" name="next" class="next action-button" value="Next" disabled/>
+          </a>
+      </fieldset>
 
+      <!--STEP 5 Product Details-->
+      <fieldset>
+        <div class="form-group">
+          <label class="control-label fs-1em fw-300" for="checkboxes">Product Certifications / Awards &amp; Recognition </label>
+          <div class="checkbox fs-09em fw-300 mt-1">
+            <% if (certification){ %>
+              <% certification.forEach(function(data,i){ %>
+                <input name="certification[<%=i%>]" id="<%=data.strCertification%>" value="<%=data.strCertification%>" type="checkbox" class="optional">
+                <label for="<%=data.strCertification%>"><%= data.strCertification %></label>
+                </br>
+              <% }) %>
+            <% } %>
+          </div>
+        </div>
 
+        <div class="form-group">
+          <label class="control-label fs-09em fw-300" for="fdastat">FDA Registration Status<span class="text-info">*</span></label>
+          <select id="fdastat" name="fdastat" class="form-control mt-1 fs-09em fw-300">
 
-  <script>
-    var current_fs, next_fs, previous_fs; //fieldsets
-    var left, opacity, scale; //fieldset properties which we will animate
-    var animating; //flag to prevent quick multi-click glitches
+              <option value="1">Registered</option>
+              <option value="2">In-Process</option>
+              <option value="3">We have not registered but our products have an accreditation or third party lab results as proof of authenticity and efficacy</option>
+              <option value="4">N/A - for non food only except for beauty products and cosmetics</option>
+              <option value="5">None</option>
+            </select>
+        </div>
 
-    $(".next").click(function(){
-      if(animating) return false;
-      animating = true;
+        <div class="form-group">
+          <label class="control-label fs-09em fw-300" for="fda">FDA Registration ID Number </label>
+          <input id="fda" name="fda" class="form-control input-md mt-1 fs-09em optional" max='45' type="text">
+        </div>
 
-      current_fs = $(this).parent();
-      next_fs = $(this).parent().next();
+        <div class="form-group">
+          <label class="control-label fs-09em fw-300" for="deliverysched">Proposed Schedule of Product Delivery<span class="text-info">*</span></label>
+          <input id="deliverysched" name="deliverysched" class="form-control input-md mt-1 fs-09em" min='1' max='100' type="text">
+        </div>
 
-      //activate next step on progressbar using the index of next_fs
-      $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+        <div class="form-group">
+          <label class="control-label fs-09em fw-300" for="freq">Frequency of Delivery<span class="text-info">*</span></label>
+          <input id="freq" name="freq" class="form-control input-md mt-1 fs-09em" min='1' max='100' type="text">
+        </div>
 
-      //show the next fieldset
-      next_fs.show();
-      //hide the current fieldset with style
-      current_fs.animate({opacity: 0}, {
-        step: function(now, mx) {
-          //as the opacity of current_fs reduces to 0 - stored in "now"
-          //1. scale current_fs down to 80%
-          scale = 1 - (1 - now) * 0.2;
-          //2. bring next_fs from the right(50%)
-          left = (now * 50)+"%";
-          //3. increase opacity of next_fs to 1 as it moves in
-          opacity = 1 - now;
-          current_fs.css({
-            'transform': 'scale('+scale+')',
-            'position': 'absolute'
-          });
-          next_fs.css({'left': left, 'opacity': opacity});
-        },
-        duration: 800,
-        complete: function(){
-          current_fs.hide();
-          animating = false;
-        },
-        //this comes from the custom easing plugin
-        easing: 'easeInOutBack'
-      });
+        <a href="#top-link">
+          <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
+          <input type="button" name="next" class="next action-button" value="Next" disabled/>
+        </a>
+      </fieldset>
+
+      <!--STEP 6 Agreement-->
+      <fieldset>
+        <!-- Text input-->
+        <!-- Multiple Checkboxes -->
+        <div class="form-group">
+          <label class="control-label fs-1em fw-400" for="replacement">Product Replacement and Replenishment<span class="text-info">*</span></label>
+          <div class="fs-09em fw-300 mt-1">
+            <div class="checkbox">
+              <input name="replacement" id="replacement" value="1" type="checkbox">
+              <label for="replacement">
+                I hereby agree to replace any goods/products that are about to expire, non-moving, damaged upon delivery or with valid customer complaints
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multiple Checkboxes -->
+        <div class="form-group">
+          <label class="control-label fs-1em fw-400" for="marketing">Marketing &amp; Promotions</label>
+          <div class="fs-09em fw-300 mt-1">
+            <div class="checkbox">
+              <input name="marketing" id="marketing" value="1" type="checkbox" class="optional">
+              <label for="marketing">
+                I / Our company would like to actively participate and support any marketing and promotional activities of Ultra Super Green (e.g. product sampling, special events and other local market events)
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <p class="fs-1em fw-300">Kindly allow a maximum of 5 business days for review and approval.  </p>
+
+        <p class="fs-1em fw-300">Once your application has been reviewed and pass our initial requirements, the consignor is required to do an in-store product sampling and/or demo activity to test the market to get instant feedback from our customers.  </p>
+
+        <p class="fs-1em fw-300">This will be scheduled by appointment. (Monday or Sundays only) 12:00nn to 6:00pm. First come, first served basis.  </p>
+
+        <p class="fs-1em fw-300">If everything goes well, we would proceed with our partnership and we can start carrying your brand. </p>
+        <a href="#top-link">
+          <input type="button" name="previous" class="previous action-button" value="Previous" style="margin-left: 180px;"/>
+          <button type="submit" class="submit action-button" disabled>Submit</button>
+        </a>
+      </fieldset>
+    </div>
+
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+<!-- jQuery 3 -->
+<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/assets/jquery/jquery-ui.min.js"></script>
+<script src="/assets/jquery-validation-1.17.0/dist/jquery.validate.js"></script>
+
+<!-- <script>
+  var current_fs, next_fs, previous_fs; //fieldsets
+  var left, opacity, scale; //fieldset properties which we will animate
+  var animating; //flag to prevent quick multi-click glitches
+
+  $(".next").click(function(){
+    if(animating) return false;
+    animating = true;
+
+    current_fs = $(this).parent();
+    next_fs = $(this).parent().next();
+
+    //activate next step on progressbar using the index of next_fs
+    $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+    //show the next fieldset
+    next_fs.show();
+    //hide the current fieldset with style
+    current_fs.animate({opacity: 0}, {
+      step: function(now, mx) {
+        //as the opacity of current_fs reduces to 0 - stored in "now"
+        //1. scale current_fs down to 80%
+        scale = 1 - (1 - now) * 0.2;
+        //2. bring next_fs from the right(50%)
+        left = (now * 50)+"%";
+        //3. increase opacity of next_fs to 1 as it moves in
+        opacity = 1 - now;
+        current_fs.css({
+          'transform': 'scale('+scale+')',
+          'position': 'absolute'
+        });
+        next_fs.css({'left': left, 'opacity': opacity});
+      },
+      duration: 800,
+      complete: function(){
+        current_fs.hide();
+        animating = false;
+      },
+      //this comes from the custom easing plugin
+      easing: 'easeInOutBack'
     });
+  });
 
-    $().click(function(){
-      current_fs = $(this).validate({
-        rules: {
-          businessname: "required"
-        },
-        messages: {
-          businessname: "Please fill up the form"
-        }
-      });
+  $().click(function(){
+    current_fs = $(this).validate({
+      rules: {
+        businessname: "required"
+      },
+      messages: {
+        businessname: "Please fill up the form"
+      }
     });
+  });
 
-    $(".previous").click(function(){
-      if(animating) return false;
-      animating = true;
+  $(".previous").click(function(){
+    if(animating) return false;
+    animating = true;
 
-      current_fs = $(this).parent();
-      previous_fs = $(this).parent().prev();
+    current_fs = $(this).parent();
+    previous_fs = $(this).parent().prev();
 
-      //de-activate current step on progressbar
-      $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+    //de-activate current step on progressbar
+    $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
 
-      //show the previous fieldset
-      previous_fs.show();
-      //hide the current fieldset with style
-      current_fs.animate({opacity: 0}, {
-        step: function(now, mx) {
-          //as the opacity of current_fs reduces to 0 - stored in "now"
-          //1. scale previous_fs from 80% to 100%
-          scale = 0.8 + (1 - now) * 0.2;
-          //2. take current_fs to the right(50%) - from 0%
-          left = ((1-now) * 50)+"%";
-          //3. increase opacity of previous_fs to 1 as it moves in
-          opacity = 1 - now;
-          current_fs.css({'left': left});
-          previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
-        },
-        duration: 800,
-        complete: function(){
-          current_fs.hide();
-          animating = false;
-        },
-        //this comes from the custom easing plugin
-        easing: 'easeInOutBack'
-      });
+    //show the previous fieldset
+    previous_fs.show();
+    //hide the current fieldset with style
+    current_fs.animate({opacity: 0}, {
+      step: function(now, mx) {
+        //as the opacity of current_fs reduces to 0 - stored in "now"
+        //1. scale previous_fs from 80% to 100%
+        scale = 0.8 + (1 - now) * 0.2;
+        //2. take current_fs to the right(50%) - from 0%
+        left = ((1-now) * 50)+"%";
+        //3. increase opacity of previous_fs to 1 as it moves in
+        opacity = 1 - now;
+        current_fs.css({'left': left});
+        previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
+      },
+      duration: 800,
+      complete: function(){
+        current_fs.hide();
+        animating = false;
+      },
+      //this comes from the custom easing plugin
+      easing: 'easeInOutBack'
     });
-  </script>
+  });
+</script> -->
 
 <script>
   const thisUrlHost = `${window.location.protocol}//${window.location.host}`,
@@ -471,13 +540,38 @@
   testPhone = /^[\(]\d{1,5}[\)]\d{3}-\d{4}$/i;
   testSpace = /^[^\s]+(\s+[^\s]+)*$/i
 
+  let pageCounter = 1;
+
+  $(`#msform fieldset .next`).click(function(){
+    $(`#msform fieldset:nth-of-type(${pageCounter})`).css("opacity","0")
+    setTimeout(()=>{
+      $(`#msform fieldset:nth-of-type(${pageCounter})`).css("display","none")
+      pageCounter++
+      $(`#msform fieldset:nth-of-type(${pageCounter})`).css("display","block")
+      setTimeout(()=>{
+        $(`#msform fieldset:nth-of-type(${pageCounter})`).css("opacity","1")
+      },100);
+    },250);
+  })
+  $(`#msform fieldset .previous`).click(function(){
+    $(`#msform fieldset:nth-of-type(${pageCounter})`).css("opacity","0")
+    setTimeout(()=>{
+      $(`#msform fieldset:nth-of-type(${pageCounter})`).css("display","none")
+      pageCounter--
+      $(`#msform fieldset:nth-of-type(${pageCounter})`).css("display","block")
+      setTimeout(()=>{
+        $(`#msform fieldset:nth-of-type(${pageCounter})`).css("opacity","1")
+      },100);
+    },250);
+  })
+
   $(document).keypress(function(event){
     if (event.which == '13') {
       event.preventDefault();
     }
   });
 
-  $('#msform > fieldset input').keypress(function(key) {
+  $('#msform fieldset input').keypress(function(key) {
     if ($(this).attr('max')){
       if($(this).val().length >= $(this).attr('max')){
         if(key.charCode <= 8 || key.charCode >= 32) return false;
@@ -598,13 +692,13 @@
 
   }
 
-  $('#msform > fieldset input').keypress(function(event){
+  $('#msform fieldset input').keypress(function(event){
     if ($(this).val().length == 0 && event.which == '32'){
       event.preventDefault();
     }
   });
 
-  $('#msform > fieldset input').keyup(function(){
+  $('#msform fieldset input').keyup(function(){
     let fs = $(this).closest('fieldset'), checkVal = 0;
     // checkVal 1 = has empty
 
@@ -616,7 +710,7 @@
       $(fs).find(`input[type=button]:nth-of-type(2), button[type=submit]`).removeAttr('disabled');
   });
 
-  $('#msform > fieldset input[type=checkbox]').click(function(){
+  $('#msform fieldset input[type=checkbox]').click(function(){
     let fs = $(this).closest('fieldset'), checkVal = 0;
 
     if ($(fs).find(`input[type=checkbox].others:checked`).length){
@@ -634,7 +728,7 @@
       $(fs).find(`input[type=button]:nth-of-type(2), button[type=submit]`).removeAttr('disabled');
   });
 
-  $('#msform > fieldset input[type=radio]').click(function(){
+  $('#msform fieldset input[type=radio]').click(function(){
     let fs = $(this).closest('fieldset'), checkVal = 0;
 
     checkVal = checkFields(fs,checkVal);

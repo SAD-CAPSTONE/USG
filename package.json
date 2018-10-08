@@ -29,7 +29,7 @@
     "node-excel-export": "^1.4.4",
     "nodemailer": "^4.6.7",
     "nodemon": "^1.17.5",
-    "npm": "^6.2.0",
+    "npm": "^6.4.1",
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",
     "passport-google-oauth20": "^1.0.0",
