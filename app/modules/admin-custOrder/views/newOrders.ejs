@@ -287,7 +287,9 @@
 
   $('.assess').on('click',function(){
     location.href = `/returnOrder/assessForm?q=${$(this).data('no')}`;
-  })
+  });
+
+  
 
   <% var all = ((pending.length + bank.length + returns.length + cancel.length) == 0) ? "" : (pending.length + bank.length + returns.length + cancel.length) %>
 

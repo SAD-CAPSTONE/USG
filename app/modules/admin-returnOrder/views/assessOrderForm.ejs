@@ -83,11 +83,11 @@
                         <table id="example2" class="table table-bordered table-hover">
                           <thead>
 
-                            <th style="width: 10px">#</th>
-                            <th>Ordered Products</th>
+                            <th style="width: 5%">#</th>
+                            <th style="width: 30%">Ordered Products</th>
                             <th>Quantity</th>
-                            <th>Replaced with</th>
-                            <th>Quantity</th>
+                            <th style="width: 30%">Replaced with</th>
+                            <th style="width: 10%">Quantity</th>
 
 
                           </thead>
@@ -103,13 +103,16 @@
                                   <td><%= count %></td>
                                   <td><%= i.strProductName %> <%=i.strVariant%> <%=i.intSize%><%=i.strUnitName%></td>
                                   <td><%=i.qty%></td>
-                                  <td>
-                                    <input type="num" class="form-control" name="replacementProduct[]">
+                                  <td >
+                                    <p class="<%= count %>"></p>
+                                    <input required type="hidden" class="<%= count %> form-control" name="replacementProduct[]">
+                                    <button data-toggle="modal" data-target="#selectProduct" data-id="<%= count %>" type="button" class="select_product xs ui button">Select</button>
                                   </td>
                                   <td>
-                                    <input type="num" class="form-control" name="replacementQuantity[]">
+                                    <input type="num" required class="form-control" name="replacementQuantity[]">
                                   </td>
                                 </tr>
+                                <% count++%>
                             <%  }) %>
                             <% } %>
 
@@ -152,7 +155,58 @@
 
 	<!-- Modals -->
 
+  <div class="modal fade" id="selectProduct">
+   <div class="modal-dialog">
+   <div class="modal-content">
+     <div class="modal-header">
+     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+       <span aria-hidden="true">&times;</span></button>
+     <h4 class="modal-title">Product List</h4>
+     </div>
+     <div class="modal-body">
 
+
+
+     <!-- /.box-header -->
+     <div  class="box-body table-responsive">
+       <table id="productTable" class="table table-bordered table-hover">
+         <thead>
+           <tr>
+             <th >Product Name</th>
+             <th ></th>
+           </tr>
+         </thead>
+         <tbody>
+           <% if (product == null || product == undefined){ %>
+
+           <% }else if(product.length == 0){ %>
+
+           <% }else{ %>
+
+             <% product.forEach(function(i){ %>
+               <tr>
+                 <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%><%=i.strUnitName%></td>
+                 <td>
+                   <button data-barcode="<%=i.strBarcode%>" data-product="<%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%><%=i.strUnitName%>"  data-dismiss="modal" class="addProduct large ui teal button btn-sm">Select</button>
+                 </td>
+               </tr>
+             <% }) %>
+
+           <% } %>
+
+         </tbody>
+
+       </table>
+     </div>
+     <!-- /.box-body -->
+
+      </div>
+
+   </div>
+   <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+  </div>
 
 
 
@@ -194,6 +248,34 @@
   })
 </script>
 
+<script>
+  $(function () {
+    $('#productTable').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'info'        : true,
+      'autoWidth'   : true,
+      'searching'   : true,
+      'ordering'    : true
+
+    })
+  })
+</script>
+
+<script>
+
+  var current = "";
+
+  $('.select_product').on('click',function(){
+    current = $(this).data('id');
+    //alert(current)
+  })
+
+  $('.addProduct').on('click',function(){
+    $(`p.${current}`).html($(this).data('product'));
+    $(`input.${current}`).val($(this).data('barcode'));
+  })
+</script>
 
 
 <script>
