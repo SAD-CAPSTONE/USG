@@ -114,12 +114,24 @@ router.post('/editProduct',(req,res)=>{
 
 router.get('/supplierProducts', (req,res)=>{
   db.query(`
-    SELECT * from tblproductinventory join tblproductlist on tblproductinventory.intProductNo = tblproductlist.intproductno
-    join tblsupplier on tblsupplier.intUserID = tblproductinventory.intUserID`,(err1,results1)=>{
+    Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID`,(err1,results1)=>{
     if (err1) console.log(err1);
     res.render('admin-inventory/views/supplierProducts', {re: results1});
   });
 });
+
+router.get('/loadProducts',(req,res)=>{
+  db.query(`Select * from tblProductInventory join tblProductlist on tblProductInventory.intProductNo = tblProductlist.intProductNo
+    join tbluom on tblProductInventory.intUOMno = tblUom.intUOMno
+    join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo
+    join tblSubCategory on tblProductlist.intSubCategoryNo = tblSubCategory.intSubcategoryno
+    where tblProductInventory.intUserID = "${req.query.user}"`,(err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+        res.render('admin-inventory/views/loadSupplierProducts', {re: res1});
+      }
+    })
+})
 
 router.get('/productInventory', (req,res)=>{
 
@@ -399,7 +411,7 @@ router.post('/addToStock',(req,res)=>{
                                               if(erra) db.rollback(function(){console.log(erra)})
                                               else{
                                                 res.send("yes");
-                                                
+
                                               }
                                             })
 

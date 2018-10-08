@@ -88,14 +88,21 @@
 										<a href=""><img src="/assets/images/products/<%=i.strProductPicture%>"></a>
 									</div>
 								</td>
-								<td><%= i.strProductName%></td>
+								<td><%= i.strProductName%> <%=i.strVariant%> <%=i.intSize%><%=i.strUnitName%></td>
 								<td><span><%= i.intQuantity%></span></td>
-								<td><span><%= i.dateRecorded%></span></td>
-                <% if (i.intStatus == 0 ){ %>
-								<td><span class="badge badge-warning">Out of Stock</span></td>
-                <% }else if (i.intStatus == 1) { %>
-                  <td><span class="badge badge-success">Stocked</span></td>
-                <%} %>
+								<td><span><%= moment(i.dateRecorded).format("MM/DD/YYYY")%></span></td>
+
+                <td>
+                  <% if (i.intQuantity == 0){ %>
+                    <span class="badge badge-warning">Out of Stock</span>
+                  <% }else if(i.intQuantity < i.intCriticalLimit || i.intQuantity == i.intCriticalLimit){ %>
+                    <span class="badge badge-warning">Critical Limit</span>
+                  <% }else{ %>
+                    <span class="badge badge-success">Available</span>
+                  <% } %>
+                </td>
+
+
 							</tr>
               <%  }) %>
               <% } %>
