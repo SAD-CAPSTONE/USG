@@ -161,7 +161,7 @@ router.post('/changeStatus',(req,res)=>{
               if(res2.length==0){} else{ sales_no = parseInt(res2[0].intSalesNo) + 1;}
 
               if(req.body.payment_status == 1){
-                db.query(`Update tblOrder set intPaymentStatus = 1 where intOrderNo = "${req.body.order_no}"`,(err3,res3,fie3)=>{
+                db.query(`Update tblOrder set intPaymentStatus = 1, paymentDate = NOW() where intOrderNo = "${req.body.order_no}"`,(err3,res3,fie3)=>{
                   if(err3) console.log(err3);
                   else{
 
