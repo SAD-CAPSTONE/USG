@@ -114,12 +114,24 @@ router.post('/editProduct',(req,res)=>{
 
 router.get('/supplierProducts', (req,res)=>{
   db.query(`
-    SELECT * from tblproductinventory join tblproductlist on tblproductinventory.intProductNo = tblproductlist.intproductno
-    join tblsupplier on tblsupplier.intUserID = tblproductinventory.intUserID`,(err1,results1)=>{
+    Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID`,(err1,results1)=>{
     if (err1) console.log(err1);
     res.render('admin-inventory/views/supplierProducts', {re: results1});
   });
 });
+
+router.get('/loadProducts',(req,res)=>{
+  db.query(`Select * from tblProductInventory join tblProductlist on tblProductInventory.intProductNo = tblProductlist.intProductNo
+    join tbluom on tblProductInventory.intUOMno = tblUom.intUOMno
+    join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo
+    join tblSubCategory on tblProductlist.intSubCategoryNo = tblSubCategory.intSubcategoryno
+    where tblProductInventory.intUserID = "${req.query.user}"`,(err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+        res.render('admin-inventory/views/loadSupplierProducts', {re: res1});
+      }
+    })
+})
 
 router.get('/productInventory', (req,res)=>{
 
@@ -259,15 +271,22 @@ router.get('/allStocks', (req,res)=>{
 
   // Query inventory
   db.query(`
-    Select sum(tblproductinventory.intquantity) as quantity,  tblproductlist.*, tblproductinventory.*, tblproductbrand.* from  tblProductInventory join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo where tblProductList.intStatus = 1 group by tblproductlist.intproductno`, (err1,results1,fields1)=>{
+    Select sum(tblproductinventory.intquantity) as quantity,  tblproductlist.*, tblproductinventory.*, tblproductbrand.* from  tblProductInventory
+    join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
+    join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo
+    where tblProductList.intStatus = 1 group by tblproductlist.intproductno`, (err1,results1,fields1)=>{
       if (err1) console.log(err1);
 
       // Query suppliers
-      db.query(`Select * from tbluser join tblsupplier on tbluser.intuserid = tblsupplier.intuserid where intstatus = 1`, (err2,results2,fields2)=>{
+      db.query(`Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID
+        left join tblContract on tblContract.intConsignorID = tblUser.intUserID
+          where tblSupplier.intStatus = 1`, (err2,results2,fields2)=>{
         if (err2) console.log(err2);
 
         // Query products inside inventory
-        db.query(`Select * from tblProductlist join tblproductinventory on tblproductlist.intproductno = tblproductinventory.intproductno join tblproductbrand on tblproductlist.intbrandno = tblproductbrand.intbrandno join tbluom on tblproductinventory.intuomno = tbluom.intuomno`, (err3,results3,fields3)=>{
+        db.query(`Select * from tblProductlist
+          join tblproductbrand on tblproductlist.intbrandno = tblproductbrand.intbrandno
+          where tblProductList.intStatus = 1`, (err3,results3,fields3)=>{
           if (err3) console.log(err3);
 
           // Query uom
@@ -332,7 +351,90 @@ router.get('/allStocks', (req,res)=>{
     });
 });
 
-router.post('/addToStock', (req,res)=>{
+router.post('/addToStock',(req,res)=>{
+  var batch_no="1000", transact_no="1000", inventory_no ="1000";
+  var product_test = req.body.product_name + ' ' + req.body.variant + ' ' + req.body.size + ' ' + req.body.measure;
+  console.log(product_test);
+  db.beginTransaction(function(err){
+    if(err) console.log(err);
+    else{
+      // check if existing
+      db.query(`Select CONCAT_WS(' ',strProductName,strVariant,intSize,tblProductInventory.intUomNo) as exist, tblProductInventory.intInventoryNo, tblProductInventory.intProductNo from tblProductInventory
+        join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductNo
+        join tblUom on tblProductinventory.intUomno = tblUom.intUomno
+        where CONCAT_WS(' ',strProductName,strVariant,intSize,tblProductInventory.intUomNo) like 'Artisanal Dulong with Royal Jelly 720 1000%'
+        and tblProductInventory.intStatus = 1`,(err1,res1,fie1)=>{
+          if(err1) console.log(err1);
+          else{
+            if(res1.length>0){
+              res.send(`${res1[0].intProductNo}`);
+            }else{
+
+              // Select last inventory no
+              db.query(`Select * from tblProductInventory order by intInventoryNo desc limit 1`,(err2,res2,fie2)=>{
+                if(err2) console.log(err2);
+                else{
+                  if(res2.length==0){} else{ inventory_no = parseInt(res2[0].intInventoryNo) + 1}
+
+                  // Select last transact_no
+                  db.query(`Select * from tblInventoryTransactions order by intTransactionID desc limit 1`,(err3,res3,fie3)=>{
+                    if(err3) console.log(err3);
+                    else{
+                      if(res3.length==0){} else{ transact_no = parseInt(res3[0].intTransactionID) + 1}
+
+                      // Select last batch no
+                      db.query(`Select * from tblBatch order by intBatchNo desc limit 1`,(err4,res4,fie4)=>{
+                        if(err4) console.log(err4);
+                        else{
+
+                          if(res4.length==0){} else{ batch_no = parseInt(res4[0].intBatchNo) + 1}
+
+                          // Insert into new record
+                          db.query(`Insert into tblProductInventory (intInventoryNo, intProductNo, intUserID, productSRP, intUOMno, intSize,
+                             productPrice, intQuantity, intCriticalLimit, intShelfNo, strBarcode, strVariant)
+                            values("${inventory_no}", "${req.body.product}", "${req.body.supplier}", ${req.body.srp}, "${req.body.measure}",
+                            ${req.body.size}, ${req.body.price}, ${req.body.quantity}, ${req.body.critical}, ${req.body.shelf}, "${req.body.barcode}", "${req.body.variant}")`,(err5,res5,fie5)=>{
+                              if(err5) console.log(err5);
+                              else{
+
+                                db.query(`Insert into tblBatch (intBatchNo, expirationDate, intInventoryNo, intQuantity) values
+                                  ("${batch_no}", "${req.body.expiration}", "${inventory_no}", ${req.body.quantity})`,(err6,res6,fie6)=>{
+                                    if(err6) console.log(err6);
+                                    else{
+
+                                      db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intShelfNo, intCriticalLimit, strTypeOfChanges, intUserID, productSRP, productPrice, currQuantity)
+                                        values("${transact_no}", "${inventory_no}", ${req.body.shelf}, ${req.body.critical}, "(+${req.body.quantity}) Added Batch Products", "1000", ${req.body.srp}, ${req.body.price}, ${req.body.quantity})`,(err7,res7,fie7)=>{
+                                          if(err7) console.log(err7);
+                                          else{
+
+                                            db.commit(function(erra){
+                                              if(erra) db.rollback(function(){console.log(erra)})
+                                              else{
+                                                res.send("yes");
+
+                                              }
+                                            })
+
+                                          }
+                                        })
+                                    }
+                                  })
+                              }
+                            })
+                        }
+                      })
+                    }
+                  })
+                }
+              })
+            }
+          }
+        })
+    }
+  })
+})
+
+router.post('/addToStock2', (req,res)=>{
 
   var batch = "1000";
   var transaction = "1000";
@@ -1562,9 +1664,10 @@ router.post('/addDiscount',(req,res)=>{
 });
 
 router.get('/testInventoryCount',(req,res)=>{
-  db.query(`Select SUM(tblBatch.intQuantity) as batchqty, tblProductInventory.intQuantity as invqty, tblProductInventory.intInventoryno as inv, tblProductinventory.*, tblProductlist.*, tblbatch.*
+  db.query(`Select SUM(tblBatch.intQuantity) as batchqty, tblProductInventory.intQuantity as invqty, tblProductInventory.intInventoryno as inv, tblProductinventory.*, tblProductlist.*, tblbatch.*, tblUom.*
   from tblProductInventory join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductno
   join tblBatch on tblProductInventory.intInventoryno = tblbatch.intInventoryNo
+  join tblUom on tblProductInventory.intUomNo = tbluom.intUomno
   group by tblproductInventory.intinventoryno `,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{

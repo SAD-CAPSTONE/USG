@@ -37,7 +37,7 @@
           <div class="tab-content">
 
             <!-- Inventory -->
-            <div class="tab-pane active " id="stock">
+            <div class="tab-pane  " id="stock">
 
 
               </br>
@@ -88,44 +88,84 @@
 
 
             <!-- New product Item-->
-            <div class="tab-pane" id="addInventory">
+            <div class="tab-pane active" id="addInventory">
               <br>
               <br>
               <!-- form start -->
-              <form role="form" method="post" enctype="multipart/form-data"  action="/inventory/addToStock">
+              <form id="stockForm" >
 
                 <div class="form-group">
                   <div class="row">
                     <div class="col-sm-6">
-                      <button type="button" class="large ui green button" data-toggle="modal" data-target="#selectInventory"><i class="fa fa-search"></i> Select Product </button>
-                    <p> &nbsp;&nbsp;&nbsp;New product? Click <a data-toggle="modal" data-target="#addProduct">here</a></p>
-                    </div>
+                      </div>
                   </div>
                 </div>
 
                 <div class="form-group">
                   <div class="row">
-                    <input type="hidden" class="form-control" required id="ino_name" name="ino_name" >
+                    <input type="hidden" class="form-control" required id="product_no" name="product" >
                     <div class="col-sm-5">
-                      <label for="add_pname">Product Name</label>
-                      <input type="text" disabled class="form-control" required id="product_name" name="product_name" >
+                      <label for="add_pname">Product Name <a class="text-red">*</a></label>
+                      <input type="text" readonly class="form-control" required id="product_name" name="product_name" >
                     </div>
                     <div class="col-sm-4">
-                      <label for="add_brand">Brand</label>
+                      <label for="add_brand">Brand <a class="text-red">*</a></label>
                       <input type="text" disabled class="form-control" required id="brand_name" name="brand_name" >
                     </div>
+                    <div class="col-sm-3">
+                      <br>
+                      <button type="button" class="large ui  button" data-toggle="modal" data-target="#selectInventory"><i class="fa fa-search"></i> Select Product </button>
+                    <p> &nbsp;&nbsp;&nbsp;New product? Click <a data-toggle="modal" data-target="#addProduct">here</a></p>
+
+                    </div>
                   </div>
                 </div>
 
                 <div class="form-group">
                   <div class="row">
+
                     <div class="col-sm-5">
-                      <label for="add_pname">Batch Number</label>
-                      <input type="number" required id="batch" class="form-control" disabled  >
+                      <input type="hidden" required name="supplier" id="add_sno" class="form-control"   >
+
+                      <label for="add_pname">Business Name <a class="text-red">*</a></label>
+                      <input type="text" required id="add_bname" class="form-control" disabled  >
                     </div>
                     <div class="col-sm-4">
-                      <label for="add_brand">Price</label>
-                      <input type="text" disabled class="form-control" required id="price" name="price" >
+                      <label for="add_brand"> Contract (if any)</label>
+                      <input type="text" disabled class="form-control" required id="add_cont" name="contract" >
+                    </div>
+                    <div class="col-sm-3">
+                      <br>
+                      <button type="button" class="large ui  button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier </button>
+                    <p> &nbsp;&nbsp;&nbsp;New supplier? Click <a data-toggle="modal" data-target="#addProduct">here</a></p>
+
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-sm-2">
+                      <label for="add_pname">Size <a class="text-red">*</a> </label>
+                      <input type="number" name="size" required class="form-control"   >
+                    </div>
+                    <div class="col-sm-3">
+                      <label for="add_pname">Measurement <a class="text-red">*</a></label>
+                      <select name="measure" required class="form-control">
+                        <% if (uom.length == 0){ %>
+
+                        <% }else{ %>
+                          <% uom.forEach(function(i){ %>
+                      <option value="<%=i.intUomNo%>"><%=i.strUnitName%></option>
+                          <% }) %>
+                        <% } %>
+                      </select>
+                    </div>
+                    <div class="col-sm-5">
+                      <label for="add_pname">Commission Rate <a class="text-red">*</a></label>
+                      <input type="text" id="commission" name="commission" readonly required class="form-control"   >
+                      <small class="text-green">You can modify commission rates in the consignor contracts</small>
                     </div>
                   </div>
                 </div>
@@ -133,11 +173,53 @@
                 <div class="form-group">
                   <div class="row">
                     <div class="col-sm-5">
-                      <label for="add_pname">Expiration Date</label>
+                      <label for="add_pname">Product SRP <a class="text-red">*</a> </label>
+                      <input type="number" id="srp" name="srp" required class="form-control"   >
+                    </div>
+                    <div class="col-sm-5">
+                      <label for="add_pname">Product PRICE <a class="text-red">*</a></label>
+                      <input type="number" id="price" name="price" required class="form-control"   >
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <label for="add_pname">Variant </label>
+                      <input type="text" name="variant"  class="form-control"   >
+                    </div>
+                    <div class="col-sm-5">
+                      <label for="add_pname">Barcode <a class="text-red">*</a></label>
+                      <input type="number" name="barcode" required class="form-control"   >
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <label for="add_pname">Shelf</label>
+                      <input type="number" name="shelf"  class="form-control"   >
+                    </div>
+                    <div class="col-sm-5">
+                      <label for="add_pname">Critical Limit <a class="text-red">*</a></label>
+                      <input type="number" name="critical" required class="form-control"   >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <label for="add_pname">Expiration Date <a class="text-red">*</a></label>
                       <input type="date" name="expiration" required class="form-control"   >
                     </div>
-                    <div class="col-sm-4">
-                      <label for="add_pname">Quantity</label>
+                    <div class="col-sm-5">
+                      <label for="add_pname">Quantity <a class="text-red">*</a></label>
                       <input type="number" name="quantity" required class="form-control"   >
                     </div>
                   </div>
@@ -145,7 +227,7 @@
 
               <div class="box-footer">
 
-                <a href="purchaseOrderList.html"><button type="submit" class="large ui button">Back</button></a>
+                <a ><button  class="large ui button">Back</button></a>
                 <button type="submit" class="large ui teal button">Submit</button>
 
               </div>
@@ -255,75 +337,7 @@
 
 <!-- Modals -->
 
-<div class="modal fade" id="addSupplier">
-  <div class="modal-dialog">
-  <div class="modal-content">
-    <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-      <span aria-hidden="true">&times;</span></button>
-    <h4 class="modal-title">Supplier Information Form</h4>
-    </div>
-    <div class="modal-body">
 
-      <!-- form start -->
-      <form role="form" method="post" action="#">
-        <div class="box-body">
-          <div class="form-group">
-            <div class="row">
-              <div class="col-xs-4">
-                <label for="fname">First Name</label>
-                <input type="text" class="form-control" required id="fname" name="fname" >
-              </div>
-              <div class="col-xs-4">
-                <label for="mname">Middle Name</label>
-                <input type="text" class="form-control"id="mname" name="mname" >
-              </div>
-              <div class="col-xs-4">
-                <label for="lname">Last Name</label>
-                <input type="text" class="form-control" required id="lname" name="lname" >
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="bname">Business Name</label>
-            <input type="text" class="form-control" id="bname" required name="bname" placeholder="">
-          </div>
-          <div class="form-group">
-            <label for="address">Business Address</label>
-            <input type="text" class="form-control" id="address" name="address" required placeholder="">
-          </div>
-          <div class="form-group">
-            <div class="row">
-              <div class="col-xs-5">
-                <label for="mobile">Mobile No.</label>
-                <input type="text" class="form-control" id="mobile" name="mobile" >
-              </div>
-              <div class="col-xs-5">
-                <label for="phone">Phone No.</label>
-                <input type="text" class="form-control" id="phone" name="phone" >
-              </div>
-            </div>
-          </div>
-          <div class="checkbox">
-            <label>
-              <input type="checkbox">Add supplier to form
-            </label>
-          </div>
-        </div>
-        <!-- /.box-body -->
-
-
-      </div>
-      <div class="modal-footer">
-      <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-      <button type="submit" class="btn btn-primary">Save</button>
-        </form>
-      </div>
-  </div>
-  <!-- /.modal-content -->
-</div>
- <!-- /.modal-dialog -->
-</div>
 
   <div class="modal fade" id="selectSupplier">
     <div class="modal-dialog">
@@ -343,7 +357,7 @@
               <h4> No records of Suppliers </h4>
             <% } else { %>
           <tr>
-            <th>Supplier No</th>
+
             <th>Supplier Name</th>
             <th>Business Name</th>
             <th>Action</th>
@@ -353,10 +367,11 @@
 
             <% suppliers.forEach(function(i){ %>
           <tr>
-                <td><%=i.intUserID%></td>
+
                 <td><%=i.strFname%>&nbsp;<%=i.strLname%></td>
                 <td><%=i.strBusinessName%></td>
-                <td><button data-dismiss="modal" data-supplierid="<%=i.intUserID%>" data-business="<%=i.strBusinessName%>" data-supplier="<%=i.strFname%> <%=i.strLname%>"  class="suppliersetter btn btn-info btn-sm">Select</button></td>
+                <td><button data-dismiss="modal"
+                   data-contract="<%=i.intContractNo%>" data-commission="<%=i.consignmentPrice%>" data-supplierid="<%=i.intUserID%>" data-business="<%=i.strBusinessName%>" data-supplier="<%=i.strFname%> <%=i.strLname%>"  class="suppliersetter large ui teal button">Select</button></td>
 
           </tr>
           <% }) %>
@@ -370,70 +385,13 @@
       <!-- /.box-body -->
 
        </div>
-        <div class="modal-footer">
-        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
+
     </div>
     <!-- /.modal-content -->
   </div>
   <!-- /.modal-dialog -->
  </div>
 
- <div class="modal fade" id="selectProduct">
-   <div class="modal-dialog">
-   <div class="modal-content">
-     <div class="modal-header">
-     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-       <span aria-hidden="true">&times;</span></button>
-     <h4 class="modal-title">Product List</h4>
-     </div>
-     <div class="modal-body">
-
-     <!-- /.box-header -->
-     <div class="box-body table-responsive">
-       <table id="example3" class="table table-bordered table-hover">
-         <thead>
-           <% if (products == null || products == undefined || products.length == 0){ %>
-              <h4> No records of products </h4>
-           <% } else { %>
-         <tr>
-           <th>Product No</th>
-           <th>Product Name</th>
-           <th>Brand</th>
-           <th>Action</th>
-         </tr>
-         </thead>
-         <tbody>
-
-           <% products.forEach(function(i){ %>
-         <tr>
-               <td><%=i.intProductNo%></td>
-               <td><%=i.strProductName%></td>
-               <td><%=i.strBrand%></td>
-               <td><button data-dismiss="modal" data-productid="<%=i.intProductNo%>" data-productname="<%=i.strProductName%>" data-pcode="<%=i.strProductCode%>" data-brand="<%=i.strBrand%>" class="productsetter btn btn-info btn-sm">Select</button></td>
-
-         </tr>
-         <% }) %>
-       <% } %>
-
-
-         </tbody>
-
-       </table>
-     </div>
-     <!-- /.box-body -->
-
-      </div>
-       <div class="modal-footer">
-       <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-       <button type="button" class="btn btn-primary">Save changes</button>
-       </div>
-   </div>
-   <!-- /.modal-content -->
- </div>
- <!-- /.modal-dialog -->
-</div>
 
 
 <div class="modal fade" id="selectInventory">
@@ -456,7 +414,7 @@
         <tr>
           <th style="width: 40%">Product</th>
           <th>Brand</th>
-          <th>Price</th>
+
           <th>Action</th>
         </tr>
         </thead>
@@ -464,27 +422,23 @@
 
           <% products.forEach(function(i){ %>
         <tr>
-              <td><%=i.strProductName%> <%=i.intSize%> <%=i.strUnitName%></td>
+              <td><%=i.strProductName%></td>
               <td><%=i.strBrand%></td>
-              <td>₱ <%=i.productPrice.toFixed(2)%></td>
-              <td><button data-dismiss="modal" data-inventory="<%=i.intInventoryNo%>" data-product="<%=i.strProductName%> <%=i.intSize%> <%=i.strUnitName%>" data-price="₱ <%=i.productPrice.toFixed(2)%>"  data-brand="<%=i.strBrand%>" class="inventorysetter btn btn-info btn-sm">Select</button></td>
+              <td><button data-dismiss="modal" data-inventory="<%=i.intProductNo%>" data-product="<%=i.strProductName%>"  data-brand="<%=i.strBrand%>" class="productsetter large ui teal button">Select</button></td>
 
         </tr>
         <% }) %>
       <% } %>
 
 
-        </tbody>
+    </tbody>
 
       </table>
     </div>
     <!-- /.box-body -->
 
      </div>
-      <div class="modal-footer">
-      <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-      <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+
   </div>
   <!-- /.modal-content -->
 </div>
@@ -511,28 +465,28 @@
   <!-- page script (new added) -->
 
   <script>
-  $(document).ready(function(){
+    $(document).ready(function(){
 
-    $('#pull-out').hide();
+      $('#pull-out').hide();
 
-    //Date range picker
-    $('#reservation').daterangepicker();
-    $('#search-expired').on('click',function(){
+      //Date range picker
+      $('#reservation').daterangepicker();
+      $('#search-expired').on('click',function(){
 
-      $.ajax({
-        url: '/inventory/searchExpired',
-        method: 'post',
-        datatype: 'json',
-        data: {o: $('#reservation').val()},
-        success: function(response,status,http){
-          if(response){
-            $('#tabl').load('/inventory/showExpired');
+        $.ajax({
+          url: '/inventory/searchExpired',
+          method: 'post',
+          datatype: 'json',
+          data: {o: $('#reservation').val()},
+          success: function(response,status,http){
+            if(response){
+              $('#tabl').load('/inventory/showExpired');
+            }
           }
-        }
-      })
+        })
 
-    });
-  })
+      });
+    })
 
   </script>
 
@@ -626,8 +580,6 @@
     })
   </script>
 
-
-
   <script>
     $(function () {
       $('#inventorytable').DataTable({
@@ -643,32 +595,48 @@
     })
   </script>
 
-  <script>
-    $('.productsetter').on('click', function(){
-      $('#add_pno').val($(this).data('productid'));
-      $('#add_pname').val($(this).data('productname'));
-      $('#add_brand').val($(this).data('brand'));
-      $('#add_pcode').val($(this).data('pcode'));
+
+<script>
+
+  $('#srp').on('keyup',function(){
+    var added = parseInt($(this).val()) + parseInt(($('#commission').val() / 100) * $(this).val());
+    $('#price').val(added);
+  })
+  $('#stockForm').submit(function(e){
+    e.preventDefault();
+
+    $.post('/inventory/addToStock', $('#stockForm').serialize(), function(data,status){
+      if(data=="yes"){
+        swal({title: 'Success!', text: '', type: 'success'}).then(()=>{
+          location.reload()
+        })
+      }else{
+        swal({
+          title: 'Warning!',
+          text: 'You already have the same record',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Show Record',
+          reverseButtons: true
+        }).then((result)=>{
+          if(result.value){
+            location.href= `/inventory/productInventory?product=${data}`;
+          }else{
+
+          }
+        })
+      }
     })
-  </script>
-
+  })
+</script>
 
   <script>
-    $('.inventorysetter').on('click',function(){
-      $('#ino_name').val($(this).data('inventory'))
+    $('.productsetter').on('click',function(){
+      $('#product_no').val($(this).data('inventory'))
       $('#product_name').val($(this).data('product'))
       $('#brand_name').val($(this).data('brand'))
-      $('#price').val($(this).data('price'))
 
-        <% num = "1000" %>
-        <% if (lastbatch == undefined || lastbatch == null){ %>
-
-        <% }else if(lastbatch.length == 0){ %>
-
-        <% }else{ %>
-        <%   num = parseInt(lastbatch[0].intBatchNo) + 1; %>
-        <% } %>
-        $('#batch').val("<%=num%>")
 
     })
   </script>
@@ -676,8 +644,9 @@
   <script>
     $('.suppliersetter').on('click', function(){
       $('#add_sno').val($(this).data('supplierid'));
-      $('#add_sname').val($(this).data('supplier'));
+      $('#add_cont').val($(this).data('contract'));
       $('#add_bname').val($(this).data('business'));
+      $('#commission').val($(this).data('commission'));
 
     })
   </script>

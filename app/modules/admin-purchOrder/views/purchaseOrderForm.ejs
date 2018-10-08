@@ -254,75 +254,7 @@
 <!-- /.modal-dialog -->
 </div>
 
-<div class="modal fade" id="addSupplier">
- <div class="modal-dialog">
- <div class="modal-content">
-   <div class="modal-header">
-   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-     <span aria-hidden="true">&times;</span></button>
-   <h4 class="modal-title">Supplier Information Form</h4>
-   </div>
-   <div class="modal-body">
 
-     <!-- form start -->
-     <form role="form" method="post" action="/purchaseOrder/addSupplier">
-       <div class="box-body">
-         <div class="form-group">
-           <div class="row">
-             <div class="col-xs-4">
-               <label for="fname">First Name</label>
-               <input type="text" class="form-control" required id="fname" name="fname" >
-             </div>
-             <div class="col-xs-4">
-               <label for="mname">Middle Name</label>
-               <input type="text" class="form-control"id="mname" name="mname" >
-             </div>
-             <div class="col-xs-4">
-               <label for="lname">Last Name</label>
-               <input type="text" class="form-control" required id="lname" name="lname" >
-             </div>
-           </div>
-         </div>
-         <div class="form-group">
-           <label for="bname">Business Name</label>
-           <input type="text" class="form-control" id="bname" required name="bname" placeholder="">
-         </div>
-         <div class="form-group">
-           <label for="address">Business Address</label>
-           <input type="text" class="form-control" id="address" name="address" required placeholder="">
-         </div>
-         <div class="form-group">
-           <div class="row">
-             <div class="col-xs-5">
-               <label for="mobile">Mobile No.</label>
-               <input type="text" class="form-control" id="mobile" name="mobile" >
-             </div>
-             <div class="col-xs-5">
-               <label for="phone">Phone No.</label>
-               <input type="text" class="form-control" id="phone" name="phone" >
-             </div>
-           </div>
-         </div>
-         <div class="checkbox">
-           <label>
-             <input type="checkbox">Add supplier to form
-           </label>
-         </div>
-       </div>
-       <!-- /.box-body -->
-
-
-     </div>
-     <div class="modal-footer">
-     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-     <button type="submit" class="btn btn-primary">Save</button>
-       </form>
-     </div>
- </div>
- <!-- /.modal-content -->
-</div>
-<!-- /.modal-dialog -->
-</div>
 
 <div class="modal fade" id="selectProduct">
  <div class="modal-dialog">
@@ -464,7 +396,7 @@ $(document).ready(function() {
                 type: 'success'
               }).then(()=>{
                 location.href = `/purchaseOrder/invoice?order=${response}`
-                
+
               })
             }
           })

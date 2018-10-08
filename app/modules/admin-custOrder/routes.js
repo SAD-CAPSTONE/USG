@@ -33,17 +33,41 @@ router.get('/', (req,res)=>{
 });
 
 router.post('/checkNewOrders',(req,res)=>{
-    db.query(`Select count(*) as qty from tblOrder where  tblOrder.intStatus = 0`, (err1,results1,fields1)=>{
-        if (err1) console.log(err1);
+  // pending orders
+  db.query(`Select tblOrder.intStatus as Stat,
+    tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+    join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where  tblOrder.intStatus = 0`,(err1,pending,fields1)=>{
+      if (err1) console.log(err1);
+      else{
+        // bank deposits
+        db.query(`Select * from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+          where intpaymentstatus = 0 and  depositSlip <> ""`,(err2,bank,fie1)=>{
+            if(err2) console.log(err2);
+            else{
+              // returned orders
+              db.query(`Select * from tblReturnOrder join tblOrder on tblReturnOrder.intOrderNo = tblOrder.intOrderNo
+                join tblUser on tblOrder.intUserID = tblUser.intUserID
+                where tblReturnOrder.intStatus = 0`,(err3,returns,fie3)=>{
+                  if(err3) console.log(err3);
+                  else{
+                    // cancelled orders
+                    db.query(`Select * from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
+                      where tblOrder.intStatus = 6 and (dateOrdered >= CURDATE() - INTERVAL 3 DAY)`,(err4,cancel,fie4)=>{
+                        if(err4) console.log(err4);
+                        else{
+                          var total_all = pending.length + bank.length + returns.length + cancel.length;
+                          res.send(`${total_all}`)
 
-        if (results1 == null || results1 == undefined){
-          res.send("no");
-        }else if(results1.length > 0){
-          res.send(results1);
-        }else{
-          res.send("no");
-        }
-  });
+                        }
+                      })
+                  }
+                })
+            }
+
+          })
+      }
+
+    });
 });
 
 router.get('/checkNewOrders',(req,res)=>{

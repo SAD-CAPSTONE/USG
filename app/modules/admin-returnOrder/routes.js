@@ -101,7 +101,14 @@ router.get('/assessForm',(req,res)=>{
               join tblUser on tblUser.intUserID = tblOrder.intUserID`,(err3,res3,fie3)=>{
                 if(err3) console.log(err3);
                 else{
-                  res.render('admin-returnOrder/views/assessOrderForm',{ret: res1, det: res2, cust: res3, moment: moment})
+                  db.query(`Select * from tblProductInventory join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductNo
+                    join tblUom on tblProductInventory.intUomno = tblUom.intUomno`,(err4,product,fie4)=>{
+                      if(err4) console.log(err4);
+                      else{
+                        res.render('admin-returnOrder/views/assessOrderForm',{product: product,ret: res1, det: res2, cust: res3, moment: moment})
+
+                      }
+                    })
 
                 }
               })
