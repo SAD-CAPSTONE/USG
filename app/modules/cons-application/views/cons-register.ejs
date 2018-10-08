@@ -54,12 +54,23 @@
     padding-top: 20;
   }
 
-  input:focus, select:focus {
+  input:focus, select:focus, a:focus {
     outline: none !important;
     box-shadow: none !important;
   }
-  select:focus {
+  /* select:focus {
     border-color: #ccc !important;
+  } */
+  a:focus {
+    border-color: #ccc !important;
+  }
+
+  input[type=button], button[type=submit] {
+    font-size: .9em !important;
+    font-weight: 400 !important;
+  }
+  button[type=submit] {
+    padding: 12px;
   }
 
   input, select {
