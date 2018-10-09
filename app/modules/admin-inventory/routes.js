@@ -362,7 +362,7 @@ router.post('/addToStock',(req,res)=>{
       db.query(`Select CONCAT_WS(' ',strProductName,strVariant,intSize,tblProductInventory.intUomNo) as exist, tblProductInventory.intInventoryNo, tblProductInventory.intProductNo from tblProductInventory
         join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductNo
         join tblUom on tblProductinventory.intUomno = tblUom.intUomno
-        where CONCAT_WS(' ',strProductName,strVariant,intSize,tblProductInventory.intUomNo) like 'Artisanal Dulong with Royal Jelly 720 1000%'
+        where CONCAT_WS(' ',strProductName,strVariant,intSize,tblProductInventory.intUomNo) like '${product_test}%'
         and tblProductInventory.intStatus = 1`,(err1,res1,fie1)=>{
           if(err1) console.log(err1);
           else{
