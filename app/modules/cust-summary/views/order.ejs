@@ -303,6 +303,7 @@
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <%- include('../../../templates/scripts-pdf.ejs') -%>
 <script type="text/javascript">
+  $('title').html(`Ultra Super Green - Order#${<%= orderOne.intOrderNo%>}`); 
   $(()=>{
     let txtcount1;
     function submitBtn(){

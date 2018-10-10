@@ -53,7 +53,7 @@
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <script type="text/javascript">
-
+  $('title').html("Ultra Super Green - FAQs");
   $('#faq-main-pane > div').on('click', 'span.question', function(){
     let block = $(this).parent().find('.answer-block');
     if (block.css('display') == 'none'){
@@ -65,6 +65,5 @@
       $(this).children().text('+')
     }
   });
-
 </script>
 <%- include('../../../templates/closer.ejs') -%>

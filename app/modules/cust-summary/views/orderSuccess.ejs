@@ -147,11 +147,13 @@
 <%- include('../../../templates/scripts-pdf.ejs') -%>
 
 <script type="text/javascript">
-$(() => {
-  let bankAccountNo = `<%= admin.bankAccountNo%>`,
-  businessBank = `<%= admin.businessBank%>`;
-  $('#download-file').val() == 2 ? download_voucher(bankAccountNo,businessBank) : 0
-});
+  $('title').html("Ultra Super Green - Order Success"); 
+
+  $(() => {
+    let bankAccountNo = `<%= admin.bankAccountNo%>`,
+    businessBank = `<%= admin.businessBank%>`;
+    $('#download-file').val() == 2 ? download_voucher(bankAccountNo,businessBank) : 0
+  });
 
 </script>
 

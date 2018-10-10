@@ -44,7 +44,7 @@
           <ol class="breadcrumb p-0 mb-0">
             <li class="breadcrumb-item"><a href="/store?cat=<%= thisProduct.intCategoryNo%>&sub=all&sort=1&page=1"><%= thisProduct.strCategory%></a></li>
             <li class="breadcrumb-item"><a href="/store?cat=<%= thisProduct.intCategoryNo%>&sub=<%= thisProduct.intSubCategoryNo%>&sort=1&page=1"><%= thisProduct.strSubCategory%></a></li>
-            <li class="breadcrumb-item active" aria-current="page"><%= thisProduct.strBrand%> <%= thisProduct.strProductName%></li>
+            <li class="breadcrumb-item active" aria-current="page" id="this-prod-name"><%= thisProduct.strBrand%> <%= thisProduct.strProductName%></li>
           </ol>
         </nav>
       </div>
@@ -419,6 +419,7 @@
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <script src="/customer-assets/scripts/bar-rating/dist/jquery.barrating.min.js"></script>
 <script type="text/javascript">
+  $('title').html(`Ultra Super Green - ${$(`#this-prod-name`).text()}`);
   $(()=>{
     itemQtyValidate(1,$(`#thisprod_stock span`).text())
     <% if (thisInventory[0].discount){ %>
