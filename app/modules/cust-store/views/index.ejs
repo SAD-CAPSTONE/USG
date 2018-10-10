@@ -186,13 +186,14 @@
       if (!results[2]) return '';
       return decodeURIComponent(results[2].replace(/\+/g, ' '));
     }
-    function pushParams(cat,sub,sort,min,max,rating,page){
+    function pushParams(cat,sub,sort,min,max,rating,search,page){
       cat != null ? 0 : cat = getParams('cat');
       sub ? 0 : sub = getParams('sub');
       sort ? 0 : sort = getParams('sort');
       min != null ? 0 : min = getParams('min');
       max != null ? 0 : max = getParams('max');
       rating ? 0 : rating = getParams('rating');
+      search ? 0 : search = getParams('search');
       page ? 0 : page = getParams('page');
       newUrl = `${thisUrl}`;
 
@@ -202,6 +203,7 @@
       newUrl = min != null && min != 'none' ? `${newUrl}&min=${min}` : newUrl
       newUrl = max != null && max != 'none' ? `${newUrl}&max=${max}` : newUrl
       newUrl = rating && rating != 'none' ? `${newUrl}&rating=${rating}` : newUrl
+      newUrl = search && search != 'none' ? `${newUrl}&search=${search}` : newUrl
       newUrl = page ? `${newUrl}&page=${page}` : `${newUrl}&page=1`
 
       window.history.pushState({path:newUrl},'',newUrl);
@@ -212,7 +214,7 @@
 
       let cat = getParams('cat'), sub = getParams('sub'), sort = getParams('sort'),
       min = getParams('min'), max = getParams('max'), rating = getParams('rating'),
-      page = getParams('page');
+      search = getParams('search'), page = getParams('page');
 
       if(!cat){
         newUrl = `${thisUrl}?cat=0`;
@@ -228,6 +230,7 @@
       min ? min = min.indexOf("'") == -1 ? min : null : 0
       max ? max = max.indexOf("'") == -1 ? max : null : 0
       rating ? rating = rating.indexOf("'") == -1 ? rating : 0 : 0
+      // search ? search = search.indexOf("'") == -1 ? search : '' : 0
       page ? page = page.indexOf("'") == -1 ? page : '1' : 0
 
       let list = $('#store-products'), catList = $('.categories-div'),
@@ -264,8 +267,9 @@
 
       function loadStore(){
         $.post('/storeRequest/load', {
-          cat: cat, sub: sub, sort: sort, min: min, max: max, rating: rating, page: page
+          cat: cat, sub: sub, sort: sort, min: min, max: max, rating: rating, search: search, page: page
         }).then((res) => {
+          console.log(res)
           // Url Update
           // cat = res.store.catNo
           // res.store.subcategories.length ? sub = res.store.subcategories.join(",") : 0
@@ -338,6 +342,12 @@
             filters.append(`
               <small class="filter-tag">Rating: ${res.store.rating} And Up
               <i id="rating" class="fa fa-times ml-1"></i></small>`)
+            : 0 ;
+
+          !res.store.search == '' ?
+            filters.append(`
+              <small class="filter-tag">Search: "${res.store.search}"
+              <i id="search" class="fa fa-times ml-1"></i></small>`)
             : 0 ;
 
           filters.children().length ?
@@ -449,7 +459,7 @@
             next: '>',
             last: '>>'
           })).on('page', function (event, page) {
-            pushParams(null,null,null,null,null,null,page);
+            pushParams(null,null,null,null,null,null,null,page);
             $("html, body").scrollTop(0);
             // $("html, body").animate({ scrollTop: 0 }, "slow");
             $('#getStore').click();
@@ -466,7 +476,7 @@
 
     $('.categories-div').on('click', '.categoryLink', function(){
       event.preventDefault();
-      pushParams($(this).attr('value'),'all',null,null,null,null,1);
+      pushParams($(this).attr('value'),'all',null,null,null,null,null,1);
       $('#getStore').click();
     });
 
@@ -496,13 +506,13 @@
       }
 
       sub ? 0 : sub = 'none'
-      pushParams(null,sub,null,null,null,null,1)
+      pushParams(null,sub,null,null,null,null,null,1)
 
       $('#getStore').click();
     })
 
     $('.sortBy').on('change', function(){
-      pushParams(null,null,this.value,null,null,null,1);
+      pushParams(null,null,this.value,null,null,null,null,1);
       $('#getStore').click();
     });
 
@@ -510,27 +520,30 @@
       let min = $(this).closest($('.price-range-div')).find($('.min-range')).val(),
       max = $(this).closest($('.price-range-div')).find($('.max-range')).val()
       parseInt(max) < parseInt(min) ?
-        pushParams(null,null,null,min,min,null,1):
-        pushParams(null,null,null,min,max,null,1)
+        pushParams(null,null,null,min,min,null,null,1):
+        pushParams(null,null,null,min,max,null,null,1)
       $('#getStore').click();
     });
 
     $('.stars').on('click', function(){
       event.preventDefault();
-      pushParams(null,null,null,null,null,$(this).attr('id'),1);
+      pushParams(null,null,null,null,null,$(this).attr('id'),null,1);
       $('#getStore').click();
     });
 
     $('#filters').on('click', 'i', function(){
       switch($(this).attr('id')){
         case 'category':
-          pushParams(0,'none',null,null,null,null,1);
+          pushParams(0,'none',null,null,null,null,null,1);
           break;
         case 'price':
-          pushParams(null,null,null,'none','none',null,1);
+          pushParams(null,null,null,'none','none',null,null,1);
           break;
         case 'rating':
-          pushParams(null,null,null,null,null,'none',1);
+          pushParams(null,null,null,null,null,'none',null,1);
+          break;
+        case 'search':
+          pushParams(null,null,null,null,null,null,'none',1);
           break;
         default:
           let sub = allSub, array = sub.split(','), index = array.indexOf($(this).attr('id'));
@@ -538,7 +551,7 @@
           sub = array.join(',');
 
           sub ? 0 : sub = 'none'
-          pushParams(null,sub,null,null,null,null,1);
+          pushParams(null,sub,null,null,null,null,null,1);
           break;
       }
       $('#getStore').click();
@@ -546,7 +559,7 @@
 
     $('#filterClearDiv').on('click', 'a', function(){
       event.preventDefault();
-      pushParams(0,'none',null,'none','none','none',1);
+      pushParams(0,'none',null,'none','none','none','none',1);
       $('#getStore').click();
     });
 

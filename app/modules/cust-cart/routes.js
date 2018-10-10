@@ -351,4 +351,18 @@ router.post('/package', (req, res)=>{
   });
 });
 
+router.post('/searchbar', (req, res)=>{
+  db.query(`SELECT CONCAT(strBrand, ' ', strProductName)product FROM tblproductlist
+    INNER JOIN tblproductbrand USING (intBrandNo) WHERE CONCAT(strBrand, ' ', strProductName) LIKE ? LIMIT 5`,
+    [`%${req.body.term}%`], (err,results,fields)=>{
+    if (err) console.log(err);
+    let terms = results.reduce((temp, data)=>{
+      temp.push(data.product)
+      return temp
+    }, [])
+    console.log(terms)
+    res.send({terms: terms})
+  });
+});
+
 exports.cart = router;
