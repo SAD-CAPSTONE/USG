@@ -103,7 +103,13 @@ router.get('/', popularProducts, newProducts, packages, (req,res)=>{
   });
 });
 router.get('/faq', (req,res)=>{
-  res.render('cust-home/views/faq', {thisUser: req.user});
+  db.query(`SELECT * FROM tblfaq WHERE intStatus= 1`, function (err,  results, fields) {
+    if (err) console.log(err);
+    res.render('cust-home/views/faq', {
+      thisUser: req.user,
+      faqs: results
+    });
+  });
 });
 
 exports.home = router;
