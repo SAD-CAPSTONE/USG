@@ -40,7 +40,7 @@
               <table id="example2" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                  <th>Code</th>
+                  <th style="width: 15%"></th>
                   <th style="width: 20%">Product Name</th>
                   <th style="width: 20%">Description</th>
                   <th style="width: 10%">Status</th>
@@ -53,14 +53,14 @@
                 <% }else { %>
                   <% re.forEach(function(i){ %>
                     <tr>
-                    <td><%=i.strProductCode%></td>
+                    <td><center><img = width="40px" height="40px" src="/assets/images/products/<%=i.strProductPicture%>"></center></td>
                     <td><%=i.strProductName%></td>
                     <td style=" white-space: nowrap;max-width: 10px; overflow: hidden; text-overflow: ellipsis;"><%=i.strDescription%></td>
                     <td>
                     <% if (i.stats == 1){ %>
-                      <a class="ui green circular label"></a>
+                      <a class="ui green circular label">Active</a>
                     <% }else{ %>
-                      <a class="ui red circular label">2</a>
+                      <a class="ui red circular label">Inactive</a>
                     <% } %>
 
                     </td>

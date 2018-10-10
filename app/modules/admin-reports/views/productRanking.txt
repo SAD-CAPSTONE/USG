@@ -1,0 +1,123 @@
+<br>
+<h3 align="center">Product Ranking</h3>
+<br>
+
+<div class="row">
+  <!-- Ranking by value -->
+  <div class="col-sm-6">
+    <div class="box">
+      <div class="box-header with-border">
+        <h3 class="box-title">Total Value</h3>
+      </div>
+
+      <div class="box-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <table class="table no-margin">
+                <thead>
+                  <tr>
+                    <th>SKU</th>
+                    <th>Product Name</th>
+                    <th >Cost per item</th>
+                    <th>Total Value</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="box-footer clearfix">
+
+        <a href="javascript:void(0)" class="large ui teal button pull-right">View All</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ranking by most popular -->
+
+  <div class="col-sm-6">
+    <div class="box">
+      <div class="box-header with-border">
+        <h3 class="box-title">Most Popular</h3>
+      </div>
+
+      <div class="box-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <table class="table no-margin">
+                <thead>
+                  <tr>
+                    <th>SKU</th>
+                    <th>Product Name</th>
+                    <th>Quantity Bought</th>
+                    <th>Sales</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    <td>1000</td>
+                    <td>Gatas Kalabaw Choco 1000ml</td>
+                    <td>10</td>
+                    <td>Php 2,000.00</td>
+                  </tr>
+                  <tr>
+                    <td>1000</td>
+                    <td>Gatas Kalabaw Choco 1000ml</td>
+                    <td>10</td>
+                    <td>Php 2,000.00</td>
+                  </tr>
+                  <tr>
+                    <td>1000</td>
+                    <td>Gatas Kalabaw Choco 1000ml</td>
+                    <td>10</td>
+                    <td>Php 2,000.00</td>
+                  </tr>
+                  <tr>
+                    <td>1000</td>
+                    <td>Gatas Kalabaw Choco 1000ml</td>
+                    <td>10</td>
+                    <td>Php 2,000.00</td>
+                  </tr>
+                  <tr>
+                    <td>1000</td>
+                    <td>Gatas Kalabaw Choco 1000ml</td>
+                    <td>10</td>
+                    <td>Php 2,000.00</td>
+                  </tr>
+                  <tr>
+                    <td>1000</td>
+                    <td>Gatas Kalabaw Choco 1000ml</td>
+                    <td>10</td>
+                    <td>Php 2,000.00</td>
+                  </tr>
+                  <tr>
+                    <td>1000</td>
+                    <td>Gatas Kalabaw Choco 1000ml</td>
+                    <td>10</td>
+                    <td>Php 2,000.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="box-footer clearfix">
+
+        <a href="javascript:void(0)" class="large ui teal button pull-right">View All</a>
+      </div>
+    </div>
+
+  </div>
+</div>

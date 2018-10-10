@@ -144,7 +144,7 @@
                         <td>
                           <center>
                             <a href="/customerOrder/invoice?order=<%=i.intOrderNo%>"><button class="large ui button">View Invoice</button></a>
-                            <button class="large ui teal button">Change Status</button>
+                            <button data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status ui teal button">Change Status</button>
                             <button class="large ui orange button">Message</button>
                           </center>
                       </td>
@@ -196,7 +196,7 @@
                 </div>
               </div>
 
-              <!-- Order Returns -->
+              <!-- Order cancelled  -->
               <div class="tab-pane" id="cancelledorders">
                 <h5 class="text-green">Note: These are only cancelled orders from 3 days ago until now.</h5>
 
@@ -269,6 +269,32 @@
     </div>
   </div>
 
+  <div class="modal fade" id="change_status">
+    <div class="modal-dialog">
+  		<div class="modal-content">
+  		  <div class="modal-header">
+  			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  			  <span aria-hidden="true">&times;</span></button>
+  			<h4 class="modal-title"></h4>
+  		  </div>
+        <form id="change_form">
+    		  <div class="modal-body">
+            <label >Payment Status:</label>
+            <input type="hidden" class="order_no" name="order_no">
+            <select class="form-control" id="payment_status" name="payment_status">
+              <option disabled value="0">Awaiting Payment</option>
+              <option value="1">Paid</option>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button data-dismiss="modal" class="large ui button pull-left">Back</button>
+            <button type="submit" class="large ui teal button pull-right">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
 
 <%- include('../../../templates/admin-aside.ejs') -%>
 
@@ -280,6 +306,7 @@
 
 <!-- page script (new added) -->
 
+
 <script>
   $('.deposit').on('click',function(){
     $('#image').attr('src', `/customer-assets/images/userImages/bankslips/${$(this).data('name')}`);
@@ -289,7 +316,23 @@
     location.href = `/returnOrder/assessForm?q=${$(this).data('no')}`;
   });
 
-  
+  $('#change_form').submit(function(e){
+    e.preventDefault();
+    $.post('/customerPayment/changeStatus',$('#change_form').serialize(), function(data,status){
+      if(data=="yes"){
+        swal({title: 'Success!', text: 'You changed the status of this order', type: 'success'}).then(()=>{
+          location.reload()
+        })
+      }else{
+
+      }
+    })
+  })
+
+  $('.change_status').on('click',function(){
+    $('.order_no').val($(this).data('no'))
+    $('#payment_status').val($(this).data('status'))
+  })
 
   <% var all = ((pending.length + bank.length + returns.length + cancel.length) == 0) ? "" : (pending.length + bank.length + returns.length + cancel.length) %>
 

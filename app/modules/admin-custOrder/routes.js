@@ -385,12 +385,18 @@ function paid(req,res){
       db.query(`Insert into tblSales (intSalesNo, intOrderNo, amount, intStatus) values("${salesno}", "${req.body.orderNo}",${req.body.total},1)`,(e2,r2,f2)=>{
         if(e2){db.rollback(function(){console.log(e2); res.send("no");})}
         else{
-          db.commit(function(e3){
-            if(e3) {db.rollback(function(){console.log(e3); res.send("no");})}
+          db.query(`Update tblOrder set paymentDate = NOW() where intOrderNo = "${req.body.orderNo}"`,(e4,r4,f4)=>{
+            if(e4) console.log(e4);
             else{
-              res.send("yes");
+              db.commit(function(e3){
+                if(e3) {db.rollback(function(){console.log(e3); res.send("no");})}
+                else{
+                  res.send("yes");
+                }
+              })
             }
           })
+
         }
       });
     }

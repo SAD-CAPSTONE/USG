@@ -289,8 +289,9 @@
                   <thead>
                     <tr>
                       <th>Product Name</th>
-                      <th>Supplier</th>
+
                       <th>Size</th>
+                      <th>Supplier</th>
                       <th>Quantity</th>
                       <th>Critical Limit</th>
 
@@ -304,9 +305,10 @@
                     <% }else{ %>
                       <% critical.forEach(function(i){ %>
                         <tr>
-                          <td><%=i.strProductName%></td>
-                          <td><%=i.strBusinessName%></td>
+                          <td><%=i.strProductName%> <%=i.strVariant%></td>
+
                           <td><%=i.intSize%> <%=i.strUnitName%></td>
+                          <td><%=i.strBusinessName%></td>
                           <td><%=i.intQuantity%></td>
                           <td><%=i.intCriticalLimit%></td>
 
