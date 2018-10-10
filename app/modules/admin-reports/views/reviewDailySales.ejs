@@ -20,7 +20,7 @@
       <div class="col-sm-12">
         <div class="box">
           <div class="box-header with-border">
-            <h3 class="box-title"><%= headerMonth%> <%= headerYear%> Report</h3>
+            <h3 class="box-title"><%= date%> Report</h3>
           </div>
 
           <div class="box-body">
@@ -32,9 +32,10 @@
                   <table id="example3" class="table no-margin">
                     <thead>
                       <tr>
-                        <th>Date</th>
-                        <th>Total Revenue</th>
-                        <th style="width: 20%">Products Sold</th>
+                        <th>No</th>
+                        <th>Product Name</th>
+                        <th>Quantity Bought</th>
+                        <th style="width: 20%">Sales</th>
 
                       </tr>
                     </thead>
@@ -42,9 +43,10 @@
                     <tbody>
                       <% sales.forEach((data)=>{ %>
                         <tr>
-                          <td><%= data.date%></td>
-                          <td>Php <%= data.total%></td>
+                          <td><%= data.intProductNo%></td>
+                          <td><%= data.strBrand%> <%= data.strProductName%></td>
                           <td><%= data.qty%></td>
+                          <td>Php <%= data.total%></td>
                         </tr>
                       <% }) %>
                     </tbody>

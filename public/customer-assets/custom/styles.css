@@ -210,6 +210,9 @@ textarea {
   font-weight: 500 !important;
 }
 
+.fs-1-1em {
+  font-size: 1.1em !important;
+}
 .fs-1em {
   font-size: 1em !important;
 }

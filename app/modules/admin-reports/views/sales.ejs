@@ -189,7 +189,6 @@
             </div>
           </div>
           <div class="box-footer clearfix">
-
             <a href="javascript:void(0)" class="large ui teal button pull-right">View All</a>
           </div>
         </div>
@@ -513,7 +512,7 @@
         $(`#annual-div select`).val(config.annual)
 
         $(`#annual-div table tbody`).html('')
-        annual ? 0 :
+        annual[0] ? 0 :
           $(`#annual-div table tbody`).append(`
             <tr>
               <td>No Results</td>
@@ -525,7 +524,7 @@
               <td>${data.monthname}</td>
               <td>Php ${data.total}</td>
               <td>${data.qty}</td>
-              <td><a href="/reports/reviewMonthlySales"><button class="large ui green button">Review</button></a></td>
+              <td><a href="/reports/reviewMonthlySales?month=${data.monthname}&year=${config.annual}"><button class="large ui green button">Review</button></a></td>
             </tr>
             `);
         });
@@ -534,12 +533,16 @@
 
         $(`#daily-div input[type=date]`).val(config.daily)
         $(`#daily-div table tbody`).html('')
-        daily ? 0 :
+        daily[0] ? 0 :
           $(`#daily-div table tbody`).append(`
             <tr>
               <td>No Results</td>
             </tr>
             `)
+        daily[0] ?
+          $(`#daily-div .box-footer a`).css('display','block') :
+          $(`#daily-div .box-footer a`).css('display','none')
+        $(`#daily-div .box-footer a`).attr(`href`,`/reports/reviewDailySales?date=${config.daily}`)
         daily.forEach((data)=>{
           $(`#daily-div table tbody`).append(`
             <tr>
@@ -550,7 +553,6 @@
             </tr>
             `);
         });
-
 
       }).catch((err) => {
         console.log(err)
@@ -571,6 +573,18 @@
     })
 
     loadSalesReport();
+
+    if (window.history && window.history.pushState) {
+
+      $(window).on('popstate', function() {
+        annual = getParams('annual')
+        daily = getParams('daily')
+        annual && daily ?
+          window.location.href != oldUrl ? loadSalesReport() : 0
+          : window.location.replace(document.referrer)
+      });
+
+    }
 
   })
 
