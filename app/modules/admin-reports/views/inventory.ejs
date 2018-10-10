@@ -46,75 +46,42 @@
     </div>
     <!-- /.row -->
 
-    <br>
-    <h3 align="center">Product Ranking</h3>
-    <br>
-
+    <!-- Inventory Transactions -->
     <div class="row">
-      <!-- Ranking by value -->
-      <div class="col-sm-6">
+      <div class="col-sm-12">
         <div class="box">
           <div class="box-header with-border">
-            <h3 class="box-title">Total Value</h3>
+            <h3 class="box-title">Inventory Transactions</h3>
           </div>
 
           <div class="box-body">
             <div class="row">
               <div class="col-md-12">
+                <div class="form-group">
+                  <label>Select date range:</label>
+
+                  <div class="input-group">
+                    <div class="input-group-addon">
+                      <i class="fa fa-calendar"></i>
+                    </div>
+                    <input type="text" class="form-control" id="range">
+
+                  </div>
+                </div>
                 <div class="table-responsive">
-                  <table class="table no-margin">
+
+                  <table id="transactions" class="table no-margin">
                     <thead>
                       <tr>
-                        <th>SKU</th>
+                        <th>Date</th>
                         <th>Product Name</th>
-                        <th >Cost per item</th>
-                        <th>Total Value</th>
+                        <th>Transaction</th>
+
                       </tr>
                     </thead>
 
                     <tbody>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
+
                     </tbody>
                   </table>
                 </div>
@@ -126,92 +93,55 @@
 
             <a href="javascript:void(0)" class="large ui teal button pull-right">View All</a>
           </div>
-        </div>
-
-      </div>
-
-      <!-- Ranking by most popular -->
-
-      <div class="col-sm-6">
-        <div class="box">
-          <div class="box-header with-border">
-            <h3 class="box-title">Most Popular</h3>
-          </div>
-
-          <div class="box-body">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="table-responsive">
-                  <table class="table no-margin">
-                    <thead>
-                      <tr>
-                        <th>SKU</th>
-                        <th>Product Name</th>
-                        <th>Quantity Bought</th>
-                        <th>Sales</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-              </div>
-            </div>
-          </div>
-          <div class="box-footer clearfix">
-
-            <a href="javascript:void(0)" class="large ui teal button pull-right">View All</a>
-          </div>
-        </div>
-
       </div>
     </div>
 
-    <hr>
+    <div class="row">
+
+      <!-- Not moving products -->
+      <div class="col-sm-12">
+        <div class="col-sm-6">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title">Not moving products</h3>
+            </div>
+
+            <div class="box-body">
+              <div class="row">
+
+                  <div class="table-responsive">
+                    <table class="table no-margin">
+                      <thead>
+                        <tr>
+
+                          <th>Product Name</th>
+                          <th>Remaining Stock</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+
+                      </tbody>
+                    </table>
+                  </div>
+
+
+              </div>
+            </div>
+            <div class="box-footer clearfix">
+
+              <a href="javascript:void(0)" class="large ui teal button pull-right">View All</a>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+
+
     <div class="row">
 
       <!-- Best Seller Products -->
@@ -307,6 +237,11 @@
 
 
 <script src="/assets/admin/bower_components/chart.js/dist/Chart.js"></script>
+<!-- Moment -->
+<script src="/assets/admin/bower_components/moment/min/moment.min.js"></script>
+<!-- Date range picker -->
+<script src="/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+
 
 
 <script>
@@ -384,6 +319,25 @@
 $('#title').html("USG | Inventory Reports");
 $(".treeview a:contains('Reports')").parent().addClass("active");
 $(".navi a:contains('Inventory')").parent().addClass("active");
+</script>
+
+<script>
+
+  //Date range picker
+  $('#range').daterangepicker();
+
+  $(function () {
+    $('#transactions').DataTable({
+      'paging'      : false,
+      'lengthChange': false,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
 </script>
 
 
