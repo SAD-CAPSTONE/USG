@@ -96,7 +96,7 @@
       </div>
     </div>
 
-    <div class="row">
+    <div id="notMovingDiv" class="row">
 
       <!-- Not moving products -->
       <div class="col-sm-12">
@@ -108,6 +108,19 @@
 
             <div class="box-body">
               <div class="row">
+                <div class="col-md-12">
+
+                  <div class="form-group">
+                    <label>Select date range:</label>
+
+                    <div class="input-group">
+                      <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                      <input type="text" class="form-control" id="rangeNotMoving">
+
+                    </div>
+                  </div>
 
                   <div class="table-responsive">
                     <table class="table no-margin">
@@ -125,8 +138,7 @@
                       </tbody>
                     </table>
                   </div>
-
-
+                </div>
               </div>
             </div>
             <div class="box-footer clearfix">
@@ -286,8 +298,6 @@
       }
   });
 
-
-
   var donut = document.getElementById("donutChart");
   var myDoughnutChart = new Chart(donut, {
       type: 'doughnut',
@@ -312,19 +322,17 @@
   });
 </script>
 
-
-
-
 <script>
-$('#title').html("USG | Inventory Reports");
-$(".treeview a:contains('Reports')").parent().addClass("active");
-$(".navi a:contains('Inventory')").parent().addClass("active");
+  $('#title').html("USG | Inventory Reports");
+  $(".treeview a:contains('Reports')").parent().addClass("active");
+  $(".navi a:contains('Inventory')").parent().addClass("active");
 </script>
 
 <script>
 
   //Date range picker
   $('#range').daterangepicker();
+  $('#rangeNotMoving').daterangepicker();
 
   $(function () {
     $('#transactions').DataTable({
@@ -340,6 +348,57 @@ $(".navi a:contains('Inventory')").parent().addClass("active");
   })
 </script>
 
+<script type="text/javascript">
+  let oldUrl = window.location.href
+  $(()=>{
+    const thisUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+    function getParams(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+    function pushParams(notMoveDate){
+      notMoveDate != null ? 0 : notMoveDate = getParams('notMoveDate');
+      newUrl = `${thisUrl}`;
+
+      newUrl = notMoveDate ? `${newUrl}?notMoveDate=${notMoveDate}` : `${newUrl}?notMoveDate=now`;
+
+      window.history.pushState({path:newUrl},'',newUrl);
+    }
+
+    function loadInvReport(){
+      oldUrl = window.location.href
+
+      let notMoveDate = getParams('notMoveDate');
+
+      if(!notMoveDate){
+        newUrl = `${thisUrl}?notMoveDate=now`;
+        window.history.pushState({path:newUrl},'',newUrl);
+        notMoveDate = 'now';
+      }
+
+      notMoveDate ? notMoveDate = notMoveDate.indexOf("'") == -1 ? notMoveDate : 'now' : 0;
+
+      $.post(`/reports/inventory/notMoveDate`, {
+        notMoveDate: notMoveDate
+      }).then((res) => {
+        console.log(res)
+      }).catch((err)=>{
+        console.log(err)
+      })
+
+    }
+
+
+    loadInvReport()
+
+  })
+
+</script>
 
 </body>
 </html>

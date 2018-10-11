@@ -5,6 +5,14 @@ const moment = require('moment');
 const priceFormat = require('../cust-0extras/priceFormat');
 const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
+function sizeString(obj){
+  let curSize = ``;
+  obj.strVariant ? curSize+= `${obj.strVariant}`: 0
+  obj.strVariant && obj.intSize ? curSize+= ` - `: 0
+  obj.intSize ? curSize+= `${obj.intSize}`: 0
+  obj.strUnitName ? curSize+= ` ${obj.strUnitName}`: 0
+  return curSize;
+}
 function now(req,res,next){
   db.query(`SELECT curdate()currentDate, YEAR(curdate())currentYear`, (err, results, fields) => {
     if (err) console.log(err);
@@ -101,7 +109,21 @@ router.get('/reviewDailySales', datesAvailable, (req,res)=>{
 })
 
 router.get('/inventory',(req,res)=>{
-  res.render('admin-reports/views/inventory');
+  db.query(`SELECT * FROM(SELECT tblproductinventory.intInventoryNo, strBrand, strProductName,
+  	strVariant, intSize, strUnitName, (tblproductinventory.intQuantity - intReservedItems)stock, A.intSalesNo
+  	FROM tblproductlist INNER JOIN tblproductbrand USING(intBrandNo) INNER JOIN tblproductinventory USING(intProductNo)
+  	INNER JOIN tbluom USING(intUomNo) LEFT JOIN tblorderdetails USING(intInventoryNo) LEFT JOIN (
+		SELECT * FROM tblsales WHERE intStatus = 1)A USING(intOrderNo)
+  	GROUP BY tblproductinventory.intInventoryNo)B WHERE B.intSalesNo IS NULL`, (err, results, fields) => {
+    if (err) console.log(err);
+    if (results[0]){
+      results.map( obj => obj.intSize = sizeString(obj) );
+    }
+    console.log(results)
+    res.render('admin-reports/views/inventory',{
+      products: results
+    });
+  });
 });
 
 router.get('/damage',(req,res)=>{
@@ -156,6 +178,24 @@ router.post('/sales/load', now, yearsAvailable, (req,res)=>{
   });
 
 })
+router.post('/inventory/notMoveDate',(req,res)=>{
+  db.query(`SELECT * FROM(SELECT tblproductinventory.intInventoryNo, strBrand, strProductName,
+  	strVariant, intSize, strUnitName, (tblproductinventory.intQuantity - intReservedItems)stock, A.intSalesNo
+  	FROM tblproductlist INNER JOIN tblproductbrand USING(intBrandNo) INNER JOIN tblproductinventory USING(intProductNo)
+  	INNER JOIN tbluom USING(intUomNo) LEFT JOIN tblorderdetails USING(intInventoryNo) LEFT JOIN (
+		SELECT * FROM tblsales WHERE intStatus = 1)A USING(intOrderNo)
+  	GROUP BY tblproductinventory.intInventoryNo)B WHERE B.intSalesNo IS NULL`, (err, results, fields) => {
+    if (err) console.log(err);
+    if (results[0]){
+      results.map( obj => obj.intSize = sizeString(obj) );
+    }
+    console.log(req.body.notMoveDate)
+    console.log(results)
+    res.send({
+      products: results
+    });
+  });
+});
 
 // <%- include('../../../templates/admin-navbar.ejs') -%>
 
