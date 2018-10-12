@@ -93,7 +93,6 @@
           </div>
 
           <div class="box-body">
-            <br>
             <div class="row">
               <!-- <div class="col-sm-4">
                 <label>Sort by:</label>
@@ -114,10 +113,9 @@
                 <!-- <button class="large ui teal button apply-btn">Apply Changes</button> -->
 
                 <button class="large ui  button">Print</button>
-                <button class="large ui  button">Excel</button>
+                <a id="annual-export-link"><button class="large ui button" disabled>Excel</button></a>
               </div>
             </div>
-            <br>
             <div class="row">
               <div class="col-sm-12">
 
@@ -163,7 +161,7 @@
                 <input type="date" class="form-control">
               </div>
               <div class="col-sm-3">
-                <!-- <button class="large ui teal button apply-btn">Apply changes</button> -->
+                <a id="daily-export-link"><button class="large ui button" disabled>Excel</button></a>
               </div>
             </div>
             <div class="row">
@@ -511,12 +509,19 @@
         $(`#annual-div select`).val(config.annual)
 
         $(`#annual-div table tbody`).html('')
-        annual[0] ? 0 :
+        if (annual[0]){
+          $(`#annual-export-link`).attr('href','/reports/salesAnnualExport?year=2018')
+          $(`#annual-export-link > button`).removeAttr('disabled')
+        }
+        else{
+          $(`#annual-export-link > button`).attr('disabled','disabled')
           $(`#annual-div table tbody`).append(`
             <tr>
               <td>No Results</td>
             </tr>
             `)
+        }
+
         annual.forEach((data)=>{
           $(`#annual-div table tbody`).append(`
             <tr>
@@ -530,17 +535,24 @@
 
         // DAILY
 
+        // $(`#daily-div input[type=date]`).removeAttr('readonly')
+
         $(`#daily-div input[type=date]`).val(config.daily)
         $(`#daily-div table tbody`).html('')
-        daily[0] ? 0 :
+        if (daily[0]){
+          $(`#daily-export-link`).attr('href',`/reports/salesDailyExport?date=${config.daily}`)
+          $(`#daily-export-link > button`).removeAttr('disabled')
+          $(`#daily-div .box-footer a`).css('display','block')
+        }
+        else{
+          $(`#daily-export-link > button`).attr('disabled','disabled')
           $(`#daily-div table tbody`).append(`
             <tr>
               <td>No Results</td>
             </tr>
             `)
-        daily[0] ?
-          $(`#daily-div .box-footer a`).css('display','block') :
           $(`#daily-div .box-footer a`).css('display','none')
+        }
         $(`#daily-div .box-footer a`).attr(`href`,`/reports/reviewDailySales?date=${config.daily}`)
         daily.forEach((data)=>{
           $(`#daily-div table tbody`).append(`
@@ -559,14 +571,12 @@
 
     }
 
-    // $(`#annual-div .apply-btn`).click(function(){
-    // })
-
     $(`#annual-div select`).change(function(){
       pushParams($(`#annual-div select`).val())
       loadSalesReport();
     })
     $(`#daily-div input[type=date]`).change(function(){
+      // $(`#daily-div input[type=date]`).attr('readonly','readonly')
       pushParams(null,$(`#daily-div input[type=date]`).val())
       loadSalesReport();
     })
@@ -586,6 +596,11 @@
     }
 
   })
+
+</script>
+
+<script type="text/javascript">
+
 
 </script>
 

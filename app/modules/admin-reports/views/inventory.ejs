@@ -96,11 +96,11 @@
       </div>
     </div>
 
-    <div id="notMovingDiv" class="row">
+    <div class="row">
 
       <!-- Not moving products -->
       <div class="col-sm-12">
-        <div class="col-sm-6">
+        <div id="notMovingDiv" class="col-sm-6">
           <div class="box">
             <div class="box-header with-border">
               <h3 class="box-title">Not moving products</h3>
@@ -150,7 +150,7 @@
 
         </div>
 
-        <div class="col-sm-6">
+        <div id="totalValueDiv" class="col-sm-6">
           <div class="box">
             <div class="box-header with-border">
               <h3 class="box-title">Total Value of Products</h3>
@@ -158,7 +158,7 @@
 
             <div class="box-body">
               <div class="row">
-
+                <div class="col-md-12">
                   <div class="table-responsive">
                     <table class="table no-margin">
                       <thead>
@@ -171,17 +171,28 @@
                       </thead>
 
                       <tbody>
-
+                        <% totalValueProducts.forEach((data)=>{ %>
+                          <tr>
+                            <td><%= data.strBrand%> <%= data.strProductName%> <%= data.intSize%></td>
+                            <td><%= data.stock%></td>
+                            <td><%= data.totalValue%></td>
+                          </tr>
+                        <% }) %>
+                        <% if(totalValueProducts){ %>
+                          <tr>
+                            <td>No Result</td>
+                          </tr>
+                        <% } %>
                       </tbody>
                     </table>
                   </div>
-
+                </div>
 
               </div>
             </div>
             <div class="box-footer clearfix">
 
-              <a href="javascript:void(0)" class="large ui teal button pull-right">View All</a>
+              <a href="/reports/inventory/totalValues" class="large ui teal button pull-right">View All</a>
             </div>
           </div>
 
@@ -189,8 +200,6 @@
         </div>
       </div>
     </div>
-
-
 
     <div class="row">
 
@@ -268,7 +277,6 @@
         </div>
       </div>
     </div>
-
 
   </section>
   <!-- /.content -->
@@ -424,17 +432,41 @@
       $.post(`/reports/inventory/notMoveDate`, {
         notMoveDate: notMoveDate
       }).then((res) => {
-        console.log(res)
+        $(`#notMovingDiv table tbody`).html(``);
+        res.products.forEach((data)=>{
+          $(`#notMovingDiv table tbody`).append(`
+            <tr>
+              <td>${data.strBrand} ${data.strProductName} ${data.intSize}</td>
+              <td>${data.stock}</td>
+            </tr>`);
+        });
+        res.products[0] ? 0 :
+          $(`#notMovingDiv table tbody`).append(`
+            <tr>
+              <td>No Results</td>
+            </tr>`);
+        $('#rangeNotMoving').val(`${res.notMoveDate[0]} - ${res.notMoveDate[1]}`)
+
+        res.products[0] ?
+          $(`#notMovingDiv .box-footer a`).css('display','block') :
+          $(`#notMovingDiv .box-footer a`).css('display','none')
+        $(`#notMovingDiv .box-footer a`).attr(`href`,`/reports/inventory/notMoving?date=${notMoveDate}`)
+
       }).catch((err)=>{
         console.log(err)
       })
 
     }
 
+    $('#rangeNotMoving').change(function(){
+      pushParams($(this).val())
+      loadInvReport()
+    });
 
     loadInvReport()
 
   })
+
 
 </script>
 

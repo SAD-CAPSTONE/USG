@@ -1,16 +1,5 @@
 <%- include('../../../templates/admin-navbar.ejs') -%>
 
-<style>
-  .special-position-1 {
-    position: absolute;
-    /* left: 180px; */
-  }
-  #example3_length {
-    position: absolute;
-    left: 75px;
-  }
-</style>
-
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -31,44 +20,31 @@
       <div class="col-sm-12">
         <div class="box">
           <div class="box-header with-border">
-            <h3 class="box-title"><%= date%> Report</h3>
+            <h3 class="box-title">Total Values of Products</h3>
           </div>
 
           <div class="box-body">
 
             <div class="row">
               <div class="col-sm-12">
-                <div class="special-position-1">
-                  <% if(sales[0]){ %>
-                    <a href="/reports/salesDailyExport?date=<%= queryDate%>">
-                      <button class="large ui button">Excel</button>
-                    </a>
-                  <% }else{ %>
-                    <a>
-                      <button class="large ui button" disabled>Excel</button>
-                    </a>
-                  <% } %>
-                </div>
 
                 <div class="table-responsive">
                   <table id="example3" class="table no-margin">
                     <thead>
                       <tr>
-                        <th>No</th>
                         <th>Product Name</th>
-                        <th>Quantity Bought</th>
-                        <th style="width: 20%">Sales</th>
+                        <th>Stock Quantity</th>
+                        <th style="width: 20%">Total Value</th>
 
                       </tr>
                     </thead>
 
                     <tbody>
-                      <% sales.forEach((data)=>{ %>
+                      <% totalValueProducts.forEach((data)=>{ %>
                         <tr>
-                          <td><%= data.intProductNo%></td>
-                          <td><%= data.strBrand%> <%= data.strProductName%></td>
-                          <td><%= data.qty%></td>
-                          <td>Php <%= data.total%></td>
+                          <td><%= data.strBrand%> <%= data.strProductName%> <%= data.intSize%></td>
+                          <td><%= data.stock%></td>
+                          <td><%= data.totalValue%></td>
                         </tr>
                       <% }) %>
                     </tbody>
