@@ -1,0 +1,67 @@
+<%- include('../../../templates/consignor-dashboard.ejs') -%>
+
+<div id="consigner" class="container">
+  <div class="row">
+    <div class="col">
+      <div id="main-content">
+          <div class="col-lg-12">
+              <div class="card-title">
+                  <h4>Payment Receipts</h4>
+              </div>
+
+
+              <div class="card-body">
+
+                <!-- <a href="/consRequests/newRequest"><button type="button" class="btn btn-success" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">New Request</button></a> -->
+
+                <div class="table-responsive">
+                  <table class="table">
+                      <thead>
+                          <tr>
+                              <th>No</th>
+                              <th>Payment Date</th>
+                              <th>Issuer</th>
+                              <th>Total Payment</th>
+                              <th>Actions</th>
+
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <% if (re == null || re == undefined){ %>
+
+                        <% }else if (re.length == 0){ %>
+
+                        <% }else{ %>
+                          <% var count = 1; %>
+                            <%  re.forEach(function(i){ %>
+                            <tr>
+                                <td><a><%= count%></a></td>
+                                <td><%= moment(i.paymentDate).format("MM/DD/YYYY")%></td>
+                                <td>Gustle Agulto (USG Trading Corporation)</td>
+                                <td>Php <%=(i.total).toFixed(2)%></td>
+                                <td><a href="/consignorSales/viewPaymentDetails?payment=<%=i.intConsignorPaymentNo%>"><button type="button" class="btn btn-success" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">View</button></a></td>
+
+                            </tr>
+                            <%  }) %>
+                            <% } %>
+                      </tbody>
+                  </table>
+                </div>
+              </div>
+
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.js"></script>
+</body>
+
+</html>

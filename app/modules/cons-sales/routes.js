@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+var moment = require('moment');
 const db = require('../../lib/database')();
 const priceFormat = require('../cust-0extras/priceFormat');
 const userTypeAuth = require('../cust-0extras/userTypeAuth');
@@ -315,5 +316,36 @@ router.post('/prodSalesDetails', monthsAvailable, yearsAvailable, (req,res)=>{
     });
   });
 });
+
+router.get('/paymentReceipts',(req,res)=>{
+  db.query(`Select sum(amount) as total, tblConsignorPayment.*, tblConsignmentPaymentList.*
+  from tblConsignorPayment join tblConsignmentPaymentList on
+  tblConsignorPayment.intConsignorPaymentNo = tblConsignmentpaymentlist.intConsignorPaymentNo
+  where intConsignorID = "${req.user.intUserID}"`, (err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      res.render('cons-sales/views/paymentReceipts', {re: res1, moment: moment});
+
+    }
+  })
+});
+
+router.get('/viewPaymentDetails',(req,res)=>{
+  db.query(`Select sum(amount) as total, tblConsignorPayment.intConsignorPaymentNo as num, tblConsignorPayment.*, tblConsignmentPaymentList.*
+  from tblConsignorPayment join tblConsignmentPaymentList on
+  tblConsignorPayment.intConsignorPaymentNo = tblConsignmentpaymentlist.intConsignorPaymentNo
+  where tblConsignorPayment.intConsignorPaymentNo="${req.query.payment}" and intConsignorID = "${req.user.intUserID}"`,(err2,res2,fie2)=>{
+    if(err2) console.log(err2);
+    else{
+      db.query(`Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID
+        where tblUser.intUserID = "${req.user.intUserID}"`,(err3,res3,fie3)=>{
+          if(err3) console.log(err3);
+          else{
+            res.render('cons-sales/views/viewReceipt',{re: res2, consignor: res3, moment: moment});
+          }
+        })
+    }
+  })
+})
 
 exports.consignorSales = router;
