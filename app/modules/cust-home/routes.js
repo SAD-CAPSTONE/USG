@@ -80,7 +80,7 @@ function packages(req,res,next){
   db.query(`SELECT *, SUM(intProductQuantity)Qty FROM tblpackage
     INNER JOIN tblpackagelist ON tblpackage.intPackageNo= tblpackagelist.intPackageNo
     WHERE tblpackage.intStatus= 1 AND (tblpackage.intQuantity - tblpackage.intReservedItems) > 0
-    GROUP BY tblpackage.intPackageNo ORDER BY tblpackage.intPackageNo DESC`,
+    AND tblpackage.dateDue >= now() GROUP BY tblpackage.intPackageNo ORDER BY tblpackage.intPackageNo DESC`,
     function (err,  results, fields) {
     if (err) console.log(err);
     results.forEach((obj)=>{ obj.packagePrice = priceFormat(obj.packagePrice.toFixed(2)) })
