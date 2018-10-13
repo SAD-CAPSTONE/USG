@@ -56,12 +56,15 @@ router.get('/messages', checkUser, auth_cust, (req,res)=>{
 
 router.post('/dashboard/info', checkUser, auth_cust, (req,res)=>{
   db.beginTransaction(function(err) {
+    let fname = req.body.fname, mname = req.body.mname, lname = req.body.lname, email = req.body.email,
+    dsa = `${req.body.dsaCity} ${req.body.dsa}`, dba = `${req.body.dbaCity} ${req.body.dba}`,
+    phone = req.body.phone.replace(/-/g, ""), mobile = req.body.mobile
     if (err) console.log(err);
     db.query(`UPDATE tbluser SET strFname= ?, strMname= ?, strLname= ?, strEmail= ? WHERE intUserID= ?`,
-      [req.body.fname, req.body.mname, req.body.lname, req.body.email, req.user.intUserID], (err, results, fields) => {
+      [fname, mname, lname, email, req.user.intUserID], (err, results, fields) => {
       if (err) console.log(err);
       db.query(`UPDATE tblcustomer SET strShippingAddress= ?, strBillingAddress= ?, strCusPhoneNo= ?, strCusMobileNo= ? WHERE intUserID= ?`,
-        [req.body.dsa, req.body.dba, req.body.phone, `0${req.body.mobile}`, req.user.intUserID], (err, results, fields) => {
+        [dsa, dba, phone, mobile, req.user.intUserID], (err, results, fields) => {
         if (err) console.log(err);
         db.commit(function(err) {
           if (err) console.log(err);
@@ -73,6 +76,19 @@ router.post('/dashboard/info', checkUser, auth_cust, (req,res)=>{
 });
 
 // ajax
+router.post('/dashboard/checkInfo', checkUser, (req,res)=>{
+  db.query(`SELECT strEmail FROM tbluser WHERE strEmail= ? AND intUserID!= ?`,
+    [req.body.email, req.user.intUserID], (err, results, fields) => {
+    if (err) console.log(err);
+    if (results[0]){
+      res.send({email: 'Email is taken'})
+    }
+    else{
+      res.send({email: null})
+    }
+  });
+});
+
 router.post('/orders/load', checkUser, (req,res)=>{
   // ORDER BY intOrderNo DESC
   let config = {

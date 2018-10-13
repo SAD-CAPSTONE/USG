@@ -143,6 +143,20 @@ a:hover {
   border: 0px;
   border-bottom: 1px solid var(--primary-color);
 }
+
+.custom-select-2 {
+  border-radius: 0px;
+  box-shadow: 0px 0px 0px;
+  border: 0px;
+  border-bottom: 2px solid #D9D9D9;
+}
+.custom-select-2:focus, .custom-select-2:active {
+  border-bottom-color: var(--primary-color);
+  outline: none;
+  box-shadow: none;
+}
+
+
 textarea {
   border-radius: 0px !important;
 }
@@ -299,7 +313,7 @@ input.material:focus, input.material:active {
   outline: none;
   box-shadow: none;
 }
-input#mobile {
+/* input#mobile {
   padding-left: 41px;
 }
 #mobile-label::after {
@@ -308,7 +322,7 @@ input#mobile {
   bottom: -37.5px;
   left: 12px;
   font-weight: 400;
-}
+} */
 .required-field {
   position: relative;
 }

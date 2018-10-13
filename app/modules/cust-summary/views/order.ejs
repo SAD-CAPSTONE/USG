@@ -641,6 +641,17 @@
   //   $('[data-toggle="tooltip"]').tooltip()
   // })
 
+  $.get(`/summary/receipt/${orderNo}`).then((res)=>{
+    // do something
+    console.log(res);
+    return $.get(`/summary/voucher/${orderNo}`)
+  }).then((res)=>{
+    // do something
+    console.log(res);
+  }).catch((error)=>{
+    // handle error
+    console.log(error);
+  })
 
 </script>
 <%- include('../../../templates/closer.ejs') -%>
