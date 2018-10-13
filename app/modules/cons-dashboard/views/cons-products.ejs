@@ -6,7 +6,7 @@
 			<div id="main-content">
 				<div class="col-lg-12">
 					<div class="card-title">
-						<h4>Products </h4>
+						<h4>  Products </h4>
 					</div>
 					<div class="card-body">
 						<div class="table-responsive">
@@ -14,11 +14,11 @@
 								<thead>
 									<tr>
 										<th>&nbsp</th>
-										<th>Name</th>
-										<th>Price</th>
-										<th>Stock</th>
+										<th>Product Name</th>
+										<th>Store Price</th>
+										<th>Remaining Stock</th>
 										<th>Category</th>
-										<th>Action</th>
+
 
 									</tr>
 								</thead>
@@ -40,31 +40,7 @@
 													<td><span><%= i.productPrice%></span></td>
 													<td><span><%= i.intQuantity%></span></td>
 													<td><span class="badge badge-default"><%= i.strCategory%></span></td>
-													<td><a class="btn btn-custom-primary" data-toggle='modal' data-target='#EditInfo'> </i>&nbsp;View Sales</a>
-														<div id="EditInfo" class="modal fade" tabindex='-1' role='dialog' aria-labelledby='EditInfoTitle' aria-hidden='true'>
-															<div class="modal-dialog" role='document'>
-															<div class="modal-content">
-																<div class="modal-header">
-																<h5 id="EditInfoTitle" class="modal-title"><b><%= i.strProductName%></b></h5>
-																<button class="close" type='button' data-dismiss='modal' aria-label='Close'>
-																	<span aria-hidden='true'>×</span>
-																</button>
-																</div>
-																<div class="modal-body">
-																<div class="row">
-																	<div style="width: 490px;padding: 20px;"><span class="text-tab">Orders</span><span class="text-r">10</span>
-																	<hr/><span class="text-tab">Products Sold</span><span class="text-r">10</span>
-																	<hr/><span class="text-tab">Cancelled</span><span class="text-r">10</span>
-																	</div>
-																</div>
-																<div class="modal-footer">
-																<button class="btn btn-secondary" type='button', data-dismiss='modal'>Close</button>
-																</div>
-																</div>
-															</div>
-															</div>
-														</div>
-													</td>
+												
 												</tr>
 											<%  }) %>
 											<% } %>
@@ -72,49 +48,23 @@
 							</table>
 						</div>
 					</div>
-					<div class="row">
-					<div class="col"> </div>
-					<div class="col">
-					<ul class="pagination" style="margin-left: 40px;">
-						<li class="page-item">
-						<a class="page-link" href="#" aria-label="Previous"> <span aria-hidden="true">«</span> <span class="sr-only">Previous</span> </a>
-						</li>
-						<li class="page-item">
-						<a class="page-link" href="#">1</a>
-						</li>
-						<li class="page-item">
-						<a class="page-link" href="#">2</a>
-						</li>
-						<li class="page-item">
-						<a class="page-link" href="#">3</a>
-						</li>
-						<li class="page-item">
-						<a class="page-link" href="#">4</a>
-						</li>
-						<li class="page-item">
-						<a class="page-link" href="#">5</a>
-						</li>
-						<li class="page-item">
-						<a class="page-link" href="#">6</a>
-						</li>
-						<li class="page-item">
-						<a class="page-link" href="#" aria-label="Next"> <span aria-hidden="true">»</span> <span class="sr-only">Next</span> </a>
-						</li>
-					</ul>
-					</div>
-					<div class="col"> </div>
-					</div>
-					</div>
-				</div>
-				</div>
-		</div>
-		</div>
-  
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.js"></script>
+					</div>
+				</div>
+				</div>
+		</div>
+		</div>
+
+    <script src="/assets/consignor/jquery-slim.js"></script>
+    <script src="/assets/consignor/popper.min.js"></script>
+    <script src="/assets/consignor/bootstrap.min.js"></script>
+    <script src="/assets/consignor/simplebar.js"></script>
+
+    <script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
+
+    <script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
   </body>
 
   </html>

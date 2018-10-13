@@ -9,7 +9,7 @@
 
                     </div>
                     <ul class="nav nav-tabs" id="myNavTabs">
-                            <li class="nav-item nav-link active"><a href="#navtabs1" data-toggle="tab">Pending</a>
+                            <li class="nav-item nav-link active"><a href="#navtabs1" data-toggle="tab">Received</a>
 
                           </ul>
 
@@ -23,27 +23,29 @@
                                             <table class="table">
                                                 <thead>
                                                     <tr>
-                                                      <th>Order No</th>
+                                                      <th> No</th>
+                                                      <th>Purchase Order</th>
                                                       <th>Staff</th>
-                                                      <th>Date</th>
+                                                      <th>Date Received</th>
                                                       <th>Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
 
 
-                                                <% if (pending == null || pending == undefined){ %>
+                                                <% if (received == null || received == undefined){ %>
 
-                                                    <% }else if (pending.length == 0){ %>
+                                                    <% }else if (received.length == 0){ %>
 
                                                     <% }else{ %>
-                                                        <%  pending.forEach(function(i){ %>
+                                                        <%  received.forEach(function(i){ %>
                                                             <tr>
+                                                              <td><%= i.intReceiveOrderNo%></td>
                                                                 <td><%= i.intPurchaseOrderNo%></td>
                                                                 <td>Gustle Agulto (USG Operations Manager)</td>
                                                                 <td><span><%= moment(i.dateOrdered).format("MM/DD/YYYY")%></span></td>
                                                                 <td style="width:170px;"><div class="btn-group">
-                                                                    <a href="/consignor/viewOrder?order=<%=i.intPurchaseOrderNo%>"><button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">View</button></a>
+                                                                    <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">View</button>
                                                                 </div></td>
                                                             </tr>
                                                             <%  }) %>

@@ -36,6 +36,7 @@
             <li class="nav-item mr-2">
               <a class="nav-link" href="/consignor/products" style="padding-bottom: 16px;"><i class="fa d-inline fa-lg fa-leaf"></i>&nbsp; My Products</a>
             </li>
+
             <li class="nav-item drop-menu mr-2">
               <a class="nav-link dropdown-toggle pb-3" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa d-inline fa-lg fa-bar-chart"></i>&nbsp; Sales</a>
               <div class="drop-menu-content-con">
@@ -43,13 +44,25 @@
                   <a href="/consignorSales">All Sales</a>
                 </p>
                 <p>
-                  <a href="">Payment Receipts</a>
+                  <a href="/consignorSales/paymentReceipts">Payment Receipts</a>
                 </p>
               </div>
             </li>
-            <li class="nav-item mr-2">
-              <a class="nav-link" href="/consignor/orders" style="padding-bottom: 16px;"><i class="fa d-inline fa-lg fa-cart-arrow-down"></i>&nbsp; Orders</a>
+
+
+
+            <li class="nav-item drop-menu mr-2">
+              <a class="nav-link dropdown-toggle pb-3" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa d-inline fa-lg fa-cart-arrow-down"></i>&nbsp; Orders</a>
+              <div class="drop-menu-content-con">
+                <p>
+                  <a href="/consignor/orders">Pending Orders</a>
+                </p>
+                <p>
+                  <a href="/consignor/receivedOrders">Delivered Orders</a>
+                </p>
+              </div>
             </li>
+
             <li class="nav-item mr-2">
               <a class="nav-link" href="/consignor/returns" style="padding-bottom: 16px;"><i class="fa d-inline fa-lg fa-undo"></i>&nbsp; Returns</a>
             </li>
