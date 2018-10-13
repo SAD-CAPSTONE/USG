@@ -1,5 +1,16 @@
 <%- include('../../../templates/admin-navbar.ejs') -%>
 
+<style>
+  .special-position-1 {
+    position: absolute;
+    /* left: 180px; */
+  }
+  #example3_length {
+    position: absolute;
+    left: 75px;
+  }
+</style>
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -27,6 +38,17 @@
 
             <div class="row">
               <div class="col-sm-12">
+                <div class="special-position-1">
+                  <% if(totalValueProducts[0]){ %>
+                    <a href="/reports/totalValueExport">
+                      <button class="large ui button">Excel</button>
+                    </a>
+                  <% }else{ %>
+                    <a>
+                      <button class="large ui button" disabled>Excel</button>
+                    </a>
+                  <% } %>
+                </div>
 
                 <div class="table-responsive">
                   <table id="example3" class="table no-margin">

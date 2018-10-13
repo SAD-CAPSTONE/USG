@@ -196,7 +196,8 @@ router.get('/inventory/notMoving', now, (req,res)=>{
       notMoveDate[1] = moment(notMoveDate[1]).format('LL')
       res.render('admin-reports/views/notMoving',{
         notMoving: results,
-        date: notMoveDate
+        date: notMoveDate,
+        queryDate: req.query.date
       });
     });
   }
@@ -399,19 +400,22 @@ router.get('/salesMonthExport', checkUser, auth_admin, now, yearsAvailable, (req
           arr.push({col_date: moment(data.date).format('MM/DD/YYYY'), col_total: priceFormat(data.total.toFixed(2)), col_sold: data.qty})
           return arr
         },[])
-      }
 
-      let report = excel.buildExport(
-        [
-          {
-            name: 'Report',
-            specification: specification,
-            data: dataset
-          }
-        ]
-      );
-      res.attachment(`Monthly Sales Report - ${month} ${year}.csv`);
-      return res.send(report);
+        let report = excel.buildExport(
+          [
+            {
+              name: 'Report',
+              specification: specification,
+              data: dataset
+            }
+          ]
+        );
+        res.attachment(`Monthly Sales Report - ${month} ${year}.csv`);
+        return res.send(report);
+      }
+      else{
+        res.redirect(`/reports/sales`)
+      }
 
     });
   }
@@ -425,13 +429,13 @@ router.get('/salesDailyExport', checkUser, auth_admin, now, datesAvailable, (req
       displayName: 'No',
       headerStyle: styles.headerBG,
       cellStyle: 'none',
-      width: 120
+      width: 100
     },
     col_name: {
       displayName: 'Product Name',
       headerStyle: styles.headerBG,
       cellStyle: 'none',
-      width: 120
+      width: 300
     },
     col_qty: {
       displayName: 'Quantity Bought',
@@ -471,7 +475,134 @@ router.get('/salesDailyExport', checkUser, auth_admin, now, datesAvailable, (req
           arr.push({col_no: data.intProductNo, col_name: `${data.strBrand} ${data.strProductName}`, col_qty: data.qty, col_sales: priceFormat(data.total.toFixed(2))})
           return arr
         },[])
+        let report = excel.buildExport(
+          [
+            {
+              name: 'Report',
+              specification: specification,
+              data: dataset
+            }
+          ]
+        );
+        res.attachment(`Daily Sales Report - ${moment(dailyDate).format('MM-DD-YYYY')} .csv`);
+        return res.send(report);
+
       }
+      else{
+        res.redirect(`/reports/sales`)
+      }
+
+    });
+  }
+  else{
+    res.redirect(`/reports/sales`)
+  }
+});
+router.get('/notMovingExport', checkUser, auth_admin, now, (req,res)=>{
+  let specification = {
+    col_name: {
+      displayName: 'Product Name',
+      headerStyle: styles.headerBG,
+      cellStyle: 'none',
+      width: 500
+    },
+    col_stock: {
+      displayName: 'Remaining Stock',
+      headerStyle: styles.headerBG,
+      cellStyle: 'none',
+      width: 100
+    }
+  }
+  let dataset = [
+    {col_name: '-', col_stock: '-'}
+  ]
+
+  let notMoveDate = [];
+  if (req.query.notMoveDate == 'now'){
+    notMoveDate[0] = req.now.currentDate
+    notMoveDate[1] = req.now.currentDate
+  }
+  else {
+    notMoveDate = req.query.notMoveDate.split(" - ");
+    notMoveDate[0] = moment(notMoveDate[0]).format('YYYY-MM-DD')
+    notMoveDate[1] = moment(notMoveDate[1]).format('YYYY-MM-DD')
+  }
+
+  if(notMoveDate[0] != 'Invalid date' && notMoveDate[1] != 'Invalid date'){
+    db.query(`SELECT * FROM(SELECT tblproductinventory.intInventoryNo, strBrand, strProductName,
+    	strVariant, intSize, strUnitName, (tblproductinventory.intQuantity - intReservedItems)stock, A.intSalesNo
+    	FROM tblproductlist INNER JOIN tblproductbrand USING(intBrandNo) INNER JOIN tblproductinventory USING(intProductNo)
+    	INNER JOIN tbluom USING(intUomNo) LEFT JOIN tblorderdetails USING(intInventoryNo) LEFT JOIN (
+  		SELECT * FROM tblsales WHERE intStatus = 1 AND transactionDate >= ? AND transactionDate <= ? )A USING(intOrderNo)
+    	GROUP BY tblproductinventory.intInventoryNo)B WHERE B.intSalesNo IS NULL`,
+      [notMoveDate[0], notMoveDate[1]], (err, results, fields) => {
+      if (err) console.log(err);
+      if (results[0]){
+        dataset = results.reduce((arr, data)=>{
+          arr.push({col_name: `${data.strBrand} ${data.strProductName} ${sizeString(data)}`, col_stock: data.stock})
+          return arr
+        },[])
+
+        let report = excel.buildExport(
+          [
+            {
+              name: 'Report',
+              specification: specification,
+              data: dataset
+            }
+          ]
+        );
+        res.attachment(`Not Moving Inventory Report - ${moment(notMoveDate[0]).format('MM-DD-YYYY')} - ${moment(notMoveDate[1]).format('MM-DD-YYYY')}.csv`);
+        return res.send(report);
+
+      }
+      else{
+        res.redirect(`/reports/inventory`)
+      }
+
+
+    });
+  }
+  else{
+    res.redirect(`/reports/inventory`)
+  }
+});
+router.get('/totalValueExport', checkUser, auth_admin, (req,res)=>{
+  let specification = {
+    col_name: {
+      displayName: 'Product Name',
+      headerStyle: styles.headerBG,
+      cellStyle: 'none',
+      width: 500
+    },
+    col_stock: {
+      displayName: 'Stock Quantity',
+      headerStyle: styles.headerBG,
+      cellStyle: 'none',
+      width: 100
+    },
+    col_total: {
+      displayName: 'Total Value',
+      headerStyle: styles.headerBG,
+      cellStyle: 'none',
+      width: 100
+    }
+  }
+  let dataset = [
+    {col_name: '-', col_stock: '-', col_total: '-'}
+  ]
+
+  db.query(`SELECT tblproductinventory.intInventoryNo, strBrand, strProductName,
+    strVariant, intSize, strUnitName, (tblproductinventory.intQuantity)stock, (tblproductinventory.intQuantity*productPrice)totalValue
+    FROM tblproductlist INNER JOIN tblproductbrand USING(intBrandNo) INNER JOIN tblproductinventory USING(intProductNo)
+    INNER JOIN tbluom USING(intUomNo) LEFT JOIN tblorderdetails USING(intInventoryNo)
+    GROUP BY tblproductinventory.intInventoryNo ORDER BY totalValue DESC` , (err, results, fields) => {
+    if (err) console.log(err);
+    if (results[0]){
+      dataset = results.reduce((arr, data)=>{
+        arr.push({col_name: `${data.strBrand} ${data.strProductName} ${sizeString(data)}`, col_stock: data.stock, col_total: priceFormat(data.totalValue.toFixed(2))})
+        return arr
+      },[])
 
       let report = excel.buildExport(
         [
@@ -482,14 +613,10 @@ router.get('/salesDailyExport', checkUser, auth_admin, now, datesAvailable, (req
           }
         ]
       );
-      res.attachment(`Daily Sales Report - ${moment(dailyDate).format('MM-DD-YYYY')} .csv`);
+      res.attachment(`Total Value Inventory Report.csv`);
       return res.send(report);
-
-    });
-  }
-  else{
-    res.redirect(`/reports/sales`)
-  }
+    }
+  });
 });
 
 exports.reports = router;

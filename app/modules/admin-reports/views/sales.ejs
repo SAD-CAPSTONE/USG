@@ -510,7 +510,7 @@
 
         $(`#annual-div table tbody`).html('')
         if (annual[0]){
-          $(`#annual-export-link`).attr('href','/reports/salesAnnualExport?year=2018')
+          $(`#annual-export-link`).attr('href',`/reports/salesAnnualExport?year=${config.annual}`)
           $(`#annual-export-link > button`).removeAttr('disabled')
         }
         else{

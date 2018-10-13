@@ -109,7 +109,7 @@
             <div class="box-body">
               <div class="row">
                 <div class="col-md-12">
-
+                  <a id="notMoving-export-link"><button class="large ui button" disabled>Excel</button></a>
                   <div class="form-group">
                     <label>Select date range:</label>
 
@@ -152,6 +152,7 @@
 
         <div id="totalValueDiv" class="col-sm-6">
           <div class="box">
+
             <div class="box-header with-border">
               <h3 class="box-title">Total Value of Products</h3>
             </div>
@@ -159,6 +160,18 @@
             <div class="box-body">
               <div class="row">
                 <div class="col-md-12">
+                  <div>
+                    <% if(totalValueProducts[0]){ %>
+                      <a href="/reports/totalValueExport">
+                        <button class="large ui button">Excel</button>
+                      </a>
+                    <% }else{ %>
+                      <a>
+                        <button class="large ui button" disabled>Excel</button>
+                      </a>
+                    <% } %>
+                  </div>
+
                   <div class="table-responsive">
                     <table class="table no-margin">
                       <thead>
@@ -300,8 +313,6 @@
 <!-- Date range picker -->
 <script src="/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
 
-
-
 <script>
   var ctx = document.getElementById("recapChart");
   var myChart = new Chart(ctx, {
@@ -440,11 +451,17 @@
               <td>${data.stock}</td>
             </tr>`);
         });
-        res.products[0] ? 0 :
+        if (res.products[0]){
+          $(`#notMoving-export-link`).attr('href',`/reports/notMovingExport?notMoveDate=${res.notMoveDate[0]} - ${res.notMoveDate[1]}`)
+          $(`#notMoving-export-link > button`).removeAttr('disabled')
+        }
+        else{
+          $(`#notMoving-export-link > button`).attr('disabled','disabled')
           $(`#notMovingDiv table tbody`).append(`
             <tr>
               <td>No Results</td>
-            </tr>`);
+            </tr>`)
+        }
         $('#rangeNotMoving').val(`${res.notMoveDate[0]} - ${res.notMoveDate[1]}`)
 
         res.products[0] ?
