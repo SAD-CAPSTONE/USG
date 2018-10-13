@@ -277,7 +277,8 @@ textarea {
 }
 .fake-link:hover {
   text-decoration: underline !important;
-  text-decoration-color: var(--primary-color) !important;
+  text-decoration-color: var(--primary-hover) !important;
+  color: var(--primary-hover) !important;
 }
 .cursor-pointer {
   cursor: pointer;
@@ -872,10 +873,22 @@ table th, table td {
 #item-main-pane {
   width: 70%;
 }
-#item-main-pane .fa-share-alt {
+#item-main-pane #share-div {
   position: absolute;
-  top: 3.5px;
+  top: 4px;
   right: 0px;
+  text-align: right;
+}
+#item-main-pane #share-div > * {
+  /* display: inline-block; */
+}
+#item-main-pane #share-div > p {
+  float: left;
+  display: none;
+  text-decoration: underline;
+  margin: 7 10 0 0;
+  opacity: 0;
+  transition: opacity .2s, margin .2s;
 }
 #item-main-pane > div:nth-child(2) img {
   position: absolute;
@@ -994,7 +1007,7 @@ table th, table td {
   padding-left: 10px;
 }
 #item-review-pane > div {
-  min-height: 1124.5px;
+  /* max-height: 1124.5px; */
 }
 #item-review-pane #rating {
   height: 70px;
@@ -1013,10 +1026,10 @@ table th, table td {
   line-height: 1em;
 }
 
-#item-review-pane .review-name {
+.review-name {
   font-size: .9em;
 }
-#item-review-pane .review-desc {
+.review-desc {
   font-size: .75em;
 }
 

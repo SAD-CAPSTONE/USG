@@ -51,7 +51,8 @@ router.get('/modal/:pid', (req, res)=>{
   });
 });
 router.get('/modal-inv/:inv', (req, res)=>{
-  db.query(`SELECT (intQuantity - intReservedItems)stock, (productPrice)oldPrice, discount, IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice
+  db.query(`SELECT (intQuantity - intReservedItems)stock, (productPrice)oldPrice, discount,
+    IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, tblproductinventory.intStatus
     FROM tblproductinventory LEFT JOIN (SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1)Disc
     ON tblproductinventory.intInventoryNo= Disc.intInventoryNo
     WHERE tblproductinventory.intInventoryNo = ?`

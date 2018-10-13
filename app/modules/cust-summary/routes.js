@@ -380,8 +380,8 @@ function newProducts(req,res,next){
 function packages(req,res,next){
   db.query(`SELECT *, SUM(intProductQuantity)Qty FROM tblpackage
     INNER JOIN tblpackagelist ON tblpackage.intPackageNo= tblpackagelist.intPackageNo
-    WHERE tblpackage.intStatus= 1 AND (tblpackage.intQuantity - tblpackage.intReservedItems) > 0 GROUP BY tblpackage.intPackageNo ORDER BY tblpackage.intPackageNo DESC`,
-    function (err,  results, fields) {
+    WHERE tblpackage.intStatus= 1 AND (tblpackage.intQuantity - tblpackage.intReservedItems) > 0
+    GROUP BY tblpackage.intPackageNo ORDER BY tblpackage.intPackageNo DESC`, function (err,  results, fields) {
     if (err) console.log(err);
     results.forEach((obj)=>{ obj.packagePrice = priceFormat(obj.packagePrice.toFixed(2)) })
     req.packages= results;
@@ -488,7 +488,8 @@ router.get('/voucher/:orderNo', checkUserOrder, auth_cust, orderTotal, (req,res)
   else{
     db.query(`SELECT * FROM tblorder
       INNER JOIN tbluser ON tblorder.intUserID= tbluser.intUserID
-      WHERE intOrderNo= ? AND tbluser.intUserID= ? AND (intStatus= 0 OR intStatus= 1 OR intStatus= 2)`,[req.params.orderNo, req.user.intUserID],(err,results,fields)=>{
+      WHERE intOrderNo= ? AND tbluser.intUserID= ? AND (intStatus= 0 OR intStatus= 1 OR intStatus= 2)`,
+      [req.params.orderNo, req.user.intUserID],(err,results,fields)=>{
       if (err) console.log(err);
       if (results[0]){
         results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('LL') );
@@ -513,9 +514,10 @@ router.get('/receipt/:orderNo', checkUserOrder, auth_cust, receiptPackages, (req
   	INNER JOIN tblproductlist ON tblproductinventory.intProductNo= tblproductlist.intProductNo
   	INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
   	INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno)orders ON orders.intOrderNo= tblorder.intOrderNo
-    WHERE tblorder.intOrderNo= ? AND customer.intUserID= 1010 AND orders.intProductType= 1
+    WHERE tblorder.intOrderNo= ? AND customer.intUserID= ? AND orders.intProductType= 1
     ORDER BY orders.intOrderDetailsNo`,[req.params.orderNo, req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
+    console.log(results)
     if (results[0] || req.receiptPackages[0]){
       results = results.concat(req.receiptPackages);
       results.sort(orderArraySort);

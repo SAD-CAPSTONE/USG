@@ -303,7 +303,7 @@
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <%- include('../../../templates/scripts-pdf.ejs') -%>
 <script type="text/javascript">
-  $('title').html(`Ultra Super Green - Order#${<%= orderOne.intOrderNo%>}`); 
+  $('title').html(`Ultra Super Green - Order#${<%= orderOne.intOrderNo%>}`);
   $(()=>{
     let txtcount1;
     function submitBtn(){
@@ -366,9 +366,9 @@
       // Receipt No
       newY = firstY;
       doc.setFont('Poppins-Regular');
-      doc.text(firstX, newY, `Receipt No:`); newY+= gap;
+      doc.text(firstX, newY, `Reference No:`); newY+= gap;
       doc.setFont('Poppins-Light');
-      doc.text(firstX, newY, `#72954168`);
+      doc.text(firstX, newY, `${res.receipt[0].strReferenceNo}`);
       firstX += 40.5;
       maxY = newY;
       // Order

@@ -69,6 +69,7 @@
   <div id="summary-details-pane" class="fl-r">
     <div hidden></div>
     <div>
+      <a id="Shipping&Billing" style="display: block; position: relative; top: -71px;"></a>
       <p class="m-0 mb-1 fs-09em fw-400 lh-p3em inline-block">Shipping & Billing</p>
       <a data-toggle="modal" data-target="#EditAddress" class="edit" href><small>Edit</small></a>
 
@@ -123,9 +124,14 @@
           </label>
         </div>
         <% if(thisUserContact.strShippingAddress && thisUserContact.strBillingAddress){ %>
+          <a id="checkoutErr2" href="/store" class="text-danger"></a>
           <button id="place-order" type="button" class="btn btn-custom-primary btn-sm btn-block sb-1"
           data-toggle="modal" data-target="#OrderConfirmation">Place Order</button>
+
         <% }else{ %>
+          <a id="checkoutErr1" href="#Shipping&Billing" class="text-danger"><p class="mb-1 fs-08em fw-400" style="margin-top: -10;"><em>Shipping and Billing address not set</em></p></a>
+          <a id="checkoutErr2" href="/store" class="text-danger"></a>
+          <!-- <p class="mb-1 fs-08em fw-400" style="margin-top: -10;"><em>Shipping and Billing address not set</em></p> -->
           <button id="place-order" type="button" class="btn btn-custom-primary btn-sm btn-block sb-0">Place Order</button>
         <% } %>
         <div id="OrderConfirmation" tabindex="-1" role="dialog" aria-labelledby="OrderConfirmationTitle" aria-hidden="true" class="modal fade">
@@ -198,7 +204,7 @@
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <script type="text/javascript">
-  $('title').html("Ultra Super Green - Checkout"); 
+  $('title').html("Ultra Super Green - Checkout");
   $(() => {
 
     function OrderDisabled(){
@@ -302,7 +308,11 @@
             <div class="product-div pos-relative px-3">
               <p class="fs-09em"> Cart currently empty </p>
             </div>`);
+          $('#checkoutErr2').html(`
+              <p class="mb-1 fs-08em fw-400" style="margin-top: -10;"><em>Cart is currently empty</em></p>
+            `)
           OrderDisabled();
+
         }
         $('svg#SVG_refreshList').attr('hidden','hidden');
         $('#refresh').removeAttr('hidden');
