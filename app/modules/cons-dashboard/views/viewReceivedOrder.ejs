@@ -1,0 +1,114 @@
+<%- include('../../../templates/consignor-dashboard.ejs') -%>
+
+<div id="consigner" class="container">
+  <div class="row">
+    <div class="col">
+      <div id="main-content">
+          <div class="col-lg-12">
+            <div class="card-title">
+              <center>
+              <img width="60px" class="profile-user-img img-responsive img-circle" src="/assets/images/static/profile.png" alt="User profile picture">
+            </center>
+                <h6  align="center">Ultra Super Green Trading Corporation</h5>
+                <h6  align="center">Elizabeth Bldg., Katipunan Ave., Quezon City</h6><br>
+                <h4 style="font-weight: bold;" align="center">Delivery Transmittal Receipt</h4>
+            </div>
+
+
+              <div class="card-body">
+                <br>
+                <div class="row">
+
+                  <div class="col-sm-1">
+                  </div>
+                  <div class="col-sm-4">
+                    <h6><strong>Delivered By:</strong></h6>
+                    <h6><%= consignor[0].strFname %> <%= consignor[0].strMname %> <%= consignor[0].strLname %></h6>
+                    <h6><%= consignor[0].strBusinessAddress%></h6>
+                    <h6><%= consignor[0].strBusinessEmail%></h6>
+                    <h6><%= consignor[0].strSupplierMobile%> | <%= consignor[0].strSupplierPhone %></h6>
+                  </div>
+                  <div class="col-sm-4">
+                    <h6><strong>Delivered To:</strong></h6>
+                    <h6>Gustle Agulto - Operations Manager</h6>
+                    <h6>Ultra Super Green Trading Corp.</h6>
+                    <h6>Katipunan Ave., Quezon City</h6>
+                    <h6>info.ultrasupergreen@gmail.com</h6>
+                  </div>
+                  <div class="col-sm-3">
+                    <h6><strong>Delivery No: </strong><%= re[0].intPurchaseOrderNo %></h6>
+
+                    <h6><strong>Date Delivered: </strong><%= moment(re[0].dateOrderReceived).format("MM/DD/YYYY")%></h6>
+
+                  </div>
+                </div>
+
+                <br>
+
+
+                <div class="table-responsive">
+                  <table  id="list" class="table table-bordered table-hover">
+
+                    <thead>
+                      <tr>
+                          <th>No</th>
+                          <th>Product Name</th>
+                          <th>Variant</th>
+                          <th>Size</th>
+                          <th>Quantity</th>
+                          <th>Consignment Price</th>
+                          <th>SRP</th>
+                          <th>Expiration Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if(re==null||re==undefined){ %>
+
+                      <% }else if(re.length==0){ %>
+
+                      <% }else{ %>
+                      <%   var count = 1; %>
+                      <%  re.forEach(function(i){ %>
+                          <tr>
+                            <td><%= count %></td>
+                            <td><%= i.strProduct %></td>
+                            <td><%= i.strVariant %></td>
+                            <td><%= i.intQuantity %></td>
+                            <td><%= i.strSize %></td>
+
+                          </tr>
+                        <% count++ %>
+                      <%  }) %>
+
+                      <% } %>
+
+                    </tbody>
+                  </table>
+                </div>
+
+
+              </div>
+              <!-- Card body -->
+
+
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="/assets/consignor/jquery-slim.js"></script>
+<script src="/assets/consignor/popper.min.js"></script>
+<script src="/assets/consignor/bootstrap.min.js"></script>
+<script src="/assets/consignor/simplebar.js"></script>
+
+<script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
+
+<script src="/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+
+</body>
+
+</html>
