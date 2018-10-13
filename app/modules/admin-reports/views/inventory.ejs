@@ -482,10 +482,19 @@
 
     loadInvReport()
 
-  })
+    if (window.history && window.history.pushState) {
+      $(window).on('popstate', function() {
+        notMoveDate = getParams('notMoveDate')
+        notMoveDate ?
+          window.location.href != oldUrl ? loadInvReport() : 0
+          : window.location.replace(document.referrer)
+      });
+    }
 
+  })
 
 </script>
 
 </body>
+
 </html>

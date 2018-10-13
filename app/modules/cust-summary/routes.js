@@ -156,11 +156,13 @@ function cartCheck (req, res, next){
   function cartLimitLoop(i){
     let cart = req.session.cart, stringquery1, bodyarray1;
     if (cart[i].type == 1){
-      stringquery1 = `SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`
+      stringquery1 = `SELECT (intQuantity - intReservedItems)stock, (intStatus)InvStatus, (0)expired
+      FROM tblproductinventory WHERE intInventoryNo= ?`
       bodyarray1 = [cart[i].inv]
     }
     else{
-      stringquery1 = `SELECT (intQuantity - intReservedItems)stock FROM tblpackage WHERE intPackageNo= ?`
+      stringquery1 = `SELECT (intQuantity - intReservedItems)stock, (intStatus)InvStatus,
+        IF(dateDue >= now(), 0, 1)expired FROM tblpackage WHERE intPackageNo= ?`
       bodyarray1 = [cart[i].package]
     }
     db.query(stringquery1, bodyarray1, (err, results, fields) => {
@@ -169,13 +171,16 @@ function cartCheck (req, res, next){
         quantLimit : results[0].stock;
       req.session.cart[i].curQty > req.session.cart[i].limit ?
         req.session.cart[i].curQty = req.session.cart[i].limit : 0;
-      results[0].stock < 1 ? req.session.cart.splice(i,1) : 0
+      if (results[0].stock < 1 || !results[0].InvStatus || results[0].expired){
+        req.session.cart.splice(i,1)
+        --i;
+      }
       ++i;
       if (cart.length > i){
         cartLimitLoop(i);
       }
       else{
-        if (req.session.cart.length){
+        if (cart){
           return next();
         }
         else{
@@ -461,7 +466,6 @@ router.get('/order/:orderNo/returnform', checkUserOrder, auth_cust, replaceable,
 });
 router.get('/order/:orderNo/returnformsuccess', checkUserOrder, auth_cust, replaceable, thisReturnProducts, thisReturnPackages, (req,res)=>{
   if (!req.replaceable.replaceable && req.replaceable.orderStatus != '5'){
-    console.log(req.replaceable.orderStatus)
     res.redirect(`/summary/order/${req.params.orderNo}`)
   }
   else if (req.thisReturnProducts[0] || req.thisReturnPackages[0]){
@@ -560,8 +564,8 @@ router.get('/tracker/:orderNo', checkUserOrder, auth_cust, (req,res)=>{
   });
 });
 
-router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOrderDetailsNo, newOrderHistoryNo,
-  newMessageNo, uniqueMakeIdOrderRef, cartCheck, admin, popularProducts, newProducts, packages, (req,res)=>{
+router.post('/checkout', checkUser, auth_cust, cartCheck, contactDetails, newOrderNo, newOrderDetailsNo, newOrderHistoryNo,
+  newMessageNo, uniqueMakeIdOrderRef, admin, popularProducts, newProducts, packages, (req,res)=>{
   req.session.cart.forEach((data,i)=>{
     data.curQty == 0 ? req.session.cart.splice(i,1) : 0
   })

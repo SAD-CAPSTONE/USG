@@ -584,7 +584,6 @@
     loadSalesReport();
 
     if (window.history && window.history.pushState) {
-
       $(window).on('popstate', function() {
         annual = getParams('annual')
         daily = getParams('daily')
@@ -592,17 +591,12 @@
           window.location.href != oldUrl ? loadSalesReport() : 0
           : window.location.replace(document.referrer)
       });
-
     }
 
   })
 
 </script>
 
-<script type="text/javascript">
-
-
-</script>
-
 </body>
+
 </html>

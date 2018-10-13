@@ -141,21 +141,20 @@ router.post('/modal', (req, res)=>{
 });
 
 router.get('/list', (req, res)=>{
-  // req.session.cart = null;
   req.session.cart ? 0 : req.session.cart = [];
   function cartLimitLoop(i){
     let cart = req.session.cart, stringquery1, bodyarray1;
     if (cart[i].type == 1){
-      stringquery1 = `SELECT (tblproductinventory.intStatus)InvStatus, (productPrice)oldPrice,
+      stringquery1 = `SELECT (tblproductinventory.intStatus)InvStatus, (0)expired, (productPrice)oldPrice,
       IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice,
       discount, SUM(tblproductinventory.intQuantity - tblproductinventory.intReservedItems)stock FROM tblproductinventory
       LEFT JOIN (SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1)Disc ON tblproductinventory.intInventoryNo= Disc.intInventoryNo
       WHERE tblproductinventory.intInventoryNo= ? GROUP BY tblproductinventory.intInventoryNo LIMIT 1`;
       bodyarray1 = [req.session.cart[i].inv];
-      stringquery2 = `SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`;
     }
     else{
-      stringquery1 = `SELECT (intQuantity - intReservedItems)stock FROM tblpackage WHERE intPackageNo= ?`;
+      stringquery1 = `SELECT (intQuantity - intReservedItems)stock, (intStatus)InvStatus, IF(tblpackage.dateDue >= now(), 0, 1)expired
+      FROM tblpackage WHERE intPackageNo= ?`;
       bodyarray1 = [req.session.cart[i].package]
     }
     db.query(stringquery1, bodyarray1, (err, results, fields) => {
@@ -168,14 +167,11 @@ router.get('/list', (req, res)=>{
         quantLimit : results[0].stock;
       req.session.cart[i].curQty > req.session.cart[i].limit ?
         req.session.cart[i].curQty = req.session.cart[i].limit : 0;
-      results[0].stock < 1 ? req.session.cart.splice(i,1) : 0;
 
-      cart[i] ?
-        cart[i].type == 1 ?
-          results[0].InvStatus ?
-            0 : req.session.cart.splice(i,1)
-          : 0
-        : 0
+      if (results[0].stock < 1 || !results[0].InvStatus || results[0].expired){
+        req.session.cart.splice(i,1)
+        --i;
+      }
 
       ++i;
       if (cart.length > i){
@@ -276,7 +272,7 @@ router.get('/item-inv/:inv', (req, res)=>{
 });
 
 router.get('/package/:pid', (req, res)=>{
-  db.query(`SELECT *, (tblpackage.intQuantity - tblpackage.intReservedItems)stock,
+  db.query(`SELECT *, (tblpackage.intQuantity - tblpackage.intReservedItems)stock, IF(tblpackage.dateDue >= now(), 0, 1)expired,
     (tblproductinventory.productPrice * tblpackagelist.intProductQuantity)originalSubTotal FROM tblpackage
     INNER JOIN tblpackagelist ON tblpackage.intPackageNo= tblpackagelist.intPackageNo
     INNER JOIN tblproductinventory ON tblpackagelist.intInventoryNo = tblproductinventory.intInventoryNo

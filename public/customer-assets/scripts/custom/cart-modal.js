@@ -223,8 +223,17 @@ $('.products-container, #checkout-products, #order-products-pane')
         </p>`)
     })
 
-    modal.find('#stock-display').text(`${data[0].stock} Items Left`);
-    modal.find('#stock-display').attr('stock',inv.stock);
+    if (data[0].expired){
+      modal.find('#postBtn').attr('disabled','disabled')
+      modal.find('#postBtn').text('Expired')
+      data[0].stock = 0
+    }
+    else{
+      modal.find('#postBtn').removeAttr('disabled')
+      modal.find('#postBtn').text('Add to Cart')
+    }
+    modal.find('#stock-display').attr('stock',data[0].stock);
+    modal.find('#stock-display > span').text(data[0].stock);
     modal.find('.expire-date > span').text(data[0].dateDue);
     modal.find('.quantity-input').val(res.options.curQty);
     modal.find('p.discount > span').text(res.options.discount);
