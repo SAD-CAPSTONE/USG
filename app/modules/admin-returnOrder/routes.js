@@ -2,11 +2,13 @@ var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
 var async = require('async');
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_admin = userTypeAuth.admin;
 
 var adj_returned = 0;
 
 
-router.get('/', (req,res)=>{
+router.get('/', auth_admin, (req,res)=>{
   db.query(`Select * from tblReturnOrder`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{
@@ -16,7 +18,7 @@ router.get('/', (req,res)=>{
   })
 });
 
-router.get('/view',(req,res)=>{
+router.get('/view',auth_admin, (req,res)=>{
   db.query(`Select * from tblReturnOrder where intReturnOrderNo = "${req.query.q}"`,(err1,return_order,fie1)=>{
     if(err1) console.log(err1);
     else{
@@ -50,7 +52,7 @@ router.get('/view',(req,res)=>{
   })
 });
 
-router.get('/invoice-print',(req,res)=>{
+router.get('/invoice-print',auth_admin, (req,res)=>{
   db.query(`Select * from tblReturnOrder where intReturnOrderNo = "${req.query.q}"`,(err1,return_order,fie1)=>{
     if(err1) console.log(err1);
     else{
@@ -84,7 +86,7 @@ router.get('/invoice-print',(req,res)=>{
   })
 })
 
-router.get('/assessForm',(req,res)=>{
+router.get('/assessForm',auth_admin, (req,res)=>{
   db.query(`Select * from tblReturnOrder where intReturnOrderNo = "${req.query.q}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{
@@ -118,7 +120,7 @@ router.get('/assessForm',(req,res)=>{
   })
 })
 
-router.get('/form', (req,res)=>{
+router.get('/form', auth_admin, (req,res)=>{
   db.query(`Select * from tblReturnOrder order by intReturnOrderNo desc limit 1`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     db.query(`Select * from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID where tblOrder.intStatus = 2 or tblOrder.intStatus = 3`,(err2,res2,fie2)=>{
@@ -133,7 +135,7 @@ router.get('/form', (req,res)=>{
 });
 
 var order_no = 0;
-router.post('/findOrderNo',(req,res)=>{
+router.post('/findOrderNo',auth_admin, (req,res)=>{
   db.query(`Select * from tblOrder where (intStatus = 2 or intStatus = 3) and intOrderNo = ${req.body.o}`,(err1,res1,fie1)=>{
     if(err1) { res.send("no")}
     else{
@@ -143,7 +145,7 @@ router.post('/findOrderNo',(req,res)=>{
   })
 })
 
-router.get('/loadOrderList',(req,res)=>{
+router.get('/loadOrderList',auth_admin, (req,res)=>{
   db.query(`Select tblOrderDetails.intQuantity as quantity, tblOrder.*, tblOrderDetails.*, tblProductList.*, tblProductInventory.*, tblUom.*
     from tblOrder join tblOrderDetails on tblOrder.intOrderNo = tblOrderDetails.intOrderNo
     join tblProductInventory on tblOrderdetails.intInventoryNo = tblProductInventory.intInventoryNo join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
@@ -156,7 +158,7 @@ router.get('/loadOrderList',(req,res)=>{
 });
 
 
-router.post('/newReturn',(req,res)=>{
+router.post('/newReturn',auth_admin, (req,res)=>{
   console.log(req.body.order_no)
   var return_no = "1000", list_no = "1000", adj_no = "1000", sales_no = "1000", transact_no = "1000";
   var loop = req.body.inventory;
@@ -239,7 +241,8 @@ router.post('/newReturn',(req,res)=>{
                                                   } // end of batch FIFO
 
                                                   // insert to tblAdjustmentss
-                                                  db.query(`Insert into tblAdjustments (intAdjustmentNo, intAdjustmentType, strAdjustmentNote, intAdminID, intQuantity, intInventoryNo) values("${adj_no}", "${adj_returned}", "Used for Replacement", "1000", ${req.body.replacementQuantity[count]}, "${res8[0].intInventoryNo}")`,(err11,res11,fie11)=>{
+                                                  db.query(`Insert into tblAdjustments (intAdjustmentNo, intAdjustmentType, strAdjustmentNote, intAdminID, intQuantity, intInventoryNo)
+                                                    values("${adj_no}", "${adj_returned}", "Used for Replacement", "${req.user.intUserID}", ${req.body.replacementQuantity[count]}, "${res8[0].intInventoryNo}")`,(err11,res11,fie11)=>{
                                                     if(err11) console.log(err11);
                                                     else{
                                                       // insert into tblInventoryTransactions
@@ -320,7 +323,7 @@ router.post('/newReturn',(req,res)=>{
   })
 })
 
-router.post('/assessReturn',(req,res)=>{
+router.post('/assessReturn',auth_admin, (req,res)=>{
   var loop = req.body.replacementProduct;
   var adj_no = "1000", transact_no = "1000", sales_no = "1000", count = 0;
   var returnlist = "";
@@ -392,13 +395,13 @@ router.post('/assessReturn',(req,res)=>{
 
                                       // Insert to tblAdjustments
                                       db.query(`Insert into tblAdjustments (intAdjustmentNo, intAdjustmentType, strAdjustmentNote, intAdminID, intQuantity, intInventoryNo)
-                                        values("${adj_no}", "${adj_returned}", "Used for Replacement", "1000", ${req.body.replacementQuantity[count]}, "${res6[0].intInventoryNo}")`,(err9,res9,fie9)=>{
+                                        values("${adj_no}", "${adj_returned}", "Used for Replacement", "${req.user.intUserID}", ${req.body.replacementQuantity[count]}, "${res6[0].intInventoryNo}")`,(err9,res9,fie9)=>{
                                         if(err9) console.log(err9);
                                         else{
 
                                           // insert into tblInventoryTransactions
                                           db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intShelfNo, intCriticalLimit, productSRP, productPrice, intUserID, strTypeOfChanges)
-                                            values ("${transact_no}","${res6[0].intInventoryNo}",${res6[0].intShelfNo}, ${res6[0].intCriticalLimit}, ${res6[0].productSRP}, ${res6[0].productPrice},"1000","Used Product for Replacement")`,(err10,res10,fie10)=>{
+                                            values ("${transact_no}","${res6[0].intInventoryNo}",${res6[0].intShelfNo}, ${res6[0].intCriticalLimit}, ${res6[0].productSRP}, ${res6[0].productPrice},"${req.user.intUserID}","Used Product for Replacement")`,(err10,res10,fie10)=>{
                                               if(err10) console.log(err10);
                                               else{
 

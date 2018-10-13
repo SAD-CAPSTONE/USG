@@ -1,9 +1,11 @@
 var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_admin = userTypeAuth.admin;
 
 
-router.get('/', (req,res)=>{
+router.get('/', auth_admin, (req,res)=>{
   db.query(`Select tblContract.intContractStatus as stats, tblContract.*,tblSupplier.*,S.* from tblContract join
     tblSupplier on tblContract.intConsignorID = tblSupplier.intUserID
     join tblUser as S  on tblContract.intConsignorID = S.intUserID where intContractStatus = 0
@@ -20,7 +22,7 @@ router.get('/', (req,res)=>{
     });
 });
 
-router.get('/details', (req,res)=>{
+router.get('/details',  auth_admin, (req,res)=>{
   var contract = req.query.contract;
 
   db.query(`Select * from tblContract join tblSupplier on tblContract.intConsignorID = tblSupplier.intUserID join tblUser on tblUser.intUserID = tblSupplier.intUserID join tblBusinesstype on tblbusinesstype.intBusinessTypeNo = tblSupplier.intBusinessTypeNo  where intContractno = ${contract}`, (err1,results1,fields1)=>{
@@ -30,11 +32,7 @@ router.get('/details', (req,res)=>{
   });
 });
 
-router.post('/sendInvitation', (req,res)=>{
-
-});
-
-router.post('/accept', (req,res)=>{
+router.post('/accept',  auth_admin, (req,res)=>{
   db.query(`Update tblContract set intContractStatus = 1 where intContractNo = "${req.body.no}"`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
 
@@ -47,7 +45,7 @@ router.post('/accept', (req,res)=>{
   });
 });
 
-router.post('/reevaluate',(req,res)=>{
+router.post('/reevaluate',  auth_admin,(req,res)=>{
   db.query(`Update tblContract set intContractStatus = 0 where intContractNo = "${req.body.no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     db.query(`Update tblSupplier set intStatus = 0
@@ -59,9 +57,7 @@ router.post('/reevaluate',(req,res)=>{
   })
 });
 
-
-
-router.post('/reject',(req,res)=>{
+router.post('/reject',  auth_admin, (req,res)=>{
   db.query(`Update tblContract set intContractStatus = 2 where intContractNo = "${req.body.no}"`,(err1,results1,fields1)=>{
     if (err1) console.log(err1);
 
@@ -73,7 +69,7 @@ router.post('/reject',(req,res)=>{
   })
 });
 
-router.post('/addConsignorProduct',(req,res)=>{
+router.post('/addConsignorProduct',  auth_admin, (req,res)=>{
 
   var itemNo = "0000";
   db.query(`Select * from tblProductOwnership order by intItemOwnNo desc limit 1`,(err1,results1,fields1)=>{
@@ -92,7 +88,7 @@ router.post('/addConsignorProduct',(req,res)=>{
   });
 });
 
-router.post('/updateContract',(req,res)=>{
+router.post('/updateContract',  auth_admin, (req,res)=>{
   if(req.body.type == 1){
     db.query(`Update tblContract set intProductInfoSheet = ${req.body.value} where intContractNo = "${req.body.contractno}"`,(err1,res1,fie1)=>{
       if(err1) console.log(err1);
