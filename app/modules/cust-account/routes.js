@@ -80,12 +80,15 @@ router.get('/messages', checkUser, auth_cust, (req,res)=>{
 
 router.post('/dashboard/info', checkUser, auth_cust, (req,res)=>{
   db.beginTransaction(function(err) {
+    console.log(req.body)
     let saCity = req.body.dsaCity != 'Others' ? req.body.dsaCity : req.body.dsaOthers,
     baCity = req.body.dbaCity != 'Others' ? req.body.dbaCity : req.body.dbaOthers
 
     let fname = req.body.fname, mname = req.body.mname, lname = req.body.lname, email = req.body.email,
     dsa = `${saCity} - ${req.body.dsa}`, dba = `${baCity} - ${req.body.dba}`,
     phone = req.body.phone.replace(/-/g, ""), mobile = req.body.mobile
+
+    req.body.sameAddress ? dba = dsa : 0
 
     if (err) console.log(err);
     db.query(`UPDATE tbluser SET strFname= ?, strMname= ?, strLname= ?, strEmail= ? WHERE intUserID= ?`,

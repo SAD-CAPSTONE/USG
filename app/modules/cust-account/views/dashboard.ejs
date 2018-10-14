@@ -125,7 +125,7 @@
               </div>
             </div>
             <div class="col-7">
-              <% if (!sAddress && thisUserContact.strShippingAddress){ %>
+              <% if (thisUserContact.strShippingAddress){ %>
                 <input id="dsa" type="text" name="dsa" value="<%= thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[1]%>"
                 placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" maxLength="80" required/>
               <% }else{ %>
@@ -134,7 +134,12 @@
             </div>
           </div>
 
-          <label for="dba" class="required-field"><b>Default Billing Address</b></label>
+          <div class="form-check mb-2">
+            <input id="sameAddress" type="checkbox" name="sameAddress" class="form-check-input" style="margin-top: .2rem"/>
+            <label for="sameAddress" class="form-check-label fs-08em fw-400">Use same address on both shipping and billing</label>
+          </div>
+
+          <label id="billing-label" for="dba" class="required-field"><b>Default Billing Address</b></label>
           <div class="row">
             <div class="col-5">
               <select id="dbaCity" type="text" name="dbaCity" class="form-control custom-select-2 mb-3">
@@ -264,6 +269,21 @@
     $(this).closest(`.row`).find(`.others-div > input`).removeAttr('required');
     let firstOption = $(this).closest(`.row`).find(`select > option:nth-child(1)`).val()
     $(this).closest(`.row`).find(`select`).val(firstOption)
+  })
+
+  $(`#sameAddress`).click(function(){
+    if ($(this).is(':checked')){
+      $(`#dba`).removeAttr('required');
+      $(`#billing-label`).attr('hidden','hidden');
+      $(`#billing-label + div.row`).attr('hidden','hidden');
+
+    }
+    else {
+      $(`#dba`).attr('required','required');
+      $(`#billing-label`).removeAttr('hidden');
+      $(`#billing-label + div.row`).removeAttr('hidden');
+
+    }
   })
 
 </script>

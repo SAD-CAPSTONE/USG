@@ -756,6 +756,9 @@ router.post('/checkout/address', checkUser, (req,res)=>{
   let saCity = req.body.saCity != 'Others' ? req.body.saCity : req.body.saOthers,
   baCity = req.body.baCity != 'Others' ? req.body.baCity : req.body.baOthers
   let sa = `${saCity} - ${req.body.sa}`, ba = `${baCity} - ${req.body.ba}`
+
+  req.body.sameAddress ? ba = sa : 0
+
   db.query(`UPDATE tblcustomer SET strShippingAddress= ?, strBillingAddress= ? WHERE intUserID= ?`,
     [sa, ba, req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
