@@ -14,6 +14,31 @@ function sizeString(obj){
   return curSize;
 }
 
+function totalCheckUser (req, res, next){
+  if(req.params.type == 'total'){
+    if(!req.user){
+      req.session.pendRoute = 2;
+      req.flash('regSuccess', 'Login to proceed to Checkout');
+      res.redirect('/login');
+    }
+    else{
+      req.session.pendRoute = 0;
+      return next();
+    }
+  }
+  else {
+    req.session.pendRoute = 0;
+    return next();
+  }
+}
+function defaultFee (req, res, next){
+  db.query(`SELECT shippingFee FROM tbladmin WHERE intUserID= 1000`, (err,results,fields)=>{
+    if (err) console.log(err);
+    req.defaultFee = results[0].shippingFee;
+    return next();
+  });
+}
+
 router.get('/limit', (req, res)=>{
   res.send({quantLimit: quantLimit})
 });
@@ -241,23 +266,55 @@ router.delete('/list', (req, res)=>{
   });
   res.send({cart: req.session.cart.length, inv: inv})
 });
-router.get('/list/total/:type', (req, res)=>{
+router.get('/list/total/:type', totalCheckUser, defaultFee, (req, res)=>{
   req.session.cart ? 0 : req.session.cart = [];
   let subtotal = req.session.cart ?
     req.session.cart.reduce((temp, obj)=>{
       return temp + (obj.curPrice * obj.curQty);
     },0) : 0
-  let fee = 100.00;
-  length = req.session.cart.reduce((temp, obj)=>{
-    return temp += obj.curQty
-  },0);
-  req.params.type == 'total' ?
-    res.send({
-      cartLength: length,
-      subtotal: priceFormat(subtotal.toFixed(2)),
-      fee: priceFormat(fee.toFixed(2)),
-      total: priceFormat((subtotal+fee).toFixed(2)) }) :
-    res.send({subtotal: priceFormat(subtotal.toFixed(2))})
+  let fee = parseFloat(req.defaultFee);
+  if (req.params.type == 'total'){
+    db.query(`SELECT strShippingAddress FROM tblcustomer WHERE intUserID = ?`,
+      [req.user.intUserID], (err,addressResults,fields)=>{
+      if (err) console.log(err);
+      if (addressResults[0]){
+        if (addressResults[0].strShippingAddress){
+          db.query(`SELECT strLocation, amount FROM tblshippingfee WHERE intStatus= 1 AND strLocation= ?`,
+            [addressResults[0].strShippingAddress.split(/\s-\s(.*)/g)[0]], (err,locationResults,fields)=>{
+            if (err) console.log(err);
+            if (locationResults[0]){
+              fee = parseFloat(locationResults[0].amount)
+            }
+            renderTotal()
+          });
+        }
+        else {
+          fee = 0
+          renderTotal()
+        }
+      }
+      else {
+        fee = 0
+        renderTotal()
+      }
+    });
+  }
+  else{
+    renderTotal()
+  }
+  function renderTotal(){
+    console.log('xxxxxxx')
+    length = req.session.cart.reduce((temp, obj)=>{
+      return temp += obj.curQty
+    },0);
+    req.params.type == 'total' ?
+      res.send({
+        cartLength: length,
+        subtotal: priceFormat(subtotal.toFixed(2)),
+        fee: priceFormat(fee.toFixed(2)),
+        total: priceFormat((subtotal+fee).toFixed(2)) }) :
+      res.send({subtotal: priceFormat(subtotal.toFixed(2))})
+  }
 });
 
 router.get('/item-inv/:inv', (req, res)=>{

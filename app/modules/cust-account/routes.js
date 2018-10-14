@@ -7,7 +7,7 @@ const userTypeAuth = require('../cust-0extras/userTypeAuth');
 const auth_cust = userTypeAuth.cust;
 const pageLimit = 10;
 const orderQuery = `SELECT tblorder.intStatus AS Status, IF(discountPrice IS NOT NULL, totalOriginalPrice-discountPrice, totalOriginalPrice)totalPrice,
-  tblorder.* FROM tbluser INNER JOIN tblorder ON tbluser.intUserID= tblorder.intUserID INNER JOIN (
+  tblorder.*, (tblorder.shippingFee)shipping FROM tbluser INNER JOIN tblorder ON tbluser.intUserID= tblorder.intUserID INNER JOIN (
   SELECT SUM(purchasePrice*intQuantity)totalOriginalPrice, SUM(purchasePrice*discount*0.01*intQuantity)discountPrice,
   tblorder.intOrderNo FROM tblorder INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
   GROUP BY tblorder.intOrderNo )Price ON tblorder.intOrderNo= Price.intOrderNo WHERE tblorder.intUserID = ? `
@@ -41,10 +41,23 @@ function locations (req, res, next){
 }
 
 router.get('/dashboard', checkUser, auth_cust, contactDetails, locations, (req,res)=>{
+  sAddress =
+    req.contactDetails.strShippingAddress ?
+      req.locations.reduce((temp,data)=>{
+        return data.strLocation == req.contactDetails.strShippingAddress.split(/\s-\s(.*)/g)[0] ? 1 : temp
+      },0) : 1
+  bAddress =
+    req.contactDetails.strBillingAddress ?
+      req.locations.reduce((temp,data)=>{
+        return data.strLocation == req.contactDetails.strBillingAddress.split(/\s-\s(.*)/g)[0] ? 1 : temp
+      },0) : 1
+
   res.render('cust-account/views/dashboard', {
     thisUser: req.user,
     thisUserContact: req.contactDetails,
-    locations: req.locations
+    locations: req.locations,
+    sAddress: sAddress,
+    bAddress: bAddress
   });
 });
 router.get('/orders', checkUser, auth_cust, (req,res)=>{
@@ -67,8 +80,11 @@ router.get('/messages', checkUser, auth_cust, (req,res)=>{
 
 router.post('/dashboard/info', checkUser, auth_cust, (req,res)=>{
   db.beginTransaction(function(err) {
+    let saCity = req.body.dsaCity != 'Others' ? req.body.dsaCity : req.body.dsaOthers,
+    baCity = req.body.dbaCity != 'Others' ? req.body.dbaCity : req.body.dbaOthers
+
     let fname = req.body.fname, mname = req.body.mname, lname = req.body.lname, email = req.body.email,
-    dsa = `${req.body.dsaCity} - ${req.body.dsa}`, dba = `${req.body.dbaCity} - ${req.body.dba}`,
+    dsa = `${saCity} - ${req.body.dsa}`, dba = `${baCity} - ${req.body.dba}`,
     phone = req.body.phone.replace(/-/g, ""), mobile = req.body.mobile
 
     if (err) console.log(err);
@@ -154,8 +170,12 @@ router.post('/orders/load', checkUser, (req,res)=>{
       // console.log(limitQuery)
       db.query(limitQuery, [req.user.intUserID], (err,results,fields)=>{
         if (err) console.log(err);
-        results[0] ? results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('LL') ) : 0;
-        results[0] ? results.map( obj => obj.totalPrice = priceFormat(obj.totalPrice.toFixed(2)) ) : 0;
+        if(results[0]){
+          results.forEach((obj)=>{
+            obj.dateOrdered = moment(obj.dateOrdered).format('LL');
+            obj.totalPrice = priceFormat((parseFloat(obj.shipping)+parseFloat(obj.totalPrice)).toFixed(2));
+          })
+        }
         db.commit(function(err) {
           if (err) console.log(err);
           res.send({config: config, orders: results})

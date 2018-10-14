@@ -544,7 +544,6 @@ body {
   margin-right: auto;
 }
 
-
 /* Navbar ----------------------------------------------------- */
 .navbar {
   z-index: 20;
@@ -699,6 +698,15 @@ table thead th {
 }
 table th, table td {
   border: 1px solid #ECEFF0;
+}
+
+/* Account Dashboard */
+.others-div input {
+  float: right;
+  width: calc(100% - (35px));
+}
+.others-div button {
+  float: left;
 }
 
 /* Account Orders */

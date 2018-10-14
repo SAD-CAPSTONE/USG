@@ -134,10 +134,10 @@
       <p class="fl-r mb-0 fs-09em fw-400 lh-p3em">#<%= orderNumber%></p>
       <div style="clear: both"></div>
       <small class="label">Subtotal (<%= orderLength%>)</small>
-      <small class="price price-symbol"><%= orderTotal%></small>
+      <small class="price price-symbol"><%= orderTotal.subtotal%></small>
       <br>
       <small class="label">Shipping Fee</small>
-      <small class="price price-symbol">0.00</small>
+      <small class="price price-symbol"><%= orderTotal.shipping%></small>
       <br>
       <small class="label label-total">Total</small>
       <% if(orderOne.intPaymentMethod == 1){ %>
@@ -145,7 +145,7 @@
       <% }else{ %>
         <small id="payment-method">Bank Deposit</small>
       <% } %>
-      <small class="price total price-symbol"><%= orderTotal%></small>
+      <small class="price total price-symbol"><%= orderTotal.total%></small>
       <div class="pos-relative mb-3">
         <small class="text-muted price vat block">VAT applied</small>
       </div>
@@ -458,6 +458,12 @@
       doc.text(unitX, newY, `VAT(12%)`, 'right');
       doc.setFont('Poppins-Light');
       doc.text(amntX, newY, `${res.vat}`, 'right'); newY+= gap;
+
+      if (newY > 275){doc.addPage(); newY = 22;}
+      doc.setFont('Poppins-Regular');
+      doc.text(unitX, newY, `Shipping Fee`, 'right');
+      doc.setFont('Poppins-Light');
+      doc.text(amntX, newY, `${res.shipping}`, 'right'); newY+= gap;
 
       if (newY > 275){doc.addPage(); newY = 22;}
       doc.setFont('Poppins-Regular');

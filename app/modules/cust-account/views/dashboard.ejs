@@ -4,15 +4,6 @@
   #sidebar>.row>.col:first-of-type>a:nth-of-type(1)>h5 {
     border-left: 4px solid var(--primary-color);
   }
-
-  .others-div input {
-    float: right;
-    width: calc(100% - (35px));
-  }
-  .others-div button {
-    float: left;
-  }
-
 </style>
 
 <!-- main content title -->
@@ -111,8 +102,12 @@
             <div class="col-5">
               <select id="dsaCity" type="text" name="dsaCity" class="form-control custom-select-2 mb-3">
                 <% locations.forEach((data)=>{ %>
-                  <% if (data.strLocation == thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[0]){ %>
-                    <option value="<%= data.strLocation%>" selected><%= data.strLocation%></option>
+                  <% if (thisUserContact.strShippingAddress){ %>
+                    <% if (data.strLocation == thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[0]){ %>
+                      <option value="<%= data.strLocation%>" selected><%= data.strLocation%></option>
+                    <% }else{ %>
+                      <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
+                    <% } %>
                   <% }else{ %>
                     <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
                   <% } %>
@@ -121,20 +116,35 @@
               </select>
               <div class="others-div" hidden>
                 <button type="button" name="button" class="btn btn-sm mt-1"><i class="fas fa-times"></i></button>
-                <input type="text" name="dsa-others" value="" placeholder="City" class="form-control material mb-3 simple" />
+                <% if (!sAddress && thisUserContact.strShippingAddress){ %>
+                  <input type="text" name="dsaOthers" value="<%= thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[0]%>"
+                  placeholder="City" class="form-control material mb-3 simple" maxLength="15" />
+                <% }else{ %>
+                  <input type="text" name="dsaOthers" value="" placeholder="City" class="form-control material mb-3 simple" maxLength="15" />
+                <% } %>
               </div>
             </div>
             <div class="col-7">
-              <input id="dsa" type="text" name="dsa" value="<%= thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[1]%>" placeholder="House#/Lot/Blk St. Bgy."   class="form-control material mb-3 simple" required/>
+              <% if (!sAddress && thisUserContact.strShippingAddress){ %>
+                <input id="dsa" type="text" name="dsa" value="<%= thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[1]%>"
+                placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" maxLength="80" required/>
+              <% }else{ %>
+                <input id="dsa" type="text" name="dsa" placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" maxLength="80" required/>
+              <% } %>
             </div>
           </div>
+
           <label for="dba" class="required-field"><b>Default Billing Address</b></label>
           <div class="row">
             <div class="col-5">
               <select id="dbaCity" type="text" name="dbaCity" class="form-control custom-select-2 mb-3">
                 <% locations.forEach((data)=>{ %>
-                  <% if (data.strLocation == thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[0]){ %>
-                    <option value="<%= data.strLocation%>" selected><%= data.strLocation%></option>
+                  <% if (thisUserContact.strBillingAddress){ %>
+                    <% if (data.strLocation == thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[0]){ %>
+                      <option value="<%= data.strLocation%>" selected><%= data.strLocation%></option>
+                    <% }else{ %>
+                      <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
+                    <% } %>
                   <% }else{ %>
                     <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
                   <% } %>
@@ -143,13 +153,24 @@
               </select>
               <div class="others-div" hidden>
                 <button type="button" name="button" class="btn btn-sm mt-1"><i class="fas fa-times"></i></button>
-                <input type="text" name="dba-others" value="" placeholder="City" class="form-control material mb-3 simple" />
+                <% if (!bAddress && thisUserContact.strBillingAddress){ %>
+                  <input type="text" name="dbaOthers" value="<%= thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[0]%>"
+                  placeholder="City" class="form-control material mb-3 simple" maxLength="15" />
+                <% }else{ %>
+                  <input type="text" name="dbaOthers" value="" placeholder="City" class="form-control material mb-3 simple" maxLength="15" />
+                <% } %>
               </div>
             </div>
             <div class="col-7">
-              <input id="dba" type="text" name="dba" value="<%= thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[1]%>" placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" required/>
+              <% if (thisUserContact.strBillingAddress){ %>
+                <input id="dba" type="text" name="dba" value="<%= thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[1]%>"
+                placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" maxLength="80" required/>
+              <% }else{ %>
+                <input id="dba" type="text" name="dba" placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" maxLength="80" required/>
+              <% } %>
             </div>
           </div>
+
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-custom-primary">Submit</button>
@@ -171,63 +192,79 @@
   $(document).ready(function(){
     $('#phone').inputmask("999-9999", {placeholder: 'XXX-XXXX'});
     $('#mobile').inputmask({placeholder: '09XXXXXXXXX'});
-
     $('#email').inputmask()
-    $('input.simple').keypress(function(event){
-      if ($(this).val().length == 0 && event.which == '32'){
-        event.preventDefault();
-      }
-    });
-    $('input.simple').keyup(function(event){
-      function ltrim(str) {
-        if(str == null) return str;
-        return str.replace(/^\s+/g, '');
-      }
-      $(this).val(ltrim($(this).val()))
-    });
 
-    $('#email').keyup(function(){
-      checkUserInfo()
-    })
+    let sAddress = <%= sAddress%>, bAddress = <%= bAddress%>
 
-    function checkUserInfo(){
-      $.post(`/account/dashboard/checkInfo`,{
-        email: $('#email').val()
-      }).then((res)=>{
-        if (res.email){
-          $(`#EditInfo button[type=submit]`).attr('disabled','disabled')
-          $('label[for=email]').next(`label[for=emailCheck]`).remove()
-          $('label[for=email]').after(`
-            <label for=emailCheck class="fs-08em text-danger ml-3"><b>${res.email}</b></label>
-            `)
-        }
-        else{
-          $(`#EditInfo button[type=submit]`).removeAttr('disabled')
-          $('label[for=email]').next(`label[for=emailCheck]`).remove()
-        }
-
-      }).catch((err)=>{
-        console.log(err)
-      })
+    if (!sAddress){
+      $(`select#dsaCity`).val('Others')
+      $(`select#dsaCity`).attr('hidden','hidden');
+      $(`select#dsaCity`).next(`.others-div`).removeAttr('hidden');
+      $(`select#dsaCity`).next(`.others-div`).find(`input`).attr('required','required');
     }
 
-    $(`select`).change(function(){
-      if ($(this).val() == 'Others'){
-        $(this).attr('hidden','hidden');
-        $(this).next(`.others-div`).removeAttr('hidden');
-        $(this).next(`.others-div`).find(`input`).attr('required','required');
-      }
-    })
-
-    $(`.others-div button`).click(function(){
-      $(this).closest(`.row`).find(`.others-div`).attr('hidden','hidden');
-      $(this).closest(`.row`).find(`select`).removeAttr('hidden');
-      $(this).closest(`.row`).find(`.others-div > input`).removeAttr('required');
-      let firstOption = $(this).closest(`.row`).find(`select > option:nth-child(1)`).val()
-      $(this).closest(`.row`).find(`select`).val(firstOption)
-    })
-
+    if (!bAddress){
+      $(`select#dbaCity`).val('Others')
+      $(`select#dbaCity`).attr('hidden','hidden');
+      $(`select#dbaCity`).next(`.others-div`).removeAttr('hidden');
+      $(`select#dbaCity`).next(`.others-div`).find(`input`).attr('required','required');
+    }
 
   });
+
+  $('input.simple').keypress(function(event){
+    if ($(this).val().length == 0 && event.which == '32'){
+      event.preventDefault();
+    }
+  });
+  $('input.simple').keyup(function(event){
+    function ltrim(str) {
+      if(str == null) return str;
+      return str.replace(/^\s+/g, '');
+    }
+    $(this).val(ltrim($(this).val()))
+  });
+
+  $('#email').keyup(function(){
+    checkUserInfo()
+  })
+
+  function checkUserInfo(){
+    $.post(`/account/dashboard/checkInfo`,{
+      email: $('#email').val()
+    }).then((res)=>{
+      if (res.email){
+        $(`#EditInfo button[type=submit]`).attr('disabled','disabled')
+        $('label[for=email]').next(`label[for=emailCheck]`).remove()
+        $('label[for=email]').after(`
+          <label for=emailCheck class="fs-08em text-danger ml-3"><b>${res.email}</b></label>
+          `)
+      }
+      else{
+        $(`#EditInfo button[type=submit]`).removeAttr('disabled')
+        $('label[for=email]').next(`label[for=emailCheck]`).remove()
+      }
+
+    }).catch((err)=>{
+      console.log(err)
+    })
+  }
+
+  $(`select`).change(function(){
+    if ($(this).val() == 'Others'){
+      $(this).attr('hidden','hidden');
+      $(this).next(`.others-div`).removeAttr('hidden');
+      $(this).next(`.others-div`).find(`input`).attr('required','required');
+    }
+  })
+
+  $(`.others-div button`).click(function(){
+    $(this).closest(`.row`).find(`.others-div`).attr('hidden','hidden');
+    $(this).closest(`.row`).find(`select`).removeAttr('hidden');
+    $(this).closest(`.row`).find(`.others-div > input`).removeAttr('required');
+    let firstOption = $(this).closest(`.row`).find(`select > option:nth-child(1)`).val()
+    $(this).closest(`.row`).find(`select`).val(firstOption)
+  })
+
 </script>
 <%- include('../../../templates/closer.ejs') -%>
