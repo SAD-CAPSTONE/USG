@@ -4,6 +4,15 @@
   #sidebar>.row>.col:first-of-type>a:nth-of-type(1)>h5 {
     border-left: 4px solid var(--primary-color);
   }
+
+  .others-div input {
+    float: right;
+    width: calc(100% - (35px));
+  }
+  .others-div button {
+    float: left;
+  }
+
 </style>
 
 <!-- main content title -->
@@ -97,7 +106,7 @@
           <label for="email" class="required-field"><b>Email</b></label>
           <input id="email" type="text" name="email" pattern="^[a-z0-9.+-]+@([a-z0-9-]+\.)+[a-z]{2,4}$" data-inputmask-regex="[a-z0-9.+-]+@([a-z0-9-]+\.)+[a-z]{2,4}" value="<%= thisUser.strEmail%>" required="" class="form-control material mb-3" maxLength="100" />
 
-          <label for="dsa"><b>Default Shipping Address</b></label>
+          <label for="dsa" class="required-field"><b>Default Shipping Address</b></label>
           <div class="row">
             <div class="col-5">
               <select id="dsaCity" type="text" name="dsaCity" class="form-control custom-select-2 mb-3">
@@ -108,13 +117,18 @@
                     <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
                   <% } %>
                 <% }) %>
+                <option value="Others">Others</option>
               </select>
+              <div class="others-div" hidden>
+                <button type="button" name="button" class="btn btn-sm mt-1"><i class="fas fa-times"></i></button>
+                <input type="text" name="dsa-others" value="" placeholder="City" class="form-control material mb-3 simple" />
+              </div>
             </div>
             <div class="col-7">
               <input id="dsa" type="text" name="dsa" value="<%= thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[1]%>" placeholder="House#/Lot/Blk St. Bgy."   class="form-control material mb-3 simple" required/>
             </div>
           </div>
-          <label for="dba"><b>Default Billing Address</b></label>
+          <label for="dba" class="required-field"><b>Default Billing Address</b></label>
           <div class="row">
             <div class="col-5">
               <select id="dbaCity" type="text" name="dbaCity" class="form-control custom-select-2 mb-3">
@@ -125,7 +139,12 @@
                     <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
                   <% } %>
                 <% }) %>
+                <option value="Others">Others</option>
               </select>
+              <div class="others-div" hidden>
+                <button type="button" name="button" class="btn btn-sm mt-1"><i class="fas fa-times"></i></button>
+                <input type="text" name="dba-others" value="" placeholder="City" class="form-control material mb-3 simple" />
+              </div>
             </div>
             <div class="col-7">
               <input id="dba" type="text" name="dba" value="<%= thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[1]%>" placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" required/>
@@ -191,6 +210,24 @@
         console.log(err)
       })
     }
+
+    $(`select`).change(function(){
+      if ($(this).val() == 'Others'){
+        $(this).attr('hidden','hidden');
+        $(this).next(`.others-div`).removeAttr('hidden');
+        $(this).next(`.others-div`).find(`input`).attr('required','required');
+      }
+    })
+
+    $(`.others-div button`).click(function(){
+      $(this).closest(`.row`).find(`.others-div`).attr('hidden','hidden');
+      $(this).closest(`.row`).find(`select`).removeAttr('hidden');
+      $(this).closest(`.row`).find(`.others-div > input`).removeAttr('required');
+      let firstOption = $(this).closest(`.row`).find(`select > option:nth-child(1)`).val()
+      $(this).closest(`.row`).find(`select`).val(firstOption)
+    })
+
+
   });
 </script>
 <%- include('../../../templates/closer.ejs') -%>
