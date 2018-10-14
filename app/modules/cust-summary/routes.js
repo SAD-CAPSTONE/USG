@@ -309,6 +309,13 @@ function thisReturnPackages (req, res, next){
     return next();
   });
 }
+function locations (req, res, next){
+  db.query(`SELECT strLocation FROM tblshippingfee WHERE intStatus= 1 ORDER BY strLocation`, (err, results, fields) => {
+    if (err) console.log(err);
+    req.locations = results;
+    return next();
+  });
+}
 
 function popularProducts(req,res,next){
   /*Most Popular Products;
@@ -394,7 +401,7 @@ function packages(req,res,next){
   });
 }
 
-router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>{
+router.get('/checkout', checkUser, auth_cust, contactDetails, admin, locations, (req,res)=>{
   let notices = [
     `Products will be delivered within ${req.admin.deliveryPeriod} working day/s`,
     `Remember to refresh list before placing order`,
@@ -405,7 +412,8 @@ router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>
     thisUser: req.user,
     thisUserContact: req.contactDetails,
     admin: req.admin,
-    notices: notices
+    notices: notices,
+    locations: req.locations
   });
 });
 router.get('/order/:orderNo', checkUserOrder, auth_cust, orderTotal, replaceable, orderPackages, orderProducts, admin, (req,res)=>{
@@ -696,8 +704,9 @@ router.post('/checkout', checkUser, auth_cust, cartCheck, contactDetails, newOrd
   });
 });
 router.post('/checkout/address', checkUser, (req,res)=>{
+  let sa = `${req.body.saCity} - ${req.body.sa}`, ba = `${req.body.baCity} - ${req.body.ba}`
   db.query(`UPDATE tblcustomer SET strShippingAddress= ?, strBillingAddress= ? WHERE intUserID= ?`,
-    [req.body.sa, req.body.ba, req.user.intUserID], (err, results, fields) => {
+    [sa, ba, req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
     res.redirect('/summary/checkout');
   });

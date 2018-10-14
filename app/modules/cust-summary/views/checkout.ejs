@@ -77,7 +77,7 @@
         <small class="required-field">Shipping Address</small>
       </div>
       <small class="address block px-1 mb-1">
-        <% if(thisUserContact.strShippingAddress){ %>
+        <% if(thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[1]){ %>
           <%= thisUserContact.strShippingAddress%>
         <% }else{ %>
           <em>Shipping Address not set</em>
@@ -86,7 +86,7 @@
 
       <small class="required-field">Billing Address</small>
       <small class="address block px-1 mb-1">
-        <% if(thisUserContact.strBillingAddress){ %>
+        <% if(thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[1]){ %>
           <%= thisUserContact.strBillingAddress%>
         <% }else{ %>
           <em>Billing Address not set</em>
@@ -123,15 +123,13 @@
             <small class="ml-3">Bank Deposit</small>
           </label>
         </div>
-        <% if(thisUserContact.strShippingAddress && thisUserContact.strBillingAddress){ %>
+        <% if(thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[1] && thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[1]){ %>
           <a id="checkoutErr2" href="/store" class="text-danger"></a>
           <button id="place-order" type="button" class="btn btn-custom-primary btn-sm btn-block sb-1"
           data-toggle="modal" data-target="#OrderConfirmation">Place Order</button>
-
         <% }else{ %>
           <a id="checkoutErr1" href="#Shipping&Billing" class="text-danger"><p class="mb-1 fs-08em fw-400" style="margin-top: -10;"><em>Shipping and Billing address not set</em></p></a>
           <a id="checkoutErr2" href="/store" class="text-danger"></a>
-          <!-- <p class="mb-1 fs-08em fw-400" style="margin-top: -10;"><em>Shipping and Billing address not set</em></p> -->
           <button id="place-order" type="button" class="btn btn-custom-primary btn-sm btn-block sb-0">Place Order</button>
         <% } %>
         <div id="OrderConfirmation" tabindex="-1" role="dialog" aria-labelledby="OrderConfirmationTitle" aria-hidden="true" class="modal fade">
@@ -183,10 +181,42 @@
         </div>
         <div class="modal-body">
           <label for="dsa" class="required-field"><b>Shipping Address</b></label>
-          <input id="dsa" type="text" name="sa" value="<%= thisUserContact.strShippingAddress%>" class="form-control material mb-3" minlength="10" maxlength="100" required/>
+          <div class="row">
+            <div class="col-5">
+              <select id="saCity" type="text" name="saCity" class="form-control custom-select-2 mb-3">
+                <% locations.forEach((data)=>{ %>
+                  <% if (data.strLocation == thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[0]){ %>
+                    <option value="<%= data.strLocation%>" selected><%= data.strLocation%></option>
+                  <% }else{ %>
+                    <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
+                  <% } %>
+                <% }) %>
+              </select>
+            </div>
+            <div class="col-7">
+              <input id="sa" type="text" name="sa" placeholder="House#/Lot/Blk St. Bgy." value="<%= thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[1]%>" class="form-control material mb-3 simple" required/>
+            </div>
+          </div>
+          <!-- <input id="dsa" type="text" name="sa" value="<%= thisUserContact.strShippingAddress%>" class="form-control material mb-3" minlength="10" maxlength="100" required/> -->
 
           <label for="dba" class="required-field"><b>Billing Address</b></label>
-          <input id="dba" type="text" name="ba" value="<%= thisUserContact.strBillingAddress%>" class="form-control material mb-3" minlength="10" maxlength="100" required/>
+          <div class="row">
+            <div class="col-5">
+              <select id="baCity" type="text" name="baCity" class="form-control custom-select-2 mb-3">
+                <% locations.forEach((data)=>{ %>
+                  <% if (data.strLocation == thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[0]){ %>
+                    <option value="<%= data.strLocation%>" selected><%= data.strLocation%></option>
+                  <% }else{ %>
+                    <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
+                  <% } %>
+                <% }) %>
+              </select>
+            </div>
+            <div class="col-7">
+              <input id="ba" type="text" name="ba" placeholder="House#/Lot/Blk St. Bgy." value="<%= thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[1]%>" class="form-control material mb-3 simple" required/>
+            </div>
+          </div>
+          <!-- <input id="dba" type="text" name="ba" value="<%= thisUserContact.strBillingAddress%>" class="form-control material mb-3" minlength="10" maxlength="100" required/> -->
         </div>
         <div class="modal-footer">
           <!-- <a href="/home">

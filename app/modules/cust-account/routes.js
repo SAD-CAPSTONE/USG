@@ -32,9 +32,20 @@ function contactDetails (req, res, next){
     return next();
   });
 }
+function locations (req, res, next){
+  db.query(`SELECT strLocation FROM tblshippingfee WHERE intStatus= 1 ORDER BY strLocation`, (err, results, fields) => {
+    if (err) console.log(err);
+    req.locations = results;
+    return next();
+  });
+}
 
-router.get('/dashboard', checkUser, auth_cust, contactDetails, (req,res)=>{
-  res.render('cust-account/views/dashboard', {thisUser: req.user, thisUserContact: req.contactDetails});
+router.get('/dashboard', checkUser, auth_cust, contactDetails, locations, (req,res)=>{
+  res.render('cust-account/views/dashboard', {
+    thisUser: req.user,
+    thisUserContact: req.contactDetails,
+    locations: req.locations
+  });
 });
 router.get('/orders', checkUser, auth_cust, (req,res)=>{
   res.render('cust-account/views/orders', {thisUser: req.user});
@@ -57,8 +68,9 @@ router.get('/messages', checkUser, auth_cust, (req,res)=>{
 router.post('/dashboard/info', checkUser, auth_cust, (req,res)=>{
   db.beginTransaction(function(err) {
     let fname = req.body.fname, mname = req.body.mname, lname = req.body.lname, email = req.body.email,
-    dsa = `${req.body.dsaCity} ${req.body.dsa}`, dba = `${req.body.dbaCity} ${req.body.dba}`,
+    dsa = `${req.body.dsaCity} - ${req.body.dsa}`, dba = `${req.body.dbaCity} - ${req.body.dba}`,
     phone = req.body.phone.replace(/-/g, ""), mobile = req.body.mobile
+
     if (err) console.log(err);
     db.query(`UPDATE tbluser SET strFname= ?, strMname= ?, strLname= ?, strEmail= ? WHERE intUserID= ?`,
       [fname, mname, lname, email, req.user.intUserID], (err, results, fields) => {

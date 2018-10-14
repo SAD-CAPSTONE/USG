@@ -101,37 +101,34 @@
           <div class="row">
             <div class="col-5">
               <select id="dsaCity" type="text" name="dsaCity" class="form-control custom-select-2 mb-3">
-                <option value="Mandaluyong">Mandaluyong</option>
-                <option value="Manila">Manila</option>
-                <option value="Marikina">Marikina</option>
-                <option value="Pasay">Pasay</option>
-                <option value="Pasig">Pasig</option>
-                <option value="Pateros">Pateros</option>
-                <option value="Quezon">Quezon</option>
-                <option value="Taguig">Taguig</option>
+                <% locations.forEach((data)=>{ %>
+                  <% if (data.strLocation == thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[0]){ %>
+                    <option value="<%= data.strLocation%>" selected><%= data.strLocation%></option>
+                  <% }else{ %>
+                    <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
+                  <% } %>
+                <% }) %>
               </select>
             </div>
             <div class="col-7">
-              <input id="dsa" type="text" name="dsa" value="<%= thisUserContact.strShippingAddress.substr(thisUserContact.strShippingAddress.indexOf(" ") + 1)%>" class="form-control material mb-3 simple" />
+              <input id="dsa" type="text" name="dsa" value="<%= thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[1]%>" placeholder="House#/Lot/Blk St. Bgy."   class="form-control material mb-3 simple" required/>
             </div>
           </div>
           <label for="dba"><b>Default Billing Address</b></label>
           <div class="row">
             <div class="col-5">
-              <!-- <%= thisUserContact.strBillingAddress.replace(/ .*/,'') %> -->
               <select id="dbaCity" type="text" name="dbaCity" class="form-control custom-select-2 mb-3">
-                <option value="Mandaluyong">Mandaluyong</option>
-                <option value="Manila">Manila</option>
-                <option value="Marikina">Marikina</option>
-                <option value="Pasay">Pasay</option>
-                <option value="Pasig">Pasig</option>
-                <option value="Pateros">Pateros</option>
-                <option value="Quezon">Quezon</option>
-                <option value="Taguig">Taguig</option>
+                <% locations.forEach((data)=>{ %>
+                  <% if (data.strLocation == thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[0]){ %>
+                    <option value="<%= data.strLocation%>" selected><%= data.strLocation%></option>
+                  <% }else{ %>
+                    <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
+                  <% } %>
+                <% }) %>
               </select>
             </div>
             <div class="col-7">
-              <input id="dba" type="text" name="dba" value="<%= thisUserContact.strBillingAddress.substr(thisUserContact.strBillingAddress.indexOf(" ") + 1)%>" class="form-control material mb-3 simple" />
+              <input id="dba" type="text" name="dba" value="<%= thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[1]%>" placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" required/>
             </div>
           </div>
         </div>

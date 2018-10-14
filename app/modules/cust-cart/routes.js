@@ -247,7 +247,7 @@ router.get('/list/total/:type', (req, res)=>{
     req.session.cart.reduce((temp, obj)=>{
       return temp + (obj.curPrice * obj.curQty);
     },0) : 0
-  let fee = 0.00;
+  let fee = 100.00;
   length = req.session.cart.reduce((temp, obj)=>{
     return temp += obj.curQty
   },0);
