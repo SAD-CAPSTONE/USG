@@ -2,8 +2,10 @@ var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
 var async = require('async');
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_admin = userTypeAuth.admin;
 
-router.get('/',(req,res)=>{
+router.get('/', auth_admin, (req,res)=>{
   // All consignors
   db.query(`Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID where tblUser.intUserTypeNo = 2 and tblSupplier.intSupplierType = 1
     and tblSupplier.intStatus = 1`,(err1,res1,fie1)=>{
@@ -14,7 +16,7 @@ router.get('/',(req,res)=>{
     })
 })
 
-router.get('/paymentRecieptForm',(req,res)=>{
+router.get('/paymentRecieptForm', auth_admin, (req,res)=>{
   var lastRecord = 1000;
   db.query(`Select * from tblConsignorPayment order by intConsignorPaymentNo desc limit 1`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
@@ -32,7 +34,7 @@ router.get('/paymentRecieptForm',(req,res)=>{
   })
 });
 
-router.post('/submitForm',(req,res)=>{
+router.post('/submitForm',auth_admin, (req,res)=>{
   var pr_no ="1000", count = 0, prlist_no = "1000";
   var loop = req.body.description;
   db.beginTransaction(function(err){
@@ -51,7 +53,7 @@ router.post('/submitForm',(req,res)=>{
               else { prlist_no = parseInt(res3[0].intConsPaymentListNo) + 1;}
 
               db.query(`Insert into tblConsignorPayment (intConsignorPaymentNo, intAdminID, intConsignorID, intStatus)
-                values ("${pr_no}", "1000", "${req.body.supplier}", 0)`,(err2,res2,fie2)=>{
+                values ("${pr_no}", "${req.user.intUserID}", "${req.body.supplier}", 0)`,(err2,res2,fie2)=>{
                 if(err2) console.log(err2);
                 else{
 
@@ -86,11 +88,11 @@ router.post('/submitForm',(req,res)=>{
   })
 });
 
-router.get('/viewSales',(req,res)=>{
+router.get('/viewSales',auth_admin, (req,res)=>{
   res.render('admin-consSales/views/viewSales');
 });
 
-router.get('/viewPayments',(req,res)=>{
+router.get('/viewPayments',auth_admin, (req,res)=>{
   db.query(`Select sum(amount) as total, tblConsignorPayment.*, tblConsignmentPaymentList.* from tblConsignorPayment
     join tblConsignmentPaymentList on tblConsignorPayment.intConsignorPaymentNo = tblConsignmentPaymentList.intConsignorPaymentNo
     where intConsignorID = "${req.query.cons}"
@@ -103,7 +105,7 @@ router.get('/viewPayments',(req,res)=>{
   })
 });
 
-router.get('/paymentBreakdown',(req,res)=>{
+router.get('/paymentBreakdown',auth_admin, (req,res)=>{
 
   db.query(`Select * from tblConsignorPayment join tblConsignmentPaymentList on tblConsignorPayment.intConsignorPaymentNo = tblConsignmentPaymentList.intConsignorPaymentNo
     where tblConsignmentPaymentList.intConsignorPaymentNo = "${req.query.no}"`,(err1,res1,fie1)=>{

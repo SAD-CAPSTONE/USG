@@ -2,9 +2,11 @@ var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
 var async = require('async');
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_admin = userTypeAuth.admin;
 
 
-router.get('/', (req,res)=>{
+router.get('/', auth_admin, (req,res)=>{
   db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from
     tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
     join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID `, (err1,results1,fields1)=>{
@@ -32,7 +34,7 @@ router.get('/', (req,res)=>{
   });
 });
 
-router.post('/checkNewOrders',(req,res)=>{
+router.post('/checkNewOrders', auth_admin,(req,res)=>{
   // pending orders
   db.query(`Select tblOrder.intStatus as Stat,
     tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
@@ -70,7 +72,7 @@ router.post('/checkNewOrders',(req,res)=>{
     });
 });
 
-router.get('/checkNewOrders',(req,res)=>{
+router.get('/checkNewOrders', auth_admin,(req,res)=>{
   // pending orders
   db.query(`Select tblOrder.intStatus as Stat,
     tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
@@ -107,7 +109,7 @@ router.get('/checkNewOrders',(req,res)=>{
     });
 });
 
-router.get('/allOrders', (req,res)=>{
+router.get('/allOrders', auth_admin,(req,res)=>{
   db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from
     tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
     join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID
@@ -137,7 +139,7 @@ router.get('/allOrders', (req,res)=>{
 });
 
 
-router.get('/assessOrder',(req,res)=>{
+router.get('/assessOrder', auth_admin,(req,res)=>{
   var orderno = req.query.order;
 
   // Order list
@@ -244,7 +246,7 @@ function shipped(req,res){
                           if(res01.length==0){} else{ transact_no = parseInt(res01[0].intTransactionID) + 1}
 
                           db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intShelfNo, intCriticalLimit, strTypeOfChanges, intUSerID, productSRP, productPrice, currQuantity)
-                            values ("${transact_no}", "${orders[c].intInventoryNo}", ${resw[0].intShelfNo}, ${resw[0].intCriticalLimit}, "Sold Products (-${orders[c].intQuantity} deduct from Inventory)", "1000", ${resw[0].productSRP}, ${resw[0].productPrice}, ${resw[0].intQuantity - orders[c].intQuantity})`,(err02,res02,fie02)=>{
+                            values ("${transact_no}", "${orders[c].intInventoryNo}", ${resw[0].intShelfNo}, ${resw[0].intCriticalLimit}, "Sold Products (-${orders[c].intQuantity} deduct from Inventory)", "${req.user.intUserID}", ${resw[0].productSRP}, ${resw[0].productPrice}, ${resw[0].intQuantity - orders[c].intQuantity})`,(err02,res02,fie02)=>{
                               if(err02) {db.rollback(function(){console.log(err02); res.send("no");})}
                               else{
                                 // batch deduct
@@ -414,7 +416,7 @@ function awaitingPayment(req,res){
 
 
 
-router.post('/assessOrder',(req,res)=>{
+router.post('/assessOrder',auth_admin,(req,res)=>{
   var orderStat = 0, paymentStat = 0, sameStat = 0;
 
   if(req.body.orderStatus == ""){ orderStat = req.body.currentOrderStat } else{ orderStat = req.body.orderStatus}
@@ -464,14 +466,14 @@ router.post('/assessOrder',(req,res)=>{
                               else{messagenum = parseInt(results3[0].intMessageNo)+1}
                               // insert to message
                               db.query(`Insert into tblMessages (intMessageNo, intCustomerID, strMessage,
-                                intAdminID) values ("${messagenum}", "${cust[0].intUserID}","${new_message}", "1000" )`,(err4,results4,fields4)=>{
+                                intAdminID) values ("${messagenum}", "${cust[0].intUserID}","${new_message}", "${req.user.intUserID}" )`,(err4,results4,fields4)=>{
                                 if (err4){db.rollback(function(){console.log(err4); res.send("no")})}
                               });
                             }
                             // Insert into order history
                             db.query(`Insert into tblOrderHistory (intOrderHistoryNo, intOrderNo,
                               strShippingMethod, strCourier, intStatus, intAdminID, intPaymentStatus)
-                              values ("${historynum}", "${req.body.orderNo}", "${req.body.shippingMethod}","${req.body.courier}", ${orderStat}, "1000",  ${paymentStat})`, (err5,results5,fields5)=>{
+                              values ("${historynum}", "${req.body.orderNo}", "${req.body.shippingMethod}","${req.body.courier}", ${orderStat}, "${req.user.intUserID}",  ${paymentStat})`, (err5,results5,fields5)=>{
                                 if(err5){db.rollback(function(){console.log(err5); res.send("no")})}
                                 else{
 
@@ -554,7 +556,7 @@ router.post('/assessOrder',(req,res)=>{
 
 });
 
-router.get('/orderHistory',(req,res)=>{
+router.get('/orderHistory', auth_admin,(req,res)=>{
   var orderno = req.query.order;
 
   db.query(`Select tblOrderHistory.intStatus as orderStatus, tblOrderHistory.intPaymentStatus as paymentStatus, tblOrderHistory.*,tblMessages.* from tblOrderHistory join tblMessages on tblOrderHistory.intOrderHistoryNo = tblMessages.intOrderHistoryNo where intOrderNo = ${orderno}`, (err1,results1,fields1)=>{
@@ -564,7 +566,7 @@ router.get('/orderHistory',(req,res)=>{
   });
 });
 
-router.get('/invoice', (req,res)=>{
+router.get('/invoice', auth_admin, (req,res)=>{
   var orderno = req.query.order;
 
   // Order list
@@ -598,7 +600,7 @@ router.get('/invoice', (req,res)=>{
 
 });
 
-router.get('/recentOrders', (req,res)=>{
+router.get('/recentOrders', auth_admin,(req,res)=>{
 
   db.query(`
     Select CURDATE() - INTERVAL 5 DAY as DatesFrom, tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
@@ -609,7 +611,7 @@ router.get('/recentOrders', (req,res)=>{
   });
 });
 
-router.get('/cancelledOrders',(req,res)=>{
+router.get('/cancelledOrders',auth_admin,(req,res)=>{
   db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
     join tblCustomer on tblUser.intUserID = tblCustomer.intUSerID where tblOrder.intStatus = 6`, (err1,results1,fields1)=>{
       if (err1) console.log(err1);
@@ -617,7 +619,7 @@ router.get('/cancelledOrders',(req,res)=>{
   });
 });
 
-router.get('/invoice-print',(req,res)=>{
+router.get('/invoice-print', auth_admin,(req,res)=>{
   var orderno = req.query.order;
 
   // Order list

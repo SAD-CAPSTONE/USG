@@ -2,8 +2,10 @@ var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
 var async = require('async');
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_admin = userTypeAuth.admin;
 
-router.get('/',(req,res)=>{
+router.get('/', auth_admin, (req,res)=>{
   db.query(`Select tblConsignorRequest.intStatus as stat, tblConsignorRequest.*, tblUser.*
      from tblConsignorRequest join tblUser on tblUser.intUserID = tblConsignorRequest.intConsignorNo
     `,(err1,res1,fie1)=>{
@@ -14,7 +16,7 @@ router.get('/',(req,res)=>{
     })
 });
 
-router.get('/productRequest',(req,res)=>{
+router.get('/productRequest', auth_admin, (req,res)=>{
   db.query(`Select * from tblConsignorRequest join tblProductRequest on tblConsignorRequest.intRequestNo =
     tblProductRequest.intRequestNo where tblConsignorRequest.intRequestNo = "${req.query.no}"`,(err1,res1,fie1)=>{
       if(err1) console.log(err1);
@@ -31,7 +33,7 @@ router.get('/productRequest',(req,res)=>{
     })
 });
 
-router.post('/acceptRequest',(req,res)=>{
+router.post('/acceptRequest', auth_admin, (req,res)=>{
   db.query(`Update tblConsignorRequest set intStatus = 1, dateAcknowledged = NOW() where intRequestNo = "${req.body.no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{
@@ -40,7 +42,7 @@ router.post('/acceptRequest',(req,res)=>{
   })
 })
 
-router.post('/rejectRequest',(req,res)=>{
+router.post('/rejectRequest', auth_admin,(req,res)=>{
   db.query(`Update tblConsignorRequest set intStatus = 2 where intRequestNo = "${req.body.no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{
