@@ -1,8 +1,10 @@
 var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_admin = userTypeAuth.admin;
 
-router.get('/',(req,res)=>{
+router.get('/', auth_admin, (req,res)=>{
   db.query(`Select * from tblSupplier join tblContract on tblSupplier.intUserID = tblContract.intConsignorID where  tblContract.intContractStatus = 1`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     db.query(`Select * from tblSupplier join tblContract on tblSupplier.intUserID = tblContract.intConsignorID where intContractStatus = 4 and intSupplierType = 1`,(err2,res2,fie2)=>{
@@ -13,7 +15,7 @@ router.get('/',(req,res)=>{
   });
 });
 
-router.get('/contract',(req,res)=>{
+router.get('/contract', auth_admin,(req,res)=>{
   db.query(`Select * from tblSupplier join tblContract on tblSupplier.intUserID = tblContract.intConsignorID join tblBusinessType on tblBusinessType.intBusinessTypeNo = tblSupplier.intBusinessTypeNo where tblSupplier.intUserID = "${req.query.q}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     if(!err1){
@@ -23,7 +25,7 @@ router.get('/contract',(req,res)=>{
   })
 });
 
-router.post('/renew',(req,res)=>{
+router.post('/renew', auth_admin,(req,res)=>{
   var history_no = "1000";
   db.query(`Update tblContract set intContractStatus = 1 where intContractNo = "${req.body.no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
@@ -64,7 +66,7 @@ function checkItems(req,res,next){
             alert = 1;
             break;
           }else{
-            console.log('janelle');
+
           }
         }
 
@@ -81,7 +83,7 @@ function checkItems(req,res,next){
 
 }
 
-router.post('/terminate',checkItems,(req,res)=>{
+router.post('/terminate', auth_admin, checkItems,(req,res)=>{
 
   var history_no = "1000";
   db.query(`Update tblContract set intContractStatus = 4 where intContractNo = "${req.body.no}"`,(err1,res1,fie1)=>{
@@ -103,7 +105,7 @@ router.post('/terminate',checkItems,(req,res)=>{
                     if(err01) console.log(err01);
                     else{
                       res.send("yes");
-                      
+
                     }
                   })
                 }
@@ -116,7 +118,7 @@ router.post('/terminate',checkItems,(req,res)=>{
   })
 });
 
-router.get('/contract/load/:id',(req,res)=>{
+router.get('/contract/load/:id', auth_admin, (req,res)=>{
   if (!req.user){
     res.send('none')
   }
@@ -142,7 +144,7 @@ router.get('/contract/load/:id',(req,res)=>{
   }
 });
 
-router.get('/history',(req,res)=>{
+router.get('/history', auth_admin,(req,res)=>{
   db.query(`Select tblContractHistory.intContractStatus as stat, tblContract.*, tblContractHistory.* from tblContractHistory join tblContract on tblContractHistory.intContractNo = tblContract.intContractNo join tblSupplier on tblContract.intConsignorID = tblSupplier.intUserID where tblSupplier.intUserID = "${req.query.q}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1)
     else{
@@ -151,7 +153,7 @@ router.get('/history',(req,res)=>{
   })
 });
 
-router.post('/modifyContract',(req,res)=>{
+router.post('/modifyContract', auth_admin,(req,res)=>{
   var history_no = "1000";
   var sheet =  (req.body.sheet == undefined) ? 0 : 1;
   var receipt = (req.body.deliveryreceipt == undefined) ? 0 : 1;

@@ -1,8 +1,10 @@
 var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_admin = userTypeAuth.admin;
 
-router.get('/',(req,res)=>{
+router.get('/', auth_admin, (req,res)=>{
 
   // all payments
   db.query(`Select tblOrder.intStatus as order_stat,  tblOrder.*, tblUser.* from tblOrder join tblUser on
@@ -52,7 +54,7 @@ router.get('/',(req,res)=>{
   });
 });
 
-router.get('/history',(req,res)=>{
+router.get('/history', auth_admin,(req,res)=>{
   var orderno = req.query.orderno;
 
   db.query(`Select * from tblCustomerPayment where intOrderNo = ${orderno}`,(err1,results1,fields1)=>{
@@ -64,7 +66,7 @@ router.get('/history',(req,res)=>{
   });
 });
 
-router.post('/cancelOrder',(req,res)=>{
+router.post('/cancelOrder', auth_admin,(req,res)=>{
   var orderHistoryNo = "1000", message_no = "1000";
 
 
@@ -87,11 +89,11 @@ router.post('/cancelOrder',(req,res)=>{
                     if(err4) console.log(err4);
                     else{
                       db.query(`Insert into tblMessages (intMessageNo, intCustomerID, strMessage, intAdminID) values
-                      ("${message_no}", "${order[0].intUserID}", "${req.body.message}", "1000")`,(err5,res5,fie5)=>{
+                      ("${message_no}", "${order[0].intUserID}", "${req.body.message}", "${req.user.intUserID}")`,(err5,res5,fie5)=>{
                         if(err5) console.log(err5);
                         else{
                           db.query(`Insert into tblOrderHistory (intOrderHistoryNo, strShippingMethod, strCourier, intStatus, intPaymentStatus, intAdminID,  strShippingAddress, strBillingAddress)
-                          values ("${orderHistoryNo}", "${order[0].strShippingMethod}", "${order[0].strCourier}", 6, ${order[0].intPaymentStatus}, "1000",  "${order[0].strShippingAddress}", "${order[0].strBillingAddress}")`,(err6,res6,fie6)=>{
+                          values ("${orderHistoryNo}", "${order[0].strShippingMethod}", "${order[0].strCourier}", 6, ${order[0].intPaymentStatus}, "${req.user.intUserID}",  "${order[0].strShippingAddress}", "${order[0].strBillingAddress}")`,(err6,res6,fie6)=>{
 
                             db.query(`Select * from tblOrderDetails where intOrderNo = "${req.body.order_no}"`,(err7,details,fie7)=>{
                               if(err7) console.log(err7);
@@ -145,7 +147,7 @@ router.post('/cancelOrder',(req,res)=>{
   })
 });
 
-router.post('/changeStatus',(req,res)=>{
+router.post('/changeStatus', auth_admin,(req,res)=>{
   var history_no = "1000", sales_no = "1000";
   db.beginTransaction(function(err){
     if(err) console.log(err);

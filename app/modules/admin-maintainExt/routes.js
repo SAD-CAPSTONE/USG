@@ -10,8 +10,10 @@ const email_to = 'imjanellealag@gmail.com';
 const passw = 'testusg123';
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_admin = userTypeAuth.admin;
 
-router.post('/addUserAccount',(req,res)=>{
+router.post('/addUserAccount',auth_admin, (req,res)=>{
   var user_no = "1000";
   db.beginTransaction(function(err){
     if(err) console.log(err);
@@ -63,7 +65,7 @@ router.post('/addUserAccount',(req,res)=>{
 })
 
 
-router.post('/createAccount',(req,res)=>{
+router.post('/createAccount',auth_admin, (req,res)=>{
   var password = generatePassword(7, false);
   let transporter = nodemailer.createTransport({
    host: 'smtp.gmail.com',
@@ -108,7 +110,7 @@ router.post('/createAccount',(req,res)=>{
 
   });
 
-router.post('/adjustmentType',(req,res)=>{
+router.post('/adjustmentType',auth_admin, (req,res)=>{
   db.query(`Select * from tblAdjustmentTypes where strAdjustment = "${req.body.data}" and intStatus <> 2`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
@@ -121,7 +123,7 @@ router.post('/adjustmentType',(req,res)=>{
   })
 });
 
-router.post('/certification',(req,res)=>{
+router.post('/certification',auth_admin, (req,res)=>{
   db.query(`Select * from tblProductCertification where strCertification = "${req.body.data}" and intStatus <> 2`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
@@ -134,7 +136,7 @@ router.post('/certification',(req,res)=>{
   })
 });
 
-router.post('/brand',(req,res)=>{
+router.post('/brand',auth_admin, (req,res)=>{
   db.query(`Select * from tblProductBrand where strBrand = "${req.body.data}" and intStatus <> 2`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
@@ -147,7 +149,7 @@ router.post('/brand',(req,res)=>{
   })
 });
 
-router.post('/businessType',(req,res)=>{
+router.post('/businessType',auth_admin, (req,res)=>{
   db.query(`Select * from tblbusinesstype where strBusinessType = "${req.body.data}" and intStatus <> 2`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
@@ -160,7 +162,7 @@ router.post('/businessType',(req,res)=>{
   })
 });
 
-router.post('/category',(req,res)=>{
+router.post('/category',auth_admin, (req,res)=>{
   db.query(`Select * from tblcategory where strCategory = "${req.body.data}" and intStatus <> 2`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
@@ -173,7 +175,7 @@ router.post('/category',(req,res)=>{
   })
 });
 
-router.post('/subCategory',(req,res)=>{
+router.post('/subCategory',auth_admin, (req,res)=>{
   db.query(`Select * from tblsubcategory where (strsubCategory = "${req.body.data}" and intCategoryno = ${req.body.data2}) and intStatus <> 2`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
@@ -186,7 +188,7 @@ router.post('/subCategory',(req,res)=>{
   })
 });
 
-router.post('/measurement',(req,res)=>{
+router.post('/measurement',auth_admin, (req,res)=>{
   db.query(`Select * from tbluom where strUnitName = "${req.body.data}" and intStatus <> 2`,(err,results,fields)=>{
     if(err){ console.log(err); res.send("yes")}
     else{
@@ -199,7 +201,7 @@ router.post('/measurement',(req,res)=>{
   })
 });
 
-router.post('/deleteBusinessType',(req,res)=>{
+router.post('/deleteBusinessType',auth_admin, (req,res)=>{
   console.log(req.body.number)
   db.query(`Update tblbusinesstype set intStatus = 2 where intBusinessTypeNo = "${req.body.number}"`,(err,results,fields)=>{
     if(err) console.log(err);
@@ -210,7 +212,7 @@ router.post('/deleteBusinessType',(req,res)=>{
   });
 });
 
-router.post('/deleteProductCertification',(req,res)=>{
+router.post('/deleteProductCertification',auth_admin, (req,res)=>{
   db.query(`UPDATE tblproductcertification SET intStatus = 2 where intCertificationNo = "${req.body.number}"`,(err,results,fields)=>{
     if(err) console.log(err);
     else{
@@ -219,7 +221,7 @@ router.post('/deleteProductCertification',(req,res)=>{
   });
 });
 
-router.post('/deleteProductBrand',(req,res)=>{
+router.post('/deleteProductBrand',auth_admin, (req,res)=>{
   db.query(`UPDATE tblproductbrand SET intStatus = 2 where intBrandNo = "${req.body.number}"`,(err,results,fields)=>{
     if(err) console.log(err);
     else{
@@ -228,7 +230,7 @@ router.post('/deleteProductBrand',(req,res)=>{
   });
 });
 
-router.post('/deleteMeasurements',(req,res)=>{
+router.post('/deleteMeasurements',auth_admin, (req,res)=>{
   db.query(`UPDATE tbluom SET intStatus = 2 where intUomNo = "${req.body.number}"`,(err,results,fields)=>{
     if(err) console.log(err);
     else{
@@ -237,7 +239,7 @@ router.post('/deleteMeasurements',(req,res)=>{
   });
 });
 
-router.post('/banCustomer',(req,res)=>{
+router.post('/banCustomer',auth_admin, (req,res)=>{
   db.query(`UPDATE tblcustomer SET intStatus = 2 where intUserID = "${req.body.number}"`,(err,results,fields)=>{
     if(err) console.log(err);
     else{
@@ -246,7 +248,7 @@ router.post('/banCustomer',(req,res)=>{
   });
 });
 
-router.post('/unbanCustomer',(req,res)=>{
+router.post('/unbanCustomer',auth_admin, (req,res)=>{
   db.query(`UPDATE tblcustomer SET intStatus = 1 where intUserID = "${req.body.number}"`,(err,results,fields)=>{
     if(err) console.log(err);
     else{

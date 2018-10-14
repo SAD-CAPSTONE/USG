@@ -6,10 +6,12 @@ var moment = require('moment');
 var async = require('async');
 var url = require('url');
 var fs = require('fs');
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_admin = userTypeAuth.admin;
 
 
 
-router.get('/allProducts', (req,res)=>{
+router.get('/allProducts',auth_admin, (req,res)=>{
 
   db.query(`Select tblproductlist.intstatus as stats, tblproductlist.*, tblproductbrand.*,tblsubcategory.*, tblcategory.* from tblproductlist join tblproductbrand on tblproductlist.intBrandNo = tblproductbrand.intBrandNo
   join tblSubCategory on tblproductlist.intSubcategoryno = tblsubcategory.intsubcategoryno
@@ -31,7 +33,7 @@ router.get('/allProducts', (req,res)=>{
   });
 });
 
-router.post('/addProduct', (req,res)=>{
+router.post('/addProduct', auth_admin, (req,res)=>{
 
   db.query(`Select * from tblProductList Order by intProductno desc limit 1`,(err1,results1,fields1)=>{
     if (err1) console.log(err1);
@@ -73,7 +75,7 @@ router.post('/addProduct', (req,res)=>{
 
 });
 
-router.post('/editProduct',(req,res)=>{
+router.post('/editProduct', auth_admin,(req,res)=>{
 
   var checked = 0;
   if (req.body.active == 'on') checked = 1;
@@ -112,7 +114,7 @@ router.post('/editProduct',(req,res)=>{
 });
 
 
-router.get('/supplierProducts', (req,res)=>{
+router.get('/supplierProducts', auth_admin, (req,res)=>{
   db.query(`
     Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID`,(err1,results1)=>{
     if (err1) console.log(err1);
@@ -120,7 +122,7 @@ router.get('/supplierProducts', (req,res)=>{
   });
 });
 
-router.get('/loadProducts',(req,res)=>{
+router.get('/loadProducts', auth_admin,(req,res)=>{
   db.query(`Select * from tblProductInventory join tblProductlist on tblProductInventory.intProductNo = tblProductlist.intProductNo
     join tbluom on tblProductInventory.intUOMno = tblUom.intUOMno
     join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo
@@ -133,7 +135,7 @@ router.get('/loadProducts',(req,res)=>{
     })
 })
 
-router.get('/productInventory', (req,res)=>{
+router.get('/productInventory',auth_admin, (req,res)=>{
 
   var product = req.query.product;
   db.query(`
@@ -190,7 +192,7 @@ router.get('/productInventory', (req,res)=>{
 
 });
 
-router.post('/addSupplier', (req,res)=>{
+router.post('/addSupplier', auth_admin, (req,res)=>{
 
   var id = 0;
   db.query(`Select * from tblUser Order by intUserID desc limit 1`, (err1,results1,fields1)=>{
@@ -219,7 +221,7 @@ router.post('/addSupplier', (req,res)=>{
 
 });
 
-router.post('/addProductItem', (req,res)=>{
+router.post('/addProductItem',auth_admin, (req,res)=>{
   // Change to transaction
   var url = `/inventory/productInventory?product=${req.body.add_productno}`;
   db.query(`
@@ -252,7 +254,7 @@ router.post('/addProductItem', (req,res)=>{
 
 });
 
-router.get('/transactions', (req,res)=>{
+router.get('/transactions', auth_admin,(req,res)=>{
   var product = req.query.product;
   var ino = req.query.ino;
 
@@ -267,7 +269,7 @@ router.get('/transactions', (req,res)=>{
   });
 });
 
-router.get('/allStocks', (req,res)=>{
+router.get('/allStocks', auth_admin,(req,res)=>{
 
   // Query inventory
   db.query(`
@@ -351,7 +353,7 @@ router.get('/allStocks', (req,res)=>{
     });
 });
 
-router.post('/addToStock',(req,res)=>{
+router.post('/addToStock', auth_admin,(req,res)=>{
   var batch_no="1000", transact_no="1000", inventory_no ="1000";
   var product_test = req.body.product_name + ' ' + req.body.variant + ' ' + req.body.size + ' ' + req.body.measure;
   console.log(product_test);
@@ -434,7 +436,7 @@ router.post('/addToStock',(req,res)=>{
   })
 })
 
-router.post('/addToStock2', (req,res)=>{
+router.post('/addToStock2', auth_admin, (req,res)=>{
 
   var batch = "1000";
   var transaction = "1000";
@@ -517,7 +519,7 @@ router.post('/addToStock2', (req,res)=>{
 
 });
 
-router.post('/addStock', (req,res)=>{
+router.post('/addStock', auth_admin, (req,res)=>{
 
   // Select last batch no
   db.query(`Select * from tblBatch order by intBatchNo desc limit 1`,(err1,results1,fields1)=>{
@@ -598,7 +600,7 @@ router.post('/addStock', (req,res)=>{
 });
 
 
-router.get('/viewStock', (req,res)=>{
+router.get('/viewStock', auth_admin, (req,res)=>{
   var product = req.query.product;
   var ino = req.query.ino;
 
@@ -619,7 +621,7 @@ router.get('/viewStock', (req,res)=>{
 
 
 // replaced
-router.post('/newStock', (req,res)=>{
+router.post('/newStock', auth_admin, (req,res)=>{
   db.query(`Insert into tblProductStock (intProductQuantityNo, intInventoryNo, strBarcode, expirationDate) values ("${req.body.prodno}","${req.body.ino}","${req.body.barcode}", "${req.body.expiration}")`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
 
@@ -640,11 +642,11 @@ router.post('/newStock', (req,res)=>{
 
 var expired_result = "";
 
-router.get('/showExpired',(req,res)=>{
+router.get('/showExpired', auth_admin, (req,res)=>{
   res.render('admin-inventory/views/loader',{re: expired_result, moment: moment});
 });
 
-router.post('/searchExpired',(req,res)=>{
+router.post('/searchExpired', auth_admin, (req,res)=>{
   //var dates = (req.body.val).split("-");
   var dates = (req.body.o).split("-");
   var newDate = moment(dates[0]).format("YYYY/MM/DD");
@@ -667,7 +669,7 @@ router.post('/searchExpired',(req,res)=>{
   });
 });
 
-router.post('/pullOutItemNotExp',(req,res)=>{
+router.post('/pullOutItemNotExp', auth_admin,(req,res)=>{
 
   var pullOutNo = "1000", transact_no = "1000";
 
@@ -702,7 +704,8 @@ router.post('/pullOutItemNotExp',(req,res)=>{
                           values ("${transact_no}", "${results2[0].intInventoryNo}", ${inv[0].intShelfNo}, ${inv[0].intCriticalLimit}, "(-${results2[0].intQuantity}) Pulled-out Products", "1000", ${inv[0].productSRP}, ${inv[0].productPrice}, ${inv[0].intQuantity - results2[0].intQuantity} )`,(err03,res03,fie03)=>{
                             if(err03) console.log(err03);
                             else{
-                              db.query(`Insert into tblstockpullout (intPullOutNo, intInventoryNo, intAdminID, intQuantity) values("${pullOutNo}","${results2[0].intInventoryNo}","1000",${results2[0].intQuantity})`,(err5,results5,fields5)=>{
+                              db.query(`Insert into tblstockpullout (intPullOutNo, intInventoryNo, intAdminID, intQuantity)
+                                values("${pullOutNo}","${results2[0].intInventoryNo}","${req.user.intUserID}",${results2[0].intQuantity})`,(err5,results5,fields5)=>{
                                 if (err5){
                                   db.rollback(function(){console.log(err5)});
                                 }else{
@@ -741,7 +744,7 @@ router.post('/pullOutItemNotExp',(req,res)=>{
 });
 
 
-router.post('/pullOutItem',(req,res)=>{
+router.post('/pullOutItem', auth_admin,(req,res)=>{
 
   var pullOutNo = "1000", transact_no = "1000";
 
@@ -776,7 +779,8 @@ router.post('/pullOutItem',(req,res)=>{
                           values ("${transact_no}", "${results2[0].intInventoryNo}", ${inv[0].intShelfNo}, ${inv[0].intCriticalLimit}, "(-${results2[0].intQuantity}) Pulled-out Expired Products", "1000", ${inv[0].productSRP}, ${inv[0].productPrice}, ${inv[0].intQuantity - results2[0].intQuantity} )`,(err03,res03,fie03)=>{
                             if(err03) console.log(err03);
                             else{
-                              db.query(`Insert into tblstockpullout (intPullOutNo, intInventoryNo, intAdminID, intQuantity) values("${pullOutNo}","${results2[0].intInventoryNo}","1000",${results2[0].intQuantity})`,(err5,results5,fields5)=>{
+                              db.query(`Insert into tblstockpullout (intPullOutNo, intInventoryNo, intAdminID, intQuantity)
+                                values("${pullOutNo}","${results2[0].intInventoryNo}","${req.user.intUserID}",${results2[0].intQuantity})`,(err5,results5,fields5)=>{
                                 if (err5){
                                   db.rollback(function(){console.log(err5)});
                                 }else{
@@ -814,7 +818,7 @@ router.post('/pullOutItem',(req,res)=>{
 
 });
 
-router.post('/pullOut',(req,res)=>{
+router.post('/pullOut', auth_admin,(req,res)=>{
 
   var dates = (req.body.val).split("-");
   var pullOutNo = "1000";
@@ -854,7 +858,7 @@ router.post('/pullOut',(req,res)=>{
 
 });
 
-router.post('/checkCritical',(req,res)=>{
+router.post('/checkCritical', auth_admin,(req,res)=>{
   db.query(`Select count(*) as allCrit from tblProductinventory where intQuantity < intCriticalLimit or intQuantity = intCriticalLimit`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     if(!err1){
@@ -864,7 +868,7 @@ router.post('/checkCritical',(req,res)=>{
   })
 });
 
-router.post('/checkExpired',(req,res)=>{
+router.post('/checkExpired', auth_admin,(req,res)=>{
   db.query(`Select count(*) as allExp from tblbatch
     where ((tblbatch.expirationDate between NOW() and DATE_ADD(NOW(), INTERVAL 14 DAY)) or tblbatch.expirationDate <= CURDATE() ) and (tblbatch.intStatus = 1 and tblBatch.intQuantity > 0)`,(err1,res1,fie1)=>{
       if(err1) console.log(err1);
@@ -876,7 +880,7 @@ router.post('/checkExpired',(req,res)=>{
 });
 
 
-router.get('/expiredProducts',(req,res)=>{
+router.get('/expiredProducts', auth_admin,(req,res)=>{
 
     db.query(`Select * from tblbatch
       join tblproductinventory on tblbatch.intinventoryno = tblproductinventory.intinventoryno
@@ -892,7 +896,7 @@ router.get('/expiredProducts',(req,res)=>{
 
 });
 
-router.get('/pullOutProduct',(req,res)=>{
+router.get('/pullOutProduct', auth_admin,(req,res)=>{
   // Select batch
   db.query(`Select tblBatch.intQuantity as quantity, tblBatch.intStatus as stats, tblBatch.*, tblProductInventory.*, tblProductlist.*, tblProductBrand.*, tblUom.*
     from tblBatch join tblProductInventory on tblBatch.intInventoryNo = tblProductinventory.intInventoryNo
@@ -920,7 +924,7 @@ router.get('/pullOutProduct',(req,res)=>{
     });
 })
 
-router.post('/update',(req,res)=>{
+router.post('/update', auth_admin,(req,res)=>{
   var transact_no = "1000";
   db.query(`Update tblProductInventory set intCriticalLimit = ${req.body.critical}, intShelfNo = ${req.body.shelf}, strVariant = "${req.body.variant}" where intInventoryNo = "${req.body.ino}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1)
@@ -949,7 +953,7 @@ router.post('/update',(req,res)=>{
   })
 })
 
-router.get('/adjustments',(req,res)=>{
+router.get('/adjustments', auth_admin,(req,res)=>{
   db.query(`Select tblAdjustments.intQuantity as qty, tblProductInventory.*, tblProductList.*, tblAdjustments.* from tblAdjustments
     join tblProductInventory on tblAdjustments.intInventoryNo = tblProductInventory.intInventoryNo
     join tblProductList on tblProductlist.intProductNo = tblProductInventory.intProductNo `,(err1,res1,fie1)=>{
@@ -969,7 +973,7 @@ router.get('/adjustments',(req,res)=>{
   });
 });
 
-router.get('/count/:inv',(req,res)=>{
+router.get('/count/:inv', auth_admin,(req,res)=>{
   db.query(`Select * from tblbatch where intInventoryNo = "${req.params.inv}" and intStatus = 1`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
       console.log(res1)
@@ -979,7 +983,7 @@ router.get('/count/:inv',(req,res)=>{
   });
 });
 
-router.post('/addBatchAdjust',(req,res)=>{
+router.post('/addBatchAdjust', auth_admin,(req,res)=>{
   var adj = "1000";
   var transact_no = "1000";
 
@@ -1007,7 +1011,8 @@ router.post('/addBatchAdjust',(req,res)=>{
                         if(err3) console.log(err3);
                         else{
 
-                          db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentType, strAdjustmentNote, intAdminID, intQuantity) values ("${adj}", "${res2[0].intInventoryNo}","${req.body.types}","${req.body.details}",1000,${req.body.quantity})`,(errq,resq,fieq)=>{
+                          db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentType, strAdjustmentNote, intAdminID, intQuantity)
+                            values ("${adj}", "${res2[0].intInventoryNo}","${req.body.types}","${req.body.details}","${req.user.intUserID}",${req.body.quantity})`,(errq,resq,fieq)=>{
                             if(errq) console.log(errq);
                             else{
 
@@ -1053,7 +1058,8 @@ router.post('/addBatchAdjust',(req,res)=>{
                         db.query(`Update tblProductInventory set intQuantity = intQuantity + ${req.body.quantity} where intInventoryNo = "${res5[0].intInventoryNo}"`,(err6,res6,fie6)=>{
                           if(err6) console.log(err6);
                           else{
-                            db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentType, strAdjustmentNote, intAdminID, intQuantity) values ("${adj}", "${res5[0].intInventoryNo}","${req.body.types}","${req.body.details}",1000,${req.body.quantity})`,(errq,resq,fieq)=>{
+                            db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentType, strAdjustmentNote, intAdminID, intQuantity)
+                              values ("${adj}", "${res5[0].intInventoryNo}","${req.body.types}","${req.body.details}","${req.user.intUserID}",${req.body.quantity})`,(errq,resq,fieq)=>{
                               if(errq) console.log(errq);
                               else{
                                 db.query(`Select * from tblProductInventory where intInventoryNo = "${res5[0].intInventoryNo}"`,(err14,res14,fie14)=>{
@@ -1094,7 +1100,7 @@ router.post('/addBatchAdjust',(req,res)=>{
   })
 });
 
-router.post('/getBarcode',(req,res)=>{
+router.post('/getBarcode', auth_admin,(req,res)=>{
   db.query(`Select * from tblProductInventory
     join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductNo
      where tblProductInventory.strBarcode = "${req.body.o}"`,(err1,res1,fie1)=>{
@@ -1109,7 +1115,7 @@ router.post('/getBarcode',(req,res)=>{
 });
 
 // Not used ----
-router.post('/addAdjustment',(req,res)=>{
+router.post('/addAdjustment', auth_admin,(req,res)=>{
   db.beginTransaction(function(err){
     if(err){db.rollback(function(){console.log(err)})}
     else{
@@ -1134,7 +1140,8 @@ router.post('/addAdjustment',(req,res)=>{
               else{
                 inv_no = res2[0].intInventoryNo;
 
-                db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentTypeNo, strAdjustmentNote, intAdminID, intQuantity) values ("${adj_no}","${inv_no}","${req.body.type[count]}","${req.body.note[count]}","1006",${req.body.quantity[count]})`,(err3,res3,fie3)=>{
+                db.query(`Insert into tblAdjustments (intAdjustmentNo, intInventoryNo, intAdjustmentTypeNo, strAdjustmentNote, intAdminID, intQuantity)
+                  values ("${adj_no}","${inv_no}","${req.body.type[count]}","${req.body.note[count]}","${req.user.intUserID}",${req.body.quantity[count]})`,(err3,res3,fie3)=>{
                   if(err3) {db.rollback(function(){console.log(err3)})}
                   else{
 
@@ -1216,7 +1223,7 @@ router.post('/addAdjustment',(req,res)=>{
   })
 });
 
-router.get('/seeBatch',(req,res)=>{
+router.get('/seeBatch', auth_admin,(req,res)=>{
   db.query(`Select tblBatch.intQuantity as quantity, tblProductInventory.*, tblProductlist.*, tblBatch.* from tblBatch join tblProductInventory on tblBatch.intInventoryNo = tblProductInventory.intInventoryNo join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
     where tblBatch.intInventoryNo = "${req.query.p}" and tblBatch.intStatus = 1`,(err1,res1,fie1)=>{
       if(err1) console.log(err1);
@@ -1226,7 +1233,7 @@ router.get('/seeBatch',(req,res)=>{
     })
 });
 
-router.post('/updatePrice',(req,res)=>{
+router.post('/updatePrice', auth_admin,(req,res)=>{
   var transact_no = "1000";
   db.query(`Update tblProductInventory set productSRP = ${req.body.srp}, productPrice = ${req.body.price} where intInventoryNo = "${req.body.ino}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1)
@@ -1255,7 +1262,7 @@ router.post('/updatePrice',(req,res)=>{
   })
 })
 
-router.post('/checkQuantity',(req,res)=>{
+router.post('/checkQuantity', auth_admin,(req,res)=>{
   db.query(`Select * from tblBatch where intBatchNo = "${req.body.batch}" and intQuantity >= ${req.body.quantity}`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{
@@ -1265,7 +1272,7 @@ router.post('/checkQuantity',(req,res)=>{
   })
 });
 
-router.post('/singlePullOut/:id',(req,res)=>{
+router.post('/singlePullOut/:id', auth_admin,(req,res)=>{
   var pullout_no = "1000";
   var transact_no = "1000";
 
@@ -1298,7 +1305,7 @@ router.post('/singlePullOut/:id',(req,res)=>{
                                if(err5) console.log(err5);
                                else{
                                  db.query(`Insert into tblStockPullOut (intPullOutNo, intInventoryNo, intAdminID, intQuantity)
-                                 values("${pullout_no}", "${res2[0].intInventoryNo}", "1000",  ${req.body.quantity})`,(err6,res6,fie6)=>{
+                                 values("${pullout_no}", "${res2[0].intInventoryNo}", "${req.user.intUserID}",  ${req.body.quantity})`,(err6,res6,fie6)=>{
                                    if(err6) console.log(err6);
                                    else{
 
@@ -1372,7 +1379,7 @@ router.post('/singlePullOut/:id',(req,res)=>{
                                if(err5) console.log(err5);
                                else{
                                  db.query(`Insert into tblStockPullOut (intPullOutNo, intInventoryNo, intAdminID, intQuantity)
-                                 values ("${pullout_no}", "${res2[0].intInventoryNo}", "1000", ${req.body.quantity})`,(err6,res6,fie6)=>{
+                                 values ("${pullout_no}", "${res2[0].intInventoryNo}", "${req.user.intUserID}", ${req.body.quantity})`,(err6,res6,fie6)=>{
                                    if(err6) console.log(err6);
                                    else{
                                      db.query(`Select * from tblInventoryTransactions order by intTransactionID desc limit 1 `,(err01,res01,fie01)=>{
@@ -1426,7 +1433,7 @@ router.post('/singlePullOut/:id',(req,res)=>{
 
 
 // Packages -----------------------
-router.get('/package', (req,res)=>{
+router.get('/package', auth_admin, (req,res)=>{
   db.query(`Select * from tblpackage`,(err1,results1,fields1)=>{
     if (err1) console.log(err1);
     db.query(`Select * from tblpackage where dateDue <= CURDATE()`,(err2,res2,fie2)=>{
@@ -1438,7 +1445,7 @@ router.get('/package', (req,res)=>{
   });
 });
 
-router.post('/packageGetBarcode',(req,res)=>{
+router.post('/packageGetBarcode', auth_admin,(req,res)=>{
   db.query(`Select (intQuantity - intReservedItems) as totalQty, tblProductInventory.*, tblProductlist.*, tblUom.*, tblProductBrand.*
   from tblproductInventory
     join tblproductlist on tblproductinventory.intproductno = tblproductlist.intproductno
@@ -1457,7 +1464,7 @@ router.post('/packageGetBarcode',(req,res)=>{
   });
 });
 
-router.post('/addPackage',(req,res)=>{
+router.post('/addPackage', auth_admin,(req,res)=>{
   db.query(`Select * from tblpackage order by intPackageNo desc limit 1`,(err1,results1,fields1)=>{
     if (err1) console.log(err1);
 
@@ -1470,14 +1477,15 @@ router.post('/addPackage',(req,res)=>{
       num = parseInt(results1[0].intPackageNo) + 1;
     }
 
-    db.query(`Insert into tblpackage (intPackageNo, intAdminID, strPackageName, strPackageDescription, packagePrice, intQuantity, dateDue) values ("${num}","1000","${req.body.pname}","${req.body.pdesc}",${req.body.pprice}, ${req.body.pquantity}, "${req.body.pdue}")`,(err2,results2,fields2)=>{
+    db.query(`Insert into tblpackage (intPackageNo, intAdminID, strPackageName, strPackageDescription, packagePrice, intQuantity, dateDue)
+      values ("${num}","${req.user.intUserID}","${req.body.pname}","${req.body.pdesc}",${req.body.pprice}, ${req.body.pquantity}, "${req.body.pdue}")`,(err2,results2,fields2)=>{
       if (err2) console.log(err2);
       if (!err2) res.send("yes");
     });
   })
 });
 
-router.get('/packageList',(req,res)=>{
+router.get('/packageList', auth_admin,(req,res)=>{
   var pack = req.query.package;
 
   db.query(`Select * from tblpackagelist
@@ -1498,7 +1506,7 @@ router.get('/packageList',(req,res)=>{
     });
 });
 
-router.post('/addPackageList',(req,res)=>{
+router.post('/addPackageList', auth_admin,(req,res)=>{
   var no = "1000";
 
   db.beginTransaction(function(err){
@@ -1577,14 +1585,14 @@ router.post('/addPackageList',(req,res)=>{
 
 });
 
-router.post('/changePackageStat',(req,res)=>{
+router.post('/changePackageStat', auth_admin,(req,res)=>{
   db.query(`Update tblPackage set intStatus = ${req.body.value} where intPackageNo = "${req.body.no}"`,(err2,res2,fie2)=>{
     if(err2) console.log(err2);
     res.send("")
   })
 });
 
-router.post('/editPackage',(req,res)=>{
+router.post('/editPackage', auth_admin,(req,res)=>{
   //var d = moment(req.body.date).format('')
   db.query(`Update tblPackage set strPackageName = "${req.body.name}", strPackageDescription="${req.body.description}", packagePrice=${req.body.price}, dateDue="${req.body.date}" where intPackageNo = "${req.body.no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
@@ -1596,7 +1604,7 @@ router.post('/editPackage',(req,res)=>{
 
 // Discount - Promotion
 
-router.get('/productDiscount',(req,res)=>{
+router.get('/productDiscount', auth_admin,(req,res)=>{
   db.query(`Select tblProductDiscount.*, tblProductInventory.*, tblProductlist.*, tblUom.*, tblProductDiscount.intStatus as stat from tblProductDiscount join tblProductInventory on tblProductDiscount.intInventoryNo = tblProductInventory.intInventoryNo
     join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
     join tblUom on tblUom.intUomno = tblProductInventory.intUomno`, (err1,res1,fie1)=>{
@@ -1615,7 +1623,7 @@ router.get('/productDiscount',(req,res)=>{
     })
 });
 
-router.post('/addDiscount',(req,res)=>{
+router.post('/addDiscount', auth_admin,(req,res)=>{
   var discount_no = "1000", transact_no = "1000";
 
   db.beginTransaction(function(err){
@@ -1663,7 +1671,7 @@ router.post('/addDiscount',(req,res)=>{
 
 });
 
-router.get('/testInventoryCount',(req,res)=>{
+router.get('/testInventoryCount', auth_admin,(req,res)=>{
   db.query(`Select SUM(tblBatch.intQuantity) as batchqty, tblProductInventory.intQuantity as invqty, tblProductInventory.intInventoryno as inv, tblProductinventory.*, tblProductlist.*, tblbatch.*, tblUom.*
   from tblProductInventory join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductno
   join tblBatch on tblProductInventory.intInventoryno = tblbatch.intInventoryNo
@@ -1677,7 +1685,7 @@ router.get('/testInventoryCount',(req,res)=>{
   })
 });
 
-router.post('/changeDiscountStat',(req,res)=>{
+router.post('/changeDiscountStat', auth_admin,(req,res)=>{
 
   db.query(`Update tblProductDiscount set intStatus = ${req.body.value} where intDiscountNo = "${req.body.no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
@@ -1688,7 +1696,7 @@ router.post('/changeDiscountStat',(req,res)=>{
   })
 });
 
-router.post('/inactivateProduct',(req,res)=>{
+router.post('/inactivateProduct', auth_admin,(req,res)=>{
   db.query(`Select * from tblProductInventory where intReservedItems = 0 and intInventoryno = "${req.body.product}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{
@@ -1706,7 +1714,7 @@ router.post('/inactivateProduct',(req,res)=>{
   })
 })
 
-router.post('/activateProduct',(req,res)=>{
+router.post('/activateProduct', auth_admin,(req,res)=>{
   db.query(`Update tblProductInventory set intStatus = 1 where intInventoryno = "${req.body.product}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{

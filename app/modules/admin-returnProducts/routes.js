@@ -2,8 +2,10 @@ var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
 var async = require('async');
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_admin = userTypeAuth.admin;
 
-router.get('/',(req,res)=>{
+router.get('/',auth_admin, (req,res)=>{
   db.query(`Select tblPurchaseOrder.intStatus as stat, tblreceiveorder.intReceiveorderNo as rno, tblreturnbadorders.*, tblreceiveorder.*, tblSupplier.* from tblreturnbadorders join tblreceiveorder on tblreturnbadorders.intReceiveorderNo = tblreceiveorder.intReceiveorderNo join tblPurchaseOrder on tblreceiveorder.intPurchaseOrderNo = tblPurchaseOrder.intPurchaseOrderNo join tblSupplier on tblPurchaseOrder.intSupplierID = tblSupplier.intUserID`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{
@@ -19,7 +21,7 @@ router.get('/',(req,res)=>{
   })
 });
 
-router.get('/form',(req,res)=>{
+router.get('/form',auth_admin, (req,res)=>{
   var num = "1000"
   // Select * suppliers
   db.query(`Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID where intSupplierType = 1 and intUserTypeNo = 2`,(err1,res1,fie1)=>{
@@ -41,7 +43,7 @@ router.get('/form',(req,res)=>{
   })
 });
 
-router.get('/findProducts/:pid',(req,res)=>{
+router.get('/findProducts/:pid',auth_admin, (req,res)=>{
   db.query(`Select * from tblProductInventory join tblUom on tblProductInventory.intUomNo = tblUom.intUomNo join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductNo
     where tblProductInventory.intUserID = ${req.params.pid} and (tblProductInventory.intStatus = 1 and tblProductInventory.intQuantity > 0)`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
@@ -51,7 +53,7 @@ router.get('/findProducts/:pid',(req,res)=>{
   })
 });
 
-router.post('/submitForm',(req,res)=>{
+router.post('/submitForm',auth_admin, (req,res)=>{
   var rp_no = "1000", rplist_no = "1000", count = 0, transact_no = "1000";
   var loop = req.body.ino;
 
@@ -76,7 +78,7 @@ router.post('/submitForm',(req,res)=>{
                   if(res6.length==0){} else{ transact_no = parseInt(res6[0].intTransactionID) + 1}
 
                     db.query(`Insert into tblReturnProducts (intReturnProductsNo, intSupplierID, intAdminID, strEmail, strSpecialNotes, intStatus)
-                      values ("${rp_no}","${req.body.supplier}","1000","${req.body.email}", "${req.body.specialnote}", 0)`,(err4,res4,fie4)=>{
+                      values ("${rp_no}","${req.body.supplier}","${req.user.intUserID}","${req.body.email}", "${req.body.specialnote}", 0)`,(err4,res4,fie4)=>{
                       if(err4) console.log(err4);
                       else{
                         async.eachSeries(loop, function(data, callback){
@@ -127,7 +129,7 @@ router.post('/submitForm',(req,res)=>{
 
 });
 
-router.post('/checkReserved',(req,res)=>{
+router.post('/checkReserved',auth_admin, (req,res)=>{
   db.query(`Select * from tblProductInventory where intInventoryNo = ${req.body.no} and intReservedItems > 0`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{
@@ -139,7 +141,7 @@ router.post('/checkReserved',(req,res)=>{
   })
 });
 
-router.get('/viewReturns',(req,res)=>{
+router.get('/viewReturns',auth_admin, (req,res)=>{
   db.query(`Select tblReturnProductList.intQuantity as qty, tblReturnProducts.*, tblReturnProductList.*, tblProductInventory.*, tblProductList.*, tblUom.*
     from tblReturnProducts join tblReturnProductList on
     tblReturnProducts.intReturnProductsNo = tblReturnProductList.intReturnProductListNo
@@ -162,7 +164,7 @@ router.get('/viewReturns',(req,res)=>{
     })
 })
 
-router.get('/detailsPrint',(req,res)=>{
+router.get('/detailsPrint',auth_admin, (req,res)=>{
   db.query(`Select tblReturnProductList.intQuantity as qty, tblReturnProducts.*, tblReturnProductList.*, tblProductInventory.*, tblProductList.*, tblUom.*
     from tblReturnProducts join tblReturnProductList on
     tblReturnProducts.intReturnProductsNo = tblReturnProductList.intReturnProductListNo

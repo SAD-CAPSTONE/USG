@@ -2,8 +2,10 @@ var router = require('express').Router();
 var db = require('../../lib/database')();
 var moment = require('moment');
 var async = require('async');
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_admin = userTypeAuth.admin;
 
-router.get('/', (req,res)=>{
+router.get('/', auth_admin, (req,res)=>{
   db.query(`Select * from tblreceiveorder join tblpurchaseOrder on tblreceiveorder.intpurchaseorderno = tblpurchaseorder.intpurchaseorderno join tblSupplier on tblPurchaseOrder.intSupplierID = tblSupplier.intUserID`, (err1,results1,fields1)=>{
   if (err1) console.log(err1);
   res.render('admin-receiveDelivery/views/receiveDelivery', {re: results1, moment: moment});
@@ -11,7 +13,7 @@ router.get('/', (req,res)=>{
 });
 });
 
-router.get('/form', (req,res)=>{
+router.get('/form', auth_admin, (req,res)=>{
 
   // select last record of deliveries
   db.query(`Select * from tblreceiveOrder order by intreceiveorderno desc limit 1`, (err1,results1,fields1)=>{
@@ -25,7 +27,7 @@ router.get('/form', (req,res)=>{
 });
 
 var purch_no = "";
-router.post('/findNo', (req,res)=>{
+router.post('/findNo', auth_admin, (req,res)=>{
 
 
   if (req.body.o == null || req.body.o == " " || req.body.o == undefined || req.body.o == ""){
@@ -49,7 +51,7 @@ router.post('/findNo', (req,res)=>{
   });
 });
 
-router.get('/loadOrderList',(req,res)=>{
+router.get('/loadOrderList', auth_admin,(req,res)=>{
   // dapat kapag bad orders, yung bad lang lalabas
   db.query(`Select * from tblPurchaseOrder join tblPurchaseOrderList on tblPurchaseOrder.intPurchaseOrderNo = tblPurchaseOrderList.intPurchaseOrderNo where tblPurchaseOrder.intPurchaseOrderNo = "${purch_no}" and (intStatus = 0)`,(err1,results1,fields1)=>{
     if(err1) console.log(err1);
@@ -58,7 +60,7 @@ router.get('/loadOrderList',(req,res)=>{
   });
 });
 
-router.get('/deliveryDetails',(req,res)=>{
+router.get('/deliveryDetails', auth_admin,(req,res)=>{
   db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo
     where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.delivery}"`,(err1,results,fields1)=>{
     if(err1) console.log(err1);
@@ -72,7 +74,7 @@ router.get('/deliveryDetails',(req,res)=>{
 
   });
 
-router.post('/newDeliveryRecord', (req,res)=>{
+router.post('/newDeliveryRecord', auth_admin, (req,res)=>{
 
   var counter = 0;
   var startNo = "1000";
@@ -84,7 +86,8 @@ router.post('/newDeliveryRecord', (req,res)=>{
         console.log(err);
       })
     }else{
-      db.query(`Insert into tblreceiveOrder (intReceiveOrderNo, intPurchaseOrderNo, intAdminID,   specialNotes) values ("${req.body.rno}", "${req.body.POno}", "1000", "${req.body.note}")`,(err1,results1,fields1)=>{
+      db.query(`Insert into tblreceiveOrder (intReceiveOrderNo, intPurchaseOrderNo, intAdminID,   specialNotes)
+        values ("${req.body.rno}", "${req.body.POno}", "${req.user.intUserID}", "${req.body.note}")`,(err1,results1,fields1)=>{
         if (err1){
           db.rollback(function(){
             console.log(err1);
@@ -153,7 +156,7 @@ router.post('/newDeliveryRecord', (req,res)=>{
 
 });
 
-router.get('/print',(req,res)=>{
+router.get('/print', auth_admin,(req,res)=>{
   db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.ro}" and tblReceiveOrderlist.intOrderStatus = "Good"`,(err1,good,fields1)=>{
     if(err1) console.log(err1);
 
@@ -171,7 +174,7 @@ router.get('/print',(req,res)=>{
 
 });
 
-router.get('/returnBadOrders',(req,res)=>{
+router.get('/returnBadOrders', auth_admin,(req,res)=>{
   db.query(`Select * from tblReceiveOrder join tblReceiveOrderList on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderList.intReceiveOrderNo where tblReceiveOrder.intReceiveOrderNo = "${req.query.ro}" and tblReceiveOrderList.intOrderStatus = "Bad"`,(e1,bad,f1)=>{
     if(e1) console.log(e1);
     if(!e1){
@@ -180,7 +183,7 @@ router.get('/returnBadOrders',(req,res)=>{
   });
 });
 
-router.post('/returnBadOrders',(req,res)=>{
+router.post('/returnBadOrders', auth_admin,(req,res)=>{
   var rb_no = "1000";
   var rblist_no = "1000";
   var loop = req.body.product;

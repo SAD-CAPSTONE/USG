@@ -7,12 +7,14 @@ const nodemailer = require('nodemailer');
 const user_name = 'test.ultrasupergreen@gmail.com';
 const email_to = 'imjanellealag@gmail.com';
 const passw = 'testusg123';
+const userTypeAuth = require('../cust-0extras/userTypeAuth');
+const auth_admin = userTypeAuth.admin;
 
 var header = '';
 var body = '';
 var count = 0;
 
-router.get('/email',(req,res)=>{
+router.get('/email',auth_admin, (req,res)=>{
   let transporter = nodemailer.createTransport({
    host: 'smtp.gmail.com',
    port: 465,
@@ -94,7 +96,7 @@ router.get('/email',(req,res)=>{
             res.send("error");
         }else{
           res.send("yes")
-          
+
         }
 
 
@@ -106,7 +108,7 @@ router.get('/email',(req,res)=>{
 })
 
 
-router.get('/', (req,res)=>{
+router.get('/', auth_admin, (req,res)=>{
 
   db.query(`Select tblPurchaseOrder.intStatus as Stat, tblPurchaseOrder.*, tblSupplier.* from tblPurchaseOrder join tblSupplier on tblpurchaseorder.intSupplierID = tblSupplier.intUserID `, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
@@ -117,7 +119,7 @@ router.get('/', (req,res)=>{
 
 });
 
-router.get('/form', (req,res)=>{
+router.get('/form', auth_admin, (req,res)=>{
 
   db.query(`Select * from tblPurchaseOrder`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
@@ -145,7 +147,7 @@ router.get('/form', (req,res)=>{
 
 });
 
-router.post('/submit',(req,res)=>{
+router.post('/submit',auth_admin, (req,res)=>{
 
     var ponum = "1000";
     var startProdListNo = 1000;
@@ -174,7 +176,8 @@ router.post('/submit',(req,res)=>{
               ponum = parseInt(results1[0].intPurchaseOrderNo) + 1;
             }
             // Insert into purchase order
-            db.query(`Insert into tblPurchaseOrder (intPurchaseOrderNo, intSupplierID, intAdminID, strSpecialNote) values ("${ponum}","${req.body.supplier}", "1000", "${req.body.specialnote}")`,(err2,results2,fields2)=>{
+            db.query(`Insert into tblPurchaseOrder (intPurchaseOrderNo, intSupplierID, intAdminID, strSpecialNote) 
+              values ("${ponum}","${req.body.supplier}", "${req.user.intUserID}", "${req.body.specialnote}")`,(err2,results2,fields2)=>{
               if(err2){
                 db.rollback(function(){
                   console.log(err2);
@@ -233,7 +236,7 @@ router.post('/submit',(req,res)=>{
 });
 
 
-router.post('/addSupplier', (req,res)=>{
+router.post('/addSupplier', auth_admin, (req,res)=>{
 
   var id = 0;
   db.query(`Select * from tblUser Order by intUserID desc limit 1`, (err1,results1,fields1)=>{
@@ -268,7 +271,7 @@ router.post('/addSupplier', (req,res)=>{
 
 });
 
-router.get('/findProducts/:pid',(req,res)=>{
+router.get('/findProducts/:pid',auth_admin, (req,res)=>{
 
   db.query(`Select * from tblProductList join tblProductInventory on tblProductList.intProductNo = tblProductInventory.intProductNo where tblProductInventory.intUserID = "${req.params.pid}" and tblProductList.intstatus = 1`,(err1,results1,fields1)=>{
     if (err1) console.log(err1);
@@ -276,7 +279,7 @@ router.get('/findProducts/:pid',(req,res)=>{
   });
 });
 
-router.get('/invoice',(req,res)=>{
+router.get('/invoice',auth_admin, (req,res)=>{
   var orderno = req.query.order;
 
   db.query(`Select * from tblPurchaseOrder join tblUser on tblPurchaseOrder.intSupplierID = tblUser.intUserID
@@ -292,7 +295,7 @@ router.get('/invoice',(req,res)=>{
     });
 });
 
-router.get('/invoice-print',(req,res)=>{
+router.get('/invoice-print',auth_admin, (req,res)=>{
   var orderno = req.query.order;
 
   db.query(`Select * from tblPurchaseOrder join tblUser on tblPurchaseOrder.intSupplierID = tblUser.intUserID
