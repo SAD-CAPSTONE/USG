@@ -37,18 +37,24 @@ router.get('/loader',(req,res)=>{
 
 router.post('/search',(req,res)=>{
 
-  var dates = (req.body.date).split('-');
-  var newDate = moment(dates[0]).format("YYYY/MM/DD");
-  var newDate1 = moment(dates[1]).format("YYYY/MM/DD");
+  // var dates = (req.body.date).split('-');
+  // var newDate = moment(dates[0]).format("YYYY/MM/DD");
+  // var newDate1 = moment(dates[1]).format("YYYY/MM/DD");
+
+  // Select * from tblInventoryTransactions
+  //   join tblProductInventory on tblInventoryTransactions.intInventoryno = tblProductinventory.intInventoryno
+  //   join tblProductlist on tblProductlist.intProductNo = tblProductInventory.intProductNo
+  //   join tblUom on tblUom.intUOMno = tblProductInventory.intUomNo
+  //    where transactionDate between '${newDate}' and '${newDate1}'
 
   // inventory transactions
   if(req.body.string == 2){
 
-    db.query(`Select * from tblInventoryTransactions
-      join tblProductInventory on tblInventoryTransactions.intInventoryno = tblProductinventory.intInventoryno
-      join tblProductlist on tblProductlist.intProductNo = tblProductInventory.intProductNo
-      join tblUom on tblUom.intUOMno = tblProductInventory.intUomNo
-       where transactionDate between '${newDate}' and '${newDate1}'`,(e,r,f)=>{
+    db.query(`Select * from tblProductinventory join tblInventoryTransactions
+      on tblproductinventory.intInventoryno = tblInventoryTransactions.intInventoryno
+      join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductNo
+      join tbluom on tbluom.intUOMno = tblProductInventory.intUOMno
+      where tblProductInventory.intInventoryno = 1000`,(e,r,f)=>{
       if(e) console.log(e);
       else{
         result = r;
@@ -63,8 +69,7 @@ router.post('/search',(req,res)=>{
     db.query(`Select * from tblStockPullOut
       join tblProductInventory on tblStockPullOut.intInventoryno = tblProductInventory.intInventoryno
       join tblProductlist on tblProductlist.intProductNo = tblProductInventory.intProductNo
-      join tblUom on tblUom.intUOMno = tblProductInventory.intUomNo
-       where pullOutDate between '${newDate}' and '${newDate1}'`,(e1,r1,f1)=>{
+      join tblUom on tblUom.intUOMno = tblProductInventory.intUomNo`,(e1,r1,f1)=>{
          if(e1) console.log(e1);
          else{
            result = r1;
@@ -81,8 +86,7 @@ router.post('/search',(req,res)=>{
       tblProductList.*, tblUom.*
        from tblBatch join tblProductInventory on tblBatch.intInventoryno = tblProductInventory.intInventoryno
        join tblProductlist on tblProductlist.intProductNo = tblProductInventory.intProductNo
-       join tblUom on tblUom.intUOMno = tblProductInventory.intUomNo
-        where created_at between '${newDate}' and '${newDate1}'`,(e2,r2,f2)=>{
+       join tblUom on tblUom.intUOMno = tblProductInventory.intUomNo`,(e2,r2,f2)=>{
           if(e2) console.log(e2);
           else{
             result = r2;

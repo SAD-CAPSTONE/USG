@@ -22,19 +22,19 @@
         <div class="col-sm-12">
           <div class="box">
             <div class="box-header">
-              <h4 align="center">Return Orders from Customers</h4>
+              <h4 align="center">Queries</h4>
             </div>
             <div class="box-body">
               <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-10">
 
                   <div class="form-group">
                     <label>Query:</label>
                     <select id="query" class="form-control select2" style="width: 100%;">
                       <option id="1" disabled selected="selected">No selected</option>
-                      <option value="2">Inventory Transactions</option>
-                      <option value="3">Pulled-out Stocks</option>
-                      <option value="4">Product Batch</option>
+                      <option value="2">Inventory transactions of the best seller product </option>
+                      <option value="3">List of pulled out product by date</option>
+                      <option value="4">List of product batches</option>
                       <option>All Consignor suppliers</option>
 
                     </select>
@@ -43,7 +43,7 @@
 
                 </div>
 
-                <div class="col-sm-4">
+                <!-- <div class="col-sm-4">
 
                   <div class="form-group">
                     <label>Select date range:</label>
@@ -58,7 +58,7 @@
                   </div>
 
 
-                </div>
+                </div> -->
 
                 <div class="col-sm-2">
 
@@ -124,15 +124,15 @@ $('#range').daterangepicker();
 
 <script>
   $('#search').on('click',function(e){
-    console.log($('#range').val())
-    var stringDate = $('#range').val().toString();
-    console.log(stringDate)
+    // console.log($('#range').val())
+    // var stringDate = $('#range').val().toString();
+    // console.log(stringDate)
     //console.log($(this).select2('data')[0].id)
     // switch($(this).val()){
     //   case 1: $('#result').load('/queries/allProducts');
     // string=${$('#query').select2('data')[0].id}
     // }
-    $.post('/queries/search',{string: $('#query').select2('data')[0].id, date: $('#range').val()},function(data,status){
+    $.post('/queries/search',{string: $('#query').select2('data')[0].id},function(data,status){
       if(data=="yes"){
         $('#result').load('/queries/loader');
       }
