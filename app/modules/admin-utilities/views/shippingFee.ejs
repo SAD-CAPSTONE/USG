@@ -1,0 +1,251 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+ <!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Utilities</a></li>
+        <li class="active">Shipping Fee</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h4 align="center">Shipping Fees</h4>
+            </div>
+			  <!-- buttons -->
+        &nbsp; &nbsp;<button type="button" data-toggle="modal" data-target="#add_shipping"  class="large ui green button"><i class="fa fa-plus"></i> Add Shipping Fee</button>
+            <!-- /.box-header -->
+            <div class="box-body table-responsive">
+              <table id="example2" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Location</th>
+                  <th>Shipping Fee</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                  <% if(re==null||re==undefined){ %>
+
+                  <% }else if(re.length==0){ %>
+
+                  <% }else{ %>
+                    <% var count = 1 %>
+                  <%  re.forEach(function(i){ %>
+                    <tr>
+                      <td><%=count%></td>
+                      <td><%=i.strLocation%></td>
+                      <td>Php <%=(i.amount).toFixed(2)%></td>
+                      <td>
+
+                      </td>
+                      <td>
+
+                        <button class="edit_shipping large ui teal button" data-target="#edit_shipping" data-toggle="modal"
+                          data-no="<%=i.intShippingFeeNo%>" data-location="<%=i.strLocation%>" data-amount="<%=(i.amount).toFixed(2)%>" >Edit</button>
+
+                      </td>
+                    </tr>
+                    <% count++ %>
+                  <%  }) %>
+                  <% } %>
+                </tbody>
+
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+	    </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+  <!-- /.content-wrapper -->
+
+	<!-- Modals -->
+
+  <div class="modal fade" id="edit_shipping">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">Edit shipping information </h4>
+      </div>
+      <div class="modal-body">
+      <!-- Horizontal Form -->
+
+          <!-- form start -->
+          <form role="form" id="edit_shipping_form">
+              <div class="box-body">
+                <div class="form-group">
+                  <input type="hidden"  required class="form-control" name="fee_no" id="fee_no" placeholder="">
+
+                  <label for="name">Location:</label>
+                  <input type="text"  required class="form-control" name="location" id="location" placeholder="">
+                </div>
+
+                <div class="form-group">
+                  <label for="address">Shipping Fee:</label>
+                  <input type="decimal"  required class="form-control" name="fee" id="fee" placeholder="">
+
+                </div>
+
+
+
+
+
+              </div>
+
+
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
+        <button type="submit"  class="large ui teal button pull-right">Save changes</button>
+        </div>
+        </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+   <!-- /.modal-dialog -->
+ </div>
+
+
+   <div class="modal fade" id="add_shipping">
+     <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         <span aria-hidden="true">&times;</span></button>
+       <h4 class="modal-title">New shipping information </h4>
+       </div>
+       <div class="modal-body">
+       <!-- Horizontal Form -->
+
+           <!-- form start -->
+           <form role="form" id="add_shipping_form">
+               <div class="box-body">
+                 <div class="form-group">
+                   <input type="hidden"  class="form-control" name="fee_no"  placeholder="">
+
+                   <label for="name">Location:</label>
+                   <input type="text"  required class="form-control" name="location"  placeholder="">
+                 </div>
+
+                 <div class="form-group">
+                   <label for="address">Shipping Fee:</label>
+                   <input type="decimal"  required class="form-control" name="fee" placeholder="">
+
+                 </div>
+
+               </div>
+
+
+         </div>
+         <div class="modal-footer">
+         <button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
+         <button type="submit"  class="large ui teal button pull-right">Save changes</button>
+         </div>
+         </form>
+     </div>
+     <!-- /.modal-content -->
+   </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+  <!-- ./wrapper -->
+
+  <!-- REQUIRED JS SCRIPTS -->
+
+  <%- include('../../../templates/admin-footer.ejs') -%>
+<!-- page script (new added) -->
+
+<script>
+  $('.edit_shipping').on('click',function(){
+    $('#location').val($(this).data('location'));
+    $('#fee').val($(this).data('amount'));
+    $('#fee_no').val($(this).data('no'));
+  })
+
+  $('#add_shipping_form').submit(function(e){
+    e.preventDefault();
+    $.post('/utilities/addShipping', $('#add_shipping_form').serialize(), function(data,status){
+      if(data){
+        swal({
+          title: 'Success',
+          text: '',
+          type: 'success'
+        }).then(()=>{
+          location.reload();
+        })
+      }
+    })
+  })
+
+  $('#edit_shipping_form').submit(function(e){
+    e.preventDefault();
+    $.post('/utilities/editShipping', $('#edit_shipping_form').serialize(), function(data,status){
+      if(data){
+        swal({
+          title: 'Success',
+          text: '',
+          type: 'success'
+        }).then(()=>{
+          location.reload();
+        })
+      }
+    })
+  })
+</script>
+
+<script>
+  $(function () {
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+
+<script>
+$('#title').html("USG | Shipping Fee");
+$(".treeview a:contains('Utilities')").parent().addClass("active");
+$(".navi a:contains('Shipping Fees')").parent().addClass("active");
+</script>
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>
