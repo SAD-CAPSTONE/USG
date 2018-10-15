@@ -566,13 +566,13 @@
 
     $(`#sameAddress`).click(function(){
       if ($(this).is(':checked')){
-        $(`#dba`).removeAttr('required');
+        $(`#ba`).removeAttr('required');
         $(`#billing-label`).attr('hidden','hidden');
         $(`#billing-label + div.row`).attr('hidden','hidden');
 
       }
       else {
-        $(`#dba`).attr('required','required');
+        $(`#ba`).attr('required','required');
         $(`#billing-label`).removeAttr('hidden');
         $(`#billing-label + div.row`).removeAttr('hidden');
 

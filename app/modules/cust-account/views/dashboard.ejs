@@ -95,7 +95,7 @@
           </div>
 
           <label for="email" class="required-field"><b>Email</b></label>
-          <input id="email" type="text" name="email" pattern="^[a-z0-9.+-]+@([a-z0-9-]+\.)+[a-z]{2,4}$" data-inputmask-regex="[a-z0-9.+-]+@([a-z0-9-]+\.)+[a-z]{2,4}" value="<%= thisUser.strEmail%>" required="" class="form-control material mb-3" maxLength="100" />
+          <input id="email" type="text" name="email" pattern="^[a-zA-Z0-9.+-]+@([a-z0-9-]+\.)+[a-z]{2,4}$" data-inputmask-regex="[a-zA-Z0-9.+-]+@([a-z0-9-]+\.)+[a-z]{2,4}" value="<%= thisUser.strEmail%>" required="" class="form-control material mb-3" maxLength="100" />
 
           <label for="dsa" class="required-field"><b>Default Shipping Address</b></label>
           <div class="row">
