@@ -27,7 +27,7 @@ router.get('/contract', auth_admin,(req,res)=>{
 
 router.post('/renew', auth_admin,(req,res)=>{
   var history_no = "1000";
-  db.query(`Update tblContract set intContractStatus = 1 where intContractNo = "${req.body.no}"`,(err1,res1,fie1)=>{
+  db.query(`Update tblContract set startingDate="${req.body.start}", endingDate="${req.body.end}", intContractStatus = 1 where intContractNo = "${req.body.no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     db.query(`Update tblSupplier set intStatus = 1
       where tblSupplier.intUserID = (Select intConsignorID from tblContract where intContractNo = ${req.body.no})`,(err2,res2,fie2)=>{

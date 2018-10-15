@@ -334,7 +334,15 @@ router.post('/editSubCategory', auth_admin, (req,res)=>{
 router.post('/changeCategoryStat', auth_admin,(req,res)=>{
   db.query(`Update tblCategory set intStatus = ${req.body.value} where intCategoryNo = "${req.body.no}"`,(err2,res2,fie2)=>{
     if(err2) console.log(err2);
-    res.send("")
+    else{
+      db.query(`Update tblSubCategory set intStatus = ${req.body.value} where intCategoryNo = "${req.body.no}"`,(err3,res3,fie3)=>{
+        if(err3) console.log(err3);
+        else{
+          res.send("ee")
+
+        }
+      })
+    }
   })
 });
 

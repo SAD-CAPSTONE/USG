@@ -265,7 +265,7 @@
 		  </div>
 		  <div class="modal-body">
 			<!-- Horizontal Form -->
- 
+
 					<!-- form start -->
           <form role="form" method="post" action="/maintenance/addSubCategory">
               <div class="box-body">
@@ -374,6 +374,9 @@ $(".navi a:contains('Product Category')").parent().addClass("active");
 
     $.post('/maintenance/changeCategoryStat',{no: $(this).data('no'), value: val}, function(data,status){
       if (data){
+        swal({title: 'Success!', type: 'success'}).then(()=>{
+          location.reload()
+        })
       }
     })
   })

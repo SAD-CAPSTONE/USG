@@ -290,7 +290,7 @@
         <button type="button" id="sendInvite" data-toggle="modal" data-target="#sendInvitation" class="invite large ui green button pull-right"><i class="fa fa-envelope"></i> Send Invitation for Product Sampling
 				</button>
 
-				<button type="button" data-contract="<%=contract[0].intContractNo%>"  class="accept large ui blue button pull-right"  style="margin-right: 5px;">
+				<button type="button" data-target="#setStart" data-toggle="modal" data-contract="<%=contract[0].intContractNo%>"  class="accept_modal large ui blue button pull-right"  style="margin-right: 5px;">
 				 Accept Consignor
 				</button>
         <button type="button"  data-contract="<%=contract[0].intContractNo%>" class="reject large ui button red pull-right"  style="margin-right: 5px;">
@@ -312,6 +312,59 @@
   <!-- /.content-wrapper -->
 
   <!-- Modals -->
+
+  <div class="modal fade" id="setStart">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">Contract Validity</h4>
+      </div>
+      <div class="modal-body">
+      <!-- Horizontal Form -->
+
+          <!-- form start -->
+          <form role="form" id="contract_validity_form">
+              <div class="box-body">
+                <div class="form-group">
+                  <input type="hidden" name="no" id="cont_no">
+                  <label for="receiver">Start Date:</label>
+                  <input type="date" name="start" id="start" class="form-control" required  >
+
+
+                </div>
+                <div class="form-group">
+                  <label >Select Validity:</label>
+                  <select class="form-control" id="range">
+                    <option value="1">6 months</option>
+                    <option value="2">12 months</option>
+                    <option value="3">Other</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Contract End Date:</label>
+                  <input  required id="end" name="end" type="date" class="form-control">
+                </div>
+
+
+
+
+              </div>
+
+
+      </div>
+      <div class="modal-footer">
+      <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+      <button type="submit"  class=" btn btn-primary">Save changes</button>
+      </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
 
 	<div class="modal fade" id="sendInvitation">
 	  <div class="modal-dialog">
@@ -375,8 +428,79 @@
 
 <%- include('../../../templates/admin-footer.ejs') -%>
 
+<!-- Moment -->
+<script src="/assets/admin/bower_components/moment/min/moment.min.js"></script>
+
 
 <!-- page script (new added) -->
+
+<script>
+
+$('#contract_validity_form').submit(function(e){
+  e.preventDefault();
+  swal({
+    title: "Are you sure?",
+    text: "Please check carefully the documents attached in this application",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Accept Consignor",
+    cancelButtonText: "Back",
+    reverseButtons: true
+  }).then((result)=>{
+    if(result.value){
+      $.post('/consApplication/accept',$('#contract_validity_form').serialize(),function(data,success){
+        if(data){
+          swal({title: 'Success', text: 'You accepted this consignor', type: 'success'}).then(()=>{
+            window.location.href = '/consApplication';
+          })
+        }
+      })
+    }
+  })
+
+})
+
+var now = new Date();
+
+var day = ("0" + now.getDate()).slice(-2);
+var month = ("0" + (now.getMonth() + 1)).slice(-2);
+
+var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
+$('#start').val(today)
+
+$('.accept_modal').on('click',function(){
+  if($('#range').val() == 1){
+    var currentDate = moment($('#start').val()).format("YYYY-MM-DD")
+    var endDateMoment = moment(currentDate) // moment(...) can also be used to parse dates in string format
+    endDateMoment.add(6, 'months');
+    $('#end').val(moment(endDateMoment).format("YYYY-MM-DD"))
+  }
+  if($('#range').val() == 2){
+    var currentDate = moment($('#start').val()).format("YYYY-MM-DD")
+    var endDateMoment = moment(currentDate) // moment(...) can also be used to parse dates in string format
+    endDateMoment.add(12, 'months');
+    $('#end').val(moment(endDateMoment).format("YYYY-MM-DD"))
+  }
+  $('#cont_no').val($(this).data('contract'));
+})
+
+
+
+$('#start').on('keyup',function(){
+  if($('#range').val() == 1){
+    var currentDate = moment($(this).val()).format("YYYY-MM-DD")
+    var endDateMoment = moment(currentDate) // moment(...) can also be used to parse dates in string format
+    endDateMoment.add(6, 'months');
+    $('#end').val(moment(endDateMoment).format("YYYY-MM-DD"))
+  }
+  if($('#range').val() == 2){
+    var currentDate = moment($(this).val()).format("YYYY-MM-DD")
+    var endDateMoment = moment(currentDate) // moment(...) can also be used to parse dates in string format
+    endDateMoment.add(12, 'months');
+    $('#end').val(moment(endDateMoment).format("YYYY-MM-DD"))
+  }
+})
+</script>
 
 
 <script>
@@ -456,26 +580,6 @@
 </script>
 
 
-<script>
-  $(document).ready(function() {
-    var max_fields      = 10; //maximum input boxes allowed
-    var wrapper         = $(".input_fields_wrap"); //Fields wrapper
-    var add_button      = $(".add_field_button"); //Add button ID
-
-    var x = 1; //initlal text box count
-    $(add_button).click(function(e){ //on add input button click
-        e.preventDefault();
-        if(x < max_fields){ //max input box allowed
-            x++; //text box increment
-            $(wrapper).append('<div class="row"><div class="col-sm-6"><input required class=""type="text" name="mytext[]"/><a href="#" class="remove_field">&nbsp;Remove</a></div></div>'); //add input box
-        }
-    });
-
-    $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
-        e.preventDefault(); $(this).parent('div').remove(); x--;
-    })
-  });
-</script>
 
 <script>
   <% if (contract[0].intDeliveryReceipt == 0){ %>

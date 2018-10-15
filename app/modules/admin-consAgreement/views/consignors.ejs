@@ -21,8 +21,8 @@
       <div class="col-sm-12">
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs">
-            <li class="active"><a href="#active_consignors" data-toggle="tab"><i class="fa fa-bars"></i> Active Consignors</a></li>
-            <li ><a href="#terminated_consignors" data-toggle="tab"><i class="fa fa-bars"></i> Terminated Consignors</a></li>
+            <li class="active"><a href="#active_consignors" data-toggle="tab"> Active Consignors</a></li>
+            <li ><a href="#terminated_consignors" data-toggle="tab"> Terminated Consignors</a></li>
             <!-- <li><a href="#quantity" data-toggle="tab"><i class=""></i>Quantity</a></li> -->
           </ul>
           <div class="tab-content">
@@ -37,7 +37,7 @@
                   <tr>
                     <th>Business Name</th>
                     <th>Email</th>
-
+                    <th>End of Contract</th>
                     <th>Status</th>
                     <th>Actions</th>
 
@@ -54,7 +54,7 @@
                         <tr>
                           <td><%=i.strBusinessName%></td>
                           <td><%=i.strBusinessEmail%></td>
-
+                          <td><%=moment(i.endingDate).format("MM/DD/YYYY")%></td>
                           <td>
                             <% if (i.intStatus == 0){ %>
                               <span class="label label-danger">Inactive</span>
@@ -107,7 +107,7 @@
                         <tr>
                           <td><%=i.strBusinessName%></td>
                           <td><%=i.strBusinessEmail%></td>
-                          
+
                           <td>
                             <% if (i.intStatus == 0){ %>
                               <span class="label label-danger">Inactive</span>

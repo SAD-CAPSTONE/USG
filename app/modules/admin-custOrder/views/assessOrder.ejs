@@ -422,7 +422,7 @@
         </div>
 
         <div class="modal-body">
-          <% var filename = "/customer-assets/images/userImages/bankslips/" + customer[0].depositSlip; console.log(filename); %>
+          <% var filename = "/customer-assets/images/userImages/bankslips/" + customer[0].depositSlip; %>
           <div class="row">
             <div class="col-sm-12">
               <img src="<%=filename%>" class="img-responsive"  >
@@ -448,6 +448,33 @@
 <script src="/assets/admin/assessOrder.js"></script>
 
 <script>
+
+  $('#orderstatus').on('change',function(){
+    var c = $(this).val();
+    if(c == 0){
+      $('#message').val('Your order is being reviewed by the admin');
+    }
+    else if(c == 1){
+      $('#message').val('Your order is now processing');
+
+    }else if(c == 2){
+      $('#message').val('Your order has been shipped');
+
+    }else if(c == 3){
+      $('#message').val('Your order has been delivered');
+
+    }else if(c == 4){
+      $('#message').val('Sorry, we will not be able to deliver your order');
+
+    }else if(c == 6){
+      $('#message').val('Your order has been cancelled');
+
+    }else{
+      $('#message').val('Returned Order');
+
+    }
+
+  })
 
 
   // Pending

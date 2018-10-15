@@ -29,7 +29,7 @@
             </div>
 			<!-- buttons -->
     </br>
-				&nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#addProduct"><i class="fa fa-plus"></i> Add New Product</button>
+				&nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#addProduct2"><i class="fa fa-plus"></i> Add New Product</button>
 
         <!-- &nbsp; &nbsp;<button type="button" class="btn btn-success btn-sm" id="s"><i class="fa fa-plus"></i> Tester</button> -->
 
@@ -100,79 +100,94 @@
 
 	<!-- Modals -->
 
-<div class="modal fade" id="addProduct">
-  <div class="modal-dialog">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title">Product Information Form</h4>
-		  </div>
-		  <div class="modal-body">
 
+
+
+<div class="modal fade" id="addProduct2">
+  <div class="modal-dialog" style="width:800px;">
+  	<div class="modal-content">
+  	  <div class="modal-header">
+  		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  		  <span aria-hidden="true">&times;</span></button>
+  		<h4 class="modal-title">Product Information Form</h4>
+  	  </div>
+  	  <div class="modal-body">
+        <div class-"container-fluid">
+          <div class="row">
         <!-- form start -->
-        <form role="form" id="addProducts_form" method="post" enctype="multipart/form-data" action="/inventory/addProduct">
-          <div class="box-body">
+            <form role="form" id="addProducts_form" method="post" enctype="multipart/form-data" action="/inventory/addProduct">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for=""></label>
+                  <div class="col-md-4" style="width: 40%;">
+                    <img onclick="click_input()" src="/customer-assets/images/static/blank.png" class="img-responsive" disabled id="add_img"   >
+                  </div>
+                  <div class="col-md-7 ml-auto">
 
-            <div class="form-group">
-              <label for="add_pcode">Product Code</label>
-              <input type="text" class="form-control" required id="add_pcode" name="add_pcode" >
-            </div>
-            <div class="form-group">
-              <label for="add_pname">Product Name</label>
-              <input type="text" class="form-control" required id="add_pname" name="add_pname" >
-            </div>
-            <div class="form-group">
-              <label for="add_brand">Brand</label>
-              <select class="form-control" required id="add_brand" name="add_brand"  >
-                <% if (brand == null || brand == undefined || brand.length == 0){ %>
-                  <option></option>
-                <% }else{ %>
-                  <% brand.forEach(function(s){ %>
-                    <option value="<%=s.intBrandNo%>"><%=s.strBrand%></option>
-                  <% }) %>
+                    <label for="view_pcode">Product Code</label>
+                    <input type="text" class="form-control" required id="add_pcode" name="add_pcode">
+                  <div class="form-group">
+                    <label for="view_pname">Product Name</label>
+                    <input type="text" class="form-control" required id="add_pname" name="add_pname"  >
+                  <div class="form-group">
+                      <label for="view_brand">Brand</label>
+                      <select class="form-control" required id="add_brand" name="add_brand" >
+                        <% if (brand == null || brand == undefined || brand.length == 0){ %>
+                          <option></option>
+                        <% }else{ %>
+                          <% brand.forEach(function(s){ %>
+                            <option value="<%=s.intBrandNo%>"><%=s.strBrand%></option>
+                          <% }) %>
 
-                <% } %>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="add_pdesc">Product Description</label>
-              <textarea class="form-control" required id="add_pdesc" name="add_pdesc" ></textarea>
-            </div>
-            <div class="form-group">
-              <label for="add_pcat">Category</label>
-              <select class="form-control" id="add_pcat" required name="add_pcat" >
-                <% if (category == null || category == undefined || category.length == 0){ %>
-                  <option></option>
-                <% }else{ %>
-                  <% category.forEach(function(s){ %>
-                    <option value="<%=s.intSubCategoryNo%>"><%=s.strSubCategory%></option>
-                  <% }) %>
+                        <% } %>
+                      </select>
+                  <div class="form-group">
+                      <label for="view_pdesc">Product Description</label>
+                      <textarea class="form-control" required id="add_pdesc" name="add_pdesc"></textarea>
+                  <div class="form-group">
+                      <label for="view_pcat">Category</label>
+                      <select class="form-control" id="add_pcat" required name="add_pcat" >
+                            <% if (category == null || category == undefined || category.length == 0){ %>
+                              <option></option>
+                            <% }else{ %>
+                              <% category.forEach(function(s){ %>
+                                <option value="<%=s.intSubCategoryNo%>"><%=s.strSubCategory%></option>
+                              <% }) %>
 
-                <% } %>
-              </select>
+                            <% } %>
+                      </select>
+                  <div class="form-group">
+                      <label for="notify">
+                      <input type="checkbox" name="active" checked id="active" class="flat-red">
+                        &nbsp; Active
+                      </label>
+                  <div class="form-group">
+                      <label for="view_pic">Product Picture</label>
+                      <input  type="file" class="form-control" id="add_pic" name="add_pic" required placeholder="">
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+              <!-- /.box-body -->
             </div>
-            <div class="form-group">
-              <label for="add_pic">Product Picture</label>
-              <input type="file" class="form-control" id="add_pic" name="add_pic" required placeholder="">
-            </div>
-
-
           </div>
-          <!-- /.box-body -->
-
-			  <div class="modal-footer">
-				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-				<button type="submit" class="btn btn-primary">Save changes</button>
-			  </div>
-
-      </form>
-		</div>
-		<!-- /.modal-content -->
-	  </div>
+  		  <div class="modal-footer">
+  			<button type="button" class="large ui button" data-dismiss="modal">Close</button>
+  			<button type="submit" id="add_submit" class="large ui blue button">Save changes</button>
+  		  </div>
+        </form>
+  	</div>
+  	<!-- /.modal-content -->
   </div>
-<!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal-dialog -->
 </div>
+
 
 
 <div class="modal fade" id="viewProduct">
@@ -268,6 +283,42 @@
 <%- include('../../../templates/admin-footer.ejs') -%>
 
 <!-- page script (new added) -->
+
+<script>
+function readURL(input) {
+      if (input.files[0]) {
+        if (input.files[0]['type'] == 'image/jpeg' || input.files[0]['type'] == 'image/png') {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            $('#add_img').attr('src', e.target.result);
+            $('#add_submit').attr('disabled',false)
+
+
+          }
+          reader.readAsDataURL(input.files[0]);
+        }
+        else{
+          $('#add_img').attr('src','/customer-assets/images/static/blank.png');
+          $('#add_submit').attr('disabled',true)
+
+        }
+      }
+      // else{
+      //   $('#bankslip-img').attr('hidden','hidden');
+      //   $('#UploadSlip').find('button[type=submit]').attr('disabled','disabled')
+      // }
+    }
+    $("#add_pic").change(function() {
+      readURL(this);
+    });
+</script>
+
+<script>
+
+function click_input(){
+  $('input#add_pic').click();
+}
+</script>
 <script>
   $(function () {
     $('#example2').DataTable({

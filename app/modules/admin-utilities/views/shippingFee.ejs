@@ -101,7 +101,7 @@
                   <input type="hidden"  required class="form-control" name="fee_no" id="fee_no" placeholder="">
 
                   <label for="name">Location:</label>
-                  <input type="text"  required class="form-control" name="location" id="location" placeholder="">
+                  <input type="text"  required class="location form-control" name="location" id="location" placeholder="">
                 </div>
 
                 <div class="form-group">
@@ -148,8 +148,23 @@
                    <input type="hidden"  class="form-control" name="fee_no"  placeholder="">
 
                    <label for="name">Location:</label>
-                   <input type="text"  required class="form-control" name="location"  placeholder="">
+                   <input type="text"  required class="location form-control" name="location"   placeholder="">
                  </div>
+
+                 <script >
+               function activatePlacesSearch(){
+
+               var input = document.getElementById('location');
+               var options = {
+                types: ['(regions)'],
+                componentRestrictions: {country: "ph"}
+               };
+               var autocomplete = new google.maps.places.Autocomplete(input,options);
+
+
+
+               }
+               </script>
 
                  <div class="form-group">
                    <label for="address">Shipping Fee:</label>
@@ -174,6 +189,9 @@
 
 
 
+
+
+
 <%- include('../../../templates/admin-aside.ejs') -%>
 
   <!-- ./wrapper -->
@@ -182,6 +200,12 @@
 
   <%- include('../../../templates/admin-footer.ejs') -%>
 <!-- page script (new added) -->
+
+
+
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjfB95le9OEVAn2fYlLO05fIIqv4hY1UI&libraries=places&callback=activatePlacesSearch"></script>
+
 
 <script>
   $('.edit_shipping').on('click',function(){
