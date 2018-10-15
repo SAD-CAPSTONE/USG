@@ -146,7 +146,6 @@
       </div>
     </div>
 
-
     <div id="daily-div" class="row">
       <!-- Daily Sales Report -->
       <div class="col-sm-8">
@@ -495,7 +494,6 @@
       $.post(`/reports/sales/load`, {
         annual: annual, daily: daily
       }).then((res) => {
-        console.log(res)
         let config = res.config, annual = res.annual, daily = res.daily;
 
         // ANNUAL

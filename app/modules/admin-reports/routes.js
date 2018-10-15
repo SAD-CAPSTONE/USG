@@ -51,7 +51,7 @@ function now(req,res,next){
   });
 }
 function yearsAvailable(req,res,next){
-  db.query(`SELECT YEAR(tblsales.transactionDate)year FROM tblsales GROUP BY year`, (err, results, fields) => {
+  db.query(`SELECT YEAR(transactionDate)year FROM tblsales GROUP BY year`, (err, results, fields) => {
     if (err) console.log(err);
     req.yearsAvailable= results;
     return next();
@@ -64,6 +64,23 @@ function datesAvailable(req,res,next){
       results.map( obj => obj.date = moment(obj.date).format('YYYY-MM-DD') );
     }
     req.datesAvailable= results;
+    return next();
+  });
+}
+function yearsAvailableDamaged(req,res,next){
+  db.query(`SELECT YEAR(pullOutDate)year FROM tblstockpullout GROUP BY year`, (err, results, fields) => {
+    if (err) console.log(err);
+    req.yearsAvailableDamaged= results;
+    return next();
+  });
+}
+function datesAvailableDamaged(req,res,next){
+  db.query(`SELECT (pullOutDate)date FROM tblstockpullout GROUP BY date`, (err, results, fields) => {
+    if (err) console.log(err);
+    if (results[0]){
+      results.map( obj => obj.date = moment(obj.date).format('YYYY-MM-DD') );
+    }
+    req.datesAvailableDamaged= results;
     return next();
   });
 }
@@ -209,6 +226,64 @@ router.get('/inventory/notMoving', now, (req,res)=>{
 router.get('/damage',(req,res)=>{
   res.render('admin-reports/views/damage');
 });
+router.get('/reviewMonthlyDamaged', yearsAvailableDamaged, (req,res)=>{
+  db.query(`SELECT DATE(pullOutDate)date, SUM(intQuantity)qty FROM tblstockpullout
+    WHERE monthname(pullOutDate) = ? AND YEAR(pullOutDate) = ?
+    GROUP BY date`, [req.query.month, req.query.year], (err, results, fields) => {
+    if (err) console.log(err);
+    headerMonth = monthNames.reduce((temp,data)=>{
+      return data == req.query.month ? data : temp;
+    },null);
+    headerYear = req.yearsAvailableDamaged.reduce((temp,data)=>{
+      return data.year == req.query.year ? data.year : temp;
+    },null);
+    if (results[0]){
+      results.forEach((obj)=>{
+        obj.date = moment(obj.date).format('MM/DD/YYYY');
+      })
+    }
+    if (headerMonth && headerYear){
+      res.render('admin-reports/views/reviewMonthlyDamaged',{
+        damaged: results,
+        headerMonth: headerMonth,
+        headerYear: headerYear
+      });
+    }
+    else {
+      res.redirect('/reports/damage')
+    }
+  });
+})
+router.get('/reviewDailyDamaged', datesAvailableDamaged, (req,res)=>{
+  db.query(`SELECT tblproductinventory.intInventoryNo, strBrand, strProductName, strVariant, intSize, strUnitName, SUM(tblstockpullout.intQuantity)qty FROM tblstockpullout
+    INNER JOIN tblproductinventory USING(intInventoryNo) INNER JOIN tbluom USING(intUomNo)
+    INNER JOIN tblproductlist USING(intProductNo) INNER JOIN tblproductbrand USING(intBrandNo) WHERE date(pullOutDate) = ?
+    GROUP BY tblproductinventory.intInventoryNo`, [req.query.date], (err, results, fields) => {
+    if (err) console.log(err);
+    headerDate = req.datesAvailableDamaged.reduce((temp,data)=>{
+      return data.date == req.query.date ? data.date : temp;
+    },null);
+    headerDate = moment(headerDate).format('LL')
+    if (results[0]){
+      results.forEach((obj)=>{
+        obj.date = moment(obj.date).format('MM/DD/YYYY');
+        obj.intSize = sizeString(obj);
+      })
+    }
+    if (headerDate){
+      res.render('admin-reports/views/reviewDailyDamaged',{
+        damaged: results,
+        date: headerDate,
+        queryDate: req.query.date
+      });
+    }
+    else {
+      res.redirect('/reports/damage')
+    }
+
+  });
+})
+
 router.get('/customer',(req,res)=>{
   res.render('admin-reports/views/customer');
 });
@@ -292,6 +367,39 @@ router.post('/inventory/notMoveDate', now, (req,res)=>{
     });
   });
 });
+router.post('/damaged/load', now, yearsAvailableDamaged, (req,res)=>{
+  let yearDate, dailyDate,
+  config = {
+    annual: req.now.currentYear,
+    daily: req.now.currentDate,
+    years: req.yearsAvailableDamaged
+  }
+  parseInt(req.body.annual) ?
+    config.annual = req.body.annual : 0
+  parseInt(req.body.daily) ?
+    config.daily = req.body.daily : 0
+
+  db.query(`SELECT MONTHNAME(pullOutDate)monthname, SUM(intQuantity)total
+    FROM tblstockpullout WHERE YEAR(pullOutDate) = ? GROUP BY monthname`,
+    [config.annual], (err, annualResults, fields) => {
+    if (err) console.log(err);
+    db.query(`SELECT tblproductinventory.intInventoryNo, strBrand, strProductName, strVariant, intSize, strUnitName, SUM(tblstockpullout.intQuantity)qty FROM tblstockpullout
+      INNER JOIN tblproductinventory USING(intInventoryNo) INNER JOIN tbluom USING(intUomNo)
+      INNER JOIN tblproductlist USING(intProductNo) INNER JOIN tblproductbrand USING(intBrandNo) WHERE date(pullOutDate) = ?
+      GROUP BY tblproductinventory.intInventoryNo ORDER BY qty DESC LIMIT 7`, [config.daily], (err, dailyResults, fields) => {
+      if (err) console.log(err);
+      if (dailyResults[0]){
+        dailyResults.map( obj => obj.intSize = sizeString(obj) );
+      }
+      res.send({
+        config: config,
+        annual: annualResults,
+        daily: dailyResults
+      })
+    });
+  });
+
+})
 
 // excel
 router.get('/salesAnnualExport', checkUser, auth_admin, now, yearsAvailable, (req,res)=>{
@@ -346,7 +454,7 @@ router.get('/salesAnnualExport', checkUser, auth_admin, now, yearsAvailable, (re
           }
         ]
       );
-      res.attachment(`Annual Sales Report - ${year} .csv`);
+      res.attachment(`Annual Sales Report - ${year}.xlsx`);
       return res.send(report);
 
     });
@@ -410,7 +518,7 @@ router.get('/salesMonthExport', checkUser, auth_admin, now, yearsAvailable, (req
             }
           ]
         );
-        res.attachment(`Monthly Sales Report - ${month} ${year}.csv`);
+        res.attachment(`Monthly Sales Report - ${month} ${year}.xlsx`);
         return res.send(report);
       }
       else{
@@ -484,7 +592,7 @@ router.get('/salesDailyExport', checkUser, auth_admin, now, datesAvailable, (req
             }
           ]
         );
-        res.attachment(`Daily Sales Report - ${moment(dailyDate).format('MM-DD-YYYY')} .csv`);
+        res.attachment(`Daily Sales Report - ${moment(dailyDate).format('MM-DD-YYYY')}.xlsx`);
         return res.send(report);
 
       }
@@ -552,7 +660,7 @@ router.get('/notMovingExport', checkUser, auth_admin, now, (req,res)=>{
             }
           ]
         );
-        res.attachment(`Not Moving Inventory Report - ${moment(notMoveDate[0]).format('MM-DD-YYYY')} - ${moment(notMoveDate[1]).format('MM-DD-YYYY')}.csv`);
+        res.attachment(`Not Moving Inventory Report - ${moment(notMoveDate[0]).format('MM-DD-YYYY')} - ${moment(notMoveDate[1]).format('MM-DD-YYYY')}.xlsx`);
         return res.send(report);
 
       }
@@ -613,10 +721,189 @@ router.get('/totalValueExport', checkUser, auth_admin, (req,res)=>{
           }
         ]
       );
-      res.attachment(`Total Value Inventory Report.csv`);
+      res.attachment(`Total Value Inventory Report.xlsx`);
       return res.send(report);
     }
   });
+});
+router.get('/damagedAnnualExport', checkUser, auth_admin, now, yearsAvailableDamaged, (req,res)=>{
+  let specification = {
+    col_date: {
+      displayName: 'Date',
+      headerStyle: styles.headerBG,
+      cellStyle: 'none',
+      width: 120
+    },
+    col_total: {
+      displayName: 'Total Product Disposal',
+      headerStyle: styles.headerBG,
+      cellStyle: 'none',
+      width: 150
+    }
+  }
+  let dataset = [
+    {col_date: '-', col_total: '-'}
+  ]
+
+  let year = req.yearsAvailableDamaged.reduce((temp,data)=>{
+    return data.year == req.query.year ? data.year : temp;
+  },null);
+
+  if(year){
+    db.query(`SELECT MONTHNAME(pullOutDate)monthname, SUM(intQuantity)total
+      FROM tblstockpullout WHERE YEAR(pullOutDate) = ? GROUP BY monthname`,
+      [year], (err, results, fields) => {
+      if (err) console.log(err);
+
+      if (results[0]){
+        dataset = results.reduce((arr, data)=>{
+          arr.push({col_date: data.monthname, col_total: data.total})
+          return arr
+        },[])
+      }
+
+      let report = excel.buildExport(
+        [
+          {
+            name: 'Report',
+            specification: specification,
+            data: dataset
+          }
+        ]
+      );
+      res.attachment(`Annual Damage Report - ${year}.xlsx`);
+      return res.send(report);
+
+    });
+  }
+  else{
+    res.redirect(`/reports/damage`)
+  }
+});
+router.get('/damagedMonthExport', checkUser, auth_admin, now, yearsAvailableDamaged, (req,res)=>{
+  let specification = {
+    col_date: {
+      displayName: 'Date',
+      headerStyle: styles.headerBG,
+      cellStyle: 'none',
+      width: 120
+    },
+    col_total: {
+      displayName: 'Total Product Disposal',
+      headerStyle: styles.headerBG,
+      cellStyle: 'none',
+      width: 150
+    }
+  }
+  let dataset = [
+    {col_date: '-', col_total: '-'}
+  ]
+
+  headerMonth
+  let month = monthNames.reduce((temp,data)=>{
+    return data == req.query.month ? data : temp;
+  },null);
+  let year = req.yearsAvailableDamaged.reduce((temp,data)=>{
+    return data.year == req.query.year ? data.year : temp;
+  },null);
+
+  if(month && year){
+    db.query(`SELECT DATE(pullOutDate)date, SUM(intQuantity)qty FROM tblstockpullout
+      WHERE monthname(pullOutDate) = ? AND YEAR(pullOutDate) = ?
+      GROUP BY date`, [req.query.month, req.query.year], (err, results, fields) => {
+      if (err) console.log(err);
+
+      if (results[0]){
+        dataset = results.reduce((arr, data)=>{
+          arr.push({col_date: moment(data.date).format('MM/DD/YYYY'), col_total: data.qty})
+          return arr
+        },[])
+
+        let report = excel.buildExport(
+          [
+            {
+              name: 'Report',
+              specification: specification,
+              data: dataset
+            }
+          ]
+        );
+        res.attachment(`Monthly Damage Report - ${month} ${year}.xlsx`);
+        return res.send(report);
+      }
+      else{
+        res.redirect(`/reports/damage`)
+      }
+
+    });
+  }
+  else{
+    res.redirect(`/reports/damage`)
+  }
+});
+router.get('/damagedDailyExport', checkUser, auth_admin, now, datesAvailableDamaged, (req,res)=>{
+  let specification = {
+    col_no: {
+      displayName: 'No',
+      headerStyle: styles.headerBG,
+      cellStyle: 'none',
+      width: 100
+    },
+    col_name: {
+      displayName: 'Product Name',
+      headerStyle: styles.headerBG,
+      cellStyle: 'none',
+      width: 500
+    },
+    col_qty: {
+      displayName: 'Total Pull-outs',
+      headerStyle: styles.headerBG,
+      cellStyle: 'none',
+      width: 120
+    },
+  }
+  let dataset = [
+    {col_no: '-', col_name: '-', col_qty: '-'}
+  ]
+
+  let dailyDate = req.datesAvailableDamaged.reduce((temp,data)=>{
+    return data.date == req.query.date ? data.date : temp;
+  },null);
+
+  if(dailyDate){
+    db.query(`SELECT tblproductinventory.intInventoryNo, strBrand, strProductName, strVariant, intSize, strUnitName, SUM(tblstockpullout.intQuantity)qty FROM tblstockpullout
+      INNER JOIN tblproductinventory USING(intInventoryNo) INNER JOIN tbluom USING(intUomNo)
+      INNER JOIN tblproductlist USING(intProductNo) INNER JOIN tblproductbrand USING(intBrandNo) WHERE date(pullOutDate) = ?
+      GROUP BY tblproductinventory.intInventoryNo`, [dailyDate], (err, results, fields) => {
+      if (err) console.log(err);
+
+      if (results[0]){
+        dataset = results.reduce((arr, data)=>{
+          arr.push({col_no: data.intInventoryNo, col_name: `${data.strBrand} ${data.strProductName} ${sizeString(data)}`, col_qty: data.qty})
+          return arr
+        },[])
+        let report = excel.buildExport(
+          [
+            {
+              name: 'Report',
+              specification: specification,
+              data: dataset
+            }
+          ]
+        );
+        res.attachment(`Daily Damage Report - ${moment(dailyDate).format('MM-DD-YYYY')}.xlsx`);
+        return res.send(report);
+
+      }
+      else{
+        res.redirect(`/reports/damage`)
+      }
+
+    });
+  }
+  else{
+    res.redirect(`/reports/damage`)
+  }
 });
 
 exports.reports = router;
