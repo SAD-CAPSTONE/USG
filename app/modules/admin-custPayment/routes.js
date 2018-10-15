@@ -6,15 +6,20 @@ const auth_admin = userTypeAuth.admin;
 
 router.get('/', auth_admin, (req,res)=>{
 
+
   // all payments
-  db.query(`Select tblOrder.intStatus as order_stat,  tblOrder.*, tblUser.* from tblOrder join tblUser on
+  db.query(`Select SUM((tblorderdetails.intquantity * tblorderdetails.purchaseprice) - ((tblorderdetails.intquantity * tblorderdetails.purchaseprice) * (tblOrderDetails.discount / 100))) + tblOrder.shippingFee
+    totalAll,  tblOrder.intStatus as order_stat,  tblOrder.*, tblUser.*
+    from tblOrder join tblUser on
     tblOrder.intUserID = tblUser.intUserID
     join tblOrderDetails on tblOrder.intOrderNo = tblOrderDetails.intOrderNo
     group by intOrderNo`,(err1,results1,fields1)=>{
     if(err1){
       console.log(err1);
     }else{
-      db.query(`Select tblOrder.intStatus as order_stat, tblOrder.*, tblUser.* from tblOrder join tblUser on
+      db.query(`Select SUM((tblorderdetails.intquantity * tblorderdetails.purchaseprice) - ((tblorderdetails.intquantity * tblorderdetails.purchaseprice) * (tblOrderDetails.discount / 100))) + tblOrder.shippingFee
+        totalAll, tblOrder.intStatus as order_stat, tblOrder.*, tblUser.*
+        from tblOrder join tblUser on
         tblOrder.intUserID = tblUser.intUserID
         join tblOrderDetails on tblOrder.intOrderNo = tblOrderDetails.intOrderNo
         where intPaymentMethod = 1
@@ -22,7 +27,9 @@ router.get('/', auth_admin, (req,res)=>{
           if(err2){
             console.log(err2);
           }else{
-            db.query(`Select tblOrder.intStatus as order_stat, tblOrder.*, tblUser.* from tblOrder join tblUser on
+            db.query(`Select SUM((tblorderdetails.intquantity * tblorderdetails.purchaseprice) - ((tblorderdetails.intquantity * tblorderdetails.purchaseprice) * (tblOrderDetails.discount / 100))) + tblOrder.shippingFee
+              totalAll, tblOrder.intStatus as order_stat, tblOrder.*, tblUser.*
+              from tblOrder join tblUser on
               tblOrder.intUserID = tblUser.intUserID
               join tblOrderDetails on tblOrder.intOrderNo = tblOrderDetails.intOrderNo
               where intPaymentMethod = 2
@@ -31,7 +38,9 @@ router.get('/', auth_admin, (req,res)=>{
                   console.log(err3);
                 }else{
 
-                  db.query(`Select tblOrder.intStatus as order_stat, tblOrder.*, tblUser.* from tblOrder join tblUser on
+                  db.query(`Select SUM((tblorderdetails.intquantity * tblorderdetails.purchaseprice) - ((tblorderdetails.intquantity * tblorderdetails.purchaseprice) * (tblOrderDetails.discount / 100))) + tblOrder.shippingFee
+                    totalAll, tblOrder.intStatus as order_stat, tblOrder.*, tblUser.* from tblOrder
+                    join tblUser on
                     tblOrder.intUserID = tblUser.intUserID
                     join tblOrderDetails on tblOrder.intOrderNo = tblOrderDetails.intOrderNo
                     where intPaymentStatus = 0

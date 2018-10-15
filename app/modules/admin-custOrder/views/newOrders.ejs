@@ -145,7 +145,7 @@
                           <center>
                             <a href="/customerOrder/invoice?order=<%=i.intOrderNo%>"><button class="large ui button">View Invoice</button></a>
                             <button data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status ui teal button">Change Status</button>
-                            <button class="large ui orange button">Message</button>
+                            <button data-user="<%=i.intUserID%>" data-order="<%= i.intOrderNo %>" data-toggle="modal" data-target="#message_modal" class="message_btn large ui orange button">Message</button>
                           </center>
                       </td>
                       </tr>
@@ -181,7 +181,7 @@
                         <td><%= i.strFname %>&nbsp;<%= i.strMname %>&nbsp;<%=i.strLname%></td>
                         <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
                         <td><%= moment(i.dateReturned).format("MM/DD/YYYY") %></td>
-                        <td><%=i.trackingNumber%></td>
+                        <td><%=i.strReturnReason%></td>
                         <td>
                           <% orderno = i.intOrderNo %>
                           <a href="/customerOrder/invoice?order=<%=orderno%>"><button class="large ui button">View Invoice</button></a>
@@ -269,6 +269,39 @@
     </div>
   </div>
 
+  <div class="modal fade" id="message_modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 align="center">Message to customer</h4>
+        </div>
+        <form id="message_form">
+        <div class="modal-body">
+
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <input type="hidden" name="customer_id" id="customer_id">
+                <input type="hidden" name="order_no" id="order_no">
+                <label>What is your message to this customer?</label>
+                <textarea class="form-control" name="message"></textarea>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button data-dismiss="modal" class="large ui button pull-left">Back</button>
+          <button type="submit" class="large ui teal button pull-right">Submit</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+
   <div class="modal fade" id="change_status">
     <div class="modal-dialog">
   		<div class="modal-content">
@@ -308,6 +341,27 @@
 
 
 <script>
+
+  $('#message_form').submit(function(e){
+    e.preventDefault();
+    $.post('/customerOrder/sendMessage',$('#message_form').serialize(), function(data,status){
+      if(data){
+        swal({
+          title: "Success!",
+          text: '',
+          type: 'success'
+        }).then(()=>{
+          location.reload();
+        })
+      }
+    })
+  })
+
+  $('.message_btn').on('click',function(){
+    $('#customer_id').val($(this).data('user'));
+    $('#order_no').val($(this).data('order'));
+  })
+
   $('.deposit').on('click',function(){
     $('#image').attr('src', `/customer-assets/images/userImages/bankslips/${$(this).data('name')}`);
   })
