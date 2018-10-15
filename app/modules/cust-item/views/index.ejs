@@ -34,6 +34,15 @@
     margin-right: -2.5px;
   }
 
+  /* Important part */
+  .modal-dialog{
+    overflow-y: initial !important
+  }
+  .modal-body{
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
 </style>
 
 <div id="item-container" class="container">
@@ -44,7 +53,7 @@
           <ol class="breadcrumb p-0 mb-0">
             <li class="breadcrumb-item"><a href="/store?cat=<%= thisProduct.intCategoryNo%>&sub=all&sort=1&page=1"><%= thisProduct.strCategory%></a></li>
             <li class="breadcrumb-item"><a href="/store?cat=<%= thisProduct.intCategoryNo%>&sub=<%= thisProduct.intSubCategoryNo%>&sort=1&page=1"><%= thisProduct.strSubCategory%></a></li>
-            <li class="breadcrumb-item active" aria-current="page"><%= thisProduct.strBrand%> <%= thisProduct.strProductName%></li>
+            <li class="breadcrumb-item active" aria-current="page" id="this-prod-name"><%= thisProduct.strBrand%> <%= thisProduct.strProductName%></li>
           </ol>
         </nav>
       </div>
@@ -66,7 +75,13 @@
             --rating;
           }%>
           <small class="text-muted ml-1"><%= thisProduct.cntRating%> ratings</small>
-          <a href="#"><i class="fa fa-share-alt"></i></a>
+          <div id="share-div">
+            <p class="fs-08em fw-400 text-primary">Link Copied</p>
+            <a class="cursor-pointer fake-link" data-clipboard-text="" data-clipboard-action="copy">
+              <i class="fa fa-link"></i>
+            </a>
+          </div>
+          <!-- <input id="share-link" type="text" value="" hidden> -->
           <p class="mb-2"><span class="text-brand"><%= thisProduct.strBrand%></span> <%= thisProduct.strProductName%></p>
           <div id="main-desc-text" data-simplebar="">
             <small>
@@ -318,25 +333,39 @@
         <% if(!productReviews[0]){ %>
           <p class="fs-09em fw-400 text-muted mt-1"><em>No reviews found</em></p>
         <% } %>
-        <% productReviews.forEach((rev)=>{ %>
-          <div class="review-block mb-4">
-            <small class="review-name block">
-              <%= rev.strFname%> <%= rev.strMname%> <%= rev.strLname%>
-              <i class="fa fa-check-circle"></i>
-            </small>
-            <% for(let i=1; i<=5; i++){
-              if(i <= rev.intStars){ %>
-                <i class="fa fa-star"></i>
-              <% }else{ %>
-                <i class="far fa-star"></i>
-              <% }
-            } %>
-            <small class="text-muted ml-1"><%= rev.r_created_at %></small>
-            <small class="review-desc block">
-              <%= rev.strReview %>
-            </small>
-          </div>
+        <% productReviews.forEach((rev,i)=>{ %>
+          <% if (i < 5){ %>
+            <div class="review-block mb-4">
+              <small class="review-name block">
+                <%= rev.strFname%>
+                <i class="fa fa-check-circle" title="Verified purchase"></i>
+              </small>
+              <div class="inline-block mr-1">
+                <% for(let i=1; i<=5; i++){
+                  if(i <= rev.intStars){ %>
+                    <i class="fa fa-star"></i>
+                  <% }else{ %>
+                    <i class="far fa-star"></i>
+                  <% }
+                } %>
+              </div>
+
+              <small class="text-muted inline-block">
+                <% if (rev.r_updated_at){ %>
+                  edited on <%= rev.r_updated_at %>
+                <% }else{ %>
+                  <%= rev.r_created_at %>
+                <% } %>
+              </small>
+              <small class="review-desc block">
+                <%= rev.strReview %>
+              </small>
+            </div>
+          <% } %>
         <% }) %>
+        <% if (productReviews.length > 5){ %>
+          <a href data-toggle='modal' data-target='#allReviews'><p class="m-0 fs-08em fw-400 inline">SHOW ALL</p></a>
+        <% } %>
 
       </div>
     </div>
@@ -413,12 +442,59 @@
     </div>
   </div>
 </div>
+<div id="allReviews" tabindex="-1" role="dialog" aria-labelledby="allReviewsTitle" aria-hidden="true" class="modal fade">
+  <div role="document" class="modal-dialog">
+    <div class="modal-content">
+      <form class="mb-0" action="/item/<%= thisProduct.intProductNo%>/add-review" method="POST">
+        <div class="modal-header">
+          <h5 id="allReviewsTitle" class="modal-title">All Reviews</h5>
+          <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+        </div>
+        <div class="modal-body">
+          <% productReviews.forEach((rev)=>{ %>
+            <div class="review-block mb-4">
+                <small class="review-name block">
+                  <%= rev.strFname%>
+                  <i class="fa fa-check-circle" title="Verified purchase"></i>
+                </small>
+                <div class="inline-block mr-1">
+                  <% for(let i=1; i<=5; i++){
+                    if(i <= rev.intStars){ %>
+                      <i class="fa fa-star"></i>
+                    <% }else{ %>
+                      <i class="far fa-star"></i>
+                    <% }
+                  } %>
+                </div>
+
+                <small class="text-muted inline-block">
+                  <% if (rev.r_updated_at){ %>
+                    edited on <%= rev.r_updated_at %>
+                  <% }else{ %>
+                    <%= rev.r_created_at %>
+                  <% } %>
+                </small>
+                <small class="review-desc block">
+                  <%= rev.strReview %>
+                </small>
+              </div>
+          <% }) %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
 <%- include('../../../templates/footer.ejs') -%>
 <%- include('../../../templates/scripts.ejs') -%>
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <script src="/customer-assets/scripts/bar-rating/dist/jquery.barrating.min.js"></script>
+<script src="/customer-assets/scripts/clipboard/dist/clipboard.min.js"></script>
 <script type="text/javascript">
+  $('title').html(`Ultra Super Green - ${$(`#this-prod-name`).text()}`);
   $(()=>{
     itemQtyValidate(1,$(`#thisprod_stock span`).text())
     <% if (thisInventory[0].discount){ %>
@@ -501,7 +577,7 @@
       console.log(error);
     });
   })
-  $('#item-options').on('click', '.price > i', function(){
+  $('#item-options').on('click', '.price > i', function() {
     let div = $('#item-options')
     if (div.find('.discount').attr('hide')){
       div.find('.discount').css({
@@ -565,6 +641,46 @@
     if( $('#editReview .productRating').val() != 0 ){
       $('#editReview button[type=submit]').removeAttr('disabled');
     }
+
+    $('#share-div > a').attr('data-clipboard-text',window.location.href)
+  });
+
+  var clipboard = new ClipboardJS('#share-div > a');
+
+  clipboard.on('success', function(e) {
+    console.info('Action:', e.action);
+    console.info('Text:', e.text);
+    console.info('Trigger:', e.trigger);
+
+    // clearTimeout(tCoptLink1)
+    $('#share-div > a').removeAttr('data-clipboard-text')
+
+    $('#share-div > p').css("display","block")
+    let tCoptLink1 = setTimeout(()=>{
+      $('#share-div > p').css({
+        "opacity" : "1",
+        "margin-top" : "0"
+      })
+      let tCoptLink2 = setTimeout(()=>{
+        $('#share-div > p').css({
+          "opacity" : "0",
+          "margin-top" : "7"
+        })
+        let tCoptLink3 = setTimeout(()=>{
+          $('#share-div > p').css("display","none")
+          $('#share-div > a').attr('data-clipboard-text',window.location.href)
+        },200);
+      },3000);
+    },1);
+
+
+
+    e.clearSelection();
+  });
+
+  clipboard.on('error', function(e) {
+    console.error('Action:', e.action);
+    console.error('Trigger:', e.trigger);
   });
 
 </script>

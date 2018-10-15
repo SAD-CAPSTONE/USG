@@ -8,10 +8,11 @@ const productQuery = `
   COUNT(Review.strReview)AS cntReview FROM(SELECT A.*, Orders.intOrderDetailsNo, COUNT(Orders.intOrderDetailsNo)AS OrderCNT FROM(
   SELECT tblproductlist.*, tblcategory.strCategory, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.minPrice, Inv.maxPrice, Brand.strBrand FROM tblproductlist
   INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
-  INNER JOIN (SELECT intInventoryNo,intProductNo,intStatus,min(productPrice)minPrice,max(productPrice)maxPrice FROM tblproductinventory GROUP BY intProductNo)Inv ON tblproductlist.intProductNo= Inv.intProductNo
+  INNER JOIN (SELECT intInventoryNo,intProductNo,intStatus,min(productPrice)minPrice,max(productPrice)maxPrice
+  FROM tblproductinventory GROUP BY intProductNo)Inv ON tblproductlist.intProductNo= Inv.intProductNo
   INNER JOIN tblsubcategory ON tblproductlist.intSubCategoryNo= tblsubcategory.intSubCategoryNo
-  INNER JOIN tblcategory ON tblsubcategory.intCategoryNo= tblcategory.intCategoryNo
-  WHERE Brand.intStatus= 1)A LEFT JOIN (SELECT * FROM tblorderdetails)Orders ON A.intInventoryNo= Orders.intInventoryNo
+  INNER JOIN tblcategory ON tblsubcategory.intCategoryNo= tblcategory.intCategoryNo)A
+  LEFT JOIN (SELECT * FROM tblorderdetails)Orders ON A.intInventoryNo= Orders.intInventoryNo
   GROUP BY A.intProductNo)B LEFT JOIN (SELECT * FROM tblproductreview)Review ON B.intProductNo = Review.intProductNo `
 
 function thisCategory(req,res,next){
@@ -95,11 +96,13 @@ router.post('/load', thisCategory, subcategories, categories, (req,res)=>{
     Number(req.body.rating) && Number(req.body.rating) <= 5 ?
       store.rating = Number(req.body.rating) : 0
     : 0
+  req.body.search ? store.search = req.body.search : 0
   store.page = req.body.page ?
     Number(req.body.page) ?
       parseInt(req.body.page)
       : 1
     : 1
+
 
   // category
   store.category != 'All Products' ?
@@ -132,6 +135,9 @@ router.post('/load', thisCategory, subcategories, categories, (req,res)=>{
     price.max != null ?
       filterQuery = filterQuery.concat(`AND (minPrice <= ${price.max} OR maxPrice <= ${price.max}) `) : 0
 
+  // search
+  filterQuery = filterQuery.concat(`AND CONCAT(B.strBrand, ' ', B.strProductName) LIKE "%${store.search}%" `)
+
   // products group by
   filterQuery = filterQuery.concat(`GROUP BY B.intProductNo `);
 
@@ -148,7 +154,7 @@ router.post('/load', thisCategory, subcategories, categories, (req,res)=>{
     case '5' : filterQuery = filterQuery.concat(`ORDER BY strBrand, strProductName `); break; // a-z
     default : filterQuery = filterQuery.concat(`ORDER BY OrderCNT DESC `); store.sort = 1 ; break;
   }
-
+  console.log(filterQuery)
   db.beginTransaction(function(err) {
     if (err) console.log(err);
     db.query(`SELECT COUNT(C.intProductNo)cnt FROM(${filterQuery})C`, function (err,  results, fields) {

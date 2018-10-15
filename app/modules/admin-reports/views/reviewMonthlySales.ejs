@@ -1,11 +1,22 @@
 <%- include('../../../templates/admin-navbar.ejs') -%>
 
+<style>
+  .special-position-1 {
+    position: absolute;
+    /* left: 180px; */
+  }
+  #example3_length {
+    position: absolute;
+    left: 75px;
+  }
+</style>
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-    
+
       <small></small>
     </h1>
     <ol class="breadcrumb">
@@ -20,13 +31,24 @@
       <div class="col-sm-12">
         <div class="box">
           <div class="box-header with-border">
-            <h3 class="box-title">October 2018 Report</h3>
+            <h3 class="box-title"><%= headerMonth%> <%= headerYear%> Report</h3>
           </div>
 
           <div class="box-body">
 
             <div class="row">
               <div class="col-sm-12">
+                <div class="special-position-1">
+                  <% if(sales[0]){ %>
+                    <a href="/reports/salesMonthExport?month=<%= headerMonth%>&year=<%= headerYear%>">
+                      <button class="large ui button">Excel</button>
+                    </a>
+                  <% }else{ %>
+                    <a>
+                      <button class="large ui button" disabled>Excel</button>
+                    </a>
+                  <% } %>
+                </div>
 
                 <div class="table-responsive">
                   <table id="example3" class="table no-margin">
@@ -40,20 +62,13 @@
                     </thead>
 
                     <tbody>
-                      <tr>
-                        <td>10/06/2018</td>
-                        <td>Php 1,000</td>
-                        <td>100</td>
-
-                      </tr>
-                      <tr>
-                        <td>10/05/2018</td>
-                        <td>Php 500</td>
-                        <td>2</td>
-
-                      </tr>
-
-
+                      <% sales.forEach((data)=>{ %>
+                        <tr>
+                          <td><%= data.date%></td>
+                          <td>Php <%= data.total%></td>
+                          <td><%= data.qty%></td>
+                        </tr>
+                      <% }) %>
                     </tbody>
                   </table>
                 </div>
@@ -101,11 +116,17 @@
   </script>
 
   <script>
-  $('#title').html("USG | Sales Reports");
-  $(".treeview a:contains('Reports')").parent().addClass("active");
-  $(".navi a:contains('Sales')").parent().addClass("active");
+    $('#title').html("USG | Sales Reports");
+    $(".treeview a:contains('Reports')").parent().addClass("active");
+    $(".navi a:contains('Sales')").parent().addClass("active");
   </script>
 
+  <!-- <script type="text/javascript">
+    $(()=>{
+
+
+    });
+  </script> -->
 
   </body>
   </html>

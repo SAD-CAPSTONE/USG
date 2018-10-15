@@ -64,7 +64,7 @@ function download_voucher(bankAccountNo,businessBank){
     doc.text(70, 63.2, `${businessBank}`);
     doc.text(70, 70.2, `Ultra super green trading corporation`);
     doc.text(70, 77.2, `${bankAccountNo}`);
-    doc.text(70, 84.2, `2492772490`);
+    doc.text(70, 84.2, `${order.strReferenceNo}`);
 
     // Foot Note
     doc.setFont('Poppins-ExtraLight');

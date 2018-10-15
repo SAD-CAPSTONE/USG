@@ -100,7 +100,7 @@
 
       <!-- Not moving products -->
       <div class="col-sm-12">
-        <div class="col-sm-6">
+        <div id="notMovingDiv" class="col-sm-6">
           <div class="box">
             <div class="box-header with-border">
               <h3 class="box-title">Not moving products</h3>
@@ -108,6 +108,19 @@
 
             <div class="box-body">
               <div class="row">
+                <div class="col-md-12">
+                  <a id="notMoving-export-link"><button class="large ui button" disabled>Excel</button></a>
+                  <div class="form-group">
+                    <label>Select date range:</label>
+
+                    <div class="input-group">
+                      <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                      <input type="text" class="form-control" id="rangeNotMoving">
+
+                    </div>
+                  </div>
 
                   <div class="table-responsive">
                     <table class="table no-margin">
@@ -125,8 +138,7 @@
                       </tbody>
                     </table>
                   </div>
-
-
+                </div>
               </div>
             </div>
             <div class="box-footer clearfix">
@@ -138,14 +150,27 @@
 
         </div>
 
-        <div class="col-sm-6">
+        <div id="totalValueDiv" class="col-sm-6">
           <div class="box">
+
             <div class="box-header with-border">
               <h3 class="box-title">Total Value of Products</h3>
             </div>
 
             <div class="box-body">
               <div class="row">
+                <div class="col-md-12">
+                  <div>
+                    <% if(totalValueProducts[0]){ %>
+                      <a href="/reports/totalValueExport">
+                        <button class="large ui button">Excel</button>
+                      </a>
+                    <% }else{ %>
+                      <a>
+                        <button class="large ui button" disabled>Excel</button>
+                      </a>
+                    <% } %>
+                  </div>
 
                   <div class="table-responsive">
                     <table class="table no-margin">
@@ -159,17 +184,28 @@
                       </thead>
 
                       <tbody>
-
+                        <% totalValueProducts.forEach((data)=>{ %>
+                          <tr>
+                            <td><%= data.strBrand%> <%= data.strProductName%> <%= data.intSize%></td>
+                            <td><%= data.stock%></td>
+                            <td><%= data.totalValue%></td>
+                          </tr>
+                        <% }) %>
+                        <% if(totalValueProducts){ %>
+                          <tr>
+                            <td>No Result</td>
+                          </tr>
+                        <% } %>
                       </tbody>
                     </table>
                   </div>
-
+                </div>
 
               </div>
             </div>
             <div class="box-footer clearfix">
 
-              <a href="javascript:void(0)" class="large ui teal button pull-right">View All</a>
+              <a href="/reports/inventory/totalValues" class="large ui teal button pull-right">View All</a>
             </div>
           </div>
 
@@ -177,8 +213,6 @@
         </div>
       </div>
     </div>
-
-
 
     <div class="row">
 
@@ -257,7 +291,6 @@
       </div>
     </div>
 
-
   </section>
   <!-- /.content -->
 </div>
@@ -279,8 +312,6 @@
 <script src="/assets/admin/bower_components/moment/min/moment.min.js"></script>
 <!-- Date range picker -->
 <script src="/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
-
-
 
 <script>
   var ctx = document.getElementById("recapChart");
@@ -324,8 +355,6 @@
       }
   });
 
-
-
   var donut = document.getElementById("donutChart");
   var myDoughnutChart = new Chart(donut, {
       type: 'doughnut',
@@ -350,19 +379,17 @@
   });
 </script>
 
-
-
-
 <script>
-$('#title').html("USG | Inventory Reports");
-$(".treeview a:contains('Reports')").parent().addClass("active");
-$(".navi a:contains('Inventory')").parent().addClass("active");
+  $('#title').html("USG | Inventory Reports");
+  $(".treeview a:contains('Reports')").parent().addClass("active");
+  $(".navi a:contains('Inventory')").parent().addClass("active");
 </script>
 
 <script>
 
   //Date range picker
   $('#range').daterangepicker();
+  $('#rangeNotMoving').daterangepicker();
 
   $(function () {
     $('#transactions').DataTable({
@@ -378,6 +405,96 @@ $(".navi a:contains('Inventory')").parent().addClass("active");
   })
 </script>
 
+<script type="text/javascript">
+  let oldUrl = window.location.href
+  $(()=>{
+    const thisUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+    function getParams(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+    function pushParams(notMoveDate){
+      notMoveDate != null ? 0 : notMoveDate = getParams('notMoveDate');
+      newUrl = `${thisUrl}`;
+
+      newUrl = notMoveDate ? `${newUrl}?notMoveDate=${notMoveDate}` : `${newUrl}?notMoveDate=now`;
+
+      window.history.pushState({path:newUrl},'',newUrl);
+    }
+
+    function loadInvReport(){
+      oldUrl = window.location.href
+
+      let notMoveDate = getParams('notMoveDate');
+
+      if(!notMoveDate){
+        newUrl = `${thisUrl}?notMoveDate=now`;
+        window.history.pushState({path:newUrl},'',newUrl);
+        notMoveDate = 'now';
+      }
+
+      notMoveDate ? notMoveDate = notMoveDate.indexOf("'") == -1 ? notMoveDate : 'now' : 0;
+
+      $.post(`/reports/inventory/notMoveDate`, {
+        notMoveDate: notMoveDate
+      }).then((res) => {
+        $(`#notMovingDiv table tbody`).html(``);
+        res.products.forEach((data)=>{
+          $(`#notMovingDiv table tbody`).append(`
+            <tr>
+              <td>${data.strBrand} ${data.strProductName} ${data.intSize}</td>
+              <td>${data.stock}</td>
+            </tr>`);
+        });
+        if (res.products[0]){
+          $(`#notMoving-export-link`).attr('href',`/reports/notMovingExport?notMoveDate=${res.notMoveDate[0]} - ${res.notMoveDate[1]}`)
+          $(`#notMoving-export-link > button`).removeAttr('disabled')
+        }
+        else{
+          $(`#notMoving-export-link > button`).attr('disabled','disabled')
+          $(`#notMovingDiv table tbody`).append(`
+            <tr>
+              <td>No Results</td>
+            </tr>`)
+        }
+        $('#rangeNotMoving').val(`${res.notMoveDate[0]} - ${res.notMoveDate[1]}`)
+
+        res.products[0] ?
+          $(`#notMovingDiv .box-footer a`).css('display','block') :
+          $(`#notMovingDiv .box-footer a`).css('display','none')
+        $(`#notMovingDiv .box-footer a`).attr(`href`,`/reports/inventory/notMoving?date=${notMoveDate}`)
+
+      }).catch((err)=>{
+        console.log(err)
+      })
+
+    }
+
+    $('#rangeNotMoving').change(function(){
+      pushParams($(this).val())
+      loadInvReport()
+    });
+
+    loadInvReport()
+
+    if (window.history && window.history.pushState) {
+      $(window).on('popstate', function() {
+        notMoveDate = getParams('notMoveDate')
+        notMoveDate ?
+          window.location.href != oldUrl ? loadInvReport() : 0
+          : window.location.replace(document.referrer)
+      });
+    }
+
+  })
+
+</script>
 
 </body>
+
 </html>

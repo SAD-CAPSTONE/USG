@@ -54,12 +54,23 @@
     padding-top: 20;
   }
 
-  input:focus, select:focus {
+  input:focus, select:focus, a:focus {
     outline: none !important;
     box-shadow: none !important;
   }
-  select:focus {
+  /* select:focus {
     border-color: #ccc !important;
+  } */
+  a:focus {
+    border-color: #ccc !important;
+  }
+
+  input[type=button], button[type=submit] {
+    font-size: .9em !important;
+    font-weight: 400 !important;
+  }
+  button[type=submit] {
+    padding: 12px;
   }
 
   input, select {
@@ -87,9 +98,13 @@
     background: #e74c3c;
     padding: 4.65px;
     font-size: .8em;
+    font-weight: 300;
   }
   span.tip-message.pass::after {
     background: #2ecc71;
+  }
+  input.mini + span.tip-message::after {
+    top: 0;
   }
 
 </style>
@@ -97,13 +112,13 @@
 <form id="msform" method="POST" action='/consRegistration/register-consignor' novalidate>
     <!-- progressbar -->
     <ul id="progressbar">
-      <li class="active tes fw-400">Start</li>
-      <li class="tes fw-400">Business Profile</li>
-      <li class="tes fw-400">Supplier Details</li>
-      <li class="tes fw-400">Consignment Details</li>
-      <li class="tes fw-400">Products</li>
-      <li class="tes fw-400">Product Details</li>
-      <li class="tes fw-400">Agreement</li>
+      <li class="active fw-500">Start</li>
+      <li class="fw-500">Business Profile</li>
+      <li class="fw-500">Supplier Details</li>
+      <li class="fw-500">Consignment Details</li>
+      <li class="fw-500">Products</li>
+      <li class="fw-500">Product Details</li>
+      <li class="fw-500">Agreement</li>
     </ul>
     <!-- fieldsets -->
      <!--START-->
@@ -189,7 +204,7 @@
         <div class="form-group">
           <label class="control-label fs-09em fw-300" for="businessTIN">Business TIN<span class="text-info">*</span></label>
           <div class="">
-          <input id="businessTIN" name="businesstin" class="form-control input-md mt-1 fs-09em" min='1' max='10' type="text">
+          <input id="businessTIN" name="businesstin" placeholder="XXX-XXX-XXX-XXX" class="form-control input-md mt-1 fs-09em businesstin" type="text">
 
           </div>
         </div>
@@ -251,10 +266,10 @@
           <label class="control-label fs-09em fw-300" for="mobile">Contact Number<span class="text-info">*</span></label>
         </div>
         <div class="form-group mb-0">
-          <input id="mobile" name="mobile" placeholder="Mobile(PH): eg. 09236835707 " class="form-control input-md fs-09em mobile mini mt-1" type="text">
+          <input id="mobile" name="mobile" placeholder="Mobile(PH): 09XXXXXXXXX" pattern="^(\/?09)[0-9]{9}$" data-inputmask-regex="(09)[0-9]{9}" class="form-control input-md fs-09em mobile mini mt-1" type="text">
         </div>
         <div class="form-group">
-          <input id="phone" name="phone" placeholder="Phone: (Area Code)XXX-XXXX" class="form-control input-md fs-09em phone mini" type="text">
+          <input id="phone" name="phone" placeholder="Phone: XXX-XXXX" class="form-control input-md fs-09em phone mini" type="text">
         </div>
 
         <a href="#top-link">
@@ -277,7 +292,7 @@
         <div class="form-group">
           <label class="control-label fs-09em fw-300" for="textinput">Email address<span class="text-info">*</span></label>
           <div class="">
-            <input id="textinput" name="email" class="form-control input-md mt-1 fs-09em" min='1' max='100' type="email">
+            <input id="email" name="email" class="form-control input-md mt-1 fs-09em" min='1' max='100' type="email">
           </div>
         </div>
 
@@ -442,6 +457,7 @@
 <script src="/assets/admin/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="/assets/jquery/jquery-ui.min.js"></script>
 <script src="/assets/jquery-validation-1.17.0/dist/jquery.validate.js"></script>
+<script src="/customer-assets/scripts/inputmask/dist/jquery.inputmask.bundle.js"></script>
 
 <!-- <script>
   var current_fs, next_fs, previous_fs; //fieldsets
@@ -536,9 +552,10 @@
 <script>
   const thisUrlHost = `${window.location.protocol}//${window.location.host}`,
   testEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i,
-  testMobile = /(\/?09)[0-9]{9}/i,
-  testPhone = /^[\(]\d{1,5}[\)]\d{3}-\d{4}$/i;
-  testSpace = /^[^\s]+(\s+[^\s]+)*$/i
+  testMobile = /^(\/?09)[0-9]{9}$/i,
+  testPhone = /^\d{3}-\d{4}$/i,
+  testSpace = /^[^\s]+(\s+[^\s]+)*$/i,
+  testTIN = /^\d{3}-\d{3}-\d{3}-\d{3}$/i
 
   let pageCounter = 1;
 
@@ -551,9 +568,11 @@
       setTimeout(()=>{
         $(`#msform fieldset:nth-of-type(${pageCounter})`).css("opacity","1")
       },100);
+      $(`#msform #progressbar li:nth-child(${pageCounter})`).addClass("active")
     },250);
   })
   $(`#msform fieldset .previous`).click(function(){
+    $(`#msform #progressbar li:nth-child(${pageCounter})`).removeClass("active")
     $(`#msform fieldset:nth-of-type(${pageCounter})`).css("opacity","0")
     setTimeout(()=>{
       $(`#msform fieldset:nth-of-type(${pageCounter})`).css("display","none")
@@ -599,6 +618,10 @@
 
       $(this).hasClass('phone') ?
         !testPhone.test($(this).val()) ? checkVal = 1 : 0
+        : 0
+
+      $(this).hasClass('businesstin') ?
+        !testTIN.test($(this).val()) ? checkVal = 1 : 0
         : 0
 
       !testSpace.test($(this).val()) ? checkVal = 1 : 0
@@ -655,6 +678,14 @@
         title='whitespace at start/end' mess='whitespace at start/end'></span>`);
       }
 
+      // if ($(thisInput).hasClass('businesstin')){
+      //   if(!testTIN.test($(thisInput).val())){
+      //     $(thisInput).next(`span.tip-message`).remove()
+      //     $(thisInput).after(`<span class='tip-message'
+      //     title='enter a valid TIN number' mess='enter a valid TIN number'></span>`);
+      //   }
+      // }
+
     }
 
     if( $(thisInput).hasClass('mini') ){
@@ -687,6 +718,11 @@
 
     $(thisInput).hasClass('phone') ?
       !testPhone.test($(thisInput).val()) ?
+        $(thisInput).css('border-color', '#e74c3c') : 0
+      : 0
+
+    $(thisInput).hasClass('businesstin') ?
+      !testTIN.test($(thisInput).val()) ?
         $(thisInput).css('border-color', '#e74c3c') : 0
       : 0
 
@@ -737,6 +773,14 @@
       $(fs).find(`input[type=button]:nth-of-type(2), button[type=submit]`).attr('disabled','disabled') :
       $(fs).find(`input[type=button]:nth-of-type(2), button[type=submit]`).removeAttr('disabled');
   });
+
+  $(document).ready(function(){
+    $('#businessTIN').inputmask("999-999-999-999", {placeholder: 'XXX-XXX-XXX-XXX'});
+    $('#phone').inputmask("999-9999", {placeholder: 'XXX-XXXX'});
+    $('#mobile').inputmask({placeholder: '09XXXXXXXXX'});
+    // $('#email').inputmask()
+  });
+
 
 </script>
 

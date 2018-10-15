@@ -133,12 +133,19 @@ function contactDetails (req, res, next){
   });
 }
 function orderTotal (req, res, next){
-  db.query(`SELECT *, IF(discountPrice IS NOT NULL, totalOriginalPrice-discountPrice, totalOriginalPrice)totalPrice FROM(
-    SELECT SUM(purchasePrice*intQuantity)totalOriginalPrice, SUM(purchasePrice*discount*.01*intQuantity)discountPrice FROM tblorder
+  db.query(`SELECT *, IF(discountPrice IS NOT NULL, totalOriginalPrice-discountPrice, totalOriginalPrice)totalPrice, shippingFee FROM(
+    SELECT SUM(purchasePrice*intQuantity)totalOriginalPrice, SUM(purchasePrice*discount*0.01*intQuantity)discountPrice, shippingFee FROM tblorder
     INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo WHERE tblorder.intOrderNo= ?)A`,
     [req.params.orderNo], (err, results, fields) => {
     if (err) console.log(err);
-    results[0].totalPrice ? results.map( obj => obj.totalPrice = priceFormat(obj.totalPrice.toFixed(2)) ) : 0
+
+    results[0].totalPrice ?
+      results.forEach((obj)=>{
+        obj.subtotal = priceFormat(obj.totalPrice.toFixed(2));
+        obj.shipping = priceFormat(obj.shippingFee.toFixed(2));
+        obj.total = priceFormat((parseFloat(obj.shippingFee)+parseFloat(obj.totalPrice)).toFixed(2));
+
+      }) : 0
     req.orderTotal = results[0];
     return next();
   });
@@ -156,11 +163,13 @@ function cartCheck (req, res, next){
   function cartLimitLoop(i){
     let cart = req.session.cart, stringquery1, bodyarray1;
     if (cart[i].type == 1){
-      stringquery1 = `SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`
+      stringquery1 = `SELECT (intQuantity - intReservedItems)stock, (intStatus)InvStatus, (0)expired
+      FROM tblproductinventory WHERE intInventoryNo= ?`
       bodyarray1 = [cart[i].inv]
     }
     else{
-      stringquery1 = `SELECT (intQuantity - intReservedItems)stock FROM tblpackage WHERE intPackageNo= ?`
+      stringquery1 = `SELECT (intQuantity - intReservedItems)stock, (intStatus)InvStatus,
+        IF(dateDue >= now(), 0, 1)expired FROM tblpackage WHERE intPackageNo= ?`
       bodyarray1 = [cart[i].package]
     }
     db.query(stringquery1, bodyarray1, (err, results, fields) => {
@@ -169,13 +178,16 @@ function cartCheck (req, res, next){
         quantLimit : results[0].stock;
       req.session.cart[i].curQty > req.session.cart[i].limit ?
         req.session.cart[i].curQty = req.session.cart[i].limit : 0;
-      results[0].stock < 1 ? req.session.cart.splice(i,1) : 0
+      if (results[0].stock < 1 || !results[0].InvStatus || results[0].expired){
+        req.session.cart.splice(i,1)
+        --i;
+      }
       ++i;
       if (cart.length > i){
         cartLimitLoop(i);
       }
       else{
-        if (req.session.cart.length){
+        if (cart){
           return next();
         }
         else{
@@ -304,6 +316,40 @@ function thisReturnPackages (req, res, next){
     return next();
   });
 }
+function locations (req, res, next){
+  db.query(`SELECT strLocation FROM tblshippingfee WHERE intStatus= 1 ORDER BY strLocation`, (err, results, fields) => {
+    if (err) console.log(err);
+    req.locations = results;
+    return next();
+  });
+}
+function shippingFee (req, res, next){
+  req.shippingFee = parseInt(req.admin.shippingFee)
+  db.query(`SELECT strShippingAddress FROM tblcustomer WHERE intUserID = ?`,
+    [req.user.intUserID], (err,addressResults,fields)=>{
+    if (err) console.log(err);
+    if (addressResults[0]){
+      if (addressResults[0].strShippingAddress){
+        db.query(`SELECT strLocation, amount FROM tblshippingfee WHERE intStatus= 1 AND strLocation= ?`,
+          [addressResults[0].strShippingAddress.split(/\s-\s(.*)/g)[0]], (err,locationResults,fields)=>{
+          if (err) console.log(err);
+          if (locationResults[0]){
+            req.shippingFee = parseInt(locationResults[0].amount)
+          }
+          return next();
+        });
+      }
+      else {
+        req.shippingFee = 0
+        return next();
+      }
+    }
+    else {
+      req.shippingFee = 0
+      return next();
+    }
+  });
+}
 
 function popularProducts(req,res,next){
   /*Most Popular Products;
@@ -380,8 +426,8 @@ function newProducts(req,res,next){
 function packages(req,res,next){
   db.query(`SELECT *, SUM(intProductQuantity)Qty FROM tblpackage
     INNER JOIN tblpackagelist ON tblpackage.intPackageNo= tblpackagelist.intPackageNo
-    WHERE tblpackage.intStatus= 1 AND (tblpackage.intQuantity - tblpackage.intReservedItems) > 0 GROUP BY tblpackage.intPackageNo ORDER BY tblpackage.intPackageNo DESC`,
-    function (err,  results, fields) {
+    WHERE tblpackage.intStatus= 1 AND (tblpackage.intQuantity - tblpackage.intReservedItems) > 0
+    GROUP BY tblpackage.intPackageNo ORDER BY tblpackage.intPackageNo DESC`, function (err,  results, fields) {
     if (err) console.log(err);
     results.forEach((obj)=>{ obj.packagePrice = priceFormat(obj.packagePrice.toFixed(2)) })
     req.packages= results;
@@ -389,18 +435,31 @@ function packages(req,res,next){
   });
 }
 
-router.get('/checkout', checkUser, auth_cust, contactDetails, admin, (req,res)=>{
+router.get('/checkout', checkUser, auth_cust, contactDetails, admin, locations, (req,res)=>{
   let notices = [
     `Products will be delivered within ${req.admin.deliveryPeriod} working day/s`,
     `Remember to refresh list before placing order`,
     `Only one discount voucher per order is allowed`
-  ];
+  ]
+  sAddress =
+    req.contactDetails.strShippingAddress ?
+      req.locations.reduce((temp,data)=>{
+        return data.strLocation == req.contactDetails.strShippingAddress.split(/\s-\s(.*)/g)[0] ? 1 : temp
+      },0) : 1
+  bAddress =
+    req.contactDetails.strBillingAddress ?
+      req.locations.reduce((temp,data)=>{
+        return data.strLocation == req.contactDetails.strBillingAddress.split(/\s-\s(.*)/g)[0] ? 1 : temp
+      },0) : 1
 
   res.render('cust-summary/views/checkout', {
     thisUser: req.user,
     thisUserContact: req.contactDetails,
     admin: req.admin,
-    notices: notices
+    notices: notices,
+    locations: req.locations,
+    sAddress: sAddress,
+    bAddress: bAddress
   });
 });
 router.get('/order/:orderNo', checkUserOrder, auth_cust, orderTotal, replaceable, orderPackages, orderProducts, admin, (req,res)=>{
@@ -432,7 +491,7 @@ router.get('/order/:orderNo', checkUserOrder, auth_cust, orderTotal, replaceable
       orderLength: orderLength,
       orderOne: results[0],
       orderNumber: req.params.orderNo,
-      orderTotal: req.orderTotal.totalPrice,
+      orderTotal: req.orderTotal,
       admin: req.admin,
       notices: notices,
       replaceable: req.replaceable.replaceable
@@ -461,7 +520,6 @@ router.get('/order/:orderNo/returnform', checkUserOrder, auth_cust, replaceable,
 });
 router.get('/order/:orderNo/returnformsuccess', checkUserOrder, auth_cust, replaceable, thisReturnProducts, thisReturnPackages, (req,res)=>{
   if (!req.replaceable.replaceable && req.replaceable.orderStatus != '5'){
-    console.log(req.replaceable.orderStatus)
     res.redirect(`/summary/order/${req.params.orderNo}`)
   }
   else if (req.thisReturnProducts[0] || req.thisReturnPackages[0]){
@@ -488,12 +546,13 @@ router.get('/voucher/:orderNo', checkUserOrder, auth_cust, orderTotal, (req,res)
   else{
     db.query(`SELECT * FROM tblorder
       INNER JOIN tbluser ON tblorder.intUserID= tbluser.intUserID
-      WHERE intOrderNo= ? AND tbluser.intUserID= ? AND (intStatus= 0 OR intStatus= 1 OR intStatus= 2)`,[req.params.orderNo, req.user.intUserID],(err,results,fields)=>{
+      WHERE intOrderNo= ? AND tbluser.intUserID= ? AND (intStatus= 0 OR intStatus= 1 OR intStatus= 2)`,
+      [req.params.orderNo, req.user.intUserID],(err,results,fields)=>{
       if (err) console.log(err);
       if (results[0]){
         results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('LL') );
         results.map( obj => obj.paymentDue = moment(obj.paymentDue).format('LL') );
-        res.send({order: results[0], orderTotal: req.orderTotal.totalPrice})
+        res.send({order: results[0], orderTotal: req.orderTotal.total})
       }
       else{
         res.send('none')
@@ -501,7 +560,7 @@ router.get('/voucher/:orderNo', checkUserOrder, auth_cust, orderTotal, (req,res)
     });
   }
 })
-router.get('/receipt/:orderNo', checkUserOrder, auth_cust, receiptPackages, (req,res)=>{
+router.get('/receipt/:orderNo', checkUserOrder, auth_cust, receiptPackages, thisOrderParams, (req,res)=>{
   db.query(`SELECT (discountPrice-(discountPrice*0.12))priceNonVAT,
     ((discountPrice-(discountPrice*0.12))*orders.intQuantity)amountNonVAT,
     (customer.strFname)customerF, (customer.strMname)customerM, (customer.strLname)customerL, orders.*, tblorder.*
@@ -513,9 +572,10 @@ router.get('/receipt/:orderNo', checkUserOrder, auth_cust, receiptPackages, (req
   	INNER JOIN tblproductlist ON tblproductinventory.intProductNo= tblproductlist.intProductNo
   	INNER JOIN tblproductbrand ON tblproductlist.intBrandNo= tblproductbrand.intBrandNo
   	INNER JOIN tbluom ON tblproductinventory.intUOMno= tbluom.intUOMno)orders ON orders.intOrderNo= tblorder.intOrderNo
-    WHERE tblorder.intOrderNo= ? AND customer.intUserID= 1010 AND orders.intProductType= 1
+    WHERE tblorder.intOrderNo= ? AND customer.intUserID= ? AND orders.intProductType= 1
     ORDER BY orders.intOrderDetailsNo`,[req.params.orderNo, req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
+    console.log(results)
     if (results[0] || req.receiptPackages[0]){
       results = results.concat(req.receiptPackages);
       results.sort(orderArraySort);
@@ -534,14 +594,16 @@ router.get('/receipt/:orderNo', checkUserOrder, auth_cust, receiptPackages, (req
         obj.priceNonVAT = priceFormat(obj.priceNonVAT.toFixed(2))
         obj.amountNonVAT = priceFormat(obj.amountNonVAT.toFixed(2))
       });
+      shipping = priceFormat(req.thisOrderParams.shippingFee.toFixed(2))
       totalNonVAT = priceFormat(totalNonVAT.toFixed(2));
-      totalPrice = priceFormat(totalPrice.toFixed(2));
+      totalPrice = priceFormat((totalPrice + req.thisOrderParams.shippingFee).toFixed(2));
       vat = priceFormat(vat.toFixed(2));
 
       res.send({
         receipt: results,
         receiptNonVAT: totalNonVAT,
         vat: vat,
+        shipping: shipping,
         receiptTotal: totalPrice,
       })
       // console.log(results)
@@ -558,20 +620,21 @@ router.get('/tracker/:orderNo', checkUserOrder, auth_cust, (req,res)=>{
   });
 });
 
-router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOrderDetailsNo, newOrderHistoryNo,
-  newMessageNo, uniqueMakeIdOrderRef, cartCheck, admin, popularProducts, newProducts, packages, (req,res)=>{
+router.post('/checkout', checkUser, auth_cust, cartCheck, contactDetails, newOrderNo, newOrderDetailsNo, newOrderHistoryNo,
+  newMessageNo, uniqueMakeIdOrderRef, admin, shippingFee, popularProducts, newProducts, packages, (req,res)=>{
   req.session.cart.forEach((data,i)=>{
     data.curQty == 0 ? req.session.cart.splice(i,1) : 0
   })
   db.beginTransaction(function(err) {
     if (err) console.log(err);
     let thisOrderNo = req.newOrderNo, thisOrderHistoryNo = req.newOrderHistoryNo, thisMessageNo = req.newMessageNo;
-    db.query(`INSERT INTO tblorder (intOrderNo, intUserID, intPaymentMethod, strReferenceNo, strShippingAddress, strBillingAddress, paymentDue)
-      VALUES (?,?,?,?,?,?,CURDATE() + INTERVAL 1 DAY)`,[thisOrderNo, req.user.intUserID, req.body.paymentMethod, req.uniqueMakeIdOrderRef,
-      req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress], (err, results, fields) => {
+    db.query(`INSERT INTO tblorder (intOrderNo, intUserID, intPaymentMethod, strReferenceNo, strShippingAddress, strBillingAddress, paymentDue, shippingFee)
+      VALUES (?,?,?,?,?,?,CURDATE() + INTERVAL 1 DAY,?)`,[thisOrderNo, req.user.intUserID, req.body.paymentMethod, req.uniqueMakeIdOrderRef,
+      req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress, priceFormat(req.shippingFee.toFixed(2))], (err, results, fields) => {
       if (err) console.log(err);
-      db.query(`INSERT INTO tblorderhistory (intOrderHistoryNo, intOrderNo, intAdminID, intMessageNo, strShippingAddress, strBillingAddress)
-        VALUES (?,?,?,0,?,?)`,[thisOrderHistoryNo, thisOrderNo, 1000, req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress ], (err, results, fields) => {
+      db.query(`INSERT INTO tblorderhistory (intOrderHistoryNo, intOrderNo, intAdminID, intMessageNo, strShippingAddress, strBillingAddress, shippingFee)
+        VALUES (?,?,?,0,?,?,?)`,[thisOrderHistoryNo, thisOrderNo, 1000, req.contactDetails.strShippingAddress, req.contactDetails.strBillingAddress,
+        priceFormat(req.shippingFee.toFixed(2))], (err, results, fields) => {
         if (err) console.log(err);
         db.query(`INSERT INTO tblmessages (intMessageNo, intCustomerID, strMessage, intAdminID)
           VALUES (?,?,?,?)`,[thisMessageNo, req.user.intUserID,`Order #${thisOrderNo} has been placed`, 1000], (err, results, fields) => {
@@ -690,8 +753,14 @@ router.post('/checkout', checkUser, auth_cust, contactDetails, newOrderNo, newOr
   });
 });
 router.post('/checkout/address', checkUser, (req,res)=>{
+  let saCity = req.body.saCity != 'Others' ? req.body.saCity : req.body.saOthers,
+  baCity = req.body.baCity != 'Others' ? req.body.baCity : req.body.baOthers
+  let sa = `${saCity} - ${req.body.sa}`, ba = `${baCity} - ${req.body.ba}`
+
+  req.body.sameAddress ? ba = sa : 0
+
   db.query(`UPDATE tblcustomer SET strShippingAddress= ?, strBillingAddress= ? WHERE intUserID= ?`,
-    [req.body.sa, req.body.ba, req.user.intUserID], (err, results, fields) => {
+    [sa, ba, req.user.intUserID], (err, results, fields) => {
     if (err) console.log(err);
     res.redirect('/summary/checkout');
   });

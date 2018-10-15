@@ -189,7 +189,12 @@ function productReviews(req,res,next){
     WHERE tblproductlist.intProductNo= ? AND tblproductreview.strReview IS NOT NULL`,
     [req.params.prodid], function (err,  results, fields) {
     if (err) console.log(err);
-    results.map( obj => obj.r_created_at = moment(obj.r_created_at).format('L - LT') );
+    if (results[0]){
+      results.forEach((obj)=>{
+        obj.r_created_at = moment(obj.r_created_at).format('L - LT')
+        obj.r_updated_at ? obj.r_updated_at = moment(obj.r_updated_at).format('L - LT') : 0
+      });
+    }
     req.productReviews= results;
     return next();
   });
@@ -269,7 +274,7 @@ router.post('/:prodid/add-review', checkUser, newReviewID, (req,res)=>{
 router.post('/:prodid/edit-review', checkUser, newReviewID, (req,res)=>{
   req.body.review ? 0 : req.body.review = null
 
-  db.query(`UPDATE tblproductreview SET strReview= ?, intStars= ? WHERE intProductReviewNo= ?`,
+  db.query(`UPDATE tblproductreview SET strReview= ?, intStars= ?, r_updated_at= now() WHERE intProductReviewNo= ?`,
     [req.body.review, req.body.rating, req.body.reviewNo], (err, results, fields) => {
     if (err) console.log(err);
     res.redirect(`/item/${req.params.prodid}`);

@@ -143,6 +143,20 @@ a:hover {
   border: 0px;
   border-bottom: 1px solid var(--primary-color);
 }
+
+.custom-select-2 {
+  border-radius: 0px;
+  box-shadow: 0px 0px 0px;
+  border: 0px;
+  border-bottom: 2px solid #D9D9D9;
+}
+.custom-select-2:focus, .custom-select-2:active {
+  border-bottom-color: var(--primary-color);
+  outline: none;
+  box-shadow: none;
+}
+
+
 textarea {
   border-radius: 0px !important;
 }
@@ -210,6 +224,9 @@ textarea {
   font-weight: 500 !important;
 }
 
+.fs-1-1em {
+  font-size: 1.1em !important;
+}
 .fs-1em {
   font-size: 1em !important;
 }
@@ -274,7 +291,8 @@ textarea {
 }
 .fake-link:hover {
   text-decoration: underline !important;
-  text-decoration-color: var(--primary-color) !important;
+  text-decoration-color: var(--primary-hover) !important;
+  color: var(--primary-hover) !important;
 }
 .cursor-pointer {
   cursor: pointer;
@@ -295,7 +313,7 @@ input.material:focus, input.material:active {
   outline: none;
   box-shadow: none;
 }
-input#mobile {
+/* input#mobile {
   padding-left: 41px;
 }
 #mobile-label::after {
@@ -304,7 +322,7 @@ input#mobile {
   bottom: -37.5px;
   left: 12px;
   font-weight: 400;
-}
+} */
 .required-field {
   position: relative;
 }
@@ -526,7 +544,6 @@ body {
   margin-right: auto;
 }
 
-
 /* Navbar ----------------------------------------------------- */
 .navbar {
   z-index: 20;
@@ -681,6 +698,15 @@ table thead th {
 }
 table th, table td {
   border: 1px solid #ECEFF0;
+}
+
+/* Account Dashboard */
+.others-div input {
+  float: right;
+  width: calc(100% - (35px));
+}
+.others-div button {
+  float: left;
 }
 
 /* Account Orders */
@@ -869,10 +895,22 @@ table th, table td {
 #item-main-pane {
   width: 70%;
 }
-#item-main-pane .fa-share-alt {
+#item-main-pane #share-div {
   position: absolute;
-  top: 3.5px;
+  top: 4px;
   right: 0px;
+  text-align: right;
+}
+#item-main-pane #share-div > * {
+  /* display: inline-block; */
+}
+#item-main-pane #share-div > p {
+  float: left;
+  display: none;
+  text-decoration: underline;
+  margin: 7 10 0 0;
+  opacity: 0;
+  transition: opacity .2s, margin .2s;
 }
 #item-main-pane > div:nth-child(2) img {
   position: absolute;
@@ -991,7 +1029,7 @@ table th, table td {
   padding-left: 10px;
 }
 #item-review-pane > div {
-  min-height: 1124.5px;
+  /* max-height: 1124.5px; */
 }
 #item-review-pane #rating {
   height: 70px;
@@ -1010,10 +1048,10 @@ table th, table td {
   line-height: 1em;
 }
 
-#item-review-pane .review-name {
+.review-name {
   font-size: .9em;
 }
-#item-review-pane .review-desc {
+.review-desc {
   font-size: .75em;
 }
 
@@ -1581,6 +1619,7 @@ notice-special
 }
 #package-modal button.add-button{
   border-radius: 0;
+  width: 100%;
 }
 
 .package-details, .package-details-modal {

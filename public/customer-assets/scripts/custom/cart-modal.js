@@ -43,7 +43,8 @@ function stockDisplay(modal,inv){
   $.get(`/cart/modal-inv/${inv}`).then((res) => {
     let inv = res.inventory, qty = modal.find('.quantity-input');
     modal.find('.price').html(`${inv.productPrice}`);
-    modal.find('#stock-display > span').text(inv.stock);
+    modal.find('#stock-display').text(`${inv.stock} Items Left`);
+    modal.find('#stock-display').attr('stock',inv.stock);
     if (inv.discount){
       modal.find('.price').css(`color`,`var(--discount-color)`);
       modal.find('.price').append(` <i class="fas fa-tags discount-modal" title="discounted price"></i>`);
@@ -57,12 +58,20 @@ function stockDisplay(modal,inv){
       modal.find('.discount').attr('hide','hide');
     }
 
-    if (inv.stock > 0){
-      modal.find('#stock-display > span').text(inv.stock);
+    if (!inv.intStatus){
+      modal.find('#stock-display').text(`Unavailable`);
+      modal.find('#stock-display').attr('stock',0);
+      modal.find('.add-button').attr('disabled','disabled');
+      inv.stock = 0
+    }
+    else if (inv.stock > 0){
+      modal.find('#stock-display').text(`${inv.stock} Items Left`);
+      modal.find('#stock-display').attr('stock',inv.stock);
       modal.find('.add-button').removeAttr('disabled');
     }
     else{
-      modal.find('#stock-display > span').text(0);
+      modal.find('#stock-display').text(`0 Items Left`);
+      modal.find('#stock-display').attr('stock',0);
       modal.find('.add-button').attr('disabled','disabled');
     }
 
@@ -88,12 +97,11 @@ function qtyValidate(modal,qty,stock){
     modal.find(`.plus-btn`).removeAttr('disabled')
 }
 function qtyControl(modal,type){
-  let stock = parseInt(modal.find('#stock-display > span').text()),
+  let stock = parseInt(modal.find('#stock-display').attr('stock')),
   qtyInput = modal.find('.quantity-input'), qty = parseInt(qtyInput.val());
 
   stock > limit ? stock = limit : 0
   qty == 0 ? qtyInput.val(1) : 0
-  console.log(qty)
 
   if(type == 'change'){
     qty > stock ? qtyInput.val(stock) : 0
@@ -215,6 +223,16 @@ $('.products-container, #checkout-products, #order-products-pane')
         </p>`)
     })
 
+    if (data[0].expired){
+      modal.find('#postBtn').attr('disabled','disabled')
+      modal.find('#postBtn').text('Expired')
+      data[0].stock = 0
+    }
+    else{
+      modal.find('#postBtn').removeAttr('disabled')
+      modal.find('#postBtn').text('Add to Cart')
+    }
+    modal.find('#stock-display').attr('stock',data[0].stock);
     modal.find('#stock-display > span').text(data[0].stock);
     modal.find('.expire-date > span').text(data[0].dateDue);
     modal.find('.quantity-input').val(res.options.curQty);

@@ -82,20 +82,17 @@
         </div>
       </div>
 
-
-
     </div>
     <!-- /.row -->
 
-    <div class="row">
+    <div id="annual-div" class="row">
       <div class="col-sm-12">
         <div class="box">
           <div class="box-header with-border">
-            <h3 class="box-title">Monthly Sales Report</h3>
+            <h3 class="box-title">Annual Sales Report</h3>
           </div>
 
           <div class="box-body">
-            <br>
             <div class="row">
               <!-- <div class="col-sm-4">
                 <label>Sort by:</label>
@@ -108,18 +105,17 @@
               </div> -->
               <div class="col-sm-3">
                 <select class="form-control">
-                  <option>2018</option>
+                  <!-- <option>2018</option> -->
                 </select>
               </div>
 
               <div class="col-sm-5">
-                <button class="large ui teal button">Apply Changes</button>
+                <!-- <button class="large ui teal button apply-btn">Apply Changes</button> -->
 
                 <button class="large ui  button">Print</button>
-                <button class="large ui  button">Excel</button>
+                <a id="annual-export-link"><button class="large ui button" disabled>Excel</button></a>
               </div>
             </div>
-            <br>
             <div class="row">
               <div class="col-sm-12">
 
@@ -133,22 +129,8 @@
                         <th>Actions</th>
                       </tr>
                     </thead>
-
                     <tbody>
-                      <tr>
-                        <td>January</td>
-                        <td>Php 1,000</td>
-                        <td>100</td>
-                        <td><a href="/reports/reviewMonthlySales"><button class="large ui green button">Review</button></a></td>
-                      </tr>
-                      <tr>
-                        <td>February</td>
-                        <td>Php 500</td>
-                        <td>2</td>
-                        <td><a href="/reports/reviewMonthlySales"><button class="large ui green button">Review</button></a></td>
-                      </tr>
-
-
+                      <!-- <td><a href="/reports/reviewMonthlySales"><button class="large ui green button">Review</button></a></td> -->
                     </tbody>
                   </table>
                 </div>
@@ -165,7 +147,7 @@
     </div>
 
 
-    <div class="row">
+    <div id="daily-div" class="row">
       <!-- Daily Sales Report -->
       <div class="col-sm-8">
         <div class="box">
@@ -179,7 +161,7 @@
                 <input type="date" class="form-control">
               </div>
               <div class="col-sm-3">
-                <button class="large ui teal button">Apply changes</button>
+                <a id="daily-export-link"><button class="large ui button" disabled>Excel</button></a>
               </div>
             </div>
             <div class="row">
@@ -196,48 +178,7 @@
                     </thead>
 
                     <tbody>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
+
                     </tbody>
                   </table>
                 </div>
@@ -246,7 +187,6 @@
             </div>
           </div>
           <div class="box-footer clearfix">
-
             <a href="javascript:void(0)" class="large ui teal button pull-right">View All</a>
           </div>
         </div>
@@ -407,8 +347,6 @@
 </div>
 <!-- /.content-wrapper -->
 
-
-
  <%- include('../../../templates/admin-aside.ejs') -%>
 
 <!-- ./wrapper -->
@@ -419,7 +357,6 @@
 
 
 <script src="/assets/admin/bower_components/chart.js/dist/Chart.js"></script>
-
 
 <script>
   var ctx = document.getElementById("recapChart");
@@ -503,13 +440,163 @@
   console.log(obj.data.datasets[0].data)
 </script>
 
-
 <script>
-$('#title').html("USG | Sales Reports");
-$(".treeview a:contains('Reports')").parent().addClass("active");
-$(".navi a:contains('Sales')").parent().addClass("active");
+  $('#title').html("USG | Sales Reports");
+  $(".treeview a:contains('Reports')").parent().addClass("active");
+  $(".navi a:contains('Sales')").parent().addClass("active");
+
 </script>
 
+<script type="text/javascript">
+  let oldUrl = window.location.href
+  $(()=>{
+    const thisUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+
+    function getParams(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+    function pushParams(annual,daily){
+      annual != null ? 0 : annual = getParams('annual');
+      daily != null ? 0 : getParams('daily');
+      newUrl = `${thisUrl}`;
+
+      newUrl = annual ? `${newUrl}?annual=${annual}` : `${newUrl}?annual=now`;
+      newUrl = daily ? `${newUrl}&daily=${daily}` : `${newUrl}&daily=now`;
+
+      window.history.pushState({path:newUrl},'',newUrl);
+    }
+
+    function loadSalesReport(){
+      oldUrl = window.location.href
+
+      // pushParams()
+      let annual = getParams('annual'), daily = getParams('daily')
+
+      if(!annual){
+        newUrl = `${thisUrl}?annual=now`;
+        window.history.pushState({path:newUrl},'',newUrl);
+        annual = 'now';
+      }
+      if(!daily){
+        newUrl = `${thisUrl}?annual=${annual}&daily=now`;
+        window.history.pushState({path:newUrl},'',newUrl);
+        daily = 'now';
+      }
+
+      annual ? annual = annual.indexOf("'") == -1 ? annual : 'now' : 0;
+      daily ? daily = daily.indexOf("'") == -1 ? daily : 'now' : 0;
+
+      $.post(`/reports/sales/load`, {
+        annual: annual, daily: daily
+      }).then((res) => {
+        console.log(res)
+        let config = res.config, annual = res.annual, daily = res.daily;
+
+        // ANNUAL
+
+        $(`#annual-div select`).html('');
+        config.years.forEach((data)=>{
+          $(`#annual-div select`).append(`
+            <option value="${data.year}">${data.year}</option>
+            `);
+        });
+        $(`#annual-div select`).val(config.annual)
+
+        $(`#annual-div table tbody`).html('')
+        if (annual[0]){
+          $(`#annual-export-link`).attr('href',`/reports/salesAnnualExport?year=${config.annual}`)
+          $(`#annual-export-link > button`).removeAttr('disabled')
+        }
+        else{
+          $(`#annual-export-link > button`).attr('disabled','disabled')
+          $(`#annual-div table tbody`).append(`
+            <tr>
+              <td>No Results</td>
+            </tr>
+            `)
+        }
+
+        annual.forEach((data)=>{
+          $(`#annual-div table tbody`).append(`
+            <tr>
+              <td>${data.monthname}</td>
+              <td>Php ${data.total}</td>
+              <td>${data.qty}</td>
+              <td><a href="/reports/reviewMonthlySales?month=${data.monthname}&year=${config.annual}"><button class="large ui green button">Review</button></a></td>
+            </tr>
+            `);
+        });
+
+        // DAILY
+
+        // $(`#daily-div input[type=date]`).removeAttr('readonly')
+
+        $(`#daily-div input[type=date]`).val(config.daily)
+        $(`#daily-div table tbody`).html('')
+        if (daily[0]){
+          $(`#daily-export-link`).attr('href',`/reports/salesDailyExport?date=${config.daily}`)
+          $(`#daily-export-link > button`).removeAttr('disabled')
+          $(`#daily-div .box-footer a`).css('display','block')
+        }
+        else{
+          $(`#daily-export-link > button`).attr('disabled','disabled')
+          $(`#daily-div table tbody`).append(`
+            <tr>
+              <td>No Results</td>
+            </tr>
+            `)
+          $(`#daily-div .box-footer a`).css('display','none')
+        }
+        $(`#daily-div .box-footer a`).attr(`href`,`/reports/reviewDailySales?date=${config.daily}`)
+        daily.forEach((data)=>{
+          $(`#daily-div table tbody`).append(`
+            <tr>
+              <td>${data.intProductNo}</td>
+              <td>${data.strBrand} ${data.strProductName}</td>
+              <td>${data.qty}</td>
+              <td>Php ${data.total}</td>
+            </tr>
+            `);
+        });
+
+      }).catch((err) => {
+        console.log(err)
+      });
+
+    }
+
+    $(`#annual-div select`).change(function(){
+      pushParams($(`#annual-div select`).val())
+      loadSalesReport();
+    })
+    $(`#daily-div input[type=date]`).change(function(){
+      // $(`#daily-div input[type=date]`).attr('readonly','readonly')
+      pushParams(null,$(`#daily-div input[type=date]`).val())
+      loadSalesReport();
+    })
+
+    loadSalesReport();
+
+    if (window.history && window.history.pushState) {
+      $(window).on('popstate', function() {
+        annual = getParams('annual')
+        daily = getParams('daily')
+        annual && daily ?
+          window.location.href != oldUrl ? loadSalesReport() : 0
+          : window.location.replace(document.referrer)
+      });
+    }
+
+  })
+
+</script>
 
 </body>
+
 </html>

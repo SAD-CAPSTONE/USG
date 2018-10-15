@@ -5,7 +5,9 @@
 <script src="/customer-assets/scripts/custom/cart-design.js" type="text/javascript"></script>
 <script src="/customer-assets/scripts/custom/cart-modal.js" type="text/javascript"></script>
 <script src="/customer-assets/scripts/custom/cart.js" type="text/javascript"></script>
+<script src="/customer-assets/scripts/jquery-ui-1.12.1/jquery-ui.js"></script>
 <script type="text/javascript">
+  let searchFocus = 0
   $('.quantity .quantity-input, .input-number').bind("cut copy paste",function(e) {
     e.preventDefault();
   });
@@ -15,4 +17,42 @@
       return false;
     }
   });
+
+  $(()=>{
+    $("#searchbar").autocomplete({
+      source: function(request,response) {
+        $.post(`/cart/searchbar`, {
+          term: request.term
+        }).then((res) => {
+          response(res.terms);
+        }).catch((err)=>{
+          console.log(err)
+        })
+      }
+    });
+  });
+
+  $("#searchbar").focus(function(){
+    searchFocus = 1
+  })
+
+  $("#searchbar").blur(function(){
+    searchFocus = 0
+  })
+
+  $(document).keypress(function(e) {
+    if(e.which == 13) {
+      if (searchFocus){
+        e.preventDefault()
+        $(`#searchbar + div button`).click()
+      }
+    }
+  });
+
+  $(`#searchbar + div button`).click(function(){
+    let thisUrl = `${window.location.protocol}//${window.location.host}`
+    let search =  $(`#searchbar`).val()
+    search ? window.location.replace(`${thisUrl}/store?cat=0&search=${search}`) : 0
+  });
+
 </script>

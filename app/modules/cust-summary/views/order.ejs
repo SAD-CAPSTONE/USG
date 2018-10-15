@@ -134,10 +134,10 @@
       <p class="fl-r mb-0 fs-09em fw-400 lh-p3em">#<%= orderNumber%></p>
       <div style="clear: both"></div>
       <small class="label">Subtotal (<%= orderLength%>)</small>
-      <small class="price price-symbol"><%= orderTotal%></small>
+      <small class="price price-symbol"><%= orderTotal.subtotal%></small>
       <br>
       <small class="label">Shipping Fee</small>
-      <small class="price price-symbol">0.00</small>
+      <small class="price price-symbol"><%= orderTotal.shipping%></small>
       <br>
       <small class="label label-total">Total</small>
       <% if(orderOne.intPaymentMethod == 1){ %>
@@ -145,7 +145,7 @@
       <% }else{ %>
         <small id="payment-method">Bank Deposit</small>
       <% } %>
-      <small class="price total price-symbol"><%= orderTotal%></small>
+      <small class="price total price-symbol"><%= orderTotal.total%></small>
       <div class="pos-relative mb-3">
         <small class="text-muted price vat block">VAT applied</small>
       </div>
@@ -303,6 +303,7 @@
 <%- include('../../../templates/scripts-customer.ejs') -%>
 <%- include('../../../templates/scripts-pdf.ejs') -%>
 <script type="text/javascript">
+  $('title').html(`Ultra Super Green - Order#${<%= orderOne.intOrderNo%>}`);
   $(()=>{
     let txtcount1;
     function submitBtn(){
@@ -365,9 +366,9 @@
       // Receipt No
       newY = firstY;
       doc.setFont('Poppins-Regular');
-      doc.text(firstX, newY, `Receipt No:`); newY+= gap;
+      doc.text(firstX, newY, `Reference No:`); newY+= gap;
       doc.setFont('Poppins-Light');
-      doc.text(firstX, newY, `#72954168`);
+      doc.text(firstX, newY, `${res.receipt[0].strReferenceNo}`);
       firstX += 40.5;
       maxY = newY;
       // Order
@@ -457,6 +458,12 @@
       doc.text(unitX, newY, `VAT(12%)`, 'right');
       doc.setFont('Poppins-Light');
       doc.text(amntX, newY, `${res.vat}`, 'right'); newY+= gap;
+
+      if (newY > 275){doc.addPage(); newY = 22;}
+      doc.setFont('Poppins-Regular');
+      doc.text(unitX, newY, `Shipping Fee`, 'right');
+      doc.setFont('Poppins-Light');
+      doc.text(amntX, newY, `${res.shipping}`, 'right'); newY+= gap;
 
       if (newY > 275){doc.addPage(); newY = 22;}
       doc.setFont('Poppins-Regular');
@@ -640,6 +647,17 @@
   //   $('[data-toggle="tooltip"]').tooltip()
   // })
 
+  $.get(`/summary/receipt/${orderNo}`).then((res)=>{
+    // do something
+    console.log(res);
+    return $.get(`/summary/voucher/${orderNo}`)
+  }).then((res)=>{
+    // do something
+    console.log(res);
+  }).catch((error)=>{
+    // handle error
+    console.log(error);
+  })
 
 </script>
 <%- include('../../../templates/closer.ejs') -%>

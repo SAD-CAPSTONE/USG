@@ -14,6 +14,31 @@ function sizeString(obj){
   return curSize;
 }
 
+function totalCheckUser (req, res, next){
+  if(req.params.type == 'total'){
+    if(!req.user){
+      req.session.pendRoute = 2;
+      req.flash('regSuccess', 'Login to proceed to Checkout');
+      res.redirect('/login');
+    }
+    else{
+      req.session.pendRoute = 0;
+      return next();
+    }
+  }
+  else {
+    req.session.pendRoute = 0;
+    return next();
+  }
+}
+function defaultFee (req, res, next){
+  db.query(`SELECT shippingFee FROM tbladmin WHERE intUserID= 1000`, (err,results,fields)=>{
+    if (err) console.log(err);
+    req.defaultFee = results[0].shippingFee;
+    return next();
+  });
+}
+
 router.get('/limit', (req, res)=>{
   res.send({quantLimit: quantLimit})
 });
@@ -51,7 +76,8 @@ router.get('/modal/:pid', (req, res)=>{
   });
 });
 router.get('/modal-inv/:inv', (req, res)=>{
-  db.query(`SELECT (intQuantity - intReservedItems)stock, (productPrice)oldPrice, discount, IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice
+  db.query(`SELECT (intQuantity - intReservedItems)stock, (productPrice)oldPrice, discount,
+    IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, tblproductinventory.intStatus
     FROM tblproductinventory LEFT JOIN (SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1)Disc
     ON tblproductinventory.intInventoryNo= Disc.intInventoryNo
     WHERE tblproductinventory.intInventoryNo = ?`
@@ -140,21 +166,20 @@ router.post('/modal', (req, res)=>{
 });
 
 router.get('/list', (req, res)=>{
-  // req.session.cart = null;
   req.session.cart ? 0 : req.session.cart = [];
   function cartLimitLoop(i){
     let cart = req.session.cart, stringquery1, bodyarray1;
     if (cart[i].type == 1){
-      stringquery1 = `SELECT (tblproductinventory.intStatus)InvStatus, (productPrice)oldPrice,
+      stringquery1 = `SELECT (tblproductinventory.intStatus)InvStatus, (0)expired, (productPrice)oldPrice,
       IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice,
       discount, SUM(tblproductinventory.intQuantity - tblproductinventory.intReservedItems)stock FROM tblproductinventory
       LEFT JOIN (SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1)Disc ON tblproductinventory.intInventoryNo= Disc.intInventoryNo
       WHERE tblproductinventory.intInventoryNo= ? GROUP BY tblproductinventory.intInventoryNo LIMIT 1`;
       bodyarray1 = [req.session.cart[i].inv];
-      stringquery2 = `SELECT (intQuantity - intReservedItems)stock FROM tblproductinventory WHERE intInventoryNo= ?`;
     }
     else{
-      stringquery1 = `SELECT (intQuantity - intReservedItems)stock FROM tblpackage WHERE intPackageNo= ?`;
+      stringquery1 = `SELECT (intQuantity - intReservedItems)stock, (intStatus)InvStatus, IF(tblpackage.dateDue >= now(), 0, 1)expired
+      FROM tblpackage WHERE intPackageNo= ?`;
       bodyarray1 = [req.session.cart[i].package]
     }
     db.query(stringquery1, bodyarray1, (err, results, fields) => {
@@ -167,14 +192,11 @@ router.get('/list', (req, res)=>{
         quantLimit : results[0].stock;
       req.session.cart[i].curQty > req.session.cart[i].limit ?
         req.session.cart[i].curQty = req.session.cart[i].limit : 0;
-      results[0].stock < 1 ? req.session.cart.splice(i,1) : 0;
 
-      cart[i] ?
-        cart[i].type == 1 ?
-          results[0].InvStatus ?
-            0 : req.session.cart.splice(i,1)
-          : 0
-        : 0
+      if (results[0].stock < 1 || !results[0].InvStatus || results[0].expired){
+        req.session.cart.splice(i,1)
+        --i;
+      }
 
       ++i;
       if (cart.length > i){
@@ -244,23 +266,55 @@ router.delete('/list', (req, res)=>{
   });
   res.send({cart: req.session.cart.length, inv: inv})
 });
-router.get('/list/total/:type', (req, res)=>{
+router.get('/list/total/:type', totalCheckUser, defaultFee, (req, res)=>{
   req.session.cart ? 0 : req.session.cart = [];
   let subtotal = req.session.cart ?
     req.session.cart.reduce((temp, obj)=>{
       return temp + (obj.curPrice * obj.curQty);
     },0) : 0
-  let fee = 0.00;
-  length = req.session.cart.reduce((temp, obj)=>{
-    return temp += obj.curQty
-  },0);
-  req.params.type == 'total' ?
-    res.send({
-      cartLength: length,
-      subtotal: priceFormat(subtotal.toFixed(2)),
-      fee: priceFormat(fee.toFixed(2)),
-      total: priceFormat((subtotal+fee).toFixed(2)) }) :
-    res.send({subtotal: priceFormat(subtotal.toFixed(2))})
+  let fee = parseFloat(req.defaultFee);
+  if (req.params.type == 'total'){
+    db.query(`SELECT strShippingAddress FROM tblcustomer WHERE intUserID = ?`,
+      [req.user.intUserID], (err,addressResults,fields)=>{
+      if (err) console.log(err);
+      if (addressResults[0]){
+        if (addressResults[0].strShippingAddress){
+          db.query(`SELECT strLocation, amount FROM tblshippingfee WHERE intStatus= 1 AND strLocation= ?`,
+            [addressResults[0].strShippingAddress.split(/\s-\s(.*)/g)[0]], (err,locationResults,fields)=>{
+            if (err) console.log(err);
+            if (locationResults[0]){
+              fee = parseFloat(locationResults[0].amount)
+            }
+            renderTotal()
+          });
+        }
+        else {
+          fee = 0
+          renderTotal()
+        }
+      }
+      else {
+        fee = 0
+        renderTotal()
+      }
+    });
+  }
+  else{
+    renderTotal()
+  }
+  function renderTotal(){
+    console.log('xxxxxxx')
+    length = req.session.cart.reduce((temp, obj)=>{
+      return temp += obj.curQty
+    },0);
+    req.params.type == 'total' ?
+      res.send({
+        cartLength: length,
+        subtotal: priceFormat(subtotal.toFixed(2)),
+        fee: priceFormat(fee.toFixed(2)),
+        total: priceFormat((subtotal+fee).toFixed(2)) }) :
+      res.send({subtotal: priceFormat(subtotal.toFixed(2))})
+  }
 });
 
 router.get('/item-inv/:inv', (req, res)=>{
@@ -275,7 +329,7 @@ router.get('/item-inv/:inv', (req, res)=>{
 });
 
 router.get('/package/:pid', (req, res)=>{
-  db.query(`SELECT *, (tblpackage.intQuantity - tblpackage.intReservedItems)stock,
+  db.query(`SELECT *, (tblpackage.intQuantity - tblpackage.intReservedItems)stock, IF(tblpackage.dateDue >= now(), 0, 1)expired,
     (tblproductinventory.productPrice * tblpackagelist.intProductQuantity)originalSubTotal FROM tblpackage
     INNER JOIN tblpackagelist ON tblpackage.intPackageNo= tblpackagelist.intPackageNo
     INNER JOIN tblproductinventory ON tblpackagelist.intInventoryNo = tblproductinventory.intInventoryNo
@@ -348,6 +402,20 @@ router.post('/package', (req, res)=>{
 
       res.send({cart: req.session.cart, latest: latest, limit: this_package.limit})
     });
+  });
+});
+
+router.post('/searchbar', (req, res)=>{
+  db.query(`SELECT CONCAT(strBrand, ' ', strProductName)product FROM tblproductlist
+    INNER JOIN tblproductbrand USING (intBrandNo) WHERE CONCAT(strBrand, ' ', strProductName) LIKE ? LIMIT 5`,
+    [`%${req.body.term}%`], (err,results,fields)=>{
+    if (err) console.log(err);
+    let terms = results.reduce((temp, data)=>{
+      temp.push(data.product)
+      return temp
+    }, [])
+    console.log(terms)
+    res.send({terms: terms})
   });
 });
 

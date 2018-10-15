@@ -7,7 +7,7 @@ const userTypeAuth = require('../cust-0extras/userTypeAuth');
 const auth_cust = userTypeAuth.cust;
 const pageLimit = 10;
 const orderQuery = `SELECT tblorder.intStatus AS Status, IF(discountPrice IS NOT NULL, totalOriginalPrice-discountPrice, totalOriginalPrice)totalPrice,
-  tblorder.* FROM tbluser INNER JOIN tblorder ON tbluser.intUserID= tblorder.intUserID INNER JOIN (
+  tblorder.*, (tblorder.shippingFee)shipping FROM tbluser INNER JOIN tblorder ON tbluser.intUserID= tblorder.intUserID INNER JOIN (
   SELECT SUM(purchasePrice*intQuantity)totalOriginalPrice, SUM(purchasePrice*discount*0.01*intQuantity)discountPrice,
   tblorder.intOrderNo FROM tblorder INNER JOIN tblorderdetails ON tblorder.intOrderNo= tblorderdetails.intOrderNo
   GROUP BY tblorder.intOrderNo )Price ON tblorder.intOrderNo= Price.intOrderNo WHERE tblorder.intUserID = ? `
@@ -32,9 +32,33 @@ function contactDetails (req, res, next){
     return next();
   });
 }
+function locations (req, res, next){
+  db.query(`SELECT strLocation FROM tblshippingfee WHERE intStatus= 1 ORDER BY strLocation`, (err, results, fields) => {
+    if (err) console.log(err);
+    req.locations = results;
+    return next();
+  });
+}
 
-router.get('/dashboard', checkUser, auth_cust, contactDetails, (req,res)=>{
-  res.render('cust-account/views/dashboard', {thisUser: req.user, thisUserContact: req.contactDetails});
+router.get('/dashboard', checkUser, auth_cust, contactDetails, locations, (req,res)=>{
+  sAddress =
+    req.contactDetails.strShippingAddress ?
+      req.locations.reduce((temp,data)=>{
+        return data.strLocation == req.contactDetails.strShippingAddress.split(/\s-\s(.*)/g)[0] ? 1 : temp
+      },0) : 1
+  bAddress =
+    req.contactDetails.strBillingAddress ?
+      req.locations.reduce((temp,data)=>{
+        return data.strLocation == req.contactDetails.strBillingAddress.split(/\s-\s(.*)/g)[0] ? 1 : temp
+      },0) : 1
+
+  res.render('cust-account/views/dashboard', {
+    thisUser: req.user,
+    thisUserContact: req.contactDetails,
+    locations: req.locations,
+    sAddress: sAddress,
+    bAddress: bAddress
+  });
 });
 router.get('/orders', checkUser, auth_cust, (req,res)=>{
   res.render('cust-account/views/orders', {thisUser: req.user});
@@ -56,12 +80,22 @@ router.get('/messages', checkUser, auth_cust, (req,res)=>{
 
 router.post('/dashboard/info', checkUser, auth_cust, (req,res)=>{
   db.beginTransaction(function(err) {
+    console.log(req.body)
+    let saCity = req.body.dsaCity != 'Others' ? req.body.dsaCity : req.body.dsaOthers,
+    baCity = req.body.dbaCity != 'Others' ? req.body.dbaCity : req.body.dbaOthers
+
+    let fname = req.body.fname, mname = req.body.mname, lname = req.body.lname, email = req.body.email,
+    dsa = `${saCity} - ${req.body.dsa}`, dba = `${baCity} - ${req.body.dba}`,
+    phone = req.body.phone.replace(/-/g, ""), mobile = req.body.mobile
+
+    req.body.sameAddress ? dba = dsa : 0
+
     if (err) console.log(err);
     db.query(`UPDATE tbluser SET strFname= ?, strMname= ?, strLname= ?, strEmail= ? WHERE intUserID= ?`,
-      [req.body.fname, req.body.mname, req.body.lname, req.body.email, req.user.intUserID], (err, results, fields) => {
+      [fname, mname, lname, email, req.user.intUserID], (err, results, fields) => {
       if (err) console.log(err);
       db.query(`UPDATE tblcustomer SET strShippingAddress= ?, strBillingAddress= ?, strCusPhoneNo= ?, strCusMobileNo= ? WHERE intUserID= ?`,
-        [req.body.dsa, req.body.dba, req.body.phone, `0${req.body.mobile}`, req.user.intUserID], (err, results, fields) => {
+        [dsa, dba, phone, mobile, req.user.intUserID], (err, results, fields) => {
         if (err) console.log(err);
         db.commit(function(err) {
           if (err) console.log(err);
@@ -73,6 +107,19 @@ router.post('/dashboard/info', checkUser, auth_cust, (req,res)=>{
 });
 
 // ajax
+router.post('/dashboard/checkInfo', checkUser, (req,res)=>{
+  db.query(`SELECT strEmail FROM tbluser WHERE strEmail= ? AND intUserID!= ?`,
+    [req.body.email, req.user.intUserID], (err, results, fields) => {
+    if (err) console.log(err);
+    if (results[0]){
+      res.send({email: 'Email is taken'})
+    }
+    else{
+      res.send({email: null})
+    }
+  });
+});
+
 router.post('/orders/load', checkUser, (req,res)=>{
   // ORDER BY intOrderNo DESC
   let config = {
@@ -126,8 +173,12 @@ router.post('/orders/load', checkUser, (req,res)=>{
       // console.log(limitQuery)
       db.query(limitQuery, [req.user.intUserID], (err,results,fields)=>{
         if (err) console.log(err);
-        results[0] ? results.map( obj => obj.dateOrdered = moment(obj.dateOrdered).format('LL') ) : 0;
-        results[0] ? results.map( obj => obj.totalPrice = priceFormat(obj.totalPrice.toFixed(2)) ) : 0;
+        if(results[0]){
+          results.forEach((obj)=>{
+            obj.dateOrdered = moment(obj.dateOrdered).format('LL');
+            obj.totalPrice = priceFormat((parseFloat(obj.shipping)+parseFloat(obj.totalPrice)).toFixed(2));
+          })
+        }
         db.commit(function(err) {
           if (err) console.log(err);
           res.send({config: config, orders: results})
