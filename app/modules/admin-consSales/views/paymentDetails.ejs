@@ -32,20 +32,24 @@
              </div>
              <div class="col-sm-4">
                <h4><strong>Issued To:</strong></h4>
-               <h5><%=from[0].strBusinessName%></h5>
-               <h5><%=from[0].strBusinessAddress%></h5>
-               <h5><%=from[0].strBusinessEmail%></h5>
-               <h5><%=from[0].strSupplierMobile%></h5>
+               <h5><%=consignor[0].strBusinessName%></h5>
+               <h5><%=consignor[0].strBusinessAddress%></h5>
+               <h5><%=consignor[0].strBusinessEmail%></h5>
+               <h5><%=consignor[0].strSupplierMobile%></h5>
              </div>
              <div class="col-sm-4">
-               <h4><strong>Issued To:</strong></h4>
+               <h4><strong>Issued By:</strong></h4>
                <h5>Gustle Agulto - Operations Manager</h5>
                <h5>Ultra Super Green Trading Corp.</h5>
                <h5>Katipunan Ave., Quezon City</h5>
                <h5>info.ultrasupergreen@gmail.com</h5>
              </div>
              <div class="col-sm-3">
-                <h4><strong>Payment Receipt No: </strong><%=delivery_no%></h4>
+               <h4><strong>Payment Receipt No: </strong><%= re[0].intConsignorPaymentNo%></h4>
+               <h4><strong>Payment Receipt Date: </strong><%= moment(re[0].paymentDate).format("MM/DD/YYYY")%></h4>
+               <br>
+               <h4><strong>Payment Total: </strong><%= (total[0].total_all).toFixed(2)%></h4>
+
              </div>
            </div>
 
@@ -59,33 +63,28 @@
                   <th>No</th>
                   <th>Description</th>
                   <th>Amount</th>
-
                 </tr>
                </thead>
                <tbody>
                  <% if (re == null || re == undefined){ %>
-
                  <% }else if (re.length == 0){ %>
-
                  <% }else{ %>
                    <% var count = 1; %>
                    <% re.forEach(function(i){ %>
                      <tr>
                        <td><%=count%></td>
-                       <td><%=i.strSize%></td>
-                       <td><%=i.strVariant%></td>
-
-
+                       <td><%=i.strDescription%></td>
+                       <td>Php <%=(i.amount).toFixed(2)%></td>
                      </tr>
-                     <% count++ %>
+                     <% count++; %>
                    <% }) %>
                  <% } %>
 
                </tbody>
 
              </table>
-            <a href="/receiveDelivery/print?ro=<%=delivery_no%>" target="_blank" class="large ui button pull-right"> <i class="fa fa-print"></i> Print</a>
-            <a href="/receiveDelivery/returnBadOrders?ro=<%=delivery_no%>" class="large ui teal button pull-right">Return Bad Orders</a>
+            <a href="/consSales/detailsPrint?payment=<%=re[0].intConsignorPaymentNo%>" target="_blank" class="large ui button pull-right"> <i class="fa fa-print"></i> Print</a>
+            <a href="" class="large ui teal button pull-right"><i class="fa fa-envelope"></i> Send to Email</a>
            </div>
            <!-- /.box-body -->
          </div>
@@ -140,3 +139,16 @@
     })
   })
 </script>
+
+<script>
+$('#title').html("USG | Consignor Payments");
+$(".treeview a:contains('Transactions')").parent().addClass("active");
+$(".navi a:contains('Consignor Sales')").parent().addClass("active");
+</script>
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>

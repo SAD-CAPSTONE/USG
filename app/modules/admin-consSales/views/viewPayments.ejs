@@ -34,8 +34,8 @@
                   <tr>
                     <th style="width: 10%">No</th>
                     <th>Payment Date</th>
-                    <th>Amount</th>
-                    <th>Status</th>
+                    <th>Total Payment</th>
+                    <!-- <th>Status</th> -->
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -51,16 +51,17 @@
                         <td><%= count%></td>
                         <td><%=moment(i.paymentDate).format("MM/DD/YYYY")%></td>
                         <td>₱ <%=(i.total).toFixed(2)%></td>
-                        <td>
+                        <!-- <td>
                           <% if (i.intStatus == 0){ %>
                             <span class="label label-warning">Not Received</span>
                           <% }else{ %>
                             <span class="label label-success">Received</span>
                           <% } %>
-                        </td>
+                        </td> -->
                         <td>
-                          <button data-not="<%=i.intConsignorPaymentNo%>" class="details large ui teal button">Details</button>
-                          <button hidden data-toggle="modal" data-target="#details" id="load"></button>
+                          <a href="/consSales/viewDetails?payment=<%=i.intConsignorPaymentNo%>"><button class="large ui teal button">View</button></a>
+                          <!-- <button data-not="<%=i.intConsignorPaymentNo%>" class="details large ui teal button">Details</button>
+                          <button hidden data-toggle="modal" data-target="#details" id="load"></button> -->
                         </td>
 
                       </tr>
