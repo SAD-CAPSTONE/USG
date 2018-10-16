@@ -45,7 +45,7 @@
                                                                 <td>Gustle Agulto (USG Operations Manager)</td>
                                                                 <td><span><%= moment(i.dateOrdered).format("MM/DD/YYYY")%></span></td>
                                                                 <td style="width:170px;"><div class="btn-group">
-                                                                    <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">View</button>
+                                                                  <a href="/consignor/viewReceivedOrder?order=<%= i.intReceiveOrderNo%>">  <button type="button" class="btn btn-primary" style="margin-bottom:10px; margin-right:10px; border-radius:5px !important">View</button></a>
                                                                 </div></td>
                                                             </tr>
                                                             <%  }) %>
