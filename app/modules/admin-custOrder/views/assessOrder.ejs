@@ -361,7 +361,7 @@
                     <label for="stats">Order Status:</label>
                     <select class="form-control" id="orderstatus">
                       <option id="order_pending" value="0">Pending</option>
-                      <option disabled id="order_processing" value="1">Processing</option>
+                      <option id="order_processing" value="1">Processing</option>
                       <option id="order_shipped" value="2">Shipped</option>
                       <option id="order_delivered" value="3">Delivered</option>
                       <option id="order_notDeliver" value="4">Will not Deliver</option>
@@ -540,6 +540,8 @@
     $('#order_returned').attr('hidden',true);
     $('#order_delivered').attr('hidden',true);
 
+    $('#payment_paid').attr('hidden',true);
+    $('#payment_awaiting').attr('hidden',true);
 
   }
 
@@ -552,7 +554,8 @@
     $('#order_notDeliver').attr('hidden',false);
     $('#order_returned').attr('hidden',true);
     $('#order_cancelled').attr('hidden',true);
-
+    $('#payment_paid').attr('hidden',true);
+    $('#payment_awaiting').attr('hidden',true);
 
   }
 
@@ -565,7 +568,14 @@
     $('#order_notDeliver').attr('hidden',true);
   $('#order_returned').attr('hidden',true);
     $('#order_cancelled').attr('hidden',true);
+    $('#payment_paid').attr('hidden',true);
+    $('#payment_awaiting').attr('hidden',true);
+  }
 
+  // Customer payment_paid
+  if(<%=customer[0].intPaymentStatus %> == 1){
+    $('#payment_awaiting').attr('hidden',true);
+    
   }
 
   // not working

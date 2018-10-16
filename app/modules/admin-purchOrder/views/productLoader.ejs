@@ -15,7 +15,7 @@
 
         <% re.forEach(function(i){ %>
           <tr>
-            <td><%=i.strProductName%></td>
+            <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%> <%=i.strUnitName%></td>
             <td><button data-product="<%=i.strProductName%>" data-dismiss="modal" class="addProdRow large ui teal button btn-sm">Select</button></td>
           </tr>
         <% }) %>
@@ -55,7 +55,7 @@ var count = 1;
 $('.addProdRow').on('click',function(){
 
   t.row.add( [
-       `<button class="delete_btn mini ui circular red basic button"><i class="fa fa-close"></i></button>`,
+       count,
       `<input  required type="text" name="product[]" value="${$(this).data('product')}" class="form-control">`,
       `<input style="width: 80px" required type="number" name="quantity[]" value="0" class="form-control">`,
       `<input  type="text" name="variant[]"  class="form-control">`,
@@ -73,12 +73,13 @@ $('.addProdRow').on('click',function(){
 });
 
 $('.addRow').on( 'click', function () {
+
     t.row.add( [
-         `<button class="delete_btn mini ui circular red basic button"><i class="fa fa-close"></i></button>`,
+         count,
         '<input  required type="text" name="product[]" value="" class="form-control">',
         '<input style="width: 80px" required type="number" name="quantity[]" value="0" class="form-control">',
         '<input  type="text" name="variant[]" class="form-control">',
-        '<input  type="text" name="size[]" value="2" class="form-control">'
+        '<input  type="text" name="size[]" value="" class="form-control">'
 
     ] ).draw( false );
     count++;

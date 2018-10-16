@@ -65,7 +65,7 @@ router.get('/viewOrder',(req,res)=>{
 
 router.get('/receivedOrders',(req,res)=>{
   db.query(`Select * from tblpurchaseorder join tblreceiveorder on tblpurchaseorder.intPurchaseOrderNo
-  = tblreceiveorder.intPurchaseOrderNo where intsupplierid = "${req.user.intUserID}"`,(err2,res2,fie2)=>{
+  = tblreceiveorder.intPurchaseOrderNo where tblPurchaseOrder.intsupplierid = "${req.user.intUserID}"`,(err2,res2,fie2)=>{
     if(err2) console.log(err2)
     else{
       res.render('cons-dashboard/views/cons-receivedOrders', {received: res2, moment: moment});
@@ -92,16 +92,11 @@ router.get('/viewReceivedOrder',(req,res)=>{
 
 router.get('/returns', auth_cons, (req,res)=>{
   db.query(`
-    SELECT * from tblpurchaseorder join tblreceiveorder on tblpurchaseorder.intpurchaseorderno = tblreceiveorder.intpurchaseorderno
-    join tblreturnbadorders on tblreceiveorder.intreceiveorderno = tblreturnbadorders.intreceiveorderno
-    join tblreceiveorderlist on tblreceiveorderlist.intReceiveOrderNo = tblreturnbadorders.intReceiveOrderNo
-    join tblbadorderslist on tblbadorderslist.intbadordersno = tblreturnbadorders.intbadordersno
-    join tblsupplier on tblsupplier.intuserid = tblpurchaseorder.intsupplierid
-    join tbluser on tbluser.intuserid = tblsupplier.intuserid
-    where tbluser.intUserID = ${req.user.intUserID}`,(err1,results1)=>{
+    Select * from tblReturnProducts
+    where intsupplierid = ${req.user.intUserID}`,(err1,results1)=>{
     if (err1) console.log(err1);
-    res.render('cons-dashboard/views/cons-returns', {re: results1});
-    console.log(results1);
+    res.render('cons-dashboard/views/cons-returns', {re: results1, moment: moment});
+
   });
 });
 
