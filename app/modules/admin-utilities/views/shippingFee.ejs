@@ -25,7 +25,7 @@
               <h4 align="center">Shipping Fees</h4>
             </div>
 			  <!-- buttons -->
-        &nbsp; &nbsp;<button type="button" data-toggle="modal" data-target="#add_shipping"  class="large ui green button"><i class="fa fa-plus"></i> Add Shipping Fee</button>
+        &nbsp; &nbsp;<button type="button" data-toggle="modal" data-target="#add_shipping" onclick="start()" class="large ui green button"><i class="fa fa-plus"></i> Add Shipping Fee</button>
             <!-- /.box-header -->
             <div class="box-body table-responsive">
               <table id="example2" class="table table-bordered table-hover">
@@ -148,23 +148,34 @@
                    <input type="hidden"  class="form-control" name="fee_no"  placeholder="">
 
                    <label for="name">Location:</label>
-                   <input type="text"  required class="location form-control" name="location"   placeholder="">
+                   <input type="text"   required class=" form-control" name="location" id="location2"  placeholder="">
                  </div>
+
+
 
                  <script >
                function activatePlacesSearch(){
 
                var input = document.getElementById('location');
                var options = {
-                types: ['(regions)'],
+                types: ['(cities)'],
                 componentRestrictions: {country: "ph"}
                };
                var autocomplete = new google.maps.places.Autocomplete(input,options);
+
+               var input2 = document.getElementById('location2');
+               var options2 = {
+                types: ['(cities)'],
+                componentRestrictions: {country: "ph"}
+               };
+               var autocomplete2 = new google.maps.places.Autocomplete(input2,options2);
 
 
 
                }
                </script>
+
+
 
                  <div class="form-group">
                    <label for="address">Shipping Fee:</label>
@@ -208,10 +219,15 @@
 
 
 <script>
+  function start(){
+    $('.pac-container').css('z-index','9999');
+    
+  }
   $('.edit_shipping').on('click',function(){
     $('#location').val($(this).data('location'));
     $('#fee').val($(this).data('amount'));
     $('#fee_no').val($(this).data('no'));
+    $('.pac-container').css('z-index','9999');
   })
 
   $('#add_shipping_form').submit(function(e){
