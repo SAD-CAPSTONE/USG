@@ -88,8 +88,71 @@ function datesAvailableDamaged(req,res,next){
 router.get('/', (req,res)=>{
   res.render('admin-reports/views/reports');
 });
+
+var resultset = "", completeset = "", ranges = "";
+
+router.get('/loadTransactions',(req,res)=>{
+  console.log(resultset)
+  res.render('admin-reports/views/transactionLoader',{re: resultset, moment: moment})
+})
+
+router.get('/viewTransactions',(req,res)=>{
+  res.render('admin-reports/views/viewTransactions',{re: completeset, moment: moment, ranges: ranges})
+
+})
+
+router.post('/loadTransactions',(req,res)=>{
+  var dates = (req.body.range).split('-');
+  var newDate = moment(dates[0]).format("YYYY/MM/DD");
+  var newDate1 = moment(dates[1]).format("YYYY/MM/DD");
+
+  db.query(`Select * from tblInventoryTransactions
+    join tblProductInventory on tblInventoryTransactions.intInventoryno = tblProductinventory.intInventoryno
+    join tblProductlist on tblProductlist.intProductNo = tblProductInventory.intProductNo
+    join tblUom on tblUom.intUOMno = tblProductInventory.intUomNo
+    where transactionDate between '${newDate}' and '${newDate1}' limit 7`,(err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+        db.query(`Select * from tblInventoryTransactions
+          join tblProductInventory on tblInventoryTransactions.intInventoryno = tblProductinventory.intInventoryno
+          join tblProductlist on tblProductlist.intProductNo = tblProductInventory.intProductNo
+          join tblUom on tblUom.intUOMno = tblProductInventory.intUomNo
+          where transactionDate between '${newDate}' and '${newDate1}'`,(err2,res2,fie2)=>{
+            if(err2) console.log(err2);
+            else{
+              resultset = res1;
+              completeset = res2;
+              ranges = dates;
+              res.send("data")
+            }
+          })
+
+
+      }
+    })
+})
+
 router.get('/sales',(req,res)=>{
-  res.render('admin-reports/views/sales');
+  db.query(`Select
+            count(*) as total_quantity,
+            sum((details.purchasePrice - (details.purchasePrice * (details.discount / 100) ))) as sum_discounted, details.intOrderDetailsNo,
+            details.purchasePrice, details.discount, tblOrder.*, details.*, tblProductInventory.*,
+            tblProductlist.*, tblUom.*
+            from tblOrder join tblOrderdetails as details on tblOrder.intOrderNo = details.intOrderNo
+            join tblProductInventory on details.intInventoryNo = tblProductInventory.intInventoryno
+            join tblUom on tblProductInventory.intUomNo = tblUom.intUomNo
+
+            join tblProductList on tblProductInventory.intProductNo = tblProductList.intProductNo
+
+            where tblOrder.intPaymentStatus = 1 and details.intProductType = 1
+            group by details.intInventoryNo
+            order by total_quantity desc limit 4`,(err1,res1,fie1)=>{
+              if(err1) console.log(err1);
+              else{
+                res.render('admin-reports/views/sales', {best: res1});
+              }
+            })
+
 });
 router.get('/reviewMonthlySales', yearsAvailable, (req,res)=>{
   db.query(`SELECT DATE(transactionDate)date, SUM(amount)total, SUM(intQuantity)qty

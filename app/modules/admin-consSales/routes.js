@@ -120,6 +120,54 @@ router.get('/paymentBreakdown',auth_admin, (req,res)=>{
 
       }
     })
+});
+
+router.get('/viewDetails',auth_admin, (req,res)=>{
+  db.query(`Select * from tblConsignorPayment join tblConsignmentPaymentList on tblConsignorPayment.intConsignorPaymentNo = tblConsignmentPaymentList.intConsignorPaymentNo
+    where tblConsignorPayment.intConsignorPaymentNo = "${req.query.payment}"`,(err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+        db.query(`Select * from tblConsignorPayment join tblUser on tblConsignorPayment.intConsignorID = tblUser.intUserID
+          join tblSupplier on tblUser.intUserID = tblSupplier.intUserID`,(err2,res2,fie2)=>{
+            if(err2) console.log(err2);
+            else{
+              db.query(`Select sum(amount) as total_all from tblConsignorPayment
+                join tblConsignmentPaymentList on tblConsignorPayment.intConsignorPaymentNo = tblConsignmentPaymentList.intConsignorPaymentNo
+                where tblConsignorPayment.intConsignorPaymentNo = "${req.query.payment}"`,(err3,res3,fie3)=>{
+                  if(err3) console.log(err3);
+                  else{
+                    res.render('admin-consSales/views/paymentDetails',{total: res3, re: res1, consignor: res2, moment: moment});
+
+                  }
+                })
+            }
+          })
+      }
+    })
+});
+
+router.get('/detailsPrint',auth_admin, (req,res)=>{
+  db.query(`Select * from tblConsignorPayment join tblConsignmentPaymentList on tblConsignorPayment.intConsignorPaymentNo = tblConsignmentPaymentList.intConsignorPaymentNo
+    where tblConsignorPayment.intConsignorPaymentNo = "${req.query.payment}"`,(err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+        db.query(`Select * from tblConsignorPayment join tblUser on tblConsignorPayment.intConsignorID = tblUser.intUserID
+          join tblSupplier on tblUser.intUserID = tblSupplier.intUserID`,(err2,res2,fie2)=>{
+            if(err2) console.log(err2);
+            else{
+              db.query(`Select sum(amount) as total_all from tblConsignorPayment
+                join tblConsignmentPaymentList on tblConsignorPayment.intConsignorPaymentNo = tblConsignmentPaymentList.intConsignorPaymentNo
+                where tblConsignorPayment.intConsignorPaymentNo = "${req.query.payment}"`,(err3,res3,fie3)=>{
+                  if(err3) console.log(err3);
+                  else{
+                    res.render('admin-consSales/views/paymentPrint',{total: res3, re: res1, consignor: res2, moment: moment});
+
+                  }
+                })
+            }
+          })
+      }
+    })
 })
 
 exports.consSales = router;

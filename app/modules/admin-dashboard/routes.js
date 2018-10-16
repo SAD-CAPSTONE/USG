@@ -30,7 +30,7 @@ router.get('/', auth_admin, (req,res)=>{
 
                       where tblOrder.intPaymentStatus = 1 and details.intProductType = 1
                       group by details.intInventoryNo
-                      order by total_quantity, sum_discounted desc limit 4`,(err1,results5)=>{
+                      order by total_quantity desc limit 4`,(err1,results5)=>{
               if(err1) console.log(err1)
               db.query(`SELECT *,(tblproductlist.strDescription)proddesc FROM tblbatch
                         JOIN tblproductinventory ON tblproductinventory.intInventoryNo = tblbatch.intInventoryNo
