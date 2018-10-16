@@ -80,12 +80,13 @@
                           </td>
                           <td>
                             <!-- <a href="/customerPayment/history?orderno=<%=i.intOrderNo%>"><button class="btn btn-primary btn-sm">View History</button></a> -->
-                            <button data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status large ui teal button">Change Status</button>
                             <% if (i.order_stat == 6){ %>
                               <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancelled</button>
+                              <button disabled data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status large ui teal button">Change Status</button>
 
                             <% }else{ %>
                               <button data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancel Order</button>
+                              <button data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status large ui teal button">Change Status</button>
 
                             <% } %>
 
@@ -154,12 +155,13 @@
                             <% } %>
                           </td>
                           <td>
-                            <button data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status large ui teal button">Change Status</button>
                             <% if (i.order_stat == 6){ %>
                               <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancelled</button>
+                              <button disabled data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status large ui teal button">Change Status</button>
 
                             <% }else{ %>
                               <button data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancel Order</button>
+                              <button data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status large ui teal button">Change Status</button>
 
                             <% } %>
 
@@ -242,12 +244,13 @@
                           </td>
                           <td>
                               <button class="deposit small ui green button" data-name="<%=i.depositSlip%>" data-toggle="modal" data-target="#depositSlip_modal">View</button>
-                            <button data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status small ui teal button">Change Status</button>
                             <% if (i.order_stat == 6){ %>
                               <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order small ui red button">Cancelled</button>
+                              <button disabled data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status small ui teal button">Change Status</button>
 
                             <% }else{ %>
                               <button data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order small ui red button">Cancel Order</button>
+                              <button data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status small ui teal button">Change Status</button>
 
                             <% } %>
 
@@ -313,12 +316,13 @@
                             <% } %>
                           </td>
                           <td>
-                            <button data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status large ui teal button">Change Status</button>
                             <% if (i.order_stat == 6){ %>
                               <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancelled</button>
+                              <button disabled data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status large ui teal button">Change Status</button>
 
                             <% }else{ %>
                               <button data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancel Order</button>
+                              <button data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status large ui teal button">Change Status</button>
 
                             <% } %>
                           </td>

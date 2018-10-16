@@ -52,28 +52,28 @@
                         <td><%= moment(i.dateOrdered).format("MM/DD/YYYY") %></td>
                         <td>
                           <% if (i.Stat == 0){ %>
-                            <span class="label label-warning">Pending</span>
+                            <span class="large ui yellow label">Pending</span>
                           <% }else if(i.Stat == 1){ %>
-                            <span class="label label-info">Processing</span>
+                            <span class="large ui blue label">Processing</span>
                           <% }else if(i.Stat == 2){ %>
-                            <span class="label label-default">Shipped</span>
+                            <span class="large ui brown label">Shipped</span>
                           <% }else if (i.Stat == 3){ %>
-                            <span class="label label-success">Delivered</span>
+                            <span class="large ui green label">Delivered</span>
                           <% }else if(i.Stat == 4){ %>
-                            <span class="label label-default">Will not deliver</span>
+                            <span class="large ui label">Will not deliver</span>
                           <% }else if(i.Stat == 5){ %>
-                            <span class="label label-default">Returned</span>
+                            <span class="large ui grey label">Returned</span>
                           <% }else{ %>
-                            <span class="label label-danger">Cancelled</span>
+                            <span class="large  ui red label">Cancelled</span>
                           <% } %>
                         </td>
 
                         <td>
                           <% if (i.intPaymentStatus == 0){ %>
-                            <span class="label label-warning">Not Paid</span>
+                          <a class="large ui orange circular label">Not Paid</a>
 
                           <% }else{ %>
-                            <span class="label label-success">Paid</span>
+                            <a class="large ui teal circular label">Paid</a>
 
                           <% } %>
                         </td>

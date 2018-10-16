@@ -56,7 +56,7 @@
                           <th>Variant</th>
                           <th>Size</th>
                           <th>Quantity</th>
-                          <th>Consignment Price</th>
+
                           <th>SRP</th>
                           <th>Expiration Date</th>
                       </tr>
@@ -75,6 +75,8 @@
                             <td><%= i.strVariant %></td>
                             <td><%= i.intQuantity %></td>
                             <td><%= i.strSize %></td>
+                            <td><%=i.SRP%></td>
+                            <td><%=moment(i.dateExpiration).format("MM/DD/YYYY")%></td>
 
                           </tr>
                         <% count++ %>

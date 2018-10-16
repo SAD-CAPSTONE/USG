@@ -13,7 +13,8 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Order No.</th>
+                                        <th>Return No.</th>
+                                        <th>USG Staff</th>
                                         <th>Date</th>
                                         <th>Actions</th>
                                     </tr>
@@ -26,33 +27,12 @@
                                         <% }else{ %>
                                             <%  re.forEach(function(i){ %>
                                                 <tr>
-                                                    <td><a><%= i.intPurchaseOrderNo%></a></td>
-                                                    <td><span><%= i.dateOrderReceived%></span></td>
-                                                    <td><a class="btn btn-custom-primary" data-toggle='modal' data-target='#EditInfo'> </i>&nbsp;View Sales</a>
-														<div id="EditInfo" class="modal fade" tabindex='-1' role='dialog' aria-labelledby='EditInfoTitle' aria-hidden='true'>
-															<div class="modal-dialog" role='document'>
-															<div class="modal-content">
-																<div class="modal-header">
-																<h5 id="EditInfoTitle" class="modal-title"><b><%= i.strProduct%></b></h5>
-																<button class="close" type='button' data-dismiss='modal' aria-label='Close'>
-																	<span aria-hidden='true'>×</span>
-																</button>
-																</div>
-																<div class="modal-body">
-																<div class="row">
-																	<div style="width: 490px;padding: 20px;"><span class="text-tab">Variant</span><span style="margin-left: 150px;"><%= i.strVariant%></span>
-																	<hr/><span class="text-tab">Size</span><span style="margin-left: 150px;""><%= i.strSize%></span>
-																	<hr/><span class="text-tab">Qauntity</span><span style="margin-left: 150px;""><%= i.intQuantity%></span>
-																	</div>
-																</div>
-																<div class="modal-footer">
-																<button class="btn btn-secondary" type='button', data-dismiss='modal'>Close</button>
-																</div>
-																</div>
-															</div>
-															</div>
-														</div>
-													</td>
+                                                    <td><a><%= i.intReturnProductsNo%></a></td>
+                                                    <td>Gustle Agulto (Operations Manager)</td>
+                                                    <td><span><%=moment(i.dateReturned).format("MM/DD/YYYY")%></span></td>
+                                                    <td><a class="btn btn-custom-primary" data-toggle='modal' data-target='#EditInfo'> </i>&nbsp;View </a>
+
+													                          </td>
                                                 </tr>
                                             <%  }) %>
                                             <% } %>
