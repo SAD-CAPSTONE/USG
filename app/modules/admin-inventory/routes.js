@@ -163,7 +163,9 @@ router.get('/productInventory',auth_admin, (req,res)=>{
                 db.query(`Select * from tbluom`, (err3,results3,fields3)=>{
                   if (err3) console.log(err3);
                   else{
-                    db.query(`Select * from tblSupplier join tblUser on tblSupplier.intUserID = tblUser.intUserID where intStatus = 1`, (err4,results4,fields4)=>{
+                    db.query(`Select * from tblSupplier
+                      join tblUser on tblSupplier.intUserID = tblUser.intUserID
+                      left join tblContract on tblContract.intConsignorID = tblUser.intUserID where intStatus = 1`, (err4,results4,fields4)=>{
                       if (err4) console.log(err4);
                       else{
                         db.query(`Select * from tblproductlist where intProductNo = ${product}`, (err5,results5,fields5)=>{

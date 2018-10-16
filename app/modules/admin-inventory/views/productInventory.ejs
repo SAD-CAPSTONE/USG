@@ -157,15 +157,20 @@
                               <button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
                             <p>  New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                               <label for="add_sname">Supplier Name</label>
                               <input type="hidden" class="form-control"  id="add_sno" name="add_sno" >
                               <input type="text" required class="form-control" disabled id="add_sname" name="add_sname" >
                             </div>
 
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                               <label for="add_bname">Business Name</label>
                               <input type="text" required class="form-control" disabled id="add_bname" name="add_bname" >
+                            </div>
+
+                            <div class="col-sm-3">
+                              <label for="add_bname">Commission Rate</label>
+                              <input type="text" required class="form-control" disabled id="commission" name="commission" >
                             </div>
 
                           </div>
@@ -176,11 +181,11 @@
                           <div class="row">
                             <div class="col-sm-3">
                               <label for="add_srp">Product SRP</label>
-                              <input type="number" placeholder="Original price" class="form-control" required id="add_srp" name="add_srp" >
+                              <input type="decimal" placeholder="Original price" class="form-control" required id="add_srp" name="add_srp" >
                             </div>
                             <div class="col-sm-3">
                               <label for="add_price">Product Price</label>
-                              <input type="number" placeholder="" class="form-control" required id="add_price" name="add_price" >
+                              <input type="decimal" placeholder="" class="form-control" required id="add_price" name="add_price" >
                             </div>
                             <div class="col-sm-3">
                               <label for="add_size">Size</label>
@@ -401,75 +406,7 @@
   <!-- /.modal-dialog -->
 </div>
 
-  <div class="modal fade" id="addSupplier">
-    <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title">Supplier Information Form</h4>
-      </div>
-      <div class="modal-body">
 
-        <!-- form start -->
-        <form role="form" method="post" action="/inventory/addSupplier">
-          <div class="box-body">
-            <div class="form-group">
-              <div class="row">
-                <div class="col-xs-4">
-                  <label for="fname">First Name</label>
-                  <input type="text" class="form-control" required id="fname" name="fname" >
-                </div>
-                <div class="col-xs-4">
-                  <label for="mname">Middle Name</label>
-                  <input type="text" class="form-control"id="mname" name="mname" >
-                </div>
-                <div class="col-xs-4">
-                  <label for="lname">Last Name</label>
-                  <input type="text" class="form-control" required id="lname" name="lname" >
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="bname">Business Name</label>
-              <input type="text" class="form-control" id="bname" required name="bname" placeholder="">
-            </div>
-            <div class="form-group">
-              <label for="address">Business Address</label>
-              <input type="text" class="form-control" id="address" name="address" required placeholder="">
-            </div>
-            <div class="form-group">
-              <div class="row">
-                <div class="col-xs-5">
-                  <label for="mobile">Mobile No.</label>
-                  <input type="text" class="form-control" id="mobile" name="mobile" >
-                </div>
-                <div class="col-xs-5">
-                  <label for="phone">Phone No.</label>
-                  <input type="text" class="form-control" id="phone" name="phone" >
-                </div>
-              </div>
-            </div>
-            <div class="checkbox">
-              <label>
-                <input type="checkbox">Add supplier to form
-              </label>
-            </div>
-          </div>
-          <!-- /.box-body -->
-
-
-        </div>
-        <div class="modal-footer">
-        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save</button>
-          </form>
-        </div>
-    </div>
-    <!-- /.modal-content -->
-  </div>
-   <!-- /.modal-dialog -->
-  </div>
 
   <div class="modal fade" id="selectSupplier">
     <div class="modal-dialog">
@@ -502,7 +439,7 @@
                 <td><%=i.intUserID%></td>
                 <td><%=i.strFname%>&nbsp;<%=i.strLname%></td>
                 <td><%=i.strBusinessName%></td>
-                <td><button data-dismiss="modal" data-supplierid="<%=i.intUserID%>" data-business="<%=i.strBusinessName%>" data-supplier="<%=i.strFname%> <%=i.strLname%>"  class="setter btn btn-info btn-sm">Select</button></td>
+                <td><button data-dismiss="modal" data-commission="<%=i.consignmentPrice%>" data-supplierid="<%=i.intUserID%>" data-business="<%=i.strBusinessName%>" data-supplier="<%=i.strFname%> <%=i.strLname%>"  class="setter btn btn-info btn-sm">Select</button></td>
 
           </tr>
           <% }) %>
@@ -639,15 +576,6 @@
     })
 
 
-    // $('#example2').DataTable( {
-    //     "columnDefs": [
-    //         {
-    //             "targets": [ 1 ],
-    //             "visible": false,
-    //             "searchable": true
-    //         }
-    //     ]
-    // } );
 
   </script>
 
@@ -843,6 +771,12 @@
       $('#add_sno').val($(this).data('supplierid'));
       $('#add_sname').val($(this).data('supplier'));
       $('#add_bname').val($(this).data('business'));
+      $('#commission').val($(this).data('commission'));
+    })
+
+    $('#add_srp').on('keyup',function(){
+      var added = parseInt($(this).val()) + parseInt(($('#commission').val() / 100) * $(this).val());
+      $('#add_price').val(added);
     })
   </script>
 

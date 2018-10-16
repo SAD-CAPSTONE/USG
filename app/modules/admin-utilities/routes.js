@@ -48,7 +48,8 @@ router.get('/shippingFeeList',auth_admin, (req,res)=>{
 });
 
 router.post('/editShipping',auth_admin, (req,res)=>{
-  db.query(`Update tblShippingFee set strLocation = "${req.body.location}", amount = ${req.body.fee} where intShippingFeeNo = "${req.body.fee_no}"`,(err1,res1,fie1)=>{
+  var newLocation = (req.body.location).split(',');
+  db.query(`Update tblShippingFee set strLocation = "${newLocation[0]}", amount = ${req.body.fee} where intShippingFeeNo = "${req.body.fee_no}"`,(err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{
       res.send("yes");
@@ -58,13 +59,14 @@ router.post('/editShipping',auth_admin, (req,res)=>{
 
 router.post('/addShipping',auth_admin, (req,res)=>{
   var no = "1000";
+  var newLocation = (req.body.location).split(',');
   db.query(`Select * from tblShippingFee order by intShippingFeeNo desc limit 1`,(err1,res1,fie1)=>{
     if(err1 )console.log(err1);
     else{
       if(res1.length==0){} else{ no = parseInt(res1[0].intShippingFeeNo) + 1}
 
       db.query(`Insert into tblShippingFee (intShippingFeeNo, strLocation, amount)
-        values ("${no}", "${req.body.location}", ${req.body.fee})`,(err2,res2,fie2)=>{
+        values ("${no}", "${newLocation[0]}", ${req.body.fee})`,(err2,res2,fie2)=>{
           if(err2) console.log(err2);
           else{
             res.send("yes");

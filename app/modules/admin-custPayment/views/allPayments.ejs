@@ -40,9 +40,9 @@
                     <th>Order No</th>
                     <th>Order Date </th>
                     <th>Customer Name</th>
-
                     <th>Method</th>
-                    <th>Status</th>
+                    <th>Balance</th>
+
                     <th>Actions</th>
                   </tr>
                   </thead>
@@ -69,7 +69,7 @@
                           </td>
                           <td>
                             <% if (i.intPaymentStatus == 0){ %>
-                              <span class="label label-warning">Not Paid</span>
+                              Php <%=(i.totalAll).toFixed(2)%>
                             <% }else if(i.intPaymentStatus == 1){ %>
                               <span class="label label-info">Paid</span>
                             <% }else if(i.intPaymentStatus == 2){ %>
@@ -117,7 +117,7 @@
                     <th>Customer Name</th>
                     <th>Order Date</th>
                     <th>Method</th>
-                    <th>Status</th>
+                    <th>Balance</th>
                     <th>Actions</th>
                   </tr>
                   </thead>
@@ -142,7 +142,7 @@
                           </td>
                           <td>
                             <% if (i.intPaymentStatus == 0){ %>
-                              <span class="label label-warning">Not Paid</span>
+                                Php <%=(i.totalAll).toFixed(2)%>
 
                             <% }else if(i.intPaymentStatus == 1){ %>
                               <span class="label label-info">Paid</span>
@@ -154,7 +154,7 @@
                             <% } %>
                           </td>
                           <td>
-                            <button class="large ui teal button">Change Status</button>
+                            <button data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status large ui teal button">Change Status</button>
                             <% if (i.order_stat == 6){ %>
                               <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancelled</button>
 
@@ -191,7 +191,7 @@
                     <th>Customer Name</th>
                     <th>Payment Due</th>
                     <th>Method</th>
-                    <th>Status</th>
+                    <th>Balance</th>
                     <th>Actions</th>
                   </tr>
                   </thead>
@@ -231,7 +231,7 @@
                           </td>
                           <td>
                             <% if (i.intPaymentStatus == 0){ %>
-                              <span class="label label-warning">Not Paid</span>
+                                Php <%=(i.totalAll).toFixed(2)%>
                             <% }else if(i.intPaymentStatus == 1){ %>
                               <span class="label label-info">Paid</span>
                             <% }else if(i.intPaymentStatus == 2){ %>
@@ -241,12 +241,13 @@
                             <% } %>
                           </td>
                           <td>
-                            <button class="large ui teal button">Change Status</button>
+                              <button class="deposit small ui green button" data-name="<%=i.depositSlip%>" data-toggle="modal" data-target="#depositSlip_modal">View</button>
+                            <button data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status small ui teal button">Change Status</button>
                             <% if (i.order_stat == 6){ %>
-                              <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancelled</button>
+                              <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order small ui red button">Cancelled</button>
 
                             <% }else{ %>
-                              <button data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancel Order</button>
+                              <button data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order small ui red button">Cancel Order</button>
 
                             <% } %>
 
@@ -302,7 +303,7 @@
                           </td>
                           <td>
                             <% if (i.intPaymentStatus == 0){ %>
-                              Not Paid
+                              Php <%=(i.totalAll).toFixed(2)%>
                             <% }else if(i.intPaymentStatus == 1){ %>
                               Paid
                             <% }else if(i.intPaymentStatus == 2){ %>
@@ -312,7 +313,7 @@
                             <% } %>
                           </td>
                           <td>
-                            <button class="large ui teal button">Change Status</button>
+                            <button data-status="<%=i.intPaymentStatus%>" data-no="<%=i.intOrderNo%>" data-toggle="modal" data-target="#change_status" class="change_status large ui teal button">Change Status</button>
                             <% if (i.order_stat == 6){ %>
                               <button disabled data-order="<%=i.intOrderNo%>" data-toggle="modal" data-target="#cancel_modal" class="cancel_order large ui red button">Cancelled</button>
 
@@ -402,6 +403,28 @@
   </div>
 </div>
 
+<div class="modal fade" id="depositSlip_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 align="center">Deposit Slip</h4>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="row">
+          <div class="col-sm-12">
+            <img id="image" src="" class="img-responsive"  >
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <%- include('../../../templates/admin-aside.ejs') -%>
 
 <!-- REQUIRED JS SCRIPTS -->
@@ -412,6 +435,12 @@
   <!-- page script (new added) -->
 
   <script>
+
+  $('.deposit').on('click',function(){
+    $('#image').attr('src', `/customer-assets/images/userImages/bankslips/${$(this).data('name')}`);
+  })
+
+
     $('.change_status').on('click',function(){
       $('.order_no').val($(this).data('no'))
       $('#payment_status').val($(this).data('status'))
@@ -460,8 +489,7 @@
         'ordering'    : true,
         'info'        : true,
         'autoWidth'   : true,
-      'select'		: true,
-      'scroll'		: true
+        'order'       : [[0, "desc"]]
       })
     })
 
@@ -473,8 +501,7 @@
         'ordering'    : true,
         'info'        : true,
         'autoWidth'   : true,
-      'select'		: true,
-      'scroll'		: true
+        'order'       : [[0, "desc"]]
       })
     })
 
@@ -486,8 +513,7 @@
         'ordering'    : true,
         'info'        : true,
         'autoWidth'   : true,
-      'select'		: true,
-      'scroll'		: true
+        'order'       : [[0, "desc"]]
       })
     })
   </script>

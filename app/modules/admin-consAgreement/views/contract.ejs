@@ -47,6 +47,26 @@
         <div class="row">
           <div class="col-md-1"></div>
           <div class="col-md-2">
+            <h5>Start Date:</h5>
+          </div>
+          <div class="col-md-5">
+            <h5><%= moment(contract[0].startingDate).format("MMMM Do YYYY") %></h5>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-1"></div>
+          <div class="col-md-2">
+            <h5>End Date:</h5>
+          </div>
+          <div class="col-md-5">
+            <h5><%= moment(contract[0].endingDate).format("MMMM Do YYYY") %></h5>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-1"></div>
+          <div class="col-md-2">
             <h5>Application Date:</h5>
           </div>
           <div class="col-md-5">
@@ -266,15 +286,16 @@
 
 
 			<div class="box-footer">
-        <a href="/consApplication"><button class="btn btn-default" >Back</button></a>
+        <a href="/consApplication"><button class="large ui button" >Back</button></a>
 
         <button type="button" id="sendInvite" data-toggle="modal" data-target="#modify" class="invite large ui green button pull-right"> Modify
 				</button>
         <button type="button" id="downloadContract" class="large ui teal button pull-right"><i class="fa fa-download"></i> Download
   				</button>
-				<button type="button" data-supplier="<%=contract[0].intConsignorID%>" data-contract="<%=contract[0].intContractNo%>" class="renew large ui blue button pull-right" id="renew" style="margin-right: 5px;">
+				<button type="button"  data-supplier="<%=contract[0].intConsignorID%>" data-contract="<%=contract[0].intContractNo%>" class="renew large ui blue button pull-right" id="renew" style="margin-right: 5px;">
 				 Renew Contract
-				</button>
+       </button>
+       <button type="button" hidden id="show_modal" data-toggle="modal" data-target="#setStart"></button>
 
 			</div>
 			<!-- /.box-footer -->
@@ -320,66 +341,66 @@
                       <!-- Active -->
                       <div class="tab-pane active" id="contract_details">
                         <form id="modify_contract">
-                        <div class="box-body">
-                          <div class="form-group">
-                            <input type="hidden" class="form-control" id="commrate" name="cont_no" value="<%=i.intContractNo%>">
+                            <div class="box-body">
+                            <div class="form-group">
+                              <input type="hidden" class="form-control" id="commrate" name="cont_no" value="<%=i.intContractNo%>">
 
-                            <label for="commrate">Commission Rate:</label>
-                            <input type="number" class="form-control" id="commrate" name="price"  value="<%=i.consignmentPrice%>">
-                          </div>
-                          <div class="form-group">
-                            <label for="prodcateg">Product Categories:</label>
-                            <input type="text" class="form-control" id="prodcateg" name="category" value="<%=i.strCategories%>">
-                          </div>
-                          <div class="form-group">
-                              <label for="prodcert">Product Certifications:</label>
-                              <input type="text" class="form-control" id="prodcert" name="certification" value="<%=i.strProductCertifications%>">
+                              <label for="commrate">Commission Rate:</label>
+                              <input type="number" class="form-control" id="commrate" name="price"  value="<%=i.consignmentPrice%>">
                             </div>
-                          <div class="form-group">
-                              <label for="deliverysched">Delivery Schedule:</label>
-                              <input type="text" class="form-control" id="deliverysched" name="delivery" value="<%=i.deliverySchedule%>">
+                            <div class="form-group">
+                              <label for="prodcateg">Product Categories:</label>
+                              <input type="text" class="form-control" id="prodcateg" name="category" value="<%=i.strCategories%>">
                             </div>
-                          <div class="form-group">
-                              <label for="freqdelivery">Frequency of Delivery:</label>
-                              <input type="text" class="form-control" id="deliverysched" name="frequency" value="<%=i.strFrequencyOfDelivery%>">
-                            </div>
-                          <div class="form-group">
-                                <label for="freqdelivery">Preferred Remittance Schedule:</label>
-                                <input type="text" class="form-control" name="remittance" id="remitsched" value="<%=i.remittanceSchedule%>">
-                            </div>
-                          <div class="row">
-                              <div class="col-md-5">
-                                <label for="prodinfosheet">Product Information Sheet:</label></div>
-                                <input type="checkbox" class="product_info"  name="sheet" data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                            <div class="form-group">
+                                <label for="prodcert">Product Certifications:</label>
+                                <input type="text" class="form-control" id="prodcert" name="certification" value="<%=i.strProductCertifications%>">
                               </div>
-                          </br>
-                          <div class="row">
-                              <div class="col-md-5">
-                                <label for="deliveryreceipt">Delivery Receipt:</label></div>
-                                <input type="checkbox" class="delivery_receipt" name="deliveryreceipt"  data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                            <div class="form-group">
+                                <label for="deliverysched">Delivery Schedule:</label>
+                                <input type="text" class="form-control" id="deliverysched" name="delivery" value="<%=i.deliverySchedule%>">
                               </div>
-                          </br>
-                          <div class="row">
-                              <div class="col-md-5">
-                                <label for="companyprof">Company Profile:</label></div>
-                                <input type="checkbox" class="company_profile" name="companyprofile"  data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                            <div class="form-group">
+                                <label for="freqdelivery">Frequency of Delivery:</label>
+                                <input type="text" class="form-control" id="deliverysched" name="frequency" value="<%=i.strFrequencyOfDelivery%>">
                               </div>
-                          </br>
-                          <div class="row">
-                              <div class="col-md-5">
-                                <label for="ecocert">Eco Certification:</label></div>
-                                <input type="checkbox" class="eco_certification" name="ecocert"  data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                            <div class="form-group">
+                                  <label for="freqdelivery">Preferred Remittance Schedule:</label>
+                                  <input type="text" class="form-control" name="remittance" id="remitsched" value="<%=i.remittanceSchedule%>">
+                              </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                  <label for="prodinfosheet">Product Information Sheet:</label></div>
+                                  <input type="checkbox" class="product_info"  name="sheet" data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                                </div>
+                            </br>
+                            <div class="row">
+                                <div class="col-md-5">
+                                  <label for="deliveryreceipt">Delivery Receipt:</label></div>
+                                  <input type="checkbox" class="delivery_receipt" name="deliveryreceipt"  data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                                </div>
+                            </br>
+                            <div class="row">
+                                <div class="col-md-5">
+                                  <label for="companyprof">Company Profile:</label></div>
+                                  <input type="checkbox" class="company_profile" name="companyprofile"  data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                                </div>
+                            </br>
+                            <div class="row">
+                                <div class="col-md-5">
+                                  <label for="ecocert">Eco Certification:</label></div>
+                                  <input type="checkbox" class="eco_certification" name="ecocert"  data-on="Yes" data-off="No" data-toggle="toggle" data-size="mini" data-onstyle="success">
+                            </div>
                           </div>
-                        </div>
 
-                        <input type="hidden" name="changes"  id="changes">
+                            <input type="hidden" name="changes"  id="changes">
 
 
-                        <div class="modal-footer">
-                        <button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
-                        <button type="button" onclick="ax()" data-dismiss="modal" class="large ui teal button">Save changes</button>
-                        </div>
-                      </form>
+                            <div class="modal-footer">
+                            <button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
+                            <button type="button" onclick="ax()" data-dismiss="modal" class="large ui teal button">Save changes</button>
+                            </div>
+                        </form>
                       </div>
 
 
@@ -415,21 +436,74 @@
                             <label for="businesstnumber">Business TIN Number:</label>
                             <input type="text" class="form-control" id="businesstnumber" value="<%=i.strBusinessTIN%>">
                           </div>
+                        </div>
                       </div>
                     </div>
                   </div>
+                  <% }) %>
+                  <% } %>
                 </div>
-              <% }) %>
-              <% } %>
+              </div>
             </div>
-
-    </div>
-  </div>
+      </div>
 		<!-- /.modal-content -->
-	</div>
+	  </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+  <div class="modal fade" id="setStart">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">Contract Validity</h4>
+      </div>
+      <div class="modal-body">
+      <!-- Horizontal Form -->
+
+          <!-- form start -->
+          <form role="form" id="contract_validity_form">
+              <div class="box-body">
+                <div class="form-group">
+                  <input type="hidden" name="no" id="cont_no">
+                  <input type="hidden" name="supplier" id="supp_no">
+                  <label for="receiver">Start Date:</label>
+                  <input type="date" name="start" id="start" class="form-control" required  >
+
+
+                </div>
+                <div class="form-group">
+                  <label >Select Validity:</label>
+                  <select class="form-control" id="range">
+                    <option value="1">6 months</option>
+                    <option value="2">12 months</option>
+                    <option value="3">Other</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Contract End Date:</label>
+                  <input  required id="end" name="end" type="date" class="form-control">
+                </div>
+
+
+
+
+              </div>
+
+
+      </div>
+      <div class="modal-footer">
+      <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+      <button type="submit"  class=" btn btn-primary">Save changes</button>
+      </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
   <!-- /.modal-dialog -->
 </div>
-
 
 
 <%- include('../../../templates/admin-aside.ejs') -%>
@@ -442,6 +516,8 @@
 
 
 <!-- page script (new added) -->
+<script src="/assets/admin/bower_components/moment/min/moment.min.js"></script>
+
 
 <script>
 
@@ -541,19 +617,65 @@
 </script>
 
 <script>
-  $('.renew').on('click',function(){
+
+  var now = new Date();
+
+  var day = ("0" + now.getDate()).slice(-2);
+  var month = ("0" + (now.getMonth() + 1)).slice(-2);
+
+  var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
+  $('#start').val(today)
+
+  $('#show_modal').on('click',function(){
+    if($('#range').val() == 1){
+      var currentDate = moment($('#start').val()).format("YYYY-MM-DD")
+      var endDateMoment = moment(currentDate) // moment(...) can also be used to parse dates in string format
+      endDateMoment.add(6, 'months');
+      $('#end').val(moment(endDateMoment).format("YYYY-MM-DD"))
+    }
+    if($('#range').val() == 2){
+      var currentDate = moment($('#start').val()).format("YYYY-MM-DD")
+      var endDateMoment = moment(currentDate) // moment(...) can also be used to parse dates in string format
+      endDateMoment.add(12, 'months');
+      $('#end').val(moment(endDateMoment).format("YYYY-MM-DD"))
+    }
+    $('#cont_no').val($(this).data('contract'));
+  })
+
+
+
+  $('#start').on('keyup',function(){
+    if($('#range').val() == 1){
+      var currentDate = moment($(this).val()).format("YYYY-MM-DD")
+      var endDateMoment = moment(currentDate) // moment(...) can also be used to parse dates in string format
+      endDateMoment.add(6, 'months');
+      $('#end').val(moment(endDateMoment).format("YYYY-MM-DD"))
+    }
+    if($('#range').val() == 2){
+      var currentDate = moment($(this).val()).format("YYYY-MM-DD")
+      var endDateMoment = moment(currentDate) // moment(...) can also be used to parse dates in string format
+      endDateMoment.add(12, 'months');
+      $('#end').val(moment(endDateMoment).format("YYYY-MM-DD"))
+    }
+  })
+</script>
+
+<script>
+
+  $('#contract_validity_form').submit(function(e){
+    e.preventDefault();
     swal({
       title: "Are you sure?",
       text: "You cannout undo this once you proceed",
       type: "warning",
       showCancelButton: true,
-      confirmButtonClass: "btn-danger",
+      confirmButtonClass: "btn-info",
       confirmButtonText: "Renew Consignor",
       cancelButtonText: "Back",
       reverseButtons: true
     }).then((result)=>{
       if(result.value){
-        $.post('/consAgreement/renew',{no: $('.renew').data('contract'), supplier: $('.renew').data('supplier')}, function(data,success){
+        $.post('/consAgreement/renew',$('#contract_validity_form').serialize(), function(data,status){
           swal({title: 'Success', text: 'This contract is now active', type:'success'}).then(()=>{
             $('.renew').html('Terminate Contract');
             $('.renew').attr('class','terminate large ui red button pull-right');
@@ -563,6 +685,15 @@
         })
       }
     })
+
+  })
+
+  $('.renew').on('click',function(){
+    $('#cont_no').val($(this).data('contract'))
+    $('#supp_no').val($(this).data('supplier'))
+    $('#show_modal').click()
+
+
   })
 
 

@@ -3,11 +3,12 @@ var db = require('../../lib/database')();
 var moment = require('moment');
 
 router.get('/register-consignor', (req,res)=>{
-  db.query(`Select * from tblBusinesstype`,(err1,results1,fields1)=>{
+  db.query(`Select * from tblBusinesstype where intStatus = 1`,(err1,results1,fields1)=>{
     if (err1){
       console.log(err1);
     }else{
-      db.query(`Select * from tblCategory join tblSubCategory on tblCategory.intCategoryNo = tblSubCategory.intCategoryNo`,(err2,results2,fields2)=>{
+      db.query(`Select * from tblCategory join tblSubCategory on tblCategory.intCategoryNo = tblSubCategory.intCategoryNo
+         where tblCategory.intStatus = 1 and tblSubCategory.intStatus =1`,(err2,results2,fields2)=>{
         if (err2){
           console.log(err2);
         }else{

@@ -148,7 +148,7 @@
 
     <div id="daily-div" class="row">
       <!-- Daily Sales Report -->
-      <div class="col-sm-8">
+      <div class="col-sm-12">
         <div class="box">
           <div class="box-header with-border">
             <h3 class="box-title">Daily Sales Report</h3>
@@ -192,78 +192,6 @@
 
       </div>
 
-      <!-- Discounts -->
-      <div class="col-md-4">
-        <!-- Info Boxes Style 2 -->
-        <div class="info-box bg-yellow">
-          <span class="info-box-icon"><i class="ion ion-ios-pricetag-outline"></i></span>
-
-          <div class="info-box-content">
-            <span class="info-box-text">Discounts Used</span>
-            <span class="info-box-number">5,200</span>
-
-            <div class="progress">
-              <div class="progress-bar" style="width: 50%"></div>
-            </div>
-            <span class="progress-description">
-                  40% Increase in 30 Days
-                </span>
-          </div>
-          <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-        <div class="info-box bg-green">
-          <span class="info-box-icon"><i class="ion ion-ios-heart-outline"></i></span>
-
-          <div class="info-box-content">
-            <span class="info-box-text">Product Reviews</span>
-            <span class="info-box-number">1000</span>
-
-            <div class="progress">
-              <div class="progress-bar" style="width: 20%"></div>
-            </div>
-            <span class="progress-description">
-                  40% Increase in 30 Days
-                </span>
-          </div>
-          <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-        <div class="info-box bg-red">
-          <span class="info-box-icon"><i class="ion ion-ios-cloud-download-outline"></i></span>
-
-          <div class="info-box-content">
-            <span class="info-box-text">Purchases</span>
-            <span class="info-box-number">100,000</span>
-
-            <div class="progress">
-              <div class="progress-bar" style="width: 70%"></div>
-            </div>
-            <span class="progress-description">
-                  40% Increase in 30 Days
-                </span>
-          </div>
-          <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-        <div class="info-box bg-aqua">
-          <span class="info-box-icon"><i class="ion-ios-chatbubble-outline"></i></span>
-
-          <div class="info-box-content">
-            <span class="info-box-text">Order Cancellation</span>
-            <span class="info-box-number">1</span>
-
-            <div class="progress">
-              <div class="progress-bar" style="width: 40%"></div>
-            </div>
-            <span class="progress-description">
-                  40% Increase in 30 Days
-                </span>
-          </div>
-          <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-      </div>
 
     </div>
 
@@ -291,24 +219,22 @@
                     </thead>
 
                     <tbody>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
-                      <tr>
-                        <td>1000</td>
-                        <td>Gatas Kalabaw Choco 1000ml</td>
-                        <td>10</td>
-                        <td>Php 2,000.00</td>
-                      </tr>
+                      <% if(best == null || best == undefined){ %>
+
+                      <% }else if(best.length==0){ %>
+
+                      <% }else{ %>
+                        <% best.forEach(function(i){ %>
+                          <tr>
+                            <td><%=i.intInventoryNo%></td>
+                            <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%> <%=i.strUnitName%></td>
+                            <td><%=i.total_quantity%></td>
+                            <td> Php <%=i.sum_discounted%></td>
+
+                          </tr>
+                        <% }) %>
+
+                      <% } %>
 
                     </tbody>
                   </table>

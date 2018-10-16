@@ -6,6 +6,25 @@ const userTypeAuth = require('../cust-0extras/userTypeAuth');
 const auth_admin = userTypeAuth.admin;
 
 
+router.post('/sendMessage', auth_admin, (req,res)=>{
+  var no ="1000";
+
+  db.query(`Select * from tblMessages order by intMessageNo desc limit 1`,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      if(res1.length==0){} else{no = parseInt(res1[0].intMessageNo) + 1}
+
+      db.query(`Insert into tblMessages (intMessageNo, intCustomerID, strMessage, intAdminID)
+        values ("${no}", "${req.body.customer_id}", "(Order #${req.body.order_no}) ${req.body.message}", "${req.user.intUserID}")`,(err2,res2,fie2)=>{
+          if(err2) console.log(err2);
+          else{
+            res.send("yes")
+          }
+        })
+    }
+  })
+})
+
 router.get('/', auth_admin, (req,res)=>{
   db.query(`Select tblOrder.intStatus as Stat, tblOrder.*, tblUser.*, tblCustomer.* from
     tblOrder join tblUser on tblOrder.intUserID = tblUser.intUserID
@@ -166,7 +185,7 @@ router.get('/assessOrder', auth_admin,(req,res)=>{
         if (err2) console.log(err2);
 
       // total
-      db.query(`Select SUM((tblorderdetails.intquantity * tblorderdetails.purchaseprice) - ((tblorderdetails.intquantity * tblorderdetails.purchaseprice) * (tblOrderDetails.discount / 100)))
+      db.query(`Select SUM((tblorderdetails.intquantity * tblorderdetails.purchaseprice) - ((tblorderdetails.intquantity * tblorderdetails.purchaseprice) * (tblOrderDetails.discount / 100))) + tblOrder.shippingFee
         totalAll from tblOrder
         join tblorderdetails on tblorder.intorderno = tblorderdetails.intorderno
         where tblOrder.intOrderno = "${orderno}"`, (err3,results3,fields3)=>{
@@ -559,7 +578,8 @@ router.post('/assessOrder',auth_admin,(req,res)=>{
 router.get('/orderHistory', auth_admin,(req,res)=>{
   var orderno = req.query.order;
 
-  db.query(`Select tblOrderHistory.intStatus as orderStatus, tblOrderHistory.intPaymentStatus as paymentStatus, tblOrderHistory.*,tblMessages.* from tblOrderHistory join tblMessages on tblOrderHistory.intOrderHistoryNo = tblMessages.intOrderHistoryNo where intOrderNo = ${orderno}`, (err1,results1,fields1)=>{
+  db.query(`Select tblOrderHistory.intStatus as orderStatus, tblOrderHistory.intPaymentStatus as paymentStatus, tblOrderHistory.*
+     from tblOrderHistory where intOrderNo = ${orderno}`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
 
     res.render('admin-custOrder/views/orderHistory', {re: results1, moment: moment, order: orderno});

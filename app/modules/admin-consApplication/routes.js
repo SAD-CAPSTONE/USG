@@ -32,8 +32,8 @@ router.get('/details',  auth_admin, (req,res)=>{
   });
 });
 
-router.post('/accept',  auth_admin, (req,res)=>{
-  db.query(`Update tblContract set intContractStatus = 1 where intContractNo = "${req.body.no}"`, (err1,results1,fields1)=>{
+router.post('/accept', auth_admin, (req,res)=>{
+  db.query(`Update tblContract set startingDate="${req.body.start}", endingDate="${req.body.end}", intContractStatus = 1 where intContractNo = "${req.body.no}"`, (err1,results1,fields1)=>{
     if (err1) console.log(err1);
 
     db.query(`Update tblSupplier set intStatus = 1
