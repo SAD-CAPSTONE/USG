@@ -40,29 +40,20 @@
 
           <div class="box-footer">
             <div class="row">
-              <div class="col-sm-4 col-xs-6">
+              <div class="col-xs-6">
                 <div class="description-block border-right">
 
-                  <h5 class="description-header">Php 35,210.43</h5>
+                  <h5 id="summary-tr" class="description-header">Php <span>0.00</span></h5>
                   <span class="description-text">TOTAL REVENUE</span>
                 </div>
                 <!-- /.description-block -->
               </div>
               <!-- /.col -->
-              <div class="col-sm-4 col-xs-6">
-                <div class="description-block border-right">
+              <div class="col-sm-6">
+                <div class="description-block">
 
-                  <h5 class="description-header">Php 10,390.90</h5>
-                  <span class="description-text">TOTAL COMMISSION</span>
-                </div>
-                <!-- /.description-block -->
-              </div>
-              <!-- /.col -->
-              <div class="col-sm-4 col-xs-6">
-                <div class="description-block border-right">
-
-                  <h5 class="description-header">Php 24,813.53</h5>
-                  <span class="description-text">TOTAL PAYMENTS</span>
+                  <h5 id="summary-tqs" class="description-header"><span>0</span></h5>
+                  <span class="description-text">TOTAL QUANTITY SOLD</span>
                 </div>
                 <!-- /.description-block -->
               </div>
@@ -285,44 +276,6 @@
 
 <script>
   var ctx = document.getElementById("recapChart");
-  var myChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul","Aug","Sept","Oct","Nov","Dec"],
-          datasets: [{
-              label: '# of Votes',
-              data: [1500, 1900, 3000, 5000, 6000, 3500, 1500, 4000, 1456, 2367, 2000, 5600],
-              backgroundColor: [
-                  'rgba(255, 99, 132, 0.2)',
-                  'rgba(54, 162, 235, 0.2)',
-                  'rgba(255, 206, 86, 0.2)',
-                  'rgba(75, 192, 192, 0.2)',
-                  'rgba(153, 102, 255, 0.2)',
-                  'rgba(255, 159, 64, 0.2)'
-              ],
-              borderColor: [
-                  'rgba(255,99,132,1)',
-                  'rgba(54, 162, 235, 1)',
-                  'rgba(255, 206, 86, 1)',
-                  'rgba(75, 192, 192, 1)',
-                  'rgba(153, 102, 255, 1)',
-                  'rgba(255, 159, 64, 1)'
-              ],
-              borderWidth: 1
-          }]
-      },
-      options: {
-          scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero:true
-                  }
-              }]
-          }
-      }
-  });
-
-
 
   var donut = document.getElementById("donutChart");
   var myDoughnutChart = new Chart(donut, {
@@ -369,10 +322,58 @@
   $('#title').html("USG | Sales Reports");
   $(".treeview a:contains('Reports')").parent().addClass("active");
   $(".navi a:contains('Sales')").parent().addClass("active");
-
 </script>
 
 <script type="text/javascript">
+  $(()=>{
+    $.get(`/reports/sales/loadChart`).then((res)=>{
+      let sales = res.sales.reduce((arr, data)=>{
+        arr.push(data.total)
+        return arr
+      }, [])
+      $(`#summary-tr > span`).text(res.tr)
+      $(`#summary-tqs > span`).text(res.tqs)
+      var myChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+              labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul","Aug","Sept","Oct","Nov","Dec"],
+              datasets: [{
+                  label: 'Total Sales',
+                  data: sales,
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255,99,132,1)',
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero:true
+                      }
+                  }]
+              }
+          }
+      });
+    }).catch((err)=>{
+      console.log(err)
+    });
+  });
+
   let oldUrl = window.location.href
   $(()=>{
     const thisUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;

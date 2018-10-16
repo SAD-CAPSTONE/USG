@@ -464,6 +464,36 @@ router.post('/damaged/load', now, yearsAvailableDamaged, (req,res)=>{
 
 })
 
+router.get('/sales/loadChart', checkUser, auth_admin, (req,res)=>{
+  db.query(`SELECT A.monthname, IF(B.total IS NULL, 0, B.total )total, IF(B.qty IS NULL, 0, B.qty )qty FROM (
+	  SELECT MONTHNAME(STR_TO_DATE(1, '%m'))monthname, (1)month
+    UNION SELECT MONTHNAME(STR_TO_DATE(2, '%m'))monthname, (2)month
+    UNION SELECT MONTHNAME(STR_TO_DATE(3, '%m'))monthname, (3)month
+    UNION SELECT MONTHNAME(STR_TO_DATE(4, '%m'))monthname, (4)month
+    UNION SELECT MONTHNAME(STR_TO_DATE(5, '%m'))monthname, (5)month
+    UNION SELECT MONTHNAME(STR_TO_DATE(6, '%m'))monthname, (6)month
+    UNION SELECT MONTHNAME(STR_TO_DATE(7, '%m'))monthname, (7)month
+    UNION SELECT MONTHNAME(STR_TO_DATE(8, '%m'))monthname, (8)month
+    UNION SELECT MONTHNAME(STR_TO_DATE(9, '%m'))monthname, (9)month
+    UNION SELECT MONTHNAME(STR_TO_DATE(10, '%m'))monthname, (10)month
+    UNION SELECT MONTHNAME(STR_TO_DATE(11, '%m'))monthname, (11)month
+    UNION SELECT MONTHNAME(STR_TO_DATE(12, '%m'))monthname, (12)month
+    )A LEFT JOIN (SELECT MONTHNAME(transactionDate)monthname, SUM(amount)total, SUM(qty)qty FROM tblsales
+    INNER JOIN (SELECT intOrderNo, SUM(intQuantity)qty FROM tblorderdetails GROUP BY intOrderNo)A USING(intOrderNo)
+	  WHERE intStatus= 1 AND YEAR(transactionDate) = YEAR(now()) GROUP BY monthname
+    )B ON A.monthname= B.monthname ORDER BY A.month ASC`, (err, salesResults, fields) => {
+    let tr = salesResults.reduce((temp, data)=>{
+      return temp += data.total
+    }, 0)
+    let tqs = salesResults.reduce((temp, data)=>{
+      return temp += data.qty
+    }, 0)
+    tr = priceFormat(tr.toFixed(2))
+    if (err) console.log(err);
+    res.send({sales: salesResults, tr: tr, tqs: tqs})
+  });
+});
+
 // excel
 router.get('/salesAnnualExport', checkUser, auth_admin, now, yearsAvailable, (req,res)=>{
   let specification = {

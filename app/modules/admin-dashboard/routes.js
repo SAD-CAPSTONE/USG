@@ -4,6 +4,15 @@ var moment = require('moment');
 const userTypeAuth = require('../cust-0extras/userTypeAuth');
 const auth_admin = userTypeAuth.admin;
 
+function checkUser(req, res, next){
+  if(!req.user){
+    res.redirect('/login');
+  }
+  else{
+    return next();
+  }
+}
+
 //dashboard--
 router.get('/', auth_admin, (req,res)=>{
     console.log(req.user)
@@ -72,7 +81,7 @@ router.get('/load',(req,res)=>{
   res.render('admin-dashboard/views/loading', {name: "name"});
 })
 
-router.get('/loadChart',(req,res)=>{
+router.get('/loadChart', checkUser, auth_admin, (req,res)=>{
   db.query(`SELECT A.Day, IF(B.total IS NULL, 0, B.total )total FROM ( SELECT CURDATE()Day
     UNION SELECT SUBDATE(CURDATE(), INTERVAL 1 DAY)Day
     UNION SELECT SUBDATE(CURDATE(), INTERVAL 2 DAY)Day
@@ -94,8 +103,8 @@ router.get('/loadChart',(req,res)=>{
       UNION SELECT SUBDATE(CURDATE(), INTERVAL 4 DAY)Day
       UNION SELECT SUBDATE(CURDATE(), INTERVAL 5 DAY)Day
       UNION SELECT SUBDATE(CURDATE(), INTERVAL 6 DAY)Day )A
-      LEFT JOIN ( SELECT DATE(transactionDate)date, SUM(intQuantity)total
-      FROM tblsales INNER JOIN tblorderdetails USING(intOrderNo)
+      LEFT JOIN (SELECT DATE(transactionDate)date, SUM(qty)total FROM tblsales
+      INNER JOIN (SELECT intOrderNo, SUM(intQuantity)qty FROM tblorderdetails GROUP BY intOrderNo)A USING(intOrderNo)
       WHERE tblsales.intStatus= 1 GROUP BY DATE(transactionDate) )B
       ON A.Day= B.date ORDER BY Day ASC`, (err, soldResults, fields) => {
       if (err) console.log(err);
