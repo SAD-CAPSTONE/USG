@@ -5,15 +5,34 @@ const priceFormat = require('../cust-0extras/priceFormat');
 const pageLimit = 16;
 const productQuery = `
   SELECT B.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating,
-  COUNT(Review.strReview)AS cntReview FROM(SELECT A.*, Orders.intOrderDetailsNo, COUNT(Orders.intOrderDetailsNo)AS OrderCNT FROM(
-  SELECT tblproductlist.*, tblcategory.strCategory, Inv.intInventoryNo, Inv.intStatus As InvStatus, Inv.minPrice, Inv.maxPrice, Brand.strBrand FROM tblproductlist
-  INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
-  INNER JOIN (SELECT intInventoryNo,intProductNo,intStatus,min(productPrice)minPrice,max(productPrice)maxPrice
-  FROM tblproductinventory GROUP BY intProductNo)Inv ON tblproductlist.intProductNo= Inv.intProductNo
-  INNER JOIN tblsubcategory ON tblproductlist.intSubCategoryNo= tblsubcategory.intSubCategoryNo
-  INNER JOIN tblcategory ON tblsubcategory.intCategoryNo= tblcategory.intCategoryNo)A
-  LEFT JOIN (SELECT * FROM tblorderdetails)Orders ON A.intInventoryNo= Orders.intInventoryNo
-  GROUP BY A.intProductNo)B LEFT JOIN (SELECT * FROM tblproductreview)Review ON B.intProductNo = Review.intProductNo `
+  COUNT(Review.strReview)AS cntReview FROM(
+
+    SELECT A.*, Orders.intOrderDetailsNo, COUNT(Orders.intOrderDetailsNo)AS OrderCNT,
+    IF(A.productRecorded > DATE_SUB(curdate(), INTERVAL 5 DAY), 1, 0)newProduct FROM(
+
+    	SELECT tblproductlist.*, tblcategory.strCategory, Inv.intInventoryNo, Brand.strBrand,
+    	min(Inv.productPrice)minPrice,max(Inv.productPrice)maxPrice,
+      max(Inv.discount)maxDisc, min(Inv.dateRecorded)productRecorded
+
+      FROM tblproductlist
+    	INNER JOIN (SELECT * FROM tblproductbrand)Brand ON tblproductlist.intBrandNo= Brand.intBrandNo
+    	INNER JOIN
+    	(
+    		SELECT tblproductinventory.intInventoryNo,intProductNo, discount, dateRecorded,
+    		IF(discount IS NOT NULL, productPrice-(productPrice*discount*.01), productPrice)productPrice, discountDueDate
+    		FROM tblproductinventory LEFT JOIN
+    		(
+    			SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1
+    		)Discount ON tblproductinventory.intInventoryNo= Discount.intInventoryNo
+    	)Inv ON tblproductlist.intProductNo= Inv.intProductNo
+
+    	INNER JOIN tblsubcategory ON tblproductlist.intSubCategoryNo= tblsubcategory.intSubCategoryNo
+    	INNER JOIN tblcategory ON tblsubcategory.intCategoryNo= tblcategory.intCategoryNo
+      GROUP BY tblproductlist.intProductNo
+    )A LEFT JOIN (SELECT * FROM tblorderdetails)Orders ON A.intInventoryNo= Orders.intInventoryNo
+    GROUP BY A.intProductNo
+
+  )B LEFT JOIN (SELECT * FROM tblproductreview)Review ON B.intProductNo = Review.intProductNo `
 
 function thisCategory(req,res,next){
   /*Check current category, Match(body);

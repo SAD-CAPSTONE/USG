@@ -23,14 +23,14 @@
       <div class="col-sm-12">
         <div class="box">
           <div class="box-header with-border">
-            <h3 class="box-title">Monthly Sign-ups</h3>
+            <h3 class="box-title">Monthly Sign-ups <span class="chartYear"></span></h3>
           </div>
 
           <div class="box-body">
             <div class="row">
               <div class="col-md-12">
                 <p class="text-center">
-                  <strong>Sales: 1 Jan, 2018 - 31 Dec, 2018</strong>
+                  <strong>Sales: 1 Jan, <span class="chartYear"></span> - 31 Dec, <span class="chartYear"></span></strong>
                 </p>
 
                 <canvas id="recapChart" width="400" height="100"></canvas>
@@ -69,42 +69,6 @@
 
 <script>
   var ctx = document.getElementById("recapChart");
-  var myChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul","Aug","Sept","Oct","Nov","Dec"],
-          datasets: [{
-              label: '# of Customer sign-ups',
-              data: [1500, 1900, 3000, 5000, 6000, 3500, 1500, 4000, 1456, 2367, 2000, 5600],
-              backgroundColor: [
-                  'rgba(255, 99, 132, 0.2)',
-                  'rgba(54, 162, 235, 0.2)',
-                  'rgba(255, 206, 86, 0.2)',
-                  'rgba(75, 192, 192, 0.2)',
-                  'rgba(153, 102, 255, 0.2)',
-                  'rgba(255, 159, 64, 0.2)'
-              ],
-              borderColor: [
-                  'rgba(255,99,132,1)',
-                  'rgba(54, 162, 235, 1)',
-                  'rgba(255, 206, 86, 1)',
-                  'rgba(75, 192, 192, 1)',
-                  'rgba(153, 102, 255, 1)',
-                  'rgba(255, 159, 64, 1)'
-              ],
-              borderWidth: 1
-          }]
-      },
-      options: {
-          scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero:true
-                  }
-              }]
-          }
-      }
-  });
 
 
 
@@ -151,10 +115,60 @@
 
 
 <script>
-$('#title').html("USG | Customer Reports");
-$(".treeview a:contains('Reports')").parent().addClass("active");
-$(".navi a:contains('Customer')").parent().addClass("active");
+  $('#title').html("USG | Customer Reports");
+  $(".treeview a:contains('Reports')").parent().addClass("active");
+  $(".navi a:contains('Customer')").parent().addClass("active");
+
+  $(()=>{
+    $.get(`/reports/customer/loadChart`).then((res)=>{
+      let customer = res.customer.reduce((arr, data)=>{
+        arr.push(data.qty)
+        return arr
+      }, [])
+      $(`.chartYear`).text(res.chartYear)
+      var myChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+              labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul","Aug","Sept","Oct","Nov","Dec"],
+              datasets: [{
+                  label: '# of Customer sign-ups',
+                  data: customer,
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255,99,132,1)',
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero:true
+                      }
+                  }]
+              }
+          }
+      });
+    }).catch(()=>{
+
+    })
+  })
 </script>
+
+
 
 
 </body>

@@ -8,7 +8,7 @@ function popularProducts(req,res,next){
   /*Most Popular Products;
   *(tblproductlist)*(tblproductbrand)*(tblproductinventory)*(tblorderdetails)*(tblproductreview)*/
   db.query(`SELECT B.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating,
-    COUNT(Review.strReview)AS cntReview, IF(B.productRecorded > DATE_SUB(curdate(), INTERVAL 2 WEEK), 1, 0)newProduct FROM
+    COUNT(Review.strReview)AS cntReview, IF(B.productRecorded > DATE_SUB(curdate(), INTERVAL 5 DAY), 1, 0)newProduct FROM
     (
     	SELECT A.*, OrderCNT FROM
     	(
@@ -24,7 +24,7 @@ function popularProducts(req,res,next){
     				SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1
     			)Discount ON tblproductinventory.intInventoryNo= Discount.intInventoryNo
     		)Inv ON tblproductlist.intProductNo= Inv.intProductNo
-    		WHERE Brand.intStatus= 1 GROUP BY tblproductlist.intProductNo
+    		GROUP BY tblproductlist.intProductNo
     	)A
     	LEFT JOIN
     	(
@@ -49,7 +49,7 @@ function newProducts(req,res,next){
   /*New Popular Products;
   *(tblproductlist)*(tblproductbrand)*(tblproductinventory)*(tblproductreview)*/
   db.query(`SELECT A.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating,
-    COUNT(Review.strReview)AS cntReview, IF(A.productRecorded > DATE_SUB(curdate(), INTERVAL 2 WEEK), 1, 0)newProduct FROM
+    COUNT(Review.strReview)AS cntReview, IF(A.productRecorded > DATE_SUB(curdate(), INTERVAL 5 DAY), 1, 0)newProduct FROM
     (
     	SELECT tblproductlist.*, Inv.intInventoryNo, min(Inv.productPrice)minPrice,max(Inv.productPrice)maxPrice,
     	Brand.strBrand, max(Inv.discount)maxDisc, min(Inv.dateRecorded)productRecorded FROM tblproductlist
@@ -63,7 +63,7 @@ function newProducts(req,res,next){
     			SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1
     		)Discount ON tblproductinventory.intInventoryNo= Discount.intInventoryNo
     	)Inv ON tblproductlist.intProductNo= Inv.intProductNo
-    	WHERE Brand.intStatus= 1 GROUP BY tblproductlist.intProductNo
+    	GROUP BY tblproductlist.intProductNo
     )A
     LEFT JOIN (SELECT * FROM tblproductreview)Review ON A.intProductNo = Review.intProductNo
     GROUP BY A.intProductNo ORDER BY A.intProductNo DESC LIMIT 10`, function (err,  results, fields) {
