@@ -3,6 +3,8 @@ const router = express.Router();
 const db = require('../../lib/database')();
 const priceFormat = require('../cust-0extras/priceFormat');
 const moment = require('moment');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const userTypeAuth = require('../cust-0extras/userTypeAuth');
 const auth_cust = userTypeAuth.cust;
 const pageLimit = 10;
@@ -39,8 +41,20 @@ function locations (req, res, next){
     return next();
   });
 }
+function checkSignType (req, res, next){
+  db.query(`SELECT intFacebook, intGoogle FROM tbluser WHERE intUserID= ?`, [req.user.intUserID], (err, results, fields) => {
+    if (err) console.log(err);
+    if (results[0]){
+      if (results[0].intFacebook || results[0].intGoogle) req.checkSignType = 0
+      else req.checkSignType = 1
+    }
+    else req.checkSignType = 1
+    console.log(req.checkSignType)
+    return next();
+  });
+}
 
-router.get('/dashboard', checkUser, auth_cust, contactDetails, locations, (req,res)=>{
+router.get('/dashboard', checkUser, auth_cust, contactDetails, locations, checkSignType, (req,res)=>{
   sAddress =
     req.contactDetails.strShippingAddress ?
       req.locations.reduce((temp,data)=>{
@@ -57,7 +71,8 @@ router.get('/dashboard', checkUser, auth_cust, contactDetails, locations, (req,r
     thisUserContact: req.contactDetails,
     locations: req.locations,
     sAddress: sAddress,
-    bAddress: bAddress
+    bAddress: bAddress,
+    checkSignType: req.checkSignType
   });
 });
 router.get('/orders', checkUser, auth_cust, (req,res)=>{
@@ -80,7 +95,6 @@ router.get('/messages', checkUser, auth_cust, (req,res)=>{
 
 router.post('/dashboard/info', checkUser, auth_cust, (req,res)=>{
   db.beginTransaction(function(err) {
-    console.log(req.body)
     let saCity = req.body.dsaCity != 'Others' ? req.body.dsaCity : req.body.dsaOthers,
     baCity = req.body.dbaCity != 'Others' ? req.body.dbaCity : req.body.dbaOthers
 
@@ -105,6 +119,41 @@ router.post('/dashboard/info', checkUser, auth_cust, (req,res)=>{
     });
   });
 });
+router.post('/dashboard/password', checkUser, auth_cust, checkSignType, (req,res)=>{
+  console.log(req.body)
+  if (req.checkSignType){
+    db.beginTransaction(function(err) {
+      db.query(`SELECT strPassword FROM tbluser WHERE intUserID= ?`, [req.user.intUserID], (err, results, fields) => {
+        if (err) console.log(err);
+        bcrypt.compare(req.body.currentPass, results[0].strPassword, function(err, hashCompare) {
+          if (hashCompare){
+            if (req.body.newPass == req.body.confirmPass){
+              bcrypt.hash(req.body.newPass, saltRounds, function(err, hash) {
+                db.query(`UPDATE tbluser SET strPassword= ? WHERE intUserID= ?`,
+                  [hash, req.user.intUserID], (err, results, fields) => {
+                  if (err) console.log(err);
+                  db.commit(function(err) {
+                    if (err) console.log(err);
+                    res.redirect('/account/dashboard');
+                  });
+                });
+              });
+            }
+            else{
+              res.render('cust-0extras/views/messagePage',{message: 'Password did not match', messBtn: `Dashboard`, messLink: `/account/dashboard`});
+            }
+          }
+          else{
+            res.render('cust-0extras/views/messagePage',{message: 'Current Password did not match', messBtn: `Dashboard`, messLink: `/account/dashboard`});
+          }
+        });
+      });
+    });
+  }
+  else{
+    res.redirect('/account/dashboard');
+  }
+});
 
 // ajax
 router.post('/dashboard/checkInfo', checkUser, (req,res)=>{
@@ -119,7 +168,6 @@ router.post('/dashboard/checkInfo', checkUser, (req,res)=>{
     }
   });
 });
-
 router.post('/orders/load', checkUser, (req,res)=>{
   // ORDER BY intOrderNo DESC
   let config = {

@@ -4,6 +4,16 @@
   #sidebar>.row>.col:first-of-type>a:nth-of-type(1)>h5 {
     border-left: 4px solid var(--primary-color);
   }
+  form#formInfo {
+    display: block;
+    opacity: 1;
+    transition: all 0.25s ease;
+  }
+  form#formPass {
+    display: none;
+    opacity: 0;
+    transition: all 0.25s ease;
+  }
 </style>
 
 <!-- main content title -->
@@ -62,126 +72,152 @@
 <div id="EditInfo" tabindex="-1" role="dialog" aria-labelledby="EditInfoTitle" aria-hidden="true" class="modal fade">
   <div role="document" class="modal-dialog">
     <div class="modal-content">
-      <form action="/account/dashboard/info" method="POST" class="m-0">
         <div class="modal-header">
           <h5 id="EditInfoTitle" class="modal-title"><b> Edit Personal Information</b></h5>
           <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
         </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col">
-              <label for="fname" class="required-field"><b>First Name</b></label>
-              <input id="fname" type="text" name="fname" value="<%= thisUser.strFname%>" required="" class="form-control material mb-3 simple" maxLength="50" />
+        <form id="formInfo" action="/account/dashboard/info" method="POST" class="m-0">
+          <div class="modal-body">
+            <div class="row">
+              <div class="col">
+                <label for="fname" class="required-field"><b>First Name</b></label>
+                <input id="fname" type="text" name="fname" value="<%= thisUser.strFname%>" required="" class="form-control material mb-3 simple" maxLength="50" />
+              </div>
+              <div class="col">
+                <label for="mname"><b>Middle Name</b></label>
+                <input id="mname" type="text" name="mname" value="<%= thisUser.strMname%>" class="form-control material mb-3 simple" maxLength="50" />
+              </div>
+              <div class="col">
+                <label for="lname" class="required-field"><b>Last Name</b></label>
+                <input id="lname" type="text" name="lname" value="<%= thisUser.strLname%>" required="" class="form-control material mb-3 simple" maxLength="50" />
+              </div>
             </div>
-            <div class="col">
-              <label for="mname"><b>Middle Name</b></label>
-              <input id="mname" type="text" name="mname" value="<%= thisUser.strMname%>" class="form-control material mb-3 simple" maxLength="50" />
-            </div>
-            <div class="col">
-              <label for="lname" class="required-field"><b>Last Name</b></label>
-              <input id="lname" type="text" name="lname" value="<%= thisUser.strLname%>" required="" class="form-control material mb-3 simple" maxLength="50" />
-            </div>
-          </div>
 
-          <div class="row">
-            <div class="col">
-              <label for="mobile"><b>Mobile Number</b></label>
-              <input id="mobile" type="text" name="mobile" placeholder="09XXXXXXXXX" pattern="^(\/?09)[0-9]{9}$" data-inputmask-regex="(09)[0-9]{9}" value="<%= thisUserContact.strCusMobileNo%>" class="form-control material mb-3" />
+            <div class="row">
+              <div class="col">
+                <label for="mobile"><b>Mobile Number</b></label>
+                <input id="mobile" type="text" name="mobile" placeholder="09XXXXXXXXX" pattern="^(\/?09)[0-9]{9}$" data-inputmask-regex="(09)[0-9]{9}" value="<%= thisUserContact.strCusMobileNo%>" class="form-control material mb-3" />
+              </div>
+              <div class="col">
+                <label for="phone"><b>Phone Number</b></label>
+                <input id="phone" type="text" name="phone" placeholder="XXX-XXXX" pattern= "^\d{3}-\d{4}$" value="<%= thisUserContact.strCusPhoneNo%>" class="form-control material mb-3" />
+              </div>
             </div>
-            <div class="col">
-              <label for="phone"><b>Phone Number</b></label>
-              <input id="phone" type="text" name="phone" placeholder="XXX-XXXX" pattern= "^\d{3}-\d{4}$" value="<%= thisUserContact.strCusPhoneNo%>" class="form-control material mb-3" />
-            </div>
-          </div>
 
-          <label for="email" class="required-field"><b>Email</b></label>
-          <input id="email" type="text" name="email" pattern="^[a-zA-Z0-9.+-]+@([a-z0-9-]+\.)+[a-z]{2,4}$" data-inputmask-regex="[a-zA-Z0-9.+-]+@([a-z0-9-]+\.)+[a-z]{2,4}" value="<%= thisUser.strEmail%>" required="" class="form-control material mb-3" maxLength="100" />
+            <label for="email" class="required-field"><b>Email</b></label>
+            <input id="email" type="text" name="email" pattern="^[a-zA-Z0-9.+-]+@([a-z0-9-]+\.)+[a-z]{2,4}$" data-inputmask-regex="[a-zA-Z0-9.+-]+@([a-z0-9-]+\.)+[a-z]{2,4}" value="<%= thisUser.strEmail%>" required="" class="form-control material mb-3" maxLength="100" />
 
-          <label for="dsa" class="required-field"><b>Default Shipping Address</b></label>
-          <div class="row">
-            <div class="col-5">
-              <select id="dsaCity" type="text" name="dsaCity" class="form-control custom-select-2 mb-3">
-                <% locations.forEach((data)=>{ %>
-                  <% if (thisUserContact.strShippingAddress){ %>
-                    <% if (data.strLocation == thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[0]){ %>
-                      <option value="<%= data.strLocation%>" selected><%= data.strLocation%></option>
+            <label for="dsa" class="required-field"><b>Default Shipping Address</b></label>
+            <div class="row">
+              <div class="col-5">
+                <select id="dsaCity" type="text" name="dsaCity" class="form-control custom-select-2 mb-3">
+                  <% locations.forEach((data)=>{ %>
+                    <% if (thisUserContact.strShippingAddress){ %>
+                      <% if (data.strLocation == thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[0]){ %>
+                        <option value="<%= data.strLocation%>" selected><%= data.strLocation%></option>
+                      <% }else{ %>
+                        <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
+                      <% } %>
                     <% }else{ %>
                       <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
                     <% } %>
+                  <% }) %>
+                  <option value="Others">Others</option>
+                </select>
+                <div class="others-div" hidden>
+                  <button type="button" name="button" class="btn btn-sm mt-1"><i class="fas fa-times"></i></button>
+                  <% if (!sAddress && thisUserContact.strShippingAddress){ %>
+                    <input type="text" name="dsaOthers" value="<%= thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[0]%>"
+                    placeholder="City" class="form-control material mb-3 simple" maxLength="15" />
                   <% }else{ %>
-                    <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
+                    <input type="text" name="dsaOthers" value="" placeholder="City" class="form-control material mb-3 simple" maxLength="15" />
                   <% } %>
-                <% }) %>
-                <option value="Others">Others</option>
-              </select>
-              <div class="others-div" hidden>
-                <button type="button" name="button" class="btn btn-sm mt-1"><i class="fas fa-times"></i></button>
-                <% if (!sAddress && thisUserContact.strShippingAddress){ %>
-                  <input type="text" name="dsaOthers" value="<%= thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[0]%>"
-                  placeholder="City" class="form-control material mb-3 simple" maxLength="15" />
+                </div>
+              </div>
+              <div class="col-7">
+                <% if (thisUserContact.strShippingAddress){ %>
+                  <input id="dsa" type="text" name="dsa" value="<%= thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[1]%>"
+                  placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" maxLength="80" required/>
                 <% }else{ %>
-                  <input type="text" name="dsaOthers" value="" placeholder="City" class="form-control material mb-3 simple" maxLength="15" />
+                  <input id="dsa" type="text" name="dsa" placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" maxLength="80" required/>
                 <% } %>
               </div>
             </div>
-            <div class="col-7">
-              <% if (thisUserContact.strShippingAddress){ %>
-                <input id="dsa" type="text" name="dsa" value="<%= thisUserContact.strShippingAddress.split(/\s-\s(.*)/g)[1]%>"
-                placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" maxLength="80" required/>
-              <% }else{ %>
-                <input id="dsa" type="text" name="dsa" placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" maxLength="80" required/>
-              <% } %>
+
+            <div class="form-check mb-2">
+              <input id="sameAddress" type="checkbox" name="sameAddress" class="form-check-input" style="margin-top: .2rem"/>
+              <label for="sameAddress" class="form-check-label fs-08em fw-400">Use same address on both shipping and billing</label>
             </div>
-          </div>
 
-          <div class="form-check mb-2">
-            <input id="sameAddress" type="checkbox" name="sameAddress" class="form-check-input" style="margin-top: .2rem"/>
-            <label for="sameAddress" class="form-check-label fs-08em fw-400">Use same address on both shipping and billing</label>
-          </div>
-
-          <label id="billing-label" for="dba" class="required-field"><b>Default Billing Address</b></label>
-          <div class="row">
-            <div class="col-5">
-              <select id="dbaCity" type="text" name="dbaCity" class="form-control custom-select-2 mb-3">
-                <% locations.forEach((data)=>{ %>
-                  <% if (thisUserContact.strBillingAddress){ %>
-                    <% if (data.strLocation == thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[0]){ %>
-                      <option value="<%= data.strLocation%>" selected><%= data.strLocation%></option>
+            <label id="billing-label" for="dba" class="required-field"><b>Default Billing Address</b></label>
+            <div class="row">
+              <div class="col-5">
+                <select id="dbaCity" type="text" name="dbaCity" class="form-control custom-select-2 mb-3">
+                  <% locations.forEach((data)=>{ %>
+                    <% if (thisUserContact.strBillingAddress){ %>
+                      <% if (data.strLocation == thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[0]){ %>
+                        <option value="<%= data.strLocation%>" selected><%= data.strLocation%></option>
+                      <% }else{ %>
+                        <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
+                      <% } %>
                     <% }else{ %>
                       <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
                     <% } %>
+                  <% }) %>
+                  <option value="Others">Others</option>
+                </select>
+                <div class="others-div" hidden>
+                  <button type="button" name="button" class="btn btn-sm mt-1"><i class="fas fa-times"></i></button>
+                  <% if (!bAddress && thisUserContact.strBillingAddress){ %>
+                    <input type="text" name="dbaOthers" value="<%= thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[0]%>"
+                    placeholder="City" class="form-control material mb-3 simple" maxLength="15" />
                   <% }else{ %>
-                    <option value="<%= data.strLocation%>"><%= data.strLocation%></option>
+                    <input type="text" name="dbaOthers" value="" placeholder="City" class="form-control material mb-3 simple" maxLength="15" />
                   <% } %>
-                <% }) %>
-                <option value="Others">Others</option>
-              </select>
-              <div class="others-div" hidden>
-                <button type="button" name="button" class="btn btn-sm mt-1"><i class="fas fa-times"></i></button>
-                <% if (!bAddress && thisUserContact.strBillingAddress){ %>
-                  <input type="text" name="dbaOthers" value="<%= thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[0]%>"
-                  placeholder="City" class="form-control material mb-3 simple" maxLength="15" />
+                </div>
+              </div>
+              <div class="col-7">
+                <% if (thisUserContact.strBillingAddress){ %>
+                  <input id="dba" type="text" name="dba" value="<%= thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[1]%>"
+                  placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" maxLength="80" required/>
                 <% }else{ %>
-                  <input type="text" name="dbaOthers" value="" placeholder="City" class="form-control material mb-3 simple" maxLength="15" />
+                  <input id="dba" type="text" name="dba" placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" maxLength="80" required/>
                 <% } %>
               </div>
             </div>
-            <div class="col-7">
-              <% if (thisUserContact.strBillingAddress){ %>
-                <input id="dba" type="text" name="dba" value="<%= thisUserContact.strBillingAddress.split(/\s-\s(.*)/g)[1]%>"
-                placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" maxLength="80" required/>
-              <% }else{ %>
-                <input id="dba" type="text" name="dba" placeholder="House#/Lot/Blk St. Bgy." class="form-control material mb-3 simple" maxLength="80" required/>
-              <% } %>
-            </div>
-          </div>
 
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-custom-primary">Submit</button>
-          <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
-        </div>
-      </form>
+            <% if(checkSignType){ %>
+              <a id="changePassBtn" href="#" class="fs-08em fw-400">Change Password</a>
+            <% } %>
+
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-custom-primary">Submit</button>
+            <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+          </div>
+        </form>
+        <form id="formPass" action="/account/dashboard/password" method="POST" class="m-0">
+          <div class="modal-body">
+            <label for="currentPass" class="required-field"><b>Current Password</b></label>
+            <input id="currentPass" type="password" name="currentPass"
+            required="" class="form-control material mb-3 password" minlength="8" maxlength="72" />
+
+            <label for="newPass" class="required-field"><b>New Password</b></label>
+            <input id="newPass" type="password" name="newPass"
+            required="" class="form-control material mb-3 password" minlength="8" maxlength="72" />
+
+            <label for="confirmPass" class="required-field"><b>Confirm Password</b></label>
+            <input id="confirmPass" type="password" name="confirmPass"
+            required="" class="form-control material mb-3 password" minlength="8" maxlength="72" />
+
+            <a id="editInfoBtn" href="#" class="fs-08em fw-400">Edit Personal Information</a>
+
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-custom-primary" disabled>Submit</button>
+            <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+          </div>
+        </form>
     </div>
   </div>
 </div>
@@ -230,6 +266,15 @@
     $(this).val(ltrim($(this).val()))
   });
 
+  $('input.password').keypress(function(event){
+    if (event.which == '32'){
+      event.preventDefault();
+    }
+  });
+  $('input.password').keyup(function(event){
+    $(this).val($(this).val().replace(/\s/g,''))
+  });
+
   $('#email').keyup(function(){
     checkUserInfo()
   })
@@ -239,14 +284,14 @@
       email: $('#email').val()
     }).then((res)=>{
       if (res.email){
-        $(`#EditInfo button[type=submit]`).attr('disabled','disabled')
+        $(`#formInfo button[type=submit]`).attr('disabled','disabled')
         $('label[for=email]').next(`label[for=emailCheck]`).remove()
         $('label[for=email]').after(`
           <label for=emailCheck class="fs-08em text-danger ml-3"><b>${res.email}</b></label>
           `)
       }
       else{
-        $(`#EditInfo button[type=submit]`).removeAttr('disabled')
+        $(`#formInfo button[type=submit]`).removeAttr('disabled')
         $('label[for=email]').next(`label[for=emailCheck]`).remove()
       }
 
@@ -276,15 +321,76 @@
       $(`#dba`).removeAttr('required');
       $(`#billing-label`).attr('hidden','hidden');
       $(`#billing-label + div.row`).attr('hidden','hidden');
-
     }
     else {
       $(`#dba`).attr('required','required');
       $(`#billing-label`).removeAttr('hidden');
       $(`#billing-label + div.row`).removeAttr('hidden');
-
     }
   })
+
+  $(`#changePassBtn`).click(function(){
+    $(`form#formInfo`).css("opacity","0")
+    setTimeout(()=>{
+      $(`form#formInfo`).css("display","none")
+      $(`form#formPass`).css("display","block")
+      $(`#EditInfoTitle`).text('Change Password')
+      setTimeout(()=>{
+        $(`form#formPass`).css("opacity","1")
+      },100);
+    },250);
+  })
+  $(`#editInfoBtn`).click(function(){
+    $(`form#formPass`).css("opacity","0")
+    setTimeout(()=>{
+      $(`form#formPass`).css("display","none")
+      $(`form#formInfo`).css("display","block")
+      $(`#EditInfoTitle`).text('Edit Personal Information')
+      setTimeout(()=>{
+        $(`form#formInfo`).css("opacity","1")
+      },100);
+    },250);
+  })
+
+  $(`#newPass, #confirmPass`).keyup(function(){
+    if ($(`#newPass`).val().length < 8){
+      $('label[for=newPass]').next(`label[for=newPassCheck]`).remove()
+      $('label[for=newPass]').after(`
+        <label for=newPassCheck class="fs-08em text-danger ml-3"><b>Minimum of 8 characters</b></label>
+        `)
+    }
+    else{
+      $('label[for=newPass]').next(`label[for=newPassCheck]`).remove()
+    }
+    if ($(`#confirmPass`).val() != $(`#newPass`).val()){
+      $('label[for=confirmPass]').next(`label[for=confirmPassCheck]`).remove()
+      $('label[for=confirmPass]').after(`
+        <label for=confirmPassCheck class="fs-08em text-danger ml-3"><b>Password Must Match</b></label>
+        `)
+    }
+    else{
+      $('label[for=confirmPass]').next(`label[for=confirmPassCheck]`).remove()
+    }
+
+    if ($(`#newPass`).val().length >= 8 && $(`#confirmPass`).val() == $(`#newPass`).val() && $(`#currentPass`).val()){
+      $(`#formPass button[type=submit]`).removeAttr('disabled')
+    }
+    else{
+      $(`#formPass button[type=submit]`).attr('disabled','disabled')
+    }
+
+
+  })
+
+  $(`#currentPass`).keyup(function(){
+    if ($(`#newPass`).val().length >= 8 && $(`#confirmPass`).val() == $(`#newPass`).val() && $(`#currentPass`).val()){
+      $(`#formPass button[type=submit]`).removeAttr('disabled')
+    }
+    else{
+      $(`#formPass button[type=submit]`).attr('disabled','disabled')
+    }
+  })
+
 
 </script>
 <%- include('../../../templates/closer.ejs') -%>

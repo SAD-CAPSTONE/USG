@@ -68,9 +68,40 @@ router.get('/', auth_admin, (req,res)=>{
       })
     })
 
-
 router.get('/load',(req,res)=>{
   res.render('admin-dashboard/views/loading', {name: "name"});
 })
+
+router.get('/loadChart',(req,res)=>{
+  db.query(`SELECT A.Day, IF(B.total IS NULL, 0, B.total )total FROM ( SELECT CURDATE()Day
+    UNION SELECT SUBDATE(CURDATE(), INTERVAL 1 DAY)Day
+    UNION SELECT SUBDATE(CURDATE(), INTERVAL 2 DAY)Day
+    UNION SELECT SUBDATE(CURDATE(), INTERVAL 3 DAY)Day
+    UNION SELECT SUBDATE(CURDATE(), INTERVAL 4 DAY)Day
+    UNION SELECT SUBDATE(CURDATE(), INTERVAL 5 DAY)Day
+    UNION SELECT SUBDATE(CURDATE(), INTERVAL 6 DAY)Day )A
+    LEFT JOIN ( SELECT DATE(transactionDate)date, SUM(amount)total FROM tblsales
+    WHERE intStatus= 1 GROUP BY DATE(transactionDate) )B
+    ON A.Day= B.date ORDER BY Day ASC`, (err, revenueResults, fields) => {
+    if (err) console.log(err);
+    revenueResults.forEach((data)=>{
+      data.Day = moment(data.Day).format('MMM DD')
+    })
+    db.query(`SELECT A.Day, IF(B.total IS NULL, 0, B.total )total FROM ( SELECT CURDATE()Day
+      UNION SELECT SUBDATE(CURDATE(), INTERVAL 1 DAY)Day
+      UNION SELECT SUBDATE(CURDATE(), INTERVAL 2 DAY)Day
+      UNION SELECT SUBDATE(CURDATE(), INTERVAL 3 DAY)Day
+      UNION SELECT SUBDATE(CURDATE(), INTERVAL 4 DAY)Day
+      UNION SELECT SUBDATE(CURDATE(), INTERVAL 5 DAY)Day
+      UNION SELECT SUBDATE(CURDATE(), INTERVAL 6 DAY)Day )A
+      LEFT JOIN ( SELECT DATE(transactionDate)date, SUM(intQuantity)total
+      FROM tblsales INNER JOIN tblorderdetails USING(intOrderNo)
+      WHERE tblsales.intStatus= 1 GROUP BY DATE(transactionDate) )B
+      ON A.Day= B.date ORDER BY Day ASC`, (err, soldResults, fields) => {
+      if (err) console.log(err);
+      res.send({revenue: revenueResults, sold: soldResults})
+    });
+  });
+});
 
 exports.dashboard = router;
