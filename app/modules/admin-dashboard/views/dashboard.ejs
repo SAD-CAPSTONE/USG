@@ -333,46 +333,108 @@ $('#yourElement').animateCss('bounce');
 
 
 <script>
-var ctx = document.getElementById("lineChart");
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ["Oct 4", "Oct 5", "Oct 6", "Oct 7", "Oct 8", "Oct 9"],
-        datasets: [{
-            label: 'Online Store Revenue',
-            data: [350, 550, 1020, 600, 850, 500],
-            backgroundColor: [
-                'rgba(56, 236, 28, 1)'
-            ],
-            borderColor: [
-                'rgba(26,145,7,1)'
-            ],
-            borderWidth: 1,
-            fill: false
-        },
-        {
-            label: 'Quantity Sold',
-            data: [2, 4, 7, 3, 4, 3],
-            backgroundColor: [
-                'rgba(255, 99, 132, 1)'
-            ],
-            borderColor: [
-                'rgba(255,99,132,1)'
-            ],
-            borderWidth: 1,
-            fill: false
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero:true
-                }
-            }]
-        }
-    }
-});
+  var ctx = document.getElementById("lineChart");
+  // var myChart = new Chart(ctx, {
+  //     type: 'line',
+  //     data: {
+  //         labels: ["Oct 4", "Oct 5", "Oct 6", "Oct 7", "Oct 8", "Oct 9"],
+  //         datasets: [{
+  //             label: 'Online Store Revenue',
+  //             data: [350, 550, 1020, 600, 850, 500],
+  //             backgroundColor: [
+  //                 'rgba(56, 236, 28, 1)'
+  //             ],
+  //             borderColor: [
+  //                 'rgba(26,145,7,1)'
+  //             ],
+  //             borderWidth: 1,
+  //             fill: false
+  //         },
+  //         {
+  //             label: 'Quantity Sold',
+  //             data: [2, 4, 7, 3, 4, 3],
+  //             backgroundColor: [
+  //                 'rgba(255, 99, 132, 1)'
+  //             ],
+  //             borderColor: [
+  //                 'rgba(255,99,132,1)'
+  //             ],
+  //             borderWidth: 1,
+  //             fill: false
+  //         }]
+  //     },
+  //     options: {
+  //         scales: {
+  //             yAxes: [{
+  //                 ticks: {
+  //                     beginAtZero:true
+  //                 }
+  //             }]
+  //         }
+  //     }
+  // });
+
+  function dashChart(){
+    $.get(`/dashboard/loadChart`).then((res)=>{
+      let revenue_dates = res.revenue.reduce((arr, data)=>{
+        arr.push(data.Day)
+        return arr
+      }, [])
+      let revenue_values = res.revenue.reduce((arr, data)=>{
+        arr.push(data.total)
+        return arr
+      }, [])
+      let sold_values = res.sold.reduce((arr, data)=>{
+        arr.push(data.total)
+        return arr
+      }, [])
+      var myChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+              labels: revenue_dates,
+              datasets: [{
+                  label: 'Online Store Revenue',
+                  data: revenue_values,
+                  backgroundColor: [
+                      'rgba(56, 236, 28, 1)'
+                  ],
+                  borderColor: [
+                      'rgba(26,145,7,1)'
+                  ],
+                  borderWidth: 1,
+                  fill: false
+              },
+              {
+                  label: 'Quantity Sold',
+                  data: sold_values,
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 1)'
+                  ],
+                  borderColor: [
+                      'rgba(255,99,132,1)'
+                  ],
+                  borderWidth: 1,
+                  fill: false
+              }]
+          },
+          options: {
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero:true
+                      }
+                  }]
+              }
+          }
+      });
+    }).catch((err)=>{
+      console.log(err)
+    })
+  }
+
+  $(()=>{
+    dashChart()
+  })
 </script>
 
 
