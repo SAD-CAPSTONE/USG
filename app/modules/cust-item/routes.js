@@ -80,7 +80,7 @@ function relatedProducts(req,res,next){
   /*Related Products;
   *(tblproductlist)*(tblproductbrand)*(tblproductinventory)*(tblproductreview)*/
   db.query(`SELECT B.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating,
-    COUNT(Review.strReview)AS cntReview, IF(B.productRecorded > DATE_SUB(curdate(), INTERVAL 2 WEEK), 1, 0)newProduct FROM
+    COUNT(Review.strReview)AS cntReview, IF(B.productRecorded > DATE_SUB(curdate(), INTERVAL 5 DAY), 1, 0)newProduct FROM
     (
     	SELECT A.*, Orders.intOrderDetailsNo, COUNT(Orders.intOrderDetailsNo)AS OrderCNT FROM
         (
@@ -140,7 +140,7 @@ function popularProducts(req,res,next){
   /*Most Popular Products;
   *(tblproductlist)*(tblproductbrand)*(tblproductinventory)*(tblorderdetails)*(tblproductreview)*/
   db.query(`SELECT B.*, ROUND(AVG(Review.intStars),1)AS aveRating, COUNT(Review.intProductReviewNo)AS cntRating,
-    COUNT(Review.strReview)AS cntReview, IF(B.productRecorded > DATE_SUB(curdate(), INTERVAL 2 WEEK), 1, 0)newProduct FROM
+    COUNT(Review.strReview)AS cntReview, IF(B.productRecorded > DATE_SUB(curdate(), INTERVAL 5 DAY), 1, 0)newProduct FROM
     (
     	SELECT A.*, OrderCNT FROM
     	(

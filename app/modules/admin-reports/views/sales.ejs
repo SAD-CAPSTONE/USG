@@ -277,25 +277,6 @@
   var ctx = document.getElementById("recapChart");
 
   var donut = document.getElementById("donutChart");
-  var myDoughnutChart = new Chart(donut, {
-      type: 'doughnut',
-      data: {
-              datasets: [{
-                  data: [10, 20],
-                  backgroundColor: [
-                      'rgba(93, 238, 117, 1)',
-                      'rgba(117, 197, 234, 1)'
-
-                  ]
-              }],
-
-              // These labels appear in the legend and in the tooltips when hovering different arcs
-              labels: [
-                  'Cash on Delivery',
-                  'Bank Deposits'
-              ]
-            }
-  });
 </script>
 
 <script>
@@ -369,6 +350,26 @@
               }
           }
       });
+      var myDoughnutChart = new Chart(donut, {
+          type: 'doughnut',
+          data: {
+                  datasets: [{
+                      data: [res.method[0].method, res.method[1].method],
+                      backgroundColor: [
+                          'rgba(93, 238, 117, 1)',
+                          'rgba(117, 197, 234, 1)'
+
+                      ]
+                  }],
+
+                  // These labels appear in the legend and in the tooltips when hovering different arcs
+                  labels: [
+                      'Cash on Delivery',
+                      'Bank Deposits'
+                  ]
+                }
+      });
+
     }).catch((err)=>{
       console.log(err)
     });

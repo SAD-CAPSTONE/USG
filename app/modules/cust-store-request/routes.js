@@ -8,7 +8,7 @@ const productQuery = `
   COUNT(Review.strReview)AS cntReview FROM(
 
     SELECT A.*, Orders.intOrderDetailsNo, COUNT(Orders.intOrderDetailsNo)AS OrderCNT,
-    IF(A.productRecorded > DATE_SUB(curdate(), INTERVAL 2 WEEK), 1, 0)newProduct FROM(
+    IF(A.productRecorded > DATE_SUB(curdate(), INTERVAL 5 DAY), 1, 0)newProduct FROM(
 
     	SELECT tblproductlist.*, tblcategory.strCategory, Inv.intInventoryNo, Brand.strBrand,
     	min(Inv.productPrice)minPrice,max(Inv.productPrice)maxPrice,

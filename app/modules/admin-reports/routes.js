@@ -482,15 +482,18 @@ router.get('/sales/loadChart', checkUser, auth_admin, now, (req,res)=>{
     INNER JOIN (SELECT intOrderNo, SUM(intQuantity)qty FROM tblorderdetails GROUP BY intOrderNo)A USING(intOrderNo)
 	  WHERE intStatus= 1 AND YEAR(transactionDate) = YEAR(now()) GROUP BY monthname
     )B ON A.monthname= B.monthname ORDER BY A.month ASC`, (err, salesResults, fields) => {
-    let tr = salesResults.reduce((temp, data)=>{
-      return temp += data.total
-    }, 0)
-    let tqs = salesResults.reduce((temp, data)=>{
-      return temp += data.qty
-    }, 0)
-    tr = priceFormat(tr.toFixed(2))
-    if (err) console.log(err);
-    res.send({sales: salesResults, tr: tr, tqs: tqs, chartYear: req.now.currentYear})
+    db.query(`SELECT intPaymentMethod, COUNT(intPaymentMethod)method FROM tblorder
+      GROUP BY intPaymentMethod`, (err, methodResults, fields) => {
+      let tr = salesResults.reduce((temp, data)=>{
+        return temp += data.total
+      }, 0)
+      let tqs = salesResults.reduce((temp, data)=>{
+        return temp += data.qty
+      }, 0)
+      tr = priceFormat(tr.toFixed(2))
+      if (err) console.log(err);
+      res.send({sales: salesResults, tr: tr, tqs: tqs, chartYear: req.now.currentYear, method: methodResults})
+    });
   });
 });
 router.get('/customer/loadChart', checkUser, auth_admin, now, (req,res)=>{
