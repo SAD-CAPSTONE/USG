@@ -21,7 +21,18 @@
     <div class="container products-container align-center">
       <% popularProducts.forEach((prod)=>{ %>
         <div class="custom-card this-product my-2">
-          <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
+          <div class="card-img">
+            <% if(prod.maxDisc){ %>
+              <div class="tag-div sale">
+                <p class="m-0 fs-09em"><i class="fas fa-tags fs-07em"></i>SALE</p>
+              </div>
+            <% }else if(prod.newProduct){ %>
+              <div class="tag-div new">
+                <p class="m-0 fs-09em"><i class="fas fa-calendar-plus fs-08em"></i>NEW</p>
+              </div>
+            <% } %>
+            <a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a>
+          </div>
           <div class="cart-button-div">
             <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
             <button type="button" class="cart-btn btn p-0 no-focus align-center" data-toggle="modal" data-target="#modal-product-to-cart">
@@ -68,7 +79,18 @@
     <div class="container products-container align-center">
       <% newProducts.forEach((prod)=>{ %>
         <div class="custom-card this-product my-2">
-          <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
+          <div class="card-img">
+            <% if(prod.maxDisc){ %>
+              <div class="tag-div sale">
+                <p class="m-0 fs-09em"><i class="fas fa-tags fs-07em"></i>SALE</p>
+              </div>
+            <% }else if(prod.newProduct){ %>
+              <div class="tag-div new">
+                <p class="m-0 fs-09em"><i class="fas fa-calendar-plus fs-08em"></i>NEW</p>
+              </div>
+            <% } %>
+            <a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a>
+          </div>
           <div class="cart-button-div">
             <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
             <button type="button" class="cart-btn btn p-0 no-focus align-center" data-toggle="modal" data-target="#modal-product-to-cart">
@@ -147,7 +169,7 @@
 <%- include('../../../templates/scripts-pdf.ejs') -%>
 
 <script type="text/javascript">
-  $('title').html("Ultra Super Green - Order Success"); 
+  $('title').html("Ultra Super Green - Order Success");
 
   $(() => {
     let bankAccountNo = `<%= admin.bankAccountNo%>`,

@@ -166,7 +166,18 @@
         <div class="container x-scrolling-div products-container p-0" data-simplebar="">
           <% relatedProducts.forEach((prod)=>{ %>
             <div class="custom-card card-list adjust this-product my-1">
-              <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
+              <div class="card-img">
+                <% if(prod.maxDisc){ %>
+                  <div class="tag-div sale">
+                    <p class="m-0 fs-09em"><i class="fas fa-tags fs-07em"></i>SALE</p>
+                  </div>
+                <% }else if(prod.newProduct){ %>
+                  <div class="tag-div new">
+                    <p class="m-0 fs-09em"><i class="fas fa-calendar-plus fs-08em"></i>NEW</p>
+                  </div>
+                <% } %>
+                <a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a>
+              </div>
               <div class="cart-button-div">
                 <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
                 <button type="button" class="cart-btn btn p-0 no-focus" data-toggle="modal"
@@ -218,7 +229,18 @@
         <div class="container x-scrolling-div products-container p-0" data-simplebar="">
           <% popularProducts.forEach((prod)=>{ %>
             <div class="custom-card card-list adjust this-product my-1">
-              <div class="card-img"><a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a></div>
+              <div class="card-img">
+                <% if(prod.maxDisc){ %>
+                  <div class="tag-div sale">
+                    <p class="m-0 fs-09em"><i class="fas fa-tags fs-07em"></i>SALE</p>
+                  </div>
+                <% }else if(prod.newProduct){ %>
+                  <div class="tag-div new">
+                    <p class="m-0 fs-09em"><i class="fas fa-calendar-plus fs-08em"></i>NEW</p>
+                  </div>
+                <% } %>
+                <a href="/item/<%= prod.intProductNo%>"><img src="/assets/images/products/<%= prod.strProductPicture%>"></a>
+              </div>
               <div class="cart-button-div">
                 <input type="number" class="product-id" value="<%= prod.intProductNo%>" hidden />
                 <button type="button" class="cart-btn btn p-0 no-focus" data-toggle="modal"

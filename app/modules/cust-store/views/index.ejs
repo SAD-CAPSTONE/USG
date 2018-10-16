@@ -171,7 +171,7 @@
 <script src="/customer-assets/scripts/pagination/jquery.twbsPagination.js" type="text/javascript"></script>
 <script src="/customer-assets/scripts/custom/store.js" type="text/javascript"></script>
 <script type="text/javascript">
-  $('title').html("Ultra Super Green - Store"); 
+  $('title').html("Ultra Super Green - Store");
   let oldUrl = window.location.href, allSub = ``;
   $(() => {
     const thisUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
@@ -404,9 +404,31 @@
           // products
           res.products.forEach((data) => {
             let productPrice = data.minPrice == data.maxPrice ? data.minPrice : `${data.minPrice}<span class="fs-08em text-muted"> - ${data.maxPrice}</span>`
+
+            let discountLine =
+              data.maxDisc ?
+                `<small class="card-oldprice text-muted">
+                  <i class="fas fa-tags"></i> upto ${data.maxDisc}% off <br>
+                </small>` : ``
+
+            let featureTag =
+              data.maxDisc ?
+                `<div class="tag-div sale">
+                  <p class="m-0 fs-09em"><i class="fas fa-tags fs-07em"></i>SALE</p>
+                </div>`
+              :
+              data.newProduct ?
+                `<div class="tag-div new">
+                  <p class="m-0 fs-09em"><i class="fas fa-calendar-plus fs-08em"></i>NEW</p>
+                </div>`
+                : ``
+
             list.append(`
               <div class="custom-card this-product my-2">
-                <div class="card-img"><a href="/item/${data.intProductNo}"><img src="/assets/images/products/${data.strProductPicture}"></a></div>
+                <div class="card-img">
+                  ${featureTag}
+                  <a href="/item/${data.intProductNo}"><img src="/assets/images/products/${data.strProductPicture}"></a>
+                </div>
                 <div class="cart-button-div">
                   <input type="number" class="product-id" value="${data.intProductNo}" hidden />
                   <button type="button" class="cart-btn btn btn-custom-primary p-0 no-focus" data-toggle="modal"
@@ -417,6 +439,7 @@
                 <div class="card-desc">
                   <p class="card-title" title="${data.strBrand} ${data.strProductName}"><span class="text-brand">${data.strBrand}</span> ${data.strProductName}</p>
                   <p class="card-price price-symbol">${productPrice}</p>
+                  ${discountLine}
                   <small class="card-rating">
 
                   </small>

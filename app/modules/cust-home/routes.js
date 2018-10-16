@@ -24,7 +24,7 @@ function popularProducts(req,res,next){
     				SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1
     			)Discount ON tblproductinventory.intInventoryNo= Discount.intInventoryNo
     		)Inv ON tblproductlist.intProductNo= Inv.intProductNo
-    		WHERE Brand.intStatus= 1 GROUP BY tblproductlist.intProductNo
+    		GROUP BY tblproductlist.intProductNo
     	)A
     	LEFT JOIN
     	(
@@ -63,7 +63,7 @@ function newProducts(req,res,next){
     			SELECT * FROM tblproductdiscount WHERE curdate() <= discountDueDate AND intStatus= 1
     		)Discount ON tblproductinventory.intInventoryNo= Discount.intInventoryNo
     	)Inv ON tblproductlist.intProductNo= Inv.intProductNo
-    	WHERE Brand.intStatus= 1 GROUP BY tblproductlist.intProductNo
+    	GROUP BY tblproductlist.intProductNo
     )A
     LEFT JOIN (SELECT * FROM tblproductreview)Review ON A.intProductNo = Review.intProductNo
     GROUP BY A.intProductNo ORDER BY A.intProductNo DESC LIMIT 10`, function (err,  results, fields) {
