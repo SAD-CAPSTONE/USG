@@ -116,7 +116,8 @@ router.post('/editProduct', auth_admin,(req,res)=>{
 
 router.get('/supplierProducts', auth_admin, (req,res)=>{
   db.query(`
-    Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID`,(err1,results1)=>{
+    Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID
+    where tblSupplier.intStatus = 1`,(err1,results1)=>{
     if (err1) console.log(err1);
     res.render('admin-inventory/views/supplierProducts', {re: results1});
   });
@@ -889,6 +890,7 @@ router.post('/checkExpired', auth_admin,(req,res)=>{
 });
 
 
+
 router.get('/expiredProducts', auth_admin,(req,res)=>{
 
     db.query(`Select * from tblbatch
@@ -896,7 +898,8 @@ router.get('/expiredProducts', auth_admin,(req,res)=>{
       join tblproductlist on tblproductlist.intproductno = tblproductinventory.intproductno
       join tblProductBrand on tblproductlist.intbrandno = tblproductbrand.intBrandNo
       join tblSupplier on tblProductInventory.intuserID = tblSupplier.intUserID
-      where ((tblbatch.expirationDate between NOW() and DATE_ADD(NOW(), INTERVAL 14 DAY)) and tblbatch.intStatus = 1) and tblBatch.intQuantity <> 0`,(err2,res2,fie2)=>{
+      where ((tblbatch.expirationDate between NOW() and DATE_ADD(NOW(), INTERVAL 14 DAY)) or tblBatch.expirationDate <= CURDATE())
+      and (tblbatch.intStatus = 1 and tblBatch.intQuantity > 0)`,(err2,res2,fie2)=>{
         if(err2) console.log(err2);
 
         if(!err2) res.render('admin-inventory/views/expiredProducts',{moment: moment, all: res2});
@@ -1622,7 +1625,8 @@ router.get('/productDiscount', auth_admin,(req,res)=>{
         db.query(`Select * from tblProductInventory
           join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
           join tblUom on tblUom.intUomno = tblProductInventory.intUomno
-          join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo`,(err2,res2,fie2)=>{
+          join tblProductBrand on tblProductlist.intBrandNo = tblProductBrand.intBrandNo
+          where tblProductInventory.intInventoryNo not in (Select intInventoryNo from tblProductDiscount)`,(err2,res2,fie2)=>{
             if(err2) console.log(err2);
             else{
               res.render('admin-inventory/views/discount', {list: res1, moment: moment, inventory: res2});

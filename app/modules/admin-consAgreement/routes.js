@@ -130,7 +130,7 @@ router.get('/contract/load/:id', auth_admin, (req,res)=>{
   }
   else{
     db.query(`SELECT strFname, strMname, strLname, strBusinessName, strBrands, strBusinessTIN, strSupplierPhone,
-    strSupplierMobile, strBusinessEmail, deliverySchedule, strFrequencyOfDelivery, remittanceSchedule FROM tbluser
+    strSupplierMobile, strBusinessEmail, deliverySchedule, strFrequencyOfDelivery, remittanceSchedule, consignmentPrice FROM tbluser
     INNER JOIN tblsupplier ON tbluser.intUserID= tblsupplier.intUserID
     INNER JOIN tblcontract ON tblsupplier.intUserID= tblcontract.intConsignorID
     WHERE tblsupplier.intUserID= ?`,[req.params.id], (err, results, fields) => {

@@ -11,13 +11,12 @@ router.get('/consignor-dash', auth_cons, (req,res)=>{
     join tblUom on tblUom.intUomNo = tblproductinventory.intUomNo
     join tbluser on tbluser.intUserID = tblproductinventory.intUserID
     join tblsupplier on tblsupplier.intUserID = tblUser.intUserID
-    where tbluser.intUserID = ${req.user.intUserID} and tblproductinventory.intStatus = 1`,(err1,results1)=>{
+    where tbluser.intUserID = ? and tblproductinventory.intStatus = 1`, [req.user.intUserID], (err1,results1)=>{
     if (err1) console.log(err1);
     res.render('cons-dashboard/views/cons-dashboard', {re: results1, moment: moment});
 
   });
 });
-
 
 router.get('/products', auth_cons, (req,res)=>{
   db.query(`
@@ -26,7 +25,7 @@ router.get('/products', auth_cons, (req,res)=>{
     join tblsubcategory on tblsubcategory.intSubCategoryNo = tblproductlist.intSubCategoryNo
     join tblcategory on tblcategory.intcategoryno = tblsubcategory.intcategoryno
     join tblsupplier on tblsupplier.intUserID = tblproductinventory.intUserID
-    where tbluser.intUserID = ${req.user.intUserID}`,(err1,results1)=>{
+    where tbluser.intUserID = ?`, [req.user.intUserID], (err1,results1)=>{
     if (err1) console.log(err1);
     res.render('cons-dashboard/views/cons-products', {re: results1});
   });
@@ -35,7 +34,7 @@ router.get('/products', auth_cons, (req,res)=>{
 router.get('/orders', auth_cons, (req,res)=>{
   // Pending Orders
   db.query(` Select * from tblpurchaseorder where intsupplierid
-   = ${req.user.intUserID} and intStatus = 0`,(err1,results1,fie1)=>{
+   = ? and intStatus = 0`, [req.user.intUserID], (err1,results1,fie1)=>{
   if (err1) console.log(err1);
   else{
 
@@ -49,7 +48,7 @@ router.get('/orders', auth_cons, (req,res)=>{
 
 router.get('/viewOrder',(req,res)=>{
   db.query(`Select * from tblpurchaseorder join tblPurchaseOrderList on tblPurchaseOrder.intpurchaseorderno = tblPurchaseOrderList.intPurchaseOrderNo
-    where tblPurchaseOrder.intPurchaseOrderNo = "${req.query.order}" and intsupplierid = "${req.user.intUserID}"`,(err1,res1,fie1)=>{
+    where tblPurchaseOrder.intPurchaseOrderNo = ? and intsupplierid = ?`, [req.query.order, req.user.intUserID], (err1,res1,fie1)=>{
       if(err1) console.log(err1);
       else{
         db.query(`Select * from tblUser join tblsupplier on tblUser.intUserID = tblsupplier.intUserID
@@ -65,7 +64,7 @@ router.get('/viewOrder',(req,res)=>{
 
 router.get('/receivedOrders',(req,res)=>{
   db.query(`Select * from tblpurchaseorder join tblreceiveorder on tblpurchaseorder.intPurchaseOrderNo
-  = tblreceiveorder.intPurchaseOrderNo where tblPurchaseOrder.intsupplierid = "${req.user.intUserID}"`,(err2,res2,fie2)=>{
+  = tblreceiveorder.intPurchaseOrderNo where tblPurchaseOrder.intsupplierid = ?`, [req.user.intUserID], (err2,res2,fie2)=>{
     if(err2) console.log(err2)
     else{
       res.render('cons-dashboard/views/cons-receivedOrders', {received: res2, moment: moment});
@@ -76,7 +75,7 @@ router.get('/receivedOrders',(req,res)=>{
 
 router.get('/viewReceivedOrder',(req,res)=>{
   db.query(`Select * from tblreceiveorder join tblreceiveorderlist on tblreceiveorder.intReceiveOrderNo
-    = tblreceiveorderlist.intReceiveOrderNo where tblreceiveorder.intReceiveOrderNo = "${req.query.order}"`,(err1,res1,fie1)=>{
+    = tblreceiveorderlist.intReceiveOrderNo where tblreceiveorder.intReceiveOrderNo = ?`, [req.query.order], (err1,res1,fie1)=>{
       if(err1) console.log(err1);
       else{
         db.query(`Select * from tblUser join tblSupplier on tblUser.intUserID = tblSupplier.intUserID
@@ -93,7 +92,7 @@ router.get('/viewReceivedOrder',(req,res)=>{
 router.get('/returns', auth_cons, (req,res)=>{
   db.query(`
     Select * from tblReturnProducts
-    where intsupplierid = ${req.user.intUserID}`,(err1,results1)=>{
+    where intsupplierid = ?`, [req.user.intUserID], (err1,results1)=>{
     if (err1) console.log(err1);
     res.render('cons-dashboard/views/cons-returns', {re: results1, moment: moment});
 

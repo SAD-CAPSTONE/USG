@@ -566,7 +566,7 @@ $('#start').on('keyup',function(){
       reverseButtons: true
     }).then((result)=>{
       if(result.value){
-        $.post('/consApplication/reject',{no: $('.accept').data('contract')},function(data,success){
+        $.post('/consApplication/reject',{no: $('.accept_modal').data('contract')},function(data,success){
           if(data){
             swal({title: 'Success', text: 'You rejected this consignor', type: 'success'}).then(()=>{
               window.location.href = '/consApplication';

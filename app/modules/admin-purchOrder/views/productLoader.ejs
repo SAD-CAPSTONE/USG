@@ -72,25 +72,5 @@ $('.addProdRow').on('click',function(){
   })
 });
 
-$('.addRow').on( 'click', function () {
-
-    t.row.add( [
-         count,
-        '<input  required type="text" name="product[]" value="" class="form-control">',
-        '<input style="width: 80px" required type="number" name="quantity[]" value="0" class="form-control">',
-        '<input  type="text" name="variant[]" class="form-control">',
-        '<input  type="text" name="size[]" value="" class="form-control">'
-
-    ] ).draw( false );
-    count++;
-
-    $('.delete_btn').on('click',function(){
-      t
-        .row( $(this).parents('tr') )
-        .remove()
-        .draw();
-    })
-} );
-
 
 </script>

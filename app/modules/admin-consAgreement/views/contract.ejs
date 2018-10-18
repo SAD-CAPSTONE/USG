@@ -831,6 +831,7 @@
 <script type="text/javascript">
 
   function printReceipt(cont){
+    console.log(cont)
     let doc = new jsPDF(), img = new Image;
 
     doc.addFont('Poppins-Regular.ttf', 'Poppins-Regular', 'normal');
@@ -877,7 +878,7 @@
       doc.text(firstX+30, newY, `${cont.strBusinessName}`); newY+= gap;
       doc.text(firstX+25, newY, `${cont.strBrands}`); newY+= gap;
       doc.text(firstX+8, newY, `${cont.strBusinessTIN}`); newY+= gap;
-      doc.text(firstX+54, newY, `30%`); newY+= gap;
+      doc.text(firstX+54, newY, `${cont.consignmentPrice}%`); newY+= gap;
       doc.text(firstX+30, newY, `${contactPerson}`); newY+= gap;
       doc.text(firstX+34, newY, `${contactNum}`); newY+= gap;
       doc.text(firstX+28, newY, `${cont.strBusinessEmail}`); newY+= gap;
