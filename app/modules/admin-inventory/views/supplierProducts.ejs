@@ -131,7 +131,13 @@ $(".navi a:contains('Products per Supplier')").parent().addClass("active");
 
 <script>
   $('.viewDetailsButton').on('click',function(){
-    $('#loadProducts').load(`/inventory/loadProducts?user=${$('.viewDetailsButton').data('id')}`)
+    var id =  $(this).data('id')
+    $.post('/inventory/loadProducts',{user: id},function(data,status){
+      if(data){
+        $('#loadProducts').load(`/inventory/loadProducts2`)
+
+      }
+    })
   })
 </script>
 

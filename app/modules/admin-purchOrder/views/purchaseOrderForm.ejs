@@ -75,7 +75,7 @@
                      <label for="businessName" class="col-sm-3 control-label"> Company Name</label>
 
                      <div class="col-sm-9">
-                       <input type="text" disabled class=" form-control" id="businessName" placeholder="Choose from the list of suppliers ->">
+                       <input type="text" disabled class=" form-control" id="businessName" placeholder="Choose from the list of suppliers">
                      </div>
                    </div>
 
@@ -353,6 +353,26 @@ $('.setter').on('click', function(){
 
   $('#addButton').attr('disabled', false);
 })
+
+$('.addRow').on( 'click', function () {
+
+    t.row.add( [
+         count,
+        '<input  required type="text" name="product[]" value="" class="form-control">',
+        '<input style="width: 80px" required type="number" name="quantity[]" value="0" class="form-control">',
+        '<input  type="text" name="variant[]" class="form-control">',
+        '<input  type="text" name="size[]" value="" class="form-control">'
+
+    ] ).draw( false );
+    count++;
+
+    $('.delete_btn').on('click',function(){
+      t
+        .row( $(this).parents('tr') )
+        .remove()
+        .draw();
+    })
+} );
 
 
 $(document).ready(function() {

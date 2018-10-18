@@ -324,6 +324,7 @@ router.get('/paymentReceipts',(req,res)=>{
   where intConsignorID = "${req.user.intUserID}"`, (err1,res1,fie1)=>{
     if(err1) console.log(err1);
     else{
+      console.log(res1.length)
       res.render('cons-sales/views/paymentReceipts', {re: res1, moment: moment});
 
     }

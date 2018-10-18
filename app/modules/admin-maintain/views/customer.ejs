@@ -26,10 +26,10 @@
           <div class="nav-tabs-custom">
               <ul class="nav nav-tabs">
                 <li class="active"><a href="#Active" data-toggle="tab"><i class="fa fa-plus"></i> Active Customers</a></li>
-                <li><a href="#Banned" data-toggle="tab"><i class="fa fa-minus"></i> Banned Customers</a></li>      
+                <li><a href="#Banned" data-toggle="tab"><i class="fa fa-minus"></i> Banned Customers</a></li>
               </ul>
           <div class="tab-content">
-			
+
           <div class="tab-pane active " id="Active">
           </br>
             <div class="box-body table-responsive">
@@ -64,8 +64,8 @@
                           </td>
                         <td>
                           <center>
-                            <button type="button" data-toggle="modal" data-target="#viewDetails" class="viewDetailsButton large ui teal button" data-custno="<%=i.intUserID%>" data-custsaddress="<%=i.strShippingAddress%>" data-custbaddress="<%=i.strBillingAddress%>" data-custphoneno="<%=i.strCusPhoneNo%>" data-custmobileno="<%=i.strCusMobileNo%>" data-custemail="<%=i.strEmail%>">View</button>
-                            <button type="button" data-toggle="modal" data-target="#editDetails" class="editDetailsButton large ui button blue" data-custno="<%=i.intUserID%>" data-custfname="<%=i.strFname%>" data-custmname="<%=i.strMname%>" data-custlname="<%=i.strLname%>" data-custsaddress="<%=i.strShippingAddress%>" data-custbaddress="<%=i.strBillingAddress%>" data-custphoneno="<%=i.strCusPhoneNo%>" data-custmobileno="<%=i.strCusMobileNo%>" data-custemail="<%=i.strEmail%>" data-custuname="<%=i.strUsername%>">Edit</button>
+                            <!-- <button type="button" data-toggle="modal" data-target="#viewDetails" class="viewDetailsButton large ui teal button" data-custno="<%=i.intUserID%>" data-custsaddress="<%=i.strShippingAddress%>" data-custbaddress="<%=i.strBillingAddress%>" data-custphoneno="<%=i.strCusPhoneNo%>" data-custmobileno="<%=i.strCusMobileNo%>" data-custemail="<%=i.strEmail%>">View</button> -->
+                            <button type="button" data-toggle="modal" data-target="#editDetails" class="editDetailsButton large ui button blue" data-custno="<%=i.intUserID%>" data-custfname="<%=i.strFname%>" data-custmname="<%=i.strMname%>" data-custlname="<%=i.strLname%>" data-custsaddress="<%=i.strShippingAddress%>" data-custbaddress="<%=i.strBillingAddress%>" data-custphoneno="<%=i.strCusPhoneNo%>" data-custmobileno="<%=i.strCusMobileNo%>" data-custemail="<%=i.strEmail%>" data-custuname="<%=i.strUsername%>">View</button>
                             <button data-no="<%=i.intUserID%>" onclick="del(<%=i.intUserID%>)" class="large ui red button">Ban</button>
                           </center>
                         </td>
@@ -93,9 +93,9 @@
                     </thead>
                     <tbody>
                       <% if (re2 == null || re2 == undefined){ %>
-    
+
                       <% }else if (re2.length == 0){ %>
-    
+
                       <% }else{ %>
                        <%  re2.forEach(function(i,index){ %>
                           <tr>
@@ -121,7 +121,7 @@
                         <%  }) %>
                       <% } %>
                     </tbody>
-    
+
                   </table>
                 </div>
           </div>
@@ -192,48 +192,48 @@
 
                   <input type="hidden" id="c_no" name="c_no">
                   <label for="cfname">First Name:</label>
-                  <input type="text"  class="form-control" name="c_fname" id="c_fname"  >
+                  <input type="text" readonly  class="form-control" name="c_fname" id="c_fname"  >
                 </div>
 
                 <div class="col-md-4">
                   <label for="cmname">Middle Name:</label>
-                  <input type="text"  class="form-control" id="c_mname" name="c_mname">
+                  <input type="text" readonly  class="form-control" id="c_mname" name="c_mname">
                 </div>
 
                 <div class="col-md-4">
                   <label for="clname">Last Name:</label>
-                  <input type="text"  class="form-control" id="c_lname" name="c_lname">
+                  <input type="text" readonly  class="form-control" id="c_lname" name="c_lname">
                 </div>
 
                 <div class="form-group input-group col-xs-8">
                   <label for="cuname">Username:</label>
-                  <input type="text"  class="form-control" id="c_uname" name="c_uname">
+                  <input type="text" readonly  class="form-control" id="c_uname" name="c_uname">
                 </div>
 
                 <div class="form-group input-group col-xs-8">
                     <label for="cuname">Email:</label>
-                    <input type="text"  class="form-control" id="c_email" name="c_email">
+                    <input type="text" readonly  class="form-control" id="c_email" name="c_email">
                 </div>
-  
+
                 <div class="input-group col-xs-4">
                   <label for="cumno">Mobile Number:</label>
-                  <input type="text" id="c_mno" name="c_mno" class="form-control">
+                  <input type="text" readonly id="c_mno" name="c_mno" class="form-control">
                 </div>
 
                 <div class="input-group col-xs-4">
                   <label for="cupno">Telephone Number:</label>
-                  <input type="text" id="c_pno" name="c_pno" class="form-control">
+                  <input type="text" readonly id="c_pno" name="c_pno" class="form-control">
                 </div>
 
                 <div class="form-group input-group col-xs-8">
                   <label for="csaddress">Shipping Address :</label>
-                  <input type="text"  class="form-control" id="c_saddress" name="c_saddress">
+                  <input type="text" readonly  class="form-control" id="c_saddress" name="c_saddress">
                 </div>
 
-                
+
                 <div class="form-group input-group col-xs-8">
                   <label for="cbaddress">Billing Address :</label>
-                  <input type="text"  class="form-control" id="c_baddress" name="c_baddress">
+                  <input type="text" readonly  class="form-control" id="c_baddress" name="c_baddress">
                 </div>
 
               </div>
@@ -241,8 +241,8 @@
 
       </div>
       <div class="modal-footer">
-      <button type="button" class="big ui button" data-dismiss="modal">Close</button>
-      <button type="submit" class="big ui teal button">Save</button>
+      <!-- <button type="button" class="big ui button" data-dismiss="modal">Close</button>
+      <button type="submit" class="big ui teal button">Save</button> -->
       </div>
       </form>
     </div>
@@ -345,7 +345,7 @@
     })
   })
 </script>
- 
+
 <script>
     $(function () {
       $('#example_banned').DataTable({
@@ -429,7 +429,7 @@ $(".navi a:contains('Customer')").parent().addClass("active");
               })
             }
           })
-  
+
         }
       })
     }
@@ -448,9 +448,9 @@ $(".navi a:contains('Customer')").parent().addClass("active");
 <script>
   $('.editDetailsButton').on('click', function(){
     $('#c_no').val($(this).data('custno'));
-    $('#c_fname').val($(this).data('custfname'));   
-    $('#c_mname').val($(this).data('custmname'));   
-    $('#c_lname').val($(this).data('custlname'));    
+    $('#c_fname').val($(this).data('custfname'));
+    $('#c_mname').val($(this).data('custmname'));
+    $('#c_lname').val($(this).data('custlname'));
     $('#c_uname').val($(this).data('custuname'));
     $('#c_email').val($(this).data('custemail'));
     $('#c_mno').val($(this).data('custmobileno'));

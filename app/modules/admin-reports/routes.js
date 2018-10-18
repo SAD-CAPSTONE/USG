@@ -85,32 +85,31 @@ function datesAvailableDamaged(req,res,next){
   });
 }
 
-router.get('/', (req,res)=>{
-  res.render('admin-reports/views/reports');
-});
-
 var resultset = "", completeset = "", ranges = "";
 
-router.get('/loadTransactions',(req,res)=>{
-  console.log(resultset)
+router.get('/loadTransactions', auth_admin, (req,res)=>{
+  //console.log(resultset)
   res.render('admin-reports/views/transactionLoader',{re: resultset, moment: moment})
 })
 
-router.get('/viewTransactions',(req,res)=>{
+router.get('/viewTransactions', auth_admin,(req,res)=>{
   res.render('admin-reports/views/viewTransactions',{re: completeset, moment: moment, ranges: ranges})
 
 })
 
-router.post('/loadTransactions',(req,res)=>{
+router.post('/loadTransactions', auth_admin, (req,res)=>{
   var dates = (req.body.range).split('-');
   var newDate = moment(dates[0]).format("YYYY/MM/DD");
   var newDate1 = moment(dates[1]).format("YYYY/MM/DD");
+
+  // 10/07/2018
+  // 10/01/2018 - 10/31/2018
 
   db.query(`Select * from tblInventoryTransactions
     join tblProductInventory on tblInventoryTransactions.intInventoryno = tblProductinventory.intInventoryno
     join tblProductlist on tblProductlist.intProductNo = tblProductInventory.intProductNo
     join tblUom on tblUom.intUOMno = tblProductInventory.intUomNo
-    where transactionDate between '${newDate}' and '${newDate1}' limit 7`,(err1,res1,fie1)=>{
+    where transactionDate >= '${newDate}' or transactionDate <= '${newDate1}' limit 7`,(err1,res1,fie1)=>{
       if(err1) console.log(err1);
       else{
         db.query(`Select * from tblInventoryTransactions
@@ -132,7 +131,7 @@ router.post('/loadTransactions',(req,res)=>{
     })
 })
 
-router.get('/sales',(req,res)=>{
+router.get('/sales', auth_admin, (req,res)=>{
   db.query(`Select
             count(*) as total_quantity,
             sum((details.purchasePrice - (details.purchasePrice * (details.discount / 100) ))) as sum_discounted, details.intOrderDetailsNo,
@@ -154,7 +153,7 @@ router.get('/sales',(req,res)=>{
             })
 
 });
-router.get('/reviewMonthlySales', yearsAvailable, (req,res)=>{
+router.get('/reviewMonthlySales', auth_admin, yearsAvailable, (req,res)=>{
   db.query(`SELECT DATE(transactionDate)date, SUM(amount)total, SUM(intQuantity)qty
     FROM tblsales INNER JOIN tblorderdetails USING(intOrderNo)
     WHERE tblsales.intStatus= 1 AND monthname(transactionDate) = ? AND YEAR(transactionDate) = ?
@@ -184,7 +183,7 @@ router.get('/reviewMonthlySales', yearsAvailable, (req,res)=>{
     }
   });
 })
-router.get('/reviewDailySales', datesAvailable, (req,res)=>{
+router.get('/reviewDailySales', auth_admin, datesAvailable, (req,res)=>{
   db.query(`SELECT intProductNo, strBrand, strProductName, SUM(tblorderdetails.intQuantity)qty,
     SUM(tblorderdetails.purchasePrice*tblorderdetails.intQuantity)total FROM tblsales
     INNER JOIN tblorderdetails USING(intOrderNo)
@@ -217,7 +216,7 @@ router.get('/reviewDailySales', datesAvailable, (req,res)=>{
 
   });
 })
-router.get('/inventory',(req,res)=>{
+router.get('/inventory', auth_admin, (req,res)=>{
   db.query(`SELECT tblproductinventory.intInventoryNo, strBrand, strProductName,
     strVariant, intSize, strUnitName, (tblproductinventory.intQuantity)stock, (tblproductinventory.intQuantity*productPrice)totalValue
     FROM tblproductlist INNER JOIN tblproductbrand USING(intBrandNo) INNER JOIN tblproductinventory USING(intProductNo)
@@ -234,7 +233,7 @@ router.get('/inventory',(req,res)=>{
     });
   });
 });
-router.get('/inventory/totalValues',(req,res)=>{
+router.get('/inventory/totalValues', auth_admin, (req,res)=>{
   db.query(`SELECT tblproductinventory.intInventoryNo, strBrand, strProductName,
     strVariant, intSize, strUnitName, (tblproductinventory.intQuantity)stock, (tblproductinventory.intQuantity*productPrice)totalValue
     FROM tblproductlist INNER JOIN tblproductbrand USING(intBrandNo) INNER JOIN tblproductinventory USING(intProductNo)
@@ -250,7 +249,7 @@ router.get('/inventory/totalValues',(req,res)=>{
     });
   });
 });
-router.get('/inventory/notMoving', now, (req,res)=>{
+router.get('/inventory/notMoving', auth_admin, now, (req,res)=>{
   let notMoveDate = [];
   if (req.query.date == 'now'){
     notMoveDate[0] = req.now.currentDate
@@ -286,10 +285,10 @@ router.get('/inventory/notMoving', now, (req,res)=>{
   }
 
 });
-router.get('/damage',(req,res)=>{
+router.get('/damage', auth_admin, (req,res)=>{
   res.render('admin-reports/views/damage');
 });
-router.get('/reviewMonthlyDamaged', yearsAvailableDamaged, (req,res)=>{
+router.get('/reviewMonthlyDamaged', auth_admin, yearsAvailableDamaged, (req,res)=>{
   db.query(`SELECT DATE(pullOutDate)date, SUM(intQuantity)qty FROM tblstockpullout
     WHERE monthname(pullOutDate) = ? AND YEAR(pullOutDate) = ?
     GROUP BY date`, [req.query.month, req.query.year], (err, results, fields) => {
@@ -317,7 +316,7 @@ router.get('/reviewMonthlyDamaged', yearsAvailableDamaged, (req,res)=>{
     }
   });
 })
-router.get('/reviewDailyDamaged', datesAvailableDamaged, (req,res)=>{
+router.get('/reviewDailyDamaged', auth_admin, datesAvailableDamaged, (req,res)=>{
   db.query(`SELECT tblproductinventory.intInventoryNo, strBrand, strProductName, strVariant, intSize, strUnitName, SUM(tblstockpullout.intQuantity)qty FROM tblstockpullout
     INNER JOIN tblproductinventory USING(intInventoryNo) INNER JOIN tbluom USING(intUomNo)
     INNER JOIN tblproductlist USING(intProductNo) INNER JOIN tblproductbrand USING(intBrandNo) WHERE date(pullOutDate) = ?
@@ -347,12 +346,12 @@ router.get('/reviewDailyDamaged', datesAvailableDamaged, (req,res)=>{
   });
 })
 
-router.get('/customer',(req,res)=>{
+router.get('/customer', auth_admin, (req,res)=>{
   res.render('admin-reports/views/customer');
 });
 
 // ajax
-router.post('/sales/load', now, yearsAvailable, (req,res)=>{
+router.post('/sales/load', auth_admin, now, yearsAvailable, (req,res)=>{
   let yearDate, dailyDate,
   config = {
     annual: req.now.currentYear,
@@ -395,7 +394,7 @@ router.post('/sales/load', now, yearsAvailable, (req,res)=>{
   });
 
 })
-router.post('/inventory/notMoveDate', now, (req,res)=>{
+router.post('/inventory/notMoveDate', auth_admin, now, (req,res)=>{
   let notMoveDate = [];
   if (req.body.notMoveDate == 'now'){
     notMoveDate[0] = req.now.currentDate
@@ -430,7 +429,7 @@ router.post('/inventory/notMoveDate', now, (req,res)=>{
     });
   });
 });
-router.post('/damaged/load', now, yearsAvailableDamaged, (req,res)=>{
+router.post('/damaged/load', auth_admin, now, yearsAvailableDamaged, (req,res)=>{
   let yearDate, dailyDate,
   config = {
     annual: req.now.currentYear,
