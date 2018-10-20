@@ -1,0 +1,361 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+
+<!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+ <!-- Content Header (Page header) -->
+ <section class="content-header">
+   <h1>
+
+     <small>Note: You can add a package to a product in inventory.</small>
+   </h1>
+   <ol class="breadcrumb">
+     <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+     <li><a href="#">Inventory</a></li>
+     <li class="active">Packages</li>
+
+   </ol>
+ </section>
+
+ <!-- Main content -->
+ <section class="content">
+   <div class="row">
+     <div class="col-xs-12">
+       <div class="box">
+         <div class="box-header">
+           <h3 class="box-title">Package No. </h3>
+         </div>
+
+         <form id="packageForm">
+           <div class="box-body">
+		<!-- buttons -->
+        <div class="row">
+          <div class="col-sm-10">
+
+              <div class="form-group">
+                <label for="pname">Package Name:</label>
+                <input type="text" required class="form-control" name="pname" placeholder="">
+              </div>
+
+              <div class="form-group">
+                <label for="pdesc">Package Description:</label>
+                <textarea class="form-control" name="pdesc" placeholder=""></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="pprice">Package Price</label>
+                <input type="decimal" value="0" required class="form-control" id="suggestedPrice" name="pprice" placeholder="">
+                <small>this will be the price of the products included.</small>
+              </div>
+
+              <div class="form-group">
+                <label for="pdue">Due Date</label>
+                <input type="date" required class="form-control" name="pdue" >
+              </div>
+
+          </div>
+        </div>
+
+          </br>
+          &nbsp; &nbsp;<button type="button" class="addList large ui green button" data-toggle="modal" data-target="#addList"><i class="fa fa-plus"></i> Add Product</button>
+             <!-- /.box-header -->
+             <div class="box-body table-responsive">
+               <table id="example3" class="table table-bordered table-hover">
+                 <thead>
+                 <tr>
+                   <th></th>
+                   <th>Product Name</th>
+                   <th>Price</th>
+                   <th>Quantity</th>
+                   <th>Action</th>
+
+                 </tr>
+                 </thead>
+                 <tbody>
+                  <% if (re == null || re == undefined){ %>
+
+                  <% }else if(re.length == 0){ %>
+
+                  <% }else{ %>
+                    <% re.forEach(function(i){ %>
+                      <tr>
+                        <td>
+                          <input type="hidden" value="<%=i.intInventoryNo%>" name="product[]">
+                          <img = width="40px" height="40px" src="/assets/images/products/<%=i.strProductPicture%>">
+                        </td>
+                        <td><%=i.strProductName%> <%=i.strVariant%> <%= i.intSize%>  <%=i.strUnitName%></td>
+                        <td><%= i.productPrice %><input type="hidden" value="<%= i.productPrice %>" class="price"></td>
+                        <td><input type="number" name="quantity[]" class="quantity form-control"></td>
+                        <td>
+                          <button class="deleteRow large ui red button"> <i class="glyphicon glyphicon-trash"></i></button>
+                        </td>
+
+                      </tr>
+                    <% }) %>
+                  <% } %>
+
+
+                 </tbody>
+
+               </table>
+             </div>
+             <!-- /.box-body -->
+        </div>
+        <div class="box-footer">
+          <button class="large ui button pull-left" >Back</button>
+          <button type="submit" class="large ui teal button pull-right">Submit</button>
+        </div>
+      </form>
+
+       </div>
+       <!-- /.box -->
+
+    </div>
+     <!-- /.col -->
+   </div>
+   <!-- /.row -->
+ </section>
+ <!-- /.content -->
+</div>
+
+<!-- /.content-wrapper -->
+
+<!-- Modals -->
+
+<div class="modal fade" id="addList">
+  <div class="modal-dialog"  >
+  <div class="modal-content">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title"></h4>
+    </div>
+    <div class="modal-body">
+    <!-- Horizontal Form -->
+
+    <form class="form-horizontal" >
+    <div class="row">
+      <div id="form-group" class="form-group">
+        <label for="" class="col-sm-3 control-label">Enter Barcode or Scan:</label>
+        <div class="col-sm-4">
+          <input type="text" id="barcode" class="form-control" required>
+          <span id="errorhelpBlock" class="help-block">No product record found!</span>
+          <span id="starthelpBlock" class="help-block">Search Barcode</span>
+          <span id="successhelpBlock" class="help-block"></span>
+        </div>
+      </div>
+
+      </div>
+
+    <hr>
+
+      <div class="form-group">
+        <label for="" class="col-sm-3 control-label">Product Name:</label>
+        <div class="col-sm-4">
+        <h5 id="prod_name"></h5>
+        </div>
+      </div>
+
+
+
+      <div class="form-group">
+        <label for="" class="col-sm-3 control-label">Price:</label>
+        <div class="col-sm-4">
+        <h5 id="prod_price"></h5>
+      </div>
+      </div>
+        <input type="number" id="prod_stock2" hidden>
+
+        <input type="number" name="inventory" id="inventory"  hidden>
+
+      <div class="form-group">
+        <label for="" class="col-sm-3 control-label">Brand:</label>
+        <div class="col-sm-4">
+        <h5 id="prod_brand"></h5>
+      </div>
+      </div>
+
+      </div>
+      <div class="modal-footer">
+      <button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
+      <button data-dismiss="modal"  id="save" class="large ui teal button">Save changes</button>
+      </div>
+    </form>
+  </div>
+  <!-- /.modal-content -->
+</div>
+ <!-- /.modal-dialog -->
+</div>
+
+
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- ./wrapper -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+
+<!-- page script (new added) -->
+
+<script>
+
+  $('.deleteRow').on('click',function(){
+    $(this).closest('tr').remove()
+  })
+
+  $('.quantity').on('keyup',function(){
+    var totalValue = 0;
+
+    $('table').find('input.quantity').each(function(){
+      totalValue = parseInt(totalValue) +  ($(this).val() * parseInt($(this).closest('tr').find('input.price').val()));
+    })
+    $('#suggestedPrice').val(totalValue)
+
+  })
+</script>
+
+<script>
+  $('#packageForm').submit(function(e){
+    e.preventDefault();
+    $.post('/inventory/addPackage2', $('#packageForm').serialize(), function(data,status){
+      if(data=="yes"){
+        swal({title: 'Success!', type: 'success'}).then(()=>{
+
+        })
+      }else{
+        swal({title: 'Error!', text: 'You do not have enough stocks to transfer to package', type: 'error'}).then(()=>{
+
+        })
+      }
+    })
+  })
+</script>
+
+
+
+
+
+<script>
+  $(function () {
+    $('#example3').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true,
+	  'select'		: true,
+	  'scroll'		: true
+    })
+  })
+</script>
+
+<script>
+  $('#title').html("USG | Packages");
+  $(".treeview a:contains('Inventory')").parent().addClass("active");
+  $(".navi a:contains('Packages')").parent().addClass("active");
+</script>
+
+<script>
+$('#starthelpBlock').show();
+$('#successhelpBlock').hide();
+$('#errorhelpBlock').hide();
+$('#save').attr('disabled',true);
+
+var temp_response = "";
+
+  $('.addList').on('click',function(){
+    temp_response = "";
+    $('#barcode').val("")
+
+
+  })
+
+
+  $('#barcode').on('keyup',function(){
+
+    $.post('/inventory/packageGetBarcode',{o: $('#barcode').val()},function(response,status){
+
+      if(response=="error"){
+        $('#form-group').attr('class', 'form-group has-error');
+        $('#errorhelpBlock').show();
+        $('#starthelpBlock').hide();
+        $('#successhelpBlock').hide();
+
+        $('#prod_name').html("");
+        $('#prod_stock').html("");
+        $('#prod_size').html("");
+        $('#prod_brand').html("");
+        $('#prod_category').html("");
+
+        temp_response = ""
+
+      }else{
+        $('#form-group').attr('class', 'form-group has-success');
+        $('#starthelpBlock').hide();
+        $('#successhelpBlock').show();
+        $('#errorhelpBlock').hide();
+        $('#save').attr('disabled',false);
+
+        temp_response = response;
+
+        $('#prod_name').html(response.inventory[0].strProductName + "  " + response.inventory[0].strVariant + "  " + response.inventory[0].intSize  + response.inventory[0].strUnitName);
+        // $('#prod_stock').html(response.inventory[0].totalQty);
+        // $('#prod_stock2').val(response.inventory[0].totalQty);
+        $('#prod_brand').html(response.inventory[0].strBrand);
+        $('#prod_price').html(response.inventory[0].productPrice.toFixed(2));
+        $('#inventory').val(response.inventory[0].intInventoryNo);
+
+
+
+      }
+    })
+  });
+
+  var t = $('#example3').DataTable();
+  var table = document.getElementById("example3");
+  var row = table.getElementsByTagName("tr");
+
+  $('#save').on('click',function(){
+
+        t.row.add( [
+          `<input type="hidden" value="${temp_response.inventory[0].intInventoryNo}" name="product[]">
+          <img = width="40px" height="40px" src="/assets/images/products/${temp_response.inventory[0].strProductPicture}">`,
+            `${temp_response.inventory[0].strProductName} ${temp_response.inventory[0].strVariant} ${temp_response.inventory[0].intSize} ${temp_response.inventory[0].strUnitName}`,
+            `${temp_response.inventory[0].productPrice.toFixed(2)} <input type="hidden" value="${temp_response.inventory[0].productPrice.toFixed(2)}" class="price">`,
+            `<input type="number" name="quantity[]" class="quantity form-control">`,
+            `<button class="deleteRow large ui red button"> <i class="glyphicon glyphicon-trash"></i></button>`
+        ] ).draw( false );
+
+        $('.deleteRow').on('click',function(){
+          $(this).closest('tr').remove();
+
+
+        })
+
+        $('.quantity').on('keyup',function(){
+          var totalValue = 0;
+
+          $('table').find('input.quantity').each(function(){
+            totalValue = parseInt(totalValue) +  ($(this).val() * parseInt($(this).closest('tr').find('input.price').val()));
+          })
+          $('#suggestedPrice').val(totalValue)
+
+        })
+
+  })
+
+
+</script>
+
+
+
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>

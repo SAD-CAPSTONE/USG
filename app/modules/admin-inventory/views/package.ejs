@@ -29,8 +29,8 @@
              <div class="tab-content">
                <!-- Active Package -->
                <div class="tab-pane active" id="active">
-               <!-- buttons -->
-                 &nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#addPackage"><i class="fa fa-plus"></i> Add New Package</button>
+                 <!-- buttons -->
+                 &nbsp; &nbsp;<button type="button" class="large ui green button" data-toggle="modal" data-target="#addPackage2"><i class="fa fa-plus"></i> Add New Package</button>
                      <!-- /.box-header -->
                      <div class="box-body table-responsive">
                        <table id="example2" class="table table-bordered table-hover">
@@ -271,6 +271,64 @@
  </div>
 
 
+  	<div class="modal fade" id="addPackage2">
+  	  <div class="modal-dialog">
+  		<div class="modal-content">
+  		  <div class="modal-header">
+  			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  			  <span aria-hidden="true">&times;</span></button>
+  			<h4 class="modal-title">Package Information Form</h4>
+  		  </div>
+  		  <div class="modal-body">
+  			<!-- Horizontal Form -->
+
+
+					<!-- form start -->
+         <form role="form" action="/inventory/packageForm" method="post">
+           <div class="box-body table-responsive">
+             <table id="example4" class="table table-bordered table-hover">
+               <thead>
+                 <tr>
+                   <th></th>
+                   <th></th>
+                   <th>Product</th>
+                   <th>Price</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 <% if (products.length == 0 ){ %>
+
+                 <% }else{ %>
+                 <% products.forEach(function(i){ %>
+                     <tr>
+                       <td><input type="checkbox"  value="<%=i.intInventoryNo%>" name="product"></td>
+                       <td><img = width="40px" height="40px" src="/assets/images/products/<%=i.strProductPicture%>"></td>
+                       <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%> <%=i.strUnitName%></td>
+                       <td><%= (i.productPrice).toFixed(2) %></td>
+                     </tr>
+                  <%  }) %>
+                 <% } %>
+
+               </tbody>
+             </table>
+           </div>
+
+
+
+
+  			</div>
+			  <div class="modal-footer">
+				  <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+				  <button type="submit" class="btn btn-primary">Save changes</button>
+			  </div>
+        </form>
+  		</div>
+  		<!-- /.modal-content -->
+  	</div>
+    <!-- /.modal-dialog -->
+  </div>
+
+
  <%- include('../../../templates/admin-aside.ejs') -%>
 
  <!-- ./wrapper -->
@@ -280,6 +338,9 @@
 <%- include('../../../templates/admin-footer.ejs') -%>
 
  <!-- page script (new added) -->
+
+
+
  <script>
    $(function () {
      $('#example2').DataTable({
@@ -298,6 +359,21 @@
  <script>
    $(function () {
      $('#example3').DataTable({
+       'paging'      : true,
+       'lengthChange': true,
+       'searching'   : true,
+       'ordering'    : true,
+       'info'        : true,
+       'autoWidth'   : true,
+     'select'		: true,
+     'scroll'		: true
+     })
+   })
+ </script>
+
+ <script>
+   $(function () {
+     $('#example4').DataTable({
        'paging'      : true,
        'lengthChange': true,
        'searching'   : true,

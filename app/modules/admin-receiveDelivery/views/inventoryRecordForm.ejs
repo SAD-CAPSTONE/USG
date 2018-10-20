@@ -1,0 +1,120 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+<!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+   <!-- Content Header (Page header) -->
+   <section class="content-header">
+     <h1>
+       <small>&nbsp;</small>
+     </h1>
+     <ol class="breadcrumb">
+       <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+       <li><a href="#">Orders</a></li>
+       <li class="active">Receive Delivery</li>
+     </ol>
+   </section>
+
+   <!-- Main content -->
+   <section class="content">
+     <div class="row">
+       <div class="col-xs-12">
+         <div class="box">
+           <div class="box-header">
+             <h4 align="center"><strong>Inventory Record Form</strong></h4>
+
+           </div>
+           <br>
+
+           <hr>
+           <form id="inventoryRecord_form">
+           <div class="box-body table-responsive">
+             <table id="example2" class="table table-bordered table-hover ">
+               <thead class="bg-success">
+                <tr>
+                  <th></th>
+                  <th>Product</th>
+                  <th>Quantity</th>
+                  <th>Expiration Date</th>
+                </tr>
+               </thead>
+               <tbody>
+                 <% if (re == null || re == undefined){ %>
+
+                 <% }else if (re.length == 0){ %>
+
+                 <% }else{ %>
+                   <% re.forEach(function(i){ %>
+                     <tr>
+
+                       <td>
+                         <input type="hidden" name="inventory[]" value="<%=i.intInventoryNo%>"><input type="hidden" name="list[]" value="<%=i.intOrderReceivedNo%>">
+                         <center><img = width="40px" height="40px" src="/assets/images/products/<%=i.strProductPicture%>"></center>
+                       </td>
+                       <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%> <%=i.strUnitName%></td>
+
+                       <td><input type="number" class="form-control" value="<%=i.intQuantity%>" name="quantity[]"></td>
+
+                       <td><input type="date" class="form-control" value="<%= moment(i.dateExpiration).format("YYYY-MM-DD") %>" name="expiration[]"></td>
+
+                     </tr>
+                   <% }) %>
+                 <% } %>
+
+               </tbody>
+
+             </table>
+             <br>
+
+           </div>
+           <!-- /.box-body -->
+
+           <div class="box-footer">
+             <button class="large ui  button pull-left">Back</button>
+
+             <button type="submit" class="large ui blue button pull-right">Submit</button>
+           </div>
+
+         </form>
+         </div>
+         <!-- /.box -->
+
+     </div>
+       <!-- /.col -->
+     </div>
+     <!-- /.row -->
+   </section>
+   <!-- /.content -->
+</div>
+
+ <!-- /.content-wrapper -->
+
+ <!-- Modals -->
+
+
+ <%- include('../../../templates/admin-aside.ejs') -%>
+
+<!-- ./wrapper -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+<!-- page script (new added) -->
+
+<script>
+  $('#inventoryRecord_form').submit(function(e){
+    e.preventDefault();
+
+    $.post('/receiveDelivery/addToInventory', $('#inventoryRecord_form').serialize(), function(data,status){
+      if(data=="yes"){
+        swal({title: "Success!", text: "You have added deliveries to inventory!", type: "success"}).then(()=>{
+
+        })
+      }else{
+        swal({title: "Error!",  type: "error"}).then(()=>{
+
+        })
+      }
+    })
+  })
+
+</script>

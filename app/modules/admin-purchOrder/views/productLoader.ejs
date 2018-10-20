@@ -16,7 +16,9 @@
         <% re.forEach(function(i){ %>
           <tr>
             <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%> <%=i.strUnitName%></td>
-            <td><button data-product="<%=i.strProductName%>" data-dismiss="modal" class="addProdRow large ui teal button btn-sm">Select</button></td>
+            <td>
+              <button data-inv="<%=i.intInventoryNo%>" data-size="<%=i.intSize%> <%=i.strUnitName%>" data-variant="<%=i.strVariant%>" data-product="<%=i.strProductName%>" data-dismiss="modal" class="addProdRow large ui teal button btn-sm">Select</button>
+            </td>
           </tr>
         <% }) %>
 
@@ -56,10 +58,10 @@ $('.addProdRow').on('click',function(){
 
   t.row.add( [
        count,
-      `<input  required type="text" name="product[]" value="${$(this).data('product')}" class="form-control">`,
+      `<input  required readonly type="text" name="product[]" value="${$(this).data('product')}" class="form-control"><input type="hidden" name="inventory[]" value="${$(this).data('inv')}" class="form-control">`,
       `<input style="width: 80px" required type="number" name="quantity[]" value="0" class="form-control">`,
-      `<input  type="text" name="variant[]"  class="form-control">`,
-      `<input  type="text" name="size[]"  class="form-control">`
+      `<input  type="text" readonly value="${$(this).data('variant')}" name="variant[]"  class="form-control">`,
+      `<input  type="text" readonly name="size[]" value="${$(this).data('size')}"  class="form-control">`
 
   ] ).draw( false );
   count++;

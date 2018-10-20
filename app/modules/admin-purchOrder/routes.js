@@ -158,38 +158,27 @@ router.post('/submit',auth_admin, (req,res)=>{
     var counter = 0;
 
     db.beginTransaction(function(err){
-      if(err){
-        console.log(err);
-      }else{
+      if(err) console.log(err);
+      else{
         // Select last purchase order no
         db.query(`Select * from tblPurchaseOrder order by intPurchaseOrderNo desc limit 1`,(err1,results1,fields1)=>{
-          if (err1){
-            db.rollback(function(){
+          if (err1){ db.rollback(function(){
               console.log(err1);
-            })
-          }else{
-            if(results1 == undefined || results1 == null){
-
-            }else if(results1.length == 0){
-
-            }else{
-              ponum = parseInt(results1[0].intPurchaseOrderNo) + 1;
-            }
+            })}
+          else{
+            if(results1 == undefined || results1 == null){}else if(results1.length == 0){}
+            else{ponum = parseInt(results1[0].intPurchaseOrderNo) + 1;}
             // Insert into purchase order
-            db.query(`Insert into tblPurchaseOrder (intPurchaseOrderNo, intSupplierID, intAdminID, strSpecialNote) 
+            db.query(`Insert into tblPurchaseOrder (intPurchaseOrderNo, intSupplierID, intAdminID, strSpecialNote)
               values ("${ponum}","${req.body.supplier}", "${req.user.intUserID}", "${req.body.specialnote}")`,(err2,results2,fields2)=>{
-              if(err2){
-                db.rollback(function(){
-                  console.log(err2);
-                })
-              }else{
+              if(err2){db.rollback(function(){console.log(err2);})}
+              else{
                 // Get the last po list number
                 db.query(`Select * from tblPurchaseOrderList order by intPOrderlistno desc limit 1`,(err3,results3,fields3)=>{
-                  if (err3){
-                    db.rollback(function(){
+                  if (err3){db.rollback(function(){
                       console.log(err3);
-                    })
-                  }else{
+                    })}
+                  else{
                     if(results3 == undefined || results3 == null){
 
                     }else if(results3.length == 0){
@@ -200,13 +189,12 @@ router.post('/submit',auth_admin, (req,res)=>{
 
                     // insert each to purchase order List
                     async.eachSeries(product,function (data,callback){
-                      db.query(`Insert into tblPurchaseOrderList (intPOrderListNo, intPurchaseOrderNo,
-                        strProduct, intQuantity, strVariant, strSize) values ("${startProdListNo}", "${ponum}", "${product[counter]}", "${quantity[counter]}", "${variant[counter]}", "${size[counter]}")`, (err4,results4,fields4)=>{
-                         if (err4){
-                           db.rollback(function(){
+                      db.query(`Insert into tblPurchaseOrderList (intPOrderListNo, intPurchaseOrderNo, intInventoryNo,
+                        strProduct, intQuantity, strVariant, strSize) values ("${startProdListNo}", "${ponum}", "${req.body.inventory[counter]}", "${product[counter]}", "${quantity[counter]}", "${variant[counter]}", "${size[counter]}")`, (err4,results4,fields4)=>{
+                         if (err4){db.rollback(function(){
                              console.log(err4);
-                           })
-                         }else{
+                           })}
+                         else{
 
                            startProdListNo++;
                            counter++;
@@ -215,11 +203,10 @@ router.post('/submit',auth_admin, (req,res)=>{
                       });
                     }, function(err, results){
                       db.commit(function(erra){
-                        if (erra){
-                          db.rollback(function(){
+                        if (erra){db.rollback(function(){
                             console.log(erra);
-                          });
-                        }else{
+                          });}
+                        else{
                           res.send(`${ponum}`);
                         }
                       })
@@ -273,7 +260,9 @@ router.post('/addSupplier', auth_admin, (req,res)=>{
 
 router.get('/findProducts/:pid',auth_admin, (req,res)=>{
 
-  db.query(`Select * from tblProductList join tblProductInventory on tblProductList.intProductNo = tblProductInventory.intProductNo where tblProductInventory.intUserID = "${req.params.pid}" and tblProductList.intstatus = 1`,(err1,results1,fields1)=>{
+  db.query(`Select * from tblProductList join tblProductInventory on tblProductList.intProductNo = tblProductInventory.intProductNo
+    join tblUom on tblProductInventory.intUomNo = tblUom.intUomNo
+     where tblProductInventory.intUserID = "${req.params.pid}" and tblProductList.intstatus = 1`,(err1,results1,fields1)=>{
     if (err1) console.log(err1);
     if (!err1) res.render('admin-purchOrder/views/productLoader', {re: results1});
   });

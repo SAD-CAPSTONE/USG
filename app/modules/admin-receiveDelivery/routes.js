@@ -51,28 +51,46 @@ router.post('/findNo', auth_admin, (req,res)=>{
   });
 });
 
-router.get('/loadOrderList', auth_admin,(req,res)=>{
+router.get('/loadOrderList', auth_admin, (req,res)=>{
   // dapat kapag bad orders, yung bad lang lalabas
-  db.query(`Select * from tblPurchaseOrder join tblPurchaseOrderList on tblPurchaseOrder.intPurchaseOrderNo = tblPurchaseOrderList.intPurchaseOrderNo where tblPurchaseOrder.intPurchaseOrderNo = "${purch_no}" and (intStatus = 0)`,(err1,results1,fields1)=>{
+  db.query(`Select * from tblPurchaseOrder join tblPurchaseOrderList
+    on tblPurchaseOrder.intPurchaseOrderNo = tblPurchaseOrderList.intPurchaseOrderNo
+    join tblProductInventory on tblPurchaseOrderList.intInventoryNo = tblProductInventory.intInventoryNo
+    where tblPurchaseOrder.intPurchaseOrderNo = "${purch_no}" and tblPurchaseOrder.intStatus = 0`,(err1,results1,fields1)=>{
     if(err1) console.log(err1);
     if (!err1) res.render('admin-receiveDelivery/views/productLoader', {re: results1});
 
   });
 });
 
-router.get('/deliveryDetails', auth_admin,(req,res)=>{
-  db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo
+router.get('/deliveryDetails', auth_admin, (req,res)=>{
+  db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist
+    on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo
     where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.delivery}"`,(err1,results,fields1)=>{
     if(err1) console.log(err1);
       db.query(`Select * from tblReceiveOrder join tblPurchaseOrder on tblReceiveOrder.intPurchaseOrderNo = tblPurchaseOrder.intPurchaseOrderNo join tblSupplier on tblSupplier.intUserID = tblPurchaseOrder.intSupplierID join tblUser on tblSupplier.intUserID = tblUser.intUserID where intReceiveOrderNo = "${req.query.delivery}"`,(err3,results2,f3)=>{
         if(err3) console.log(err3);
         if (!err3) res.render('admin-receiveDelivery/views/deliveryDetails',{re: results, delivery_no: req.query.delivery, moment:moment, from: results2});
-        console.log(results)
+        
       });
 
     });
+});
 
-  });
+router.get('/inventoryRecord', auth_admin, (req,res)=>{
+  db.query(`Select * from tblReceiveOrder join tblReceiveOrderList
+    on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderList.intReceiveOrderNo
+    join tblProductInventory on tblProductInventory.intInventoryNo = tblReceiveOrderList.intInventoryNo
+    join tblProductList on tblProductList.intProductNo = tblProductInventory.intProductNo
+    join tblUom on tblUom.intUomNo = tblProductInventory.intUomNo
+    where tblReceiveOrder.intReceiveOrderNo = ${req.query.ro}`,(err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+        res.render('admin-receiveDelivery/views/inventoryRecordForm', {re: res1, moment: moment});
+
+      }
+    })
+})
 
 router.post('/newDeliveryRecord', auth_admin, (req,res)=>{
 
@@ -81,24 +99,21 @@ router.post('/newDeliveryRecord', auth_admin, (req,res)=>{
   var loop = req.body.product;
 
   db.beginTransaction(function(err){
-    if(err){
-      db.rollback(function(){
+    if(err){db.rollback(function(){
         console.log(err);
-      })
-    }else{
+      })}
+    else{
       db.query(`Insert into tblreceiveOrder (intReceiveOrderNo, intPurchaseOrderNo, intAdminID,   specialNotes)
         values ("${req.body.rno}", "${req.body.POno}", "${req.user.intUserID}", "${req.body.note}")`,(err1,results1,fields1)=>{
-        if (err1){
-          db.rollback(function(){
+        if (err1){db.rollback(function(){
             console.log(err1);
-          })
-        }else{
+          })}
+        else{
           db.query(`Select * from tblReceiveOrderlist order by intOrderReceivedNo desc limit 1`,(err2,results2,fields2)=>{
-            if(err2){
-              db.rollback(function(){
+            if(err2){db.rollback(function(){
                 console.log(err2);
-              })
-            }else{
+              })}
+            else{
               if (results2 == null || results2 == undefined){
 
               }else if(results2.length == 0){
@@ -108,17 +123,17 @@ router.post('/newDeliveryRecord', auth_admin, (req,res)=>{
               }
 
               db.query(`Update tblPurchaseOrder set intStatus = 1 where intPurchaseOrderNo = "${req.body.POno}"`,(e2,r2,f2)=>{
-                if(e2){
-                  db.rollback(function(){
+                if(e2){db.rollback(function(){
                     console.log(e2);
-                  })
-                }else{
+                  })}
+                else{
                   async.eachSeries(loop,function(data,callback){
 
                     var exdate = moment(req.body.expiration[counter]).format("YYYY-MM-DD");
-                    console.log(exdate);
+
                     var d = "2001-02-31";
-                    db.query(`INSERT INTO tblreceiveorderlist (intOrderReceivedNo, intReceiveOrderNo, strProduct, strSize, strConsignmentPrice, intQuantity, SRP, dateExpiration, intOrderStatus, strVariant) VALUES ("${startNo}", "${req.body.rno}", "${req.body.product[counter]}", "${req.body.size[counter]}", "", "${req.body.quantity[counter]}", "${req.body.srp[counter]}", "${exdate}", "${req.body.status[counter]}", "${req.body.variant[counter]}")`, (err3,results3,fields3)=>{
+                    db.query(`INSERT INTO tblreceiveorderlist (intOrderReceivedNo, intReceiveOrderNo, intInventoryNo, strProduct, strSize, productPrice, intQuantity, SRP, dateExpiration, intOrderStatus, strVariant)
+                     VALUES ("${startNo}", "${req.body.rno}", "${req.body.inventory[counter]}", "${req.body.product[counter]}", "${req.body.size[counter]}", "", "${req.body.quantity[counter]}", "${req.body.srp[counter]}", "${exdate}", "${req.body.status[counter]}", "${req.body.variant[counter]}")`, (err3,results3,fields3)=>{
                       if (err3){db.rollback(function(){console.log(err3);})}
                       else{
                         counter++;
@@ -128,17 +143,15 @@ router.post('/newDeliveryRecord', auth_admin, (req,res)=>{
 
                     });
                   }, function(e,results){
-                    if (e){
-                      db.rollback(function(){
+                    if (e){  db.rollback(function(){
                         console.log(e);
-                      })
-                    }else{
+                      })}
+                    else{
                       db.commit(function(e1){
-                        if(e1){
-                          db.rollback(function(){
+                        if(e1){  db.rollback(function(){
                             console.log(e1);
-                          })
-                        }else{
+                          })}
+                        else{
                           res.send(`${req.body.rno}`);
 
                         }
@@ -156,7 +169,7 @@ router.post('/newDeliveryRecord', auth_admin, (req,res)=>{
 
 });
 
-router.get('/print', auth_admin,(req,res)=>{
+router.get('/print', auth_admin, (req,res)=>{
   db.query(`Select * from tblReceiveOrder join tblReceiveOrderlist on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderlist.intReceiveOrderNo where tblReceiveOrderlist.intReceiveOrderNo = "${req.query.ro}" and tblReceiveOrderlist.intOrderStatus = "Good"`,(err1,good,fields1)=>{
     if(err1) console.log(err1);
 
@@ -174,7 +187,7 @@ router.get('/print', auth_admin,(req,res)=>{
 
 });
 
-router.get('/returnBadOrders', auth_admin,(req,res)=>{
+router.get('/returnBadOrders', auth_admin, (req,res)=>{
   db.query(`Select * from tblReceiveOrder join tblReceiveOrderList on tblReceiveOrder.intReceiveOrderNo = tblReceiveOrderList.intReceiveOrderNo where tblReceiveOrder.intReceiveOrderNo = "${req.query.ro}" and tblReceiveOrderList.intOrderStatus = "Bad"`,(e1,bad,f1)=>{
     if(e1) console.log(e1);
     if(!e1){
@@ -183,7 +196,7 @@ router.get('/returnBadOrders', auth_admin,(req,res)=>{
   });
 });
 
-router.post('/returnBadOrders', auth_admin,(req,res)=>{
+router.post('/returnBadOrders', auth_admin, (req,res)=>{
   var rb_no = "1000";
   var rblist_no = "1000";
   var loop = req.body.product;
@@ -244,6 +257,80 @@ router.post('/returnBadOrders', auth_admin,(req,res)=>{
     }
   })
 });
+
+router.post('/addToInventory', auth_admin, (req,res)=>{
+  var batch_no = "1000", transact_no="1000", count = 0;
+
+  db.beginTransaction(function(err){
+    if(err) console.log(err);
+    else{
+      db.query(`Select * from tblBatch order by intBatchNo desc limit 1`,(err1,res1,fie1)=>{
+        if(err1) console.log(err1);
+        else{
+          if(res1.length==0){} else{ batch_no = parseInt(res1[0].intBatchNo) + 1}
+
+          db.query(`Select * from tblInventoryTransactions order by intTransactionId desc limit 1`,(err2,res2,fie2)=>{
+            if(err2) console.log(err2);
+            else{
+              if(res2.length==0){} else{ transact_no = parseInt(res2[0].intTransactionID) + 1}
+
+              async.eachSeries(req.body.inventory, function(data,callback){
+
+                db.query(`Select * from tblProductInventory where intInventoryNo = "${req.body.inventory[count]}"`,(err3,inv,fie3)=>{
+                  if(err3) console.log(err3);
+                  else{
+                    db.query(`Insert into tblBatch (intBatchNo, expirationDate, intInventoryNo, intQuantity)
+                      values ("${batch_no}", "${req.body.expiration[count]}", "${req.body.inventory[count]}", ${req.body.quantity[count]})`,(err4,res4,fie4)=>{
+                        if(err4) console.log(err4)
+                        else{
+                          db.query(`Insert into tblInventoryTransactions (intTransactionID, intInventoryNo, intShelfNo, intCriticalLimit, strTypeOfChanges, intUserID, productSRP, productPrice, currQuantity)
+                            values ("${transact_no}", "${req.body.inventory[count]}", ${inv[0].intShelfNo}, ${inv[0].intCriticalLimit}, "(+${req.body.quantity[count]}) Received Delivery", "${req.user.intUserID}", ${inv[0].productSRP}, ${inv[0].productPrice}, ${inv[0].intQuantity + req.body.quantity[count]})`,(err5,res5,fie5)=>{
+                              if(err5) console.log(err5);
+                              else{
+                                db.query(`Update tblProductInventory set intQuantity = intQuantity + ${req.body.quantity[count]} where intInventoryNo = "${req.body.inventory[count]}"`,(err6, res6, fie6)=>{
+                                  if(err6) console.log(err6);
+                                  else{
+
+                                    db.query(`Update tblReceiveOrderList set inventoryRecordStatus = 1
+                                      where intOrderReceivedNo = "${req.body.list[count]}"`,(err7,res7, fie7)=>{
+                                        if(err7) console.log(err7);
+                                        else{
+                                          batch_no++;
+                                          transact_no++;
+                                          count++;
+                                          callback();
+                                        }
+                                      })
+
+
+                                  }
+                                })
+                              }
+                            })
+                        }
+                      })
+                  }
+                })
+
+              }, function(erra,resa){
+                if(erra) console.log(erra);
+                else{
+                  db.commit(function(errb){
+                    if(errb) console.log(errb);
+                    else{
+                      res.send("yes")
+                    }
+                  })
+                }
+
+              })
+            }
+          })
+        }
+      })
+    }
+  })
+})
 
 // <%- include('../../../templates/admin-navbar.ejs') -%>
 

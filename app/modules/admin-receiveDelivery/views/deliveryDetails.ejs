@@ -21,7 +21,7 @@
        <div class="col-xs-12">
          <div class="box">
            <div class="box-header">
-             <h2 align="center"><strong>Delivery Transmittal Receipt</strong></h4>
+             <h2 align="center"><strong>Delivery Transmittal Receipt</strong></h2>
 
            </div>
            <br>
@@ -44,17 +44,22 @@
                <h5>info.ultrasupergreen@gmail.com</h5>
              </div>
              <div class="col-sm-3">
-                <h4><strong>Delivery Receipt No: </strong><%=delivery_no%></h4> 
+                <h4><strong>Delivery Receipt No: </strong><%=delivery_no%></h4>
              </div>
            </div>
 
 
            <hr>
            <!-- /.box-header -->
+           &nbsp;&nbsp;&nbsp;<strong><small>Legend: </small></strong><a class=" ui green empty circular label"></a> <small>Added to inventory</small>
+           <a class="ui red empty circular label"></a> <small>Not added to inventory</small>
+           <a class="ui orange empty circular label"></a> <small>No existing inventory record</small>
+
            <div class="box-body table-responsive">
              <table id="example2" class="table table-bordered table-hover ">
                <thead class="bg-success">
                 <tr>
+                  <th></th>
                   <th>Product Name</th>
                   <th>Size</th>
                   <th>Variant</th>
@@ -71,6 +76,18 @@
                  <% }else{ %>
                    <% re.forEach(function(i){ %>
                      <tr>
+
+                       <td>
+                         <% if(i.inventoryRecordStatus == 0){ %>
+                           <a class=" ui red empty circular label"></a>
+                         <% }else{ %>
+                           <a class=" ui green empty circular label"></a>
+                         <% } %>
+
+                         <% if (i.intInventoryNo == null){ %>
+                            <a class="ui orange empty circular label"></a>
+                         <% } %>
+                       </td>
                        <td><%=i.strProduct%></td>
                        <td><%=i.strSize%></td>
                        <td><%=i.strVariant%></td>
@@ -91,8 +108,10 @@
                </tbody>
 
              </table>
+             <br>
             <a href="/receiveDelivery/print?ro=<%=delivery_no%>" target="_blank" class="large ui button pull-right"> <i class="fa fa-print"></i> Print</a>
             <a href="/receiveDelivery/returnBadOrders?ro=<%=delivery_no%>" class="large ui teal button pull-right">Return Bad Orders</a>
+            <a href="/receiveDelivery/inventoryRecord?ro=<%=delivery_no%>" class="large ui blue button pull-right">Add Products to Inventory</a>
            </div>
            <!-- /.box-body -->
          </div>
