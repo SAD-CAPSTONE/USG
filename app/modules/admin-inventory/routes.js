@@ -1479,6 +1479,56 @@ router.post('/packageForm',auth_admin, (req,res)=>{
      })
 })
 
+router.get('/packageDetails', auth_admin, (req,res)=>{
+  db.query(`Select * from tblPackage join tblPackageList on tblPackage.intPackageNo = tblPackageList.intPackageNo
+    join tblProductInventory on tblPackageList.intInventoryNo = tblProductInventory.intInventoryNo
+    join tblUom on tblUom.intUOMno = tblProductInventory.intUOMno
+    join tblProductlist on tblProductlist.intProductNo = tblProductInventory.intProductNo
+    where tblPackage.intPackageNo = "${req.query.package}"`,(err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+
+        res.render('admin-inventory/views/packageDetails', {re: res1, moment: moment});
+      }
+    } )
+})
+
+router.post('/editPackage2', auth_admin, (req,res)=>{
+  var count = 0;
+  db.beginTransaction(function(err){
+    if(err) console.log(err);
+    else{
+      db.query(`Update tblPackage set strPackageName = "${req.body.pname}", strPackageDescription = "${req.body.pdesc}",
+        packagePrice = ${req.body.pprice}, dateDue = "${req.body.pdue}", intQuantity = ${req.body.pquantity}
+        where intPackageNo = "${req.body.packageNo}"`,(err1,res1,fie1)=>{
+          if(err1) console.log(err1);
+          else{
+            async.eachSeries(req.body.product, function(data,callback){
+              db.query(`Update tblPackageList set intProductQuantity = ${req.body.quantity[count]}
+                where intPackageListNo = "${req.body.product[count]}"`,(err2,res2,fie2)=>{
+                  if(err2) console.log(err2);
+                  else{
+                    count++;
+                    callback();
+                  }
+                })
+            },function(erra,resa){
+              if(erra) console.log(erra);
+              else{
+                db.commit(function(errb){
+                  if(errb) {db.rollback(function(){console.log(errb)})}
+                  else{
+                    res.send("yes")
+                  }
+                })
+              }
+            })
+          }
+        })
+    }
+  })
+})
+
 router.post('/packageGetBarcode', auth_admin,(req,res)=>{
   db.query(`Select (intQuantity - intReservedItems) as totalQty, tblProductInventory.*, tblProductlist.*, tblUom.*, tblProductBrand.*
   from tblproductInventory
@@ -1521,27 +1571,29 @@ router.post('/addPackage', auth_admin,(req,res)=>{
 
 function checkPackageList(req,res,next){
   var alert = 0, count = 0;
-  async.eachSeries(req.body.product, function(data,callback){
-    db.query(`Select * from tblProductInventory where (intQuantity - intReservedItems) >= ${req.body.quantity[count]}
-      and intInventoryNo = "${req.body.product[count]}"`,(err1,res1,fie1)=>{
-        if(err1) console.log(err1);
-        else{
-          console.log(req.body.product[count]);
-          if (res1.length==0){ alert = 1; }
-          count++;
-          callback();
-        }
-      })
-  },function(erra,resa){
 
-    if(erra) console.log(erra);
-    if(alert == 1){res.send("no");} else{ next();}
+  if(req.body.product == null || req.body.product == undefined || req.body.product.length == 0){
 
-  })
+    res.send("noItems");
+  }else{
+    async.eachSeries(req.body.product, function(data,callback){
+      db.query(`Select * from tblProductInventory where (intQuantity - intReservedItems) >= ${req.body.quantity[count]}
+        and intInventoryNo = "${req.body.product[count]}"`,(err1,res1,fie1)=>{
+          if(err1) console.log(err1);
+          else{
+            console.log(req.body.product[count]);
+            if (res1.length==0){ alert = 1; }
+            count++;
+            callback();
+          }
+        })
+    },function(erra,resa){
 
+      if(erra) console.log(erra);
+      if(alert == 1){res.send("no");} else{ next();}
 
-
-
+    })
+  }
 
 
 }
@@ -1562,7 +1614,7 @@ router.post('/addPackage2', auth_admin, checkPackageList, (req,res)=>{
               if(res3.length==0){ } else{ packlist_no = parseInt(res3[0].intPackageListNo) + 1}
 
                   db.query(`Insert into tblpackage (intPackageNo, intAdminID, strPackageName, strPackageDescription, packagePrice, intQuantity,  dateDue)
-                    values ("${pack_no}","${req.user.intUserID}","${req.body.pname}","${req.body.pdesc}",${req.body.pprice}, 0, "${req.body.pdue}")`,(err2,res2,fie2)=>{
+                    values ("${pack_no}","${req.user.intUserID}","${req.body.pname}","${req.body.pdesc}",${req.body.pprice}, ${req.body.pquantity}, "${req.body.pdue}")`,(err2,res2,fie2)=>{
                       if(err2) console.log(err2);
                       else{
 
@@ -1584,7 +1636,7 @@ router.post('/addPackage2', auth_admin, checkPackageList, (req,res)=>{
                               if(e) console.log(e);
                               else{
                                 res.send("yes");
-                                
+
                               }
                             })
                           }

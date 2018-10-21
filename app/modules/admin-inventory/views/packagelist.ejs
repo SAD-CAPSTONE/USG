@@ -32,12 +32,11 @@
          <!-- /.box-header -->
          <div class="box-body table-responsive">
            <table id="example2" class="table table-bordered table-hover">
-             <thead>
+             <thead class="bg-success">
              <tr>
-               <th>Product Code</th>
+
+               <th></th>
                <th>Product Name</th>
-               <th>Supplier Name</th>
-               <th>Size</th>
                <th>Quantity</th>
 			         <th>Action</th>
 
@@ -51,13 +50,12 @@
               <% }else{ %>
                 <% re.forEach(function(i){ %>
                   <tr>
-                    <td><%=i.strProductCode%></td>
-                    <td><%=i.strProductName%></td>
-                    <td><%=i.strFname%> <%=i.strMname%> <%=i.strLname%></td>
-                    <td><%= i.intSize%>  <%=i.strUnitName%></td>
+                    <td><img  width="40px" height="40px" src="/assets/images/products/<%=i.strProductPicture%>"></td>
+                    <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%> <%=i.strUnitName%></td>
                     <td><%=i.intProductQuantity%></td>
   				          <td>
                       <button class="large ui red button"> <i class="glyphicon glyphicon-trash"></i></button>
+                      <button class="large ui teal button"> <i class="glyphicon glyphicon-edit"></i></button>
                     </td>
 
                   </tr>
