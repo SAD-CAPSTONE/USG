@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "async": "^2.6.0",
-    "bcrypt": "^2.0.1",
+    "bcryptjs": "*",
     "body-parser": "^1.18.3",
     "chart.js": "^2.7.2",
     "cookie-session": "^2.0.0-beta.3",
@@ -24,7 +24,7 @@
     "jspdf-customfonts": "0.0.4-rc.4",
     "method-override": "^2.3.10",
     "moment": "^2.22.1",
-    "morgan": "^1.9.0",
+    "morgan": "^1.9.1",
     "mysql": "^2.13.0",
     "node-excel-export": "^1.4.4",
     "nodemailer": "^4.6.7",

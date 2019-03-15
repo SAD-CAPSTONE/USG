@@ -4,7 +4,7 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const keys = require('./keys');
 const db = require('../app/lib/database')();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 const firstID = 1000; // First User ID in Database
 
