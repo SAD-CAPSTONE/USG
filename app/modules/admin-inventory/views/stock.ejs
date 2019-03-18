@@ -47,7 +47,7 @@
                   <thead>
                   <tr>
 
-                    <th>Product Code</th>
+                    <th style="width: 15%"></th>
                     <th>Product Name</th>
                     <th>Brand</th>
                     <th>Quantity</th>
@@ -62,7 +62,7 @@
                     <% re.forEach(function(i){ %>
                       <tr>
 
-                      <td><%=i.strProductCode%></td>
+                      <td><center><img = width="40px" height="40px" src="/assets/images/products/<%=i.strProductPicture%>"></center></td>
                       <td><%=i.strProductName%></td>
                       <td><%=i.strBrand%></td>
                       <td><%=i.quantity%></td>
@@ -89,8 +89,7 @@
 
             <!-- New product Item-->
             <div class="tab-pane " id="addInventory">
-              <br>
-              <br>
+              
               <!-- form start -->
               <form id="stockForm" >
 

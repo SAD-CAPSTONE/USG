@@ -24,7 +24,7 @@
      <div class="col-xs-12">
        <div class="box">
          <div class="box-header">
-           <h3 class="box-title">Package No. </h3>
+           <h3 class="box-title">Package No. <%= newRecord %></h3>
          </div>
 
          <form id="packageForm">
@@ -38,37 +38,49 @@
                 <input type="text" required class="form-control" name="pname" placeholder="">
               </div>
 
+
               <div class="form-group">
                 <label for="pdesc">Package Description:</label>
                 <textarea class="form-control" name="pdesc" placeholder=""></textarea>
               </div>
 
-              <div class="form-group">
-                <label for="pprice">Package Price</label>
-                <input type="decimal" value="0" required class="form-control" id="suggestedPrice" name="pprice" placeholder="">
-                <small>this will be the price of the products included.</small>
+              <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="pprice">Package Price</label>
+                      <input readonly type="decimal" value="0" required class="form-control" id="suggestedPrice" name="pprice" placeholder="">
+                      <!-- <small>this will be the price of the products included.</small> -->
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label for="pprice">Package Quantity</label>
+                    <input type="number" value="0" required class="form-control"  name="pquantity" placeholder="">
+
+                  </div>
+                </div>
+
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label for="pdue">Due Date</label>
+                    <input type="date" required class="form-control" name="pdue" >
+                  </div>
+                </div>
+
               </div>
 
-              <div class="form-group">
-                <label for="pprice">Package Quantity</label>
-                <input type="number" value="0" required class="form-control"  name="pquantity" placeholder="">
-
-              </div>
-
-              <div class="form-group">
-                <label for="pdue">Due Date</label>
-                <input type="date" required class="form-control" name="pdue" >
-              </div>
 
           </div>
         </div>
 
-          </br>
+          <br>
           <div class="row">
             <div class="col-sm-12">
               <div class="special-position-1">
 
-                <button type="button" class="addList large ui green button" data-toggle="modal" data-target="#addList"><i class="fa fa-plus"></i> Add Product</button>
+                <button style="display: none" type="button" class="addList large ui green button" data-toggle="modal" data-target="#addPackage2"><i class="fa fa-plus"></i> hidden button</button>
+                <button type="button" class="addProduct large ui green button" ><i class="fa fa-plus"></i> Add Product</button>
 
               </div>
             </div>
@@ -96,7 +108,7 @@
                     <% re.forEach(function(i){ %>
                       <tr>
                         <td>
-                          <input type="hidden" class="form-control" value="<%=i.intInventoryNo%>" name="product[]">
+                          <input type="hidden" class="product form-control" value="<%=i.intInventoryNo%>" name="product[]">
                           <img  width="40px" height="40px" src="/assets/images/products/<%=i.strProductPicture%>">
                         </td>
                         <td><%=i.strProductName%> <%=i.strVariant%> <%= i.intSize%>  <%=i.strUnitName%></td>
@@ -139,68 +151,115 @@
 <!-- Modals -->
 
 <div class="modal fade" id="addList">
-  <div class="modal-dialog"  >
-  <div class="modal-content">
-    <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-      <span aria-hidden="true">&times;</span></button>
-    <h4 class="modal-title"></h4>
-    </div>
-    <div class="modal-body">
-    <!-- Horizontal Form -->
-
-    <form class="form-horizontal" >
-    <div class="row">
-      <div id="form-group" class="form-group">
-        <label for="" class="col-sm-3 control-label">Enter Barcode or Scan:</label>
-        <div class="col-sm-4">
-          <input type="text" id="barcode" class="form-control" required>
-          <span id="errorhelpBlock" class="help-block">No product record found!</span>
-          <span id="starthelpBlock" class="help-block">Search Barcode</span>
-          <span id="successhelpBlock" class="help-block"></span>
-        </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4>
       </div>
+      <div class="modal-body">
+        <!-- Horizontal Form -->
 
-      </div>
+        <form class="form-horizontal" >
+          <div class="row">
+            <div id="form-group" class="form-group">
+              <label for="" class="col-sm-3 control-label">Enter Barcode or Scan:</label>
+              <div class="col-sm-4">
+                <input type="text" id="barcode" class="form-control" required>
+                <span id="errorhelpBlock" class="help-block">No product record found!</span>
+                <span id="starthelpBlock" class="help-block">Search Barcode</span>
+                <span id="successhelpBlock" class="help-block"></span>
+              </div>
+            </div>
+          </div>
 
-    <hr>
+        <hr>
 
-      <div class="form-group">
-        <label for="" class="col-sm-3 control-label">Product Name:</label>
-        <div class="col-sm-4">
-        <h5 id="prod_name"></h5>
-        </div>
-      </div>
+          <div class="form-group">
+            <label for="" class="col-sm-3 control-label">Product Name:</label>
+            <div class="col-sm-4">
+            <h5 id="prod_name"></h5>
+            </div>
+          </div>
 
+          <div class="form-group">
+            <label for="" class="col-sm-3 control-label">Price:</label>
+            <div class="col-sm-4">
+              <h5 id="prod_price"></h5>
+            </div>
+          </div>
 
+            <input type="number" id="prod_stock2" hidden>
 
-      <div class="form-group">
-        <label for="" class="col-sm-3 control-label">Price:</label>
-        <div class="col-sm-4">
-        <h5 id="prod_price"></h5>
-      </div>
-      </div>
-        <input type="number" id="prod_stock2" hidden>
+            <input type="number" name="inventory" id="inventory"  hidden>
 
-        <input type="number" name="inventory" id="inventory"  hidden>
-
-      <div class="form-group">
-        <label for="" class="col-sm-3 control-label">Brand:</label>
-        <div class="col-sm-4">
-        <h5 id="prod_brand"></h5>
-      </div>
-      </div>
-
+          <div class="form-group">
+            <label for="" class="col-sm-3 control-label">Brand:</label>
+            <div class="col-sm-4">
+            <h5 id="prod_brand"></h5>
+            </div>
+          </div>
       </div>
       <div class="modal-footer">
-      <button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
-      <button data-dismiss="modal"  id="save" class="large ui teal button">Save changes</button>
+        <button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
+        <button data-dismiss="modal"  id="save" class="large ui teal button">Save changes</button>
       </div>
-    </form>
+      </form>
+    </div>
+    <!-- /.modal-content -->
   </div>
-  <!-- /.modal-content -->
+   <!-- /.modal-dialog -->
 </div>
- <!-- /.modal-dialog -->
+
+<div class="modal fade" id="addPackage2">
+  <div class="modal-dialog">
+    <div class="modal-content">
+     <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title"></h4>
+     </div>
+
+     <div class="divProductList">
+      </div>
+
+      <div class="modal-body">
+        <!-- Horizontal Form -->
+
+        <h5 class="text-green">Choose products that will be included in the package</h5>
+          <!-- form start -->
+          <form role="form" action="/inventory/packageForm" method="post">
+           <div class="box-body table-responsive">
+             <table id="example5" class="table table-bordered table-hover">
+               <thead class="bg-success">
+                 <tr>
+                   <th></th>
+                   <th></th>
+                   <th>Product</th>
+                   <th>Price</th>
+                 </tr>
+               </thead>
+               <tbody>
+
+
+
+               </tbody>
+             </table>
+            </div>
+
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+      </div>
+
+     <!-- /.modal-content -->
+    </div>
+  <!-- /.modal-dialog -->
+  </div>
 </div>
 
 
@@ -215,23 +274,29 @@
 <!-- page script (new added) -->
 
 <script>
-
+  // DELETE OF PRODUCT IN PRODUCT LIST
   $('.deleteRow').on('click',function(){
 
     $(this).closest('tr').find('input').each(function(){
       $(this).removeAttr('name')
 
     })
+
+    var currentPrice = $('#suggestedPrice').val() - $(this).closest('tr').find('input.price').val();
+    $('#suggestedPrice').val(currentPrice);
+
     $(this).closest('tr').remove();
 
+  });
 
-  })
+  // SET TOTAL VALUE BASED ON THE LIST
   var totalValue = 0;
   $('table').find('input.quantity').each(function(){
     totalValue = parseInt(totalValue) +  ($(this).val() * parseInt($(this).closest('tr').find('input.price').val()));
   })
   $('#suggestedPrice').val(totalValue)
 
+  // QUANTITY OF PRODUCT CHANGE IN LIST
   $('.quantity').on('keyup',function(){
     totalValue = 0;
 
@@ -239,6 +304,41 @@
       totalValue = parseInt(totalValue) +  ($(this).val() * parseInt($(this).closest('tr').find('input.price').val()));
     })
     $('#suggestedPrice').val(totalValue)
+
+  })
+
+  // ADD NEW PRODUCT IN THE LIST
+
+
+  $('.addProduct').on('click',function(){
+    var neglectProducts = [];
+    $('table').find('input.product').each(function(){
+      neglectProducts.push($(this).val());
+    }).promise().done(function(){
+      if(neglectProducts.length == 0){ neglectProducts = ["NULL"]}
+      $.post('/inventory/showProducts', {array: neglectProducts}, function(data,status){
+        if(data){
+          var t = $('#example5').DataTable();
+          t.clear();
+          t.draw();
+          data.forEach(function(i){
+
+
+            t.row.add( [
+                `<input type="checkbox"  value="${i.intInventoryNo}" name="product">`,
+                `<img = width="40px" height="40px" src="/assets/images/products/${i.strProductPicture}">`,
+                `${i.strProductName} ${i.strVariant} ${i.intSize} ${i.strUnitName}`,
+                `Php ${ (i.productPrice).toFixed(2) }`
+
+            ] ).draw( false );
+
+
+          })
+          $('.addList').click();
+        }
+
+      })
+    })
 
   })
 </script>
@@ -268,9 +368,6 @@
 </script>
 
 
-
-
-
 <script>
   $(function () {
     $('#example3').DataTable({
@@ -282,6 +379,17 @@
       'autoWidth'   : true,
 	  'select'		: true,
 	  'scroll'		: true
+    })
+  })
+
+  $(function () {
+    $('#example5').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : true,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true
     })
   })
 </script>
@@ -303,8 +411,6 @@ var temp_response = "";
   $('.addList').on('click',function(){
     temp_response = "";
     $('#barcode').val("")
-
-
   })
 
 

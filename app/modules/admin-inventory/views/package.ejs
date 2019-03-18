@@ -156,7 +156,7 @@
 
  	<!-- Modals -->
 
-  <div class="modal fade" id="editPackage">
+ <div class="modal fade" id="editPackage">
     <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -210,9 +210,9 @@
         </form>
     </div>
     <!-- /.modal-content -->
-  </div>
+    </div>
    <!-- /.modal-dialog -->
- </div>
+  </div>
 
  	<div class="modal fade" id="addPackage">
  	  <div class="modal-dialog">
@@ -265,66 +265,64 @@
  			  </div>
  		</div>
  		<!-- /.modal-content -->
- 	</div>
+ 	  </div>
    <!-- /.modal-dialog -->
- </div>
+  </div>
 
 
 <div class="modal fade" id="addPackage2">
   <div class="modal-dialog">
-	<div class="modal-content">
-	  <div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		  <span aria-hidden="true">&times;</span></button>
-		<h4 class="modal-title"></h4>
-	  </div>
-	  <div class="modal-body">
-		<!-- Horizontal Form -->
+	  <div class="modal-content">
+	   <div class="modal-header">
+  		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  		  <span aria-hidden="true">&times;</span></button>
+  		<h4 class="modal-title"></h4>
+	   </div>
+	   <div class="modal-body">
+  		<!-- Horizontal Form -->
 
-    <h5 class="text-green">Choose products that will be included in the package</h5>
-			<!-- form start -->
-     <form role="form" action="/inventory/packageForm" method="post">
-       <div class="box-body table-responsive">
-         <table id="example4" class="table table-bordered table-hover">
-           <thead class="bg-success">
-             <tr>
-               <th></th>
-               <th></th>
-               <th>Product</th>
-               <th>Price</th>
-             </tr>
-           </thead>
-           <tbody>
-             <% if (products.length == 0 ){ %>
+      <h5 class="text-green">Choose products that will be included in the package</h5>
+  			<!-- form start -->
+        <form role="form" action="/inventory/packageForm" method="post">
+         <div class="box-body table-responsive">
+           <table id="example4" class="table table-bordered table-hover">
+             <thead class="bg-success">
+               <tr>
+                 <th></th>
+                 <th></th>
+                 <th>Product</th>
+                 <th>Price</th>
+               </tr>
+             </thead>
+             <tbody>
+               <% if (products.length == 0 ){ %>
 
-             <% }else{ %>
-             <% products.forEach(function(i){ %>
-                 <tr>
-                   <td><input type="checkbox"  value="<%=i.intInventoryNo%>" name="product"></td>
-                   <td><img = width="40px" height="40px" src="/assets/images/products/<%=i.strProductPicture%>"></td>
-                   <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%> <%=i.strUnitName%></td>
-                   <td>Php <%= (i.productPrice).toFixed(2) %></td>
-                 </tr>
-              <%  }) %>
-             <% } %>
+               <% }else{ %>
+               <% products.forEach(function(i){ %>
+                   <tr>
+                     <td><input type="checkbox"  value="<%=i.intInventoryNo%>" name="product"></td>
+                     <td><img = width="40px" height="40px" src="/assets/images/products/<%=i.strProductPicture%>"></td>
+                     <td><%=i.strProductName%> <%=i.strVariant%> <%=i.intSize%> <%=i.strUnitName%></td>
+                     <td>Php <%= (i.productPrice).toFixed(2) %></td>
+                   </tr>
+                <%  }) %>
+               <% } %>
 
-           </tbody>
-         </table>
-       </div>
+             </tbody>
+           </table>
+          </div>
 
-
-
-
-		</div>
-	  <div class="modal-footer">
-		  <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-		  <button type="submit" class="btn btn-primary">Save changes</button>
-	  </div>
-    </form>
-	</div>
-	<!-- /.modal-content -->
-</div>
-<!-- /.modal-dialog -->
+  		    
+      	  <div class="modal-footer">
+      		  <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+      		  <button type="submit" class="btn btn-primary">Save changes</button>
+      	  </div>
+        </form>
+	   </div>
+	   <!-- /.modal-content -->
+    </div>
+  <!-- /.modal-dialog -->
+  </div>
 </div>
 
 

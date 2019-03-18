@@ -143,6 +143,31 @@ router.post('/loadProducts', auth_admin,(req,res)=>{
     })
 })
 
+router.get('/newProductItem', auth_admin, (req,res)=>{
+  var product = req.query.product;
+
+  db.query(`Select * from tblSupplier
+  join tblUser on tblSupplier.intUserID = tblUser.intUserID
+  left join tblContract on tblContract.intConsignorID = tblUser.intUserID where intStatus = 1`,(err1,supplier,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      db.query(`Select * from tbluom where intStatus = 1`,(err2,uom,fie2)=>{
+        if(err2) console.log(err2);
+        else{
+          db.query(`Select * from tblproductlist where intProductNo = ${product}`,(err3,title,fie1)=>{
+            if(err3) console.log(err3);
+            else{
+              res.render('admin-inventory/views/newProductItem',{title: title,product: product, supplier: supplier, uom: uom})
+
+            }
+          })
+        }
+      })
+    }
+  })
+
+})
+
 router.get('/productInventory',auth_admin, (req,res)=>{
 
   var product = req.query.product;
@@ -168,7 +193,7 @@ router.get('/productInventory',auth_admin, (req,res)=>{
             db.query(`Select * from tblProductInventory order by intInventoryno desc limit 1`, (err2,results2,fields2)=>{
               if (err2) console.log(err2);
               else{
-                db.query(`Select * from tbluom`, (err3,results3,fields3)=>{
+                db.query(`Select * from tbluom where intstatus = 1`, (err3,results3,fields3)=>{
                   if (err3) console.log(err3);
                   else{
                     db.query(`Select * from tblSupplier
@@ -233,34 +258,48 @@ router.post('/addSupplier', auth_admin, (req,res)=>{
 
 router.post('/addProductItem',auth_admin, (req,res)=>{
   // Change to transaction
+  var ino = 1000;
   var url = `/inventory/productInventory?product=${req.body.add_productno}`;
-  db.query(`
-    Insert into tblProductInventory (intInventoryNo, intProductNo, intUserID, productSRP, intUOMno, intSize, productPrice, strBarcode, intCriticalLimit, strVariant, intShelfNo) values ("${req.body.add_inventoryno}","${req.body.add_productno}", "${req.body.add_sno}", ${req.body.add_srp}, "${req.body.add_uom}", ${req.body.add_size}, ${req.body.add_price}, "${req.body.add_barcode}", ${req.body.add_critical}, "${req.body.add_variant}", ${req.body.add_shelf})`, (err1,results1,fields1)=>{
-      if (err1) console.log(err1);
-      db.query(`Select * from tblinventorytransactions order by intTransactionID desc limit 1`, (err2,results2,fields2)=>{
-        if (err2) console.log(err2);
+  db.query(`Select * from tblProductInventory order by intInventoryNo desc limit 1`,(err9,res9,fie9)=>{
+    if(err9) console.log(err9);
+    else{
+      if (res9 == undefined || res9 == null){
+
+      }else if(res9.length == 0){
+
+      }else{
+        ino = res9.intInventoryNo + 1;
+      }
+      db.query(`
+        Insert into tblProductInventory (intInventoryNo, intProductNo, intUserID, productSRP, intUOMno, intSize, productPrice, strBarcode, intCriticalLimit, strVariant, intShelfNo) values ("${ino}","${req.body.add_productno}", "${req.body.add_sno}", ${req.body.add_srp}, "${req.body.add_uom}", ${req.body.add_size}, ${req.body.add_price}, "${req.body.add_barcode}", ${req.body.add_critical}, "${req.body.add_variant}", ${req.body.add_shelf})`, (err1,results1,fields1)=>{
+          if (err1) console.log(err1);
+          db.query(`Select * from tblinventorytransactions order by intTransactionID desc limit 1`, (err2,results2,fields2)=>{
+            if (err2) console.log(err2);
 
 
-        if (results2 == null || results2 == undefined || results2.length == 0){
-           db.query(`Insert into tblinventorytransactions (intTransactionID,intInventoryNo,  intShelfNo, intCriticalLimit,  strTypeOfChanges, intUserID ) values ("1000","${req.body.add_inventoryno}",${req.body.add_shelf},${req.body.add_critical},"New Product Item","1000")`, (err3,results3,fields3)=>{
-             if (err3) console.log(err3);
+            if (results2 == null || results2 == undefined || results2.length == 0){
+              db.query(`Insert into tblinventorytransactions (intTransactionID,intInventoryNo,  intShelfNo, intCriticalLimit,  strTypeOfChanges, intUserID ) values ("1000","${req.body.add_inventoryno}",${req.body.add_shelf},${req.body.add_critical},"New Product Item","1000")`, (err3,results3,fields3)=>{
+                if (err3) console.log(err3);
 
-             res.send(url);
-           });
+                res.send(url);
+              });
 
-        }else{
-          var ino = parseInt(results2[0].intTransactionID) + 1;
-          db.query(`Insert into tblinventorytransactions (intTransactionID,intInventoryNo, intShelfNo, intCriticalLimit,  strTypeOfChanges, intUserID ) values ("${ino}","${req.body.add_inventoryno}",${req.body.add_shelf},${req.body.add_critical},"New Product Item","1000")`, (err4,results4,fields4)=>{
-            if (err4) console.log(err4);
-            res.send(url);
-
-
-          });
-        }
+            }else{
+              var ino = parseInt(results2[0].intTransactionID) + 1;
+              db.query(`Insert into tblinventorytransactions (intTransactionID,intInventoryNo, intShelfNo, intCriticalLimit,  strTypeOfChanges, intUserID ) values ("${ino}","${req.body.add_inventoryno}",${req.body.add_shelf},${req.body.add_critical},"New Product Item","1000")`, (err4,results4,fields4)=>{
+                if (err4) console.log(err4);
+                res.send(url);
 
 
-    });
-  });
+              });
+            }
+
+
+        });
+      });
+    }
+  })
+  
 
 });
 
@@ -278,6 +317,30 @@ router.get('/transactions', auth_admin,(req,res)=>{
 
   });
 });
+
+
+
+router.get('/newProductForm', auth_admin, (req,res)=>{
+  // query brand
+  db.query(`Select * from tblproductbrand where intStatus = 1 `,(err1,res1,fie1)=>{
+    if(err1) console.log(err1);
+    else{
+      // query category
+      db.query(`Select * from tblsubcategory join tblcategory on tblsubcategory.intcategoryno = tblcategory.intcategoryno
+      where tblsubcategory.intstatus = 1`,(err2,res2,fie2)=>{
+        if(err2) console.log(err2);
+        // query uom
+        db.query(`Select * from tbluom where intstatus = 1`,(err3,res3,fie3)=>{
+          if(err3) console.log(err3);
+          else{
+             res.render('admin-inventory/views/newProductForm', {brand: res1, category: res2, uom: res3});
+            
+          }
+        })
+      })
+    }
+  })
+})
 
 router.get('/allStocks', auth_admin,(req,res)=>{
 
@@ -1474,9 +1537,28 @@ router.post('/packageForm',auth_admin, (req,res)=>{
      where tblProductInventory.intInventoryNo in (?)`, newArray, (err1,res1,fie1)=>{
        if(err1) console.log(err1);
        else{
-         res.render('admin-inventory/views/packageForm',{re: res1})
+        db.query(`Select * from tblpackage order by intPackageNo desc limit 1`, (err2,res2,fie2)=>{
+          if(err2) console.log(err2);
+          res.render('admin-inventory/views/packageForm',{re: res1, newRecord: parseInt(res2[0].intPackageNo)+1})
+        });
+
        }
      })
+});
+
+router.post('/showProducts',auth_admin, (req,res)=>{
+
+
+  db.query(`Select * from tblProductInventory
+    join tblProductlist on tblProductInventory.intProductNo = tblProductList.intProductno
+    join tblUom on tblUom.intUOMno = tblProductInventory.intUOMno
+     where tblProductInventory.intInventoryNo not in (?)`, [req.body.array], (err1,res1,fie1)=>{
+      if(err1) console.log(err1);
+      else{
+
+        res.send(res1);
+      }
+  })
 })
 
 router.get('/packageDetails', auth_admin, (req,res)=>{

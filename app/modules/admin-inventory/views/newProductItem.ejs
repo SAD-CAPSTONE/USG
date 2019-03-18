@@ -1,0 +1,277 @@
+<%- include('../../../templates/admin-navbar.ejs') -%>
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+       <%=title[0].strProductName%>
+    </h1>
+    <small>Product Code: <%=title[0].strProductCode%> &nbsp;&nbsp; </small>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li><a href="#">Maintenance</a></li>
+      <li class="active">Inventory</li>
+    </ol>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            
+            <li class="active"><a href="#newProduct" data-toggle="tab"><i class="fa fa-plus"></i> New product item</a></li>
+            
+          </ul>
+          <div class="tab-content">
+
+            <!-- New product Item-->
+            <div class="tab-pane active" id="newProduct">
+              <div class="row">
+                  <div class="col-sm-12">
+                    <!-- form start -->
+                    <form role="form" id="newProductForm" >
+                      <div class="box-body">
+
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-3">
+                            </br>
+                              <button type="button" class="large ui green button" data-toggle="modal" data-target="#selectSupplier"><i class="fa fa-search"></i> Select Supplier Here</button>
+                            <p>  New supplier? Click <a data-toggle="modal" data-target="#addSupplier">here</a></p>
+                            </div>
+                            <div class="col-sm-3">
+                              <label for="add_sname">Supplier Name</label>
+                              <input type="hidden" class="form-control"  id="add_sno" name="add_sno" >
+                              <input type="text" required class="form-control" disabled id="add_sname" name="add_sname" >
+                            </div>
+
+                            <div class="col-sm-3">
+                              <label for="add_bname">Business Name</label>
+                              <input type="text" required class="form-control" disabled id="add_bname" name="add_bname" >
+                            </div>
+
+                            <div class="col-sm-3">
+                              <label for="add_bname">Commission Rate</label>
+                              <input type="text" required class="form-control" disabled id="commission" name="commission" >
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-3">
+                              <label for="add_srp">Product SRP</label>
+                              <input type="decimal" placeholder="Original price" class="form-control" required id="add_srp" name="add_srp" >
+                            </div>
+                            <div class="col-sm-3">
+                              <label for="add_price">Product Price</label>
+                              <input type="decimal" placeholder="" class="form-control" required id="add_price" name="add_price" >
+                            </div>
+                            <div class="col-sm-3">
+                              <label for="add_size">Size</label>
+                              <input type="number" class="form-control" required id="add_size" name="add_size" >
+                            </div>
+                            <div class="col-sm-3">
+                              <label for="add_uom">Measure </label>
+                              <select class="form-control" required id="add_uom" name="add_uom"  >
+                                <% if (uom == null || uom == undefined || uom.length == 0){ %>
+                                  <option></option>
+                                <% }else{ %>
+                                  <% uom.forEach(function(s){ %>
+                                    <option value="<%=s.intUomNo%>"><%=s.strUnitName%></option>
+                                  <% }) %>
+
+                                <% } %>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <label for="add_variant">Variant</label>
+                              <input type="text" class="form-control" id="add_variant" name="add_variant" >
+                            </div>
+                            <div class="col-sm-4">
+                              <label for="add_barcode">Barcode</label>
+                              <input type="number" required class="form-control" id="add_barcode" name="add_barcode" >
+                            </div>
+                            <div class="col-sm-2">
+                              <label for="shelf">Shelf No</label>
+                              <input type="number" class="form-control"id="add_shelf" name="add_shelf" >
+                            </div>
+                            <div class="col-sm-2">
+                              <label for="add_critical">Critical Limit</label>
+                              <input type="number" required class="form-control" required id="add_critical" name="add_critical" >
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div class="box-footer">
+                          <!-- &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; -->
+                            <a  type="button" href="/inventory/productInventory?product=<%=product%>" class="large ui button">Back</a>
+                           <button type="reset" class="large ui button">Clear Fields</button>
+                           <a href=""><button type="submit" class="large ui teal button">Submit</button></a>
+                        </div>
+                      </div>
+                    </form>
+
+                </div>
+              </div>
+
+            </div>
+
+
+            
+
+          </div>
+          <!-- /.tab-content -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+  <!-- Modals -->
+
+
+  <div class="modal fade" id="selectSupplier">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">Supplier List</h4>
+      </div>
+      <div class="modal-body">
+
+      <!-- /.box-header -->
+      <div class="box-body table-responsive">
+        <table id="example1" class="table table-bordered table-hover">
+          <thead>
+            <% if (supplier == null || supplier == undefined || supplier.length == 0){ %>
+              <h4> No records of Suppliers </h4>
+            <% } else { %>
+          <tr>
+            <th>Supplier No</th>
+            <th>Supplier Name</th>
+            <th>Business Name</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+
+            <% supplier.forEach(function(i){ %>
+          <tr>
+                <td><%=i.intUserID%></td>
+                <td><%=i.strFname%>&nbsp;<%=i.strLname%></td>
+                <td><%=i.strBusinessName%></td>
+                <td><button data-dismiss="modal" data-commission="<%=i.consignmentPrice%>" data-supplierid="<%=i.intUserID%>" data-business="<%=i.strBusinessName%>" data-supplier="<%=i.strFname%> <%=i.strLname%>"  class="setter btn btn-info btn-sm">Select</button></td>
+
+          </tr>
+          <% }) %>
+        <% } %>
+
+
+          </tbody>
+
+        </table>
+      </div>
+      <!-- /.box-body -->
+
+       </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+ </div>
+
+
+
+
+
+<%- include('../../../templates/admin-aside.ejs') -%>
+
+  <!-- ./wrapper -->
+
+  <!-- REQUIRED JS SCRIPTS -->
+
+<%- include('../../../templates/admin-footer.ejs') -%>
+
+
+  <!-- page script (new added) -->
+
+ 
+  <script>
+    $('#title').html("USG | All Products");
+
+    $(".treeview a:contains('Inventory')").parent().addClass("active");
+    $(".navi a:contains('All Products')").parent().addClass("active");
+  </script>
+
+  <script>
+    $(function () {
+      $('#example1').DataTable({
+        'paging'      : true,
+        'lengthChange': true,
+        'searching'   : true,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : true,
+      'select'		: true,
+      'scroll'		: true,
+      'searching' : true
+      })
+    })
+
+  </script>
+
+
+
+  <script>
+    $('#newProductForm').submit(function(e){
+      e.preventDefault();
+      $.ajax({
+        url: '/inventory/addProductItem',
+        type: 'post',
+        data: $('#newProductForm').serialize(),
+        success: function(response, status, http){
+          if (response){
+            swal({title: "Success!",text: "You added a new product item!", type:"success"}).then(()=>{
+                location.href = `/productInventory?product=<%=product%>`;
+            });
+            
+          }
+        },
+        error: function(response){
+          swal("Error!","Please try again", "error");
+          location.reload();
+        }
+      })
+    })
+
+
+  </script>
+
+
+  <!-- Optionally, you can add Slimscroll and FastClick plugins.
+       Both of these plugins are recommended to enhance the
+       user experience. -->
+  </body>
+  </html>

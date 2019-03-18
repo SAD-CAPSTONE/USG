@@ -22,15 +22,15 @@
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs">
             <li class="active"><a href="#inventory" data-toggle="tab"> Inventory</a></li>
-            <li><a href="#newProduct" data-toggle="tab"><i class="fa fa-plus"></i> New product item</a></li>
+            <!-- <li><a href="#newProduct" data-toggle="tab"><i class="fa fa-plus"></i> New product item</a></li> -->
             <li><a href="#inactiveProducts" data-toggle="tab"> Inactive Products</a></li>
           </ul>
           <div class="tab-content">
             <!-- Inventory -->
             <div class="tab-pane active" id="inventory">
 
-              <a data-toggle="modal" data-target="#legend_modal"><i style="font-size: 30px" class="glyphicon glyphicon-info-sign"></i> </a>
-
+              <a href="/inventory/newProductItem?product=<%=product%>" class="large ui green button"><i class="fa fa-plus"></i> Add Product Item</a>
+             
 
               </br>
               <!-- /.box-header -->
@@ -38,15 +38,16 @@
                 <table id="example2" class="table table-bordered table-hover">
                   <thead>
                   <tr>
-                    <th style="width: 140px"></th>
+                   
                     <th>No</th>
 
                     <th>Variant</th>
-                    <th>Supplier</th>
+                    
 
                     <th>Price</th>
                     <th style="width: 20px">Quantity</th>
                     <th style="width: 10px">Status</th>
+                    <th style="width: 180px">Options</th>
 
                   </tr>
                   </thead>
@@ -57,37 +58,15 @@
                     <% re.forEach(function(i){ %>
                       <tr>
                         <form>
-                        <td>
-                          <center>
-                            <button type="button" data-number="<%=i.intInventoryNo%>" data-toggle="modal" data-target="#addStock" class="addStock large ui teal button" data-toggle="tooltip" title="Add Stock"><i class="fa fa-plus"></i></button>
-                            <!-- <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory" class="editbutton large ui blue button" ><i class="fa fa-edit"></i></button> -->
-
-                            <div class="btn-group">
-                              <button type="button" class="large ui blue button" data-toggle="dropdown">
-                                <i class="glyphicon glyphicon-option-horizontal"></i>
-
-                              </button>
-                              <ul class="dropdown-menu">
-                                <li><a type="button" class="editbutton" data-number="<%=i.intInventoryNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-toggle="modal" data-target="#editPrice">Edit Price</a></li>
-                                <li><a type="button" class="editbutton" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-variant="<%=i.strVariant%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory">Edit Details</a></li>
-                                <li><a href="/inventory/seeBatch?p=<%=i.intInventoryNo%>">See Batch Products</a></li>
-                                <li><a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>">Transactions</a></li>
-                              </ul>
-                            </div>
-                            <button data-product="<%=i.intInventoryNo%>" id="inactivate_product" class="large ui red button" data-toggle="tooltip" title="Inactivate"><i class="fa fa-close"></i></button>
-
-
-                          </center>
-
-                        </td>
+                        
                       </form>
-                        <td><%=i.intInventoryNo%></td>
+                        <td><%=i.intInventoryNo%> </td>
 
                         <td><%=i.strVariant%> <%=i.intSize%>&nbsp;<%=i.strUnitName%></td>
-                        <td><%=i.strBusinessName%></td>
-                        <td>₱ <%=(i.productPrice).toFixed(2)%></td>
+                       
+                        <td>₱ <%=(i.productPrice).toFixed(2)%> <a type="button" class="editbutton" data-number="<%=i.intInventoryNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-toggle="modal" data-target="#editPrice">&nbsp;&nbsp;&nbsp; Edit</a> </td>
                         <!-- <td><%= moment(i.expirationDate).format("MMM Do YYYY")%></td> -->
-                        <td><%=i.intQuantity%></td>
+                        <td><%=i.intQuantity%> </td>
                         <td>
                           <% if (i.intStatus == 1){ %>
 
@@ -104,6 +83,31 @@
                           <% } %>
 
 
+
+                        </td>
+                        <td>
+                          <center>
+                            <button type="button" data-number="<%=i.intInventoryNo%>" data-toggle="modal" data-target="#addStock" class="addStock large ui teal button" data-toggle="tooltip" title="Add Stock"><i class="fa fa-plus"></i> Add Stock</button>
+                            <!-- <button type="button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory" class="editbutton large ui blue button" ><i class="fa fa-edit"></i></button> -->
+
+                            <button type="button" class="large ui teal button" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-variant="<%=i.strVariant%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory">Details</button>
+
+                            <!-- <div class="btn-group">
+                              <button type="button" class="large ui blue button" data-toggle="dropdown">
+                                <i class="glyphicon glyphicon-option-horizontal"></i>
+
+                              </button>
+                              <ul class="dropdown-menu">
+                                <li><a type="button" class="editbutton" data-number="<%=i.intInventoryNo%>" data-srp="<%=i.productSRP%>" data-price="<%=i.productPrice%>" data-toggle="modal" data-target="#editPrice">Edit Price</a></li>
+                                <li><a type="button" class="editbutton" data-number="<%=i.intInventoryNo%>" data-product="<%=i.intProductNo%>" data-variant="<%=i.strVariant%>" data-shelf="<%=i.intShelfNo%>" data-critical="<%=i.intCriticalLimit%>"  data-toggle="modal" data-target="#editInventory">Edit Details</a></li>
+                                <li><a href="/inventory/seeBatch?p=<%=i.intInventoryNo%>">See Batch Products</a></li>
+                                <li><a href="/inventory/transactions?product=<%=i.intProductNo%>&ino=<%=i.intInventoryNo%>">Transactions</a></li>
+                              </ul>
+                            </div> -->
+                            <!-- <button data-product="<%=i.intInventoryNo%>" id="inactivate_product" class="large ui red button" data-toggle="tooltip" title="Inactivate"><i class="fa fa-close"></i></button> -->
+
+
+                          </center>
 
                         </td>
 
@@ -513,7 +517,8 @@
        <div class="modal-body">
         <!-- Update -->
         <div>
-        </br>
+
+
           <form id="updateDetails_form">
 
             <div class="form-group">
@@ -532,6 +537,8 @@
                 <input type="text" required value="0" name="variant" class="variant form-control">
               </div>
             </div>
+
+            
 
             <div class="modal-footer">
               <button type="button" class="large ui button pull-left" data-dismiss="modal">Close</button>
