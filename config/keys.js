@@ -8,7 +8,7 @@ module.exports = {
   },
   google: {
     clientID: '1052044941545-pf2ghg8puvkh0kc5gpogtkgi0g3rptee.apps.googleusercontent.com',
-    clientSecret: 'TN1TvE_C6AtNLrimnXVTPmkW'
+    clientSecret: 'wR_yAI7-OubFUXqqbQse9sVt'
   },
   session: {
     cookieKey: 'issasecretpassword'
