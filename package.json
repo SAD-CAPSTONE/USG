@@ -18,7 +18,7 @@
     "dotenv": "^4.0.0",
     "ejs": "^2.5.9",
     "express": "^4.16.3",
-    "express-fileupload": "^0.4.0",
+    "express-fileupload": "^1.1.9",
     "express-flash": "0.0.2",
     "express-session": "^1.15.6",
     "jspdf-customfonts": "0.0.4-rc.4",
