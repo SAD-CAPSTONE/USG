@@ -27,7 +27,7 @@
     "morgan": "^1.9.1",
     "mysql": "^2.13.0",
     "node-excel-export": "^1.4.4",
-    "nodemailer": "^4.6.7",
+    "nodemailer": "^6.4.16",
     "nodemon": "^1.17.5",
     "npm": "^6.4.1",
     "passport": "^0.4.0",
